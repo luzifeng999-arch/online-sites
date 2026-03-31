@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>增长趋势 — AI Agent 市场趋势报告</title>
+<style>
+:root{
+  --bg:#050A14;--container:#0D1B2A;--container-2:#112233;
+  --accent:#00D4FF;--accent-soft:rgba(0,212,255,0.12);
+  --c1:#00D4FF;--c2:#A855F7;
+  --text-primary:#E8F4FD;--text-secondary:#7ECFEF;--text-muted:#4A90A4;
+  --border:rgba(0,212,255,0.15);--radius:8px;--font:'Inter','PingFang SC',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  width:1280px;height:720px;overflow:hidden;
+  font-family:var(--font);background-color:var(--bg);
+  background-image:
+    radial-gradient(ellipse 55% 70% at 88% -10%,rgba(0,170,255,0.18) 0%,transparent 60%),
+    linear-gradient(rgba(5,10,20,0.84),rgba(5,10,20,0.84)),
+    url('images/slide-03-bg.jpg');
+  background-size:auto,auto,cover;
+  position:relative;
+}
+body::before{
+  content:'';position:absolute;top:-60px;right:-60px;width:260px;height:260px;border-radius:50%;
+  background:radial-gradient(circle,rgba(0,212,255,0.18) 0%,transparent 70%);
+  pointer-events:none;z-index:0;
+}
+
+/* 页头 */
+.page-header{position:absolute;top:36px;left:52px;right:52px;height:72px;z-index:1;}
+.ph-eyebrow{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:6px;}
+.ph-title{font-size:26px;font-weight:700;color:var(--text-primary);line-height:1.2;letter-spacing:-0.3px;}
+.ph-line{width:48px;height:2px;background:var(--accent);margin-top:6px;border-radius:1px;}
+
+/* 图表区 */
+#chart-container{position:absolute;top:120px;left:52px;right:52px;bottom:50px;z-index:1;}
+
+/* 来源 */
+.src-row{position:absolute;bottom:14px;left:52px;font-size:11px;color:var(--text-muted);}
+.slide-num{position:absolute;right:24px;bottom:14px;font-size:12px;color:var(--text-muted);z-index:2;}
+
+[contenteditable]:hover{outline:1px dashed rgba(0,212,255,0.4);cursor:text;}
+[contenteditable]:focus{outline:1px solid var(--accent);background:rgba(0,212,255,0.05);border-radius:2px;}
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="ph-eyebrow">MARKET TREND · 规模增长趋势</div>
+  <div class="ph-title" contenteditable="true">市场规模七年增长趋势：从$52亿到$1,270亿，CAGR 38.7%</div>
+  <div class="ph-line"></div>
+</div>
+
+<div id="chart-container"></div>
+
+<div class="src-row" contenteditable="true">[来源: Gartner、IDC、a16z Research]&nbsp;&nbsp;E = 预测值</div>
+<div class="slide-num" contenteditable="false">3 / 10</div>
+
+<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+<script>
+const chart = echarts.init(document.getElementById('chart-container'));
+const accent = '#00D4FF';
+const c2 = '#A855F7';
+const years = ['2021','2022','2023','2024','2025E','2026E','2027E'];
+const bars  = [52,89,158,283,472,801,1270];
+const growth= [null,71,78,79,67,70,59];
+
+chart.setOption({
+  backgroundColor:'transparent',
+  legend:{
+    bottom:0,left:'center',
+    textStyle:{color:'#7ECFEF',fontSize:12},
+    data:['市场规模（亿美元）','同比增长率（%）']
+  },
+  tooltip:{
+    trigger:'axis',
+    backgroundColor:'rgba(5,10,20,0.9)',
+    borderColor:'rgba(0,212,255,0.3)',
+    textStyle:{color:'#E8F4FD'},
+    axisPointer:{type:'cross',crossStyle:{color:'rgba(0,212,255,0.3)'}}
+  },
+  grid:{top:24,right:76,bottom:52,left:68},
+  xAxis:{
+    type:'category',data:years,
+    axisLabel:{color:'#7ECFEF',fontSize:12},
+    axisLine:{lineStyle:{color:'rgba(0,212,255,0.2)'}},
+    splitLine:{lineStyle:{color:'rgba(0,212,255,0.06)'}}
+  },
+  yAxis:[
+    {
+      type:'value',name:'亿美元',nameTextStyle:{color:'#4A90A4',fontSize:11},
+      nameLocation:'end',
+      axisLabel:{color:'#7ECFEF',fontSize:11,formatter:v=>v>=1000?v/1000+'K':v},
+      splitLine:{lineStyle:{color:'rgba(0,212,255,0.08)'}},
+      axisLine:{lineStyle:{color:'rgba(0,212,255,0.15)'}}
+    },
+    {
+      type:'value',name:'增长率%',nameTextStyle:{color:'#A855F7',fontSize:11},
+      nameLocation:'end',nameGap:8,
+      min:0,max:100,
+      axisLabel:{color:'#A855F7',fontSize:11,formatter:'{value}%'},
+      splitLine:{show:false},
+      axisLine:{lineStyle:{color:'rgba(168,85,247,0.25)'}}
+    }
+  ],
+  series:[
+    {
+      name:'市场规模（亿美元）',type:'bar',
+      data:bars.map((v,i)=>({
+        value:v,
+        itemStyle:{
+          color:i>=4?{type:'linear',x:0,y:1,x2:0,y2:0,colorStops:[{offset:0,color:'rgba(0,212,255,0.5)'},{offset:1,color:accent}]}:{type:'linear',x:0,y:1,x2:0,y2:0,colorStops:[{offset:0,color:'rgba(0,212,255,0.25)'},{offset:1,color:'rgba(0,212,255,0.75)'}]},
+          borderRadius:[4,4,0,0]
+        }
+      })),
+      barMaxWidth:52,
+      label:{show:true,position:'top',color:'#7ECFEF',fontSize:11,formatter:p=>p.value>=1000?(p.value/1000).toFixed(1)+'K':p.value}
+    },
+    {
+      name:'同比增长率（%）',type:'line',yAxisIndex:1,
+      data:growth,
+      symbol:'circle',symbolSize:8,
+      lineStyle:{color:c2,width:2.5},
+      itemStyle:{color:c2,borderColor:'#E8F4FD',borderWidth:2},
+      label:{show:true,formatter:p=>p.value?p.value+'%':'',color:c2,fontSize:11,position:'top'},
+      areaStyle:{color:{type:'linear',x:0,y:0,x2:0,y2:1,colorStops:[{offset:0,color:'rgba(168,85,247,0.18)'},{offset:1,color:'transparent'}]}}
+    }
+  ]
+});
+</script>
+</body>
+</html>

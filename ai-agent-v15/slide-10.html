@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>结论与行动建议 — AI Agent 市场趋势报告</title>
+<style>
+:root{
+  --bg:#050A14;--container:#0D1B2A;
+  --accent:#00D4FF;--c1:#00D4FF;--c1-soft:rgba(0,212,255,0.12);
+  --c2:#A855F7;--c2-soft:rgba(168,85,247,0.12);
+  --text-primary:#E8F4FD;--text-secondary:#7ECFEF;--text-muted:#4A90A4;
+  --border:rgba(0,212,255,0.15);--radius:8px;--font:'Inter','PingFang SC',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  width:1280px;height:720px;overflow:hidden;
+  font-family:var(--font);background-color:var(--bg);
+  background-image:
+    radial-gradient(ellipse 55% 70% at 88% -10%,rgba(0,170,255,0.22) 0%,transparent 60%),
+    linear-gradient(rgba(5,10,20,0.75),rgba(5,10,20,0.75)),
+    url('images/slide-10-bg.jpg');
+  background-size:auto,auto,cover;
+  position:relative;
+}
+body::before{
+  content:'';position:absolute;top:-60px;right:-60px;width:280px;height:280px;border-radius:50%;
+  background:radial-gradient(circle,rgba(0,212,255,0.22) 0%,transparent 70%);
+  pointer-events:none;z-index:0;
+}
+
+/* 统一页头 */
+.page-header{position:absolute;top:36px;left:52px;right:52px;height:72px;z-index:1;}
+.ph-eyebrow{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:6px;}
+.ph-title{font-size:26px;font-weight:700;color:var(--text-primary);line-height:1.2;letter-spacing:-0.3px;}
+.ph-line{width:48px;height:2px;background:var(--accent);margin-top:6px;border-radius:1px;}
+
+/* Closing-A 双栏 */
+.body-row{position:absolute;top:120px;left:52px;right:52px;bottom:90px;display:flex;gap:20px;z-index:1;}
+
+/* ── 左栏：结论 ── */
+.left-col{
+  flex:1;
+  display:flex;flex-direction:column;gap:0;
+}
+.col-sub-title{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--c1);margin-bottom:10px;font-weight:700;}
+/* Rule 37 flex:1 */
+.conclusion-list{flex:1;display:flex;flex-direction:column;gap:8px;}
+.conclusion-item{
+  flex:1;
+  background:rgba(0,212,255,0.06);backdrop-filter:blur(10px);
+  border:1px solid rgba(0,212,255,0.18);border-radius:var(--radius);
+  padding:11px 14px;
+  display:flex;gap:10px;align-items:flex-start;
+}
+.cn-num{font-size:20px;font-weight:900;color:var(--c1);flex-shrink:0;line-height:1.1;}
+.cn-text{font-size:12.5px;color:var(--text-secondary);line-height:1.6;}
+
+/* ── 右栏：行动建议 ── */
+.right-col{
+  flex:1;
+  display:flex;flex-direction:column;gap:0;
+}
+.action-box{
+  flex:1;
+  background:rgba(168,85,247,0.08);backdrop-filter:blur(12px);
+  border:1px solid rgba(168,85,247,0.22);border-radius:var(--radius);
+  padding:14px 16px;
+  display:flex;flex-direction:column;gap:10px;
+}
+.action-box-title{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--c2);font-weight:700;margin-bottom:2px;}
+/* Rule 37 行动项 flex:1 */
+.action-items{flex:1;display:flex;flex-direction:column;gap:0;}
+.action-item{
+  flex:1;
+  display:flex;gap:8px;align-items:flex-start;
+  border-bottom:1px solid rgba(168,85,247,0.12);
+  padding:6px 0;
+}
+.action-item:last-child{border-bottom:none;}
+.ac-num{font-size:14px;font-weight:900;color:var(--c2);flex-shrink:0;line-height:1.4;width:18px;}
+.ac-text{font-size:12px;color:var(--text-secondary);line-height:1.6;}
+
+/* ── 底部 mini-stat 条（Rule 37 技法3）── */
+.mini-stat-bar{
+  position:absolute;bottom:14px;left:52px;right:52px;
+  display:flex;gap:0;
+  background:rgba(0,0,0,0.45);backdrop-filter:blur(12px);
+  border:1px solid rgba(0,212,255,0.15);border-radius:var(--radius);
+  overflow:hidden;z-index:1;
+}
+.ms-item{
+  flex:1;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:8px 12px;gap:2px;
+  border-right:1px solid rgba(0,212,255,0.12);
+}
+.ms-item:last-child{border-right:none;}
+.ms-val{font-size:20px;font-weight:900;line-height:1;}
+.ms-item.c1 .ms-val{color:var(--c1);}
+.ms-item.c2 .ms-val{color:var(--c2);}
+.ms-lbl{font-size:10.5px;color:var(--text-muted);}
+
+/* CTA引用块 */
+.cta-quote{
+  border-left:3px solid var(--c2);
+  padding:8px 12px;
+  background:rgba(168,85,247,0.06);
+  border-radius:0 6px 6px 0;
+  font-size:11.5px;color:rgba(200,220,255,0.60);
+  line-height:1.5;
+  flex-shrink:0;
+}
+
+.slide-num{position:absolute;right:24px;bottom:16px;font-size:12px;color:var(--text-muted);z-index:2;}
+[contenteditable]:hover{outline:1px dashed rgba(0,212,255,0.4);cursor:text;}
+[contenteditable]:focus{outline:1px solid var(--accent);background:rgba(0,212,255,0.05);border-radius:2px;}
+</style>
+</head>
+<body>
+
+<!-- 统一页头 -->
+<div class="page-header">
+  <div class="ph-eyebrow">CONCLUSION &amp; ACTION PLAN · 结论与行动建议</div>
+  <div class="ph-title" contenteditable="true">抓住18个月窗口期：现在行动，定义未来竞争格局</div>
+  <div class="ph-line"></div>
+</div>
+
+<!-- 双栏内容区 -->
+<div class="body-row">
+
+  <!-- 左栏：三大结论 -->
+  <div class="left-col">
+    <div class="col-sub-title">三大核心结论 CONCLUSION</div>
+    <div class="conclusion-list">
+      <div class="conclusion-item">
+        <div class="cn-num">01</div>
+        <div class="cn-text" contenteditable="true">AI Agent已从「技术实验」进入「商业规模化」，窗口期只剩18–24个月，先行者将建立难以复制的数据飞轮与工作流壁垒</div>
+      </div>
+      <div class="conclusion-item">
+        <div class="cn-num">02</div>
+        <div class="cn-text" contenteditable="true">竞争护城河正从「模型能力」转向「工作流深度集成」，能力平权时代，与业务的集成深度决定最终胜负</div>
+      </div>
+      <div class="conclusion-item">
+        <div class="cn-num">03</div>
+        <div class="cn-text" contenteditable="true">中国市场本土化Agent产品将在2026年迎来爆发，政策红利+场景优势+工程能力三重催化，不可错过</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 右栏：五条行动建议 -->
+  <div class="right-col">
+    <div class="action-box">
+      <div class="action-box-title">五条行动建议 NEXT STEPS</div>
+      <div class="action-items">
+        <div class="action-item">
+          <div class="ac-num">①</div>
+          <div class="ac-text" contenteditable="true">立即建立AI Agent试点，优先选择数据分析和客服场景，6周内验证ROI，形成可复制方法论</div>
+        </div>
+        <div class="action-item">
+          <div class="ac-num">②</div>
+          <div class="ac-text" contenteditable="true">组建跨职能「AI Agent工作组」，纳入业务、技术、法务三方，打通决策链路，避免孤岛推进</div>
+        </div>
+        <div class="action-item">
+          <div class="ac-num">③</div>
+          <div class="ac-text" contenteditable="true">升级数据基础设施，确保Agent有高质量、结构化、可追溯的数据可用，这是Agent效能的底层</div>
+        </div>
+        <div class="action-item">
+          <div class="ac-num">④</div>
+          <div class="ac-text" contenteditable="true">制定AI使用规范和伦理准则，在监管落地前主动合规，建立信任资产和行业口碑</div>
+        </div>
+        <div class="action-item">
+          <div class="ac-num">⑤</div>
+          <div class="ac-text" contenteditable="true">与上下游合作伙伴探索Agent互操作标准，率先占据生态枢纽位，构建长期竞争壁垒</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- 底部 mini-stat 条（Rule 37 技法3，填充底部留白） -->
+<div class="mini-stat-bar">
+  <div class="ms-item c1">
+    <div class="ms-val" contenteditable="true">18月</div>
+    <div class="ms-lbl" contenteditable="true">窗口期剩余</div>
+  </div>
+  <div class="ms-item c2">
+    <div class="ms-val" contenteditable="true">$1.27T</div>
+    <div class="ms-lbl" contenteditable="true">2027年市场规模</div>
+  </div>
+  <div class="ms-item c1">
+    <div class="ms-val" contenteditable="true">62%</div>
+    <div class="ms-lbl" contenteditable="true">企业已采用AI</div>
+  </div>
+  <div class="ms-item c2">
+    <div class="ms-val" contenteditable="true">800万+</div>
+    <div class="ms-lbl" contenteditable="true">全球活跃Agent</div>
+  </div>
+</div>
+
+<div class="slide-num" contenteditable="false">10 / 10</div>
+</body>
+</html>

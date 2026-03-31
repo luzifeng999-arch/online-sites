@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>竞争格局 — AI Agent 市场趋势报告</title>
+<style>
+:root{
+  --bg:#050A14;--container:#0D1B2A;
+  --accent:#00D4FF;--c1:#00D4FF;--c2:#A855F7;--c3:#10B981;
+  --text-primary:#E8F4FD;--text-secondary:#7ECFEF;--text-muted:#4A90A4;
+  --border:rgba(0,212,255,0.15);--radius:8px;--font:'Inter','PingFang SC',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  width:1280px;height:720px;overflow:hidden;
+  font-family:var(--font);background-color:var(--bg);
+  background-image:
+    radial-gradient(ellipse 55% 70% at 88% -10%,rgba(0,170,255,0.20) 0%,transparent 60%),
+    linear-gradient(rgba(5,10,20,0.84),rgba(5,10,20,0.84)),
+    url('images/slide-05-bg.jpg');
+  background-size:auto,auto,cover;
+  position:relative;
+}
+body::before{
+  content:'';position:absolute;top:-60px;right:-60px;width:260px;height:260px;border-radius:50%;
+  background:radial-gradient(circle,rgba(0,212,255,0.18) 0%,transparent 70%);
+  pointer-events:none;z-index:0;
+}
+
+/* 页头 */
+.page-header{position:absolute;top:36px;left:52px;right:52px;height:72px;z-index:1;}
+.ph-eyebrow{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:6px;}
+.ph-title{font-size:26px;font-weight:700;color:var(--text-primary);line-height:1.2;letter-spacing:-0.3px;}
+.ph-line{width:48px;height:2px;background:var(--accent);margin-top:6px;border-radius:1px;}
+
+/* 图表区 */
+#chart-container{position:absolute;top:120px;left:52px;right:52px;bottom:50px;z-index:1;}
+
+.insight-bar{
+  position:absolute;bottom:10px;left:52px;right:52px;
+  background:rgba(0,0,0,0.40);backdrop-filter:blur(12px);
+  border:1px solid rgba(168,85,247,0.28);border-radius:10px;
+  padding:10px 20px;font-size:13px;color:rgba(200,220,255,0.60);line-height:1.5;
+}
+.hl{color:var(--c1);font-weight:700;}
+.hl2{color:var(--c2);font-weight:700;}
+
+.slide-num{position:absolute;right:24px;bottom:14px;font-size:12px;color:var(--text-muted);z-index:2;}
+[contenteditable]:hover{outline:1px dashed rgba(0,212,255,0.4);cursor:text;}
+[contenteditable]:focus{outline:1px solid var(--accent);background:rgba(0,212,255,0.05);border-radius:2px;}
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="ph-eyebrow">COMPETITION MAP · 竞争格局分析</div>
+  <div class="ph-title" contenteditable="true">竞争格局四象限：强能力×高产品化双维解构，OpenAI领跑右上</div>
+  <div class="ph-line"></div>
+</div>
+
+<div id="chart-container"></div>
+
+<div class="insight-bar" contenteditable="true">
+  关键洞察：<span class="hl">OpenAI / Anthropic / Google</span> 占据「双强」象限；<span class="hl2">Microsoft Copilot</span> 以产品化能力反超模型差距；开源项目群仍在左下角蓄力，2026年可能向右上快速移动
+</div>
+
+<div class="slide-num" contenteditable="false">5 / 10</div>
+
+<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+<script>
+const chart = echarts.init(document.getElementById('chart-container'));
+const data = [
+  {name:'OpenAI (GPT-4o)',   x:9.5,y:9.2,r:28,color:'#00D4FF'},
+  {name:'Anthropic (Claude)',x:9.2,y:8.8,r:24,color:'#00D4FF'},
+  {name:'Google (Gemini)',   x:8.8,y:9.0,r:26,color:'#00D4FF'},
+  {name:'Microsoft Copilot', x:7.2,y:9.5,r:30,color:'#A855F7'},
+  {name:'Salesforce Einstein',x:6.8,y:8.8,r:22,color:'#A855F7'},
+  {name:'Meta (LLaMA)',      x:8.5,y:4.2,r:20,color:'#10B981'},
+  {name:'Mistral AI',        x:7.8,y:3.8,r:16,color:'#10B981'},
+  {name:'开源项目群',         x:5.5,y:3.0,r:18,color:'#4A90A4'},
+];
+
+chart.setOption({
+  backgroundColor:'transparent',
+  tooltip:{
+    trigger:'item',
+    backgroundColor:'rgba(5,10,20,0.92)',
+    borderColor:'rgba(0,212,255,0.3)',
+    textStyle:{color:'#E8F4FD',fontSize:13},
+    formatter:p=>`<b>${p.data.name}</b><br>模型能力：${p.data.value[0]}<br>产品化程度：${p.data.value[1]}`
+  },
+  xAxis:{
+    type:'value',min:4,max:11,name:'模型能力（弱→强）',
+    nameLocation:'end',nameTextStyle:{color:'#4A90A4',fontSize:12},
+    axisLabel:{color:'#7ECFEF',fontSize:11},
+    splitLine:{lineStyle:{color:'rgba(0,212,255,0.08)'}},
+    axisLine:{lineStyle:{color:'rgba(0,212,255,0.20)'}},
+    splitNumber:7
+  },
+  yAxis:{
+    type:'value',min:2,max:11,name:'产品化程度（低→高）',
+    nameLocation:'end',nameTextStyle:{color:'#4A90A4',fontSize:12},
+    axisLabel:{color:'#7ECFEF',fontSize:11},
+    splitLine:{lineStyle:{color:'rgba(0,212,255,0.08)'}},
+    axisLine:{lineStyle:{color:'rgba(0,212,255,0.20)'}}
+  },
+  grid:{top:20,right:60,bottom:36,left:68},
+  // 四象限分割线
+  markLine:{
+    silent:true,
+    lineStyle:{color:'rgba(255,255,255,0.10)',type:'dashed'},
+  },
+  series:[{
+    type:'scatter',
+    data:data.map(d=>({
+      value:[d.x,d.y,d.r],
+      name:d.name,
+      symbolSize:d.r*1.5,
+      itemStyle:{color:d.color,opacity:0.85,borderColor:d.color,borderWidth:1},
+      label:{show:true,formatter:'{a}',color:'#E8F4FD',fontSize:11},
+    })),
+    emphasis:{focus:'self'},
+    label:{show:true,position:'right',formatter:p=>p.data.name,color:'#7ECFEF',fontSize:11.5},
+    markLine:{
+      silent:true,
+      symbol:['none','none'],
+      lineStyle:{color:'rgba(255,255,255,0.12)',type:'dashed',width:1},
+      data:[
+        [{xAxis:7.5},{xAxis:7.5}],
+        [{yAxis:6.5},{yAxis:6.5}]
+      ]
+    }
+  }]
+});
+</script>
+</body>
+</html>

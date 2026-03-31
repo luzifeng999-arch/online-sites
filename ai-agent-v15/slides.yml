@@ -1,0 +1,400 @@
+presentation:
+  title: "2025年全球 AI Agent 市场趋势报告"
+  subtitle: "从工具到同事——AI Agent 正在重塑每一个工作流"
+  mode: "professional"
+  total_slides: 10
+  output_dir: "output/ai-agent-v15"
+  style_theme:
+    palette: "F"  # Midnight Tech，--accent:#00D4FF，融资路演/AI前沿
+    tone: "深色科技"
+    rationale: "主题为AI Agent市场报告，受众企业中高层，深色系科技感，Palette F午夜深色科技匹配度最高"
+    layout_rules:
+      title_placement: "top-left-large"
+      title_repeat_rule: "NEVER"
+      max_text_columns: 2
+      slide_number_format: "X / 10"
+      brand_logo_rule: "FORBIDDEN"
+      header_zone:
+        top_padding: 36
+        eyebrow_style: "font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--accent)"
+        h2_style: "font-size:26px;font-weight:700;color:var(--text-primary)"
+        header_height: 72
+
+slides:
+  - index: 1
+    type: "cover"
+    layout: "Cover-D"
+    title: "2025年全球 AI Agent 市场趋势报告"
+    subtitle: "从工具到同事——AI Agent 正在重塑每一个工作流"
+    meta: "未来科技研究院 · 2025年3月"
+    text_side: "left"
+    text_density: "low"
+    chart_slide: false
+    images:
+      - role: "bg"
+        css_spec: "background-size:cover;background-position:center right"
+        mask_alpha: 0.50
+        prompt: "未来智能办公场景，透明全息AI助手界面漂浮在半空，人与AI协作，青蓝色光效粒子流，科技办公室，画面构图：视觉主体集中于右侧50%区域，左侧渐变至纯深色，无文字无数字，16:9横幅，低亮度"
+        output: "images/slide-01-bg.jpg"
+        aspect: "16:9"
+      - role: "content"
+        css_spec: "flex:2;height:580px;border-radius:12px;overflow:hidden;background-size:cover;background-position:center"
+        div_id: "cover-visual"
+        prompt: "未来AI机器人与人类握手合作，全息投影界面环绕，深蓝青色科技光效，精细高细节，主体填充画面，无文字无数字"
+        output: "images/slide-01-content.jpg"
+        aspect: "3:4"
+
+  - index: 2
+    type: "data"
+    layout: "Data-A"
+    title: "2025年全球AI Agent核心数据速览"
+    eyebrow: "MARKET DATA · 核心数据速览"
+    text_density: "high"
+    chart_slide: false
+    kpi_cards:
+      - label: "全球市场规模（2025E）"
+        value: "$472亿"
+        sub: "美元，年复合增长率 38.7%"
+        color: "c1"
+      - label: "年复合增长率 CAGR"
+        value: "38.7%"
+        sub: "2021–2027年持续高速增长"
+        color: "c2"
+      - label: "企业AI采用率"
+        value: "62%"
+        sub: "同比增长 +23个百分点"
+        color: "c1"
+      - label: "2027年预测规模"
+        value: "$1,270亿"
+        sub: "美元，6年增长24倍"
+        color: "c2"
+      - label: "全球活跃Agent数量"
+        value: "800万+"
+        sub: "个，覆盖主要行业场景"
+        color: "c1"
+      - label: "2024-25投资总额"
+        value: "$380亿"
+        sub: "美元，融资规模创历史新高"
+        color: "c2"
+    images:
+      - role: "bg"
+        css_spec: "background-size:cover"
+        mask_alpha: 0.82
+        prompt: "极深科技蓝底色，右上角青蓝色星云光晕，细密电路纹路底纹，无主体元素，低亮度，无文字无数字"
+        output: "images/slide-02-bg.jpg"
+        aspect: "16:9"
+
+  - index: 3
+    type: "chart"
+    layout: "Chart-B"
+    title: "市场规模七年增长趋势：从$52亿到$1,270亿"
+    eyebrow: "MARKET TREND · 规模增长趋势"
+    text_density: "high"
+    chart_slide: true
+    chart_type: "bar+line"
+    chart_data:
+      labels: ["2021", "2022", "2023", "2024", "2025E", "2026E", "2027E"]
+      bar_values: [52, 89, 158, 283, 472, 801, 1270]
+      line_values: [null, 71, 78, 79, 67, 70, 59]
+      unit: "亿美元 / %增长率"
+      data_source: "[来源: Gartner、IDC、a16z Research]"
+    images:
+      - role: "bg"
+        css_spec: "background-size:cover"
+        mask_alpha: 0.84
+        prompt: "极深蓝黑底色，细密平行水平扫描线，右上角微弱青色光晕，极简科技底纹，无主体，无文字无数字"
+        output: "images/slide-03-bg.jpg"
+        aspect: "16:9"
+
+  - index: 4
+    type: "content"
+    layout: "Content-A-G3"  # Gamma G-3 错落布局
+    title: "五大核心应用场景：代码开发领跑，客服销售紧随"
+    eyebrow: "MARKET LANDSCAPE · 应用场景分布"
+    text_density: "high"
+    chart_slide: false
+    content_count: 5
+    scenes:
+      - icon: "💻"
+        pct: "28%"
+        name: "代码生成与软件开发"
+        products: "GitHub Copilot、Cursor、CodeFlicker"
+        color: "c1"
+      - icon: "💬"
+        pct: "22%"
+        name: "客服与销售自动化"
+        products: "Salesforce Einstein、Intercom Fin"
+        color: "c2"
+      - icon: "📊"
+        pct: "19%"
+        name: "数据分析与商业智能"
+        products: "Julius AI、Paradigm、Shortcut"
+        color: "c1"
+      - icon: "✍️"
+        pct: "16%"
+        name: "内容创作与营销"
+        products: "Jasper、Copy.ai、Notion AI"
+        color: "c2"
+      - icon: "🔍"
+        pct: "15%"
+        name: "研究与知识管理"
+        products: "Perplexity、Mem、Elicit"
+        color: "c1"
+    images:
+      - role: "bg"
+        css_spec: "background-size:cover"
+        mask_alpha: 0.78
+        prompt: "极深科技蓝黑色背景，多个应用场景发光图标漂浮，代码屏幕、对话框、数据图表等元素，青蓝色光晕，无文字无数字"
+        output: "images/slide-04-bg.jpg"
+        aspect: "16:9"
+
+  - index: 5
+    type: "chart"
+    layout: "Chart-B"
+    title: "竞争格局四象限：强能力×高产品化双重维度解构"
+    eyebrow: "COMPETITION MAP · 竞争格局分析"
+    text_density: "high"
+    chart_slide: true
+    chart_type: "scatter"
+    chart_data:
+      quadrants:
+        - name: "OpenAI (GPT-4o)"
+          x: 9.5
+          y: 9.2
+          size: 60
+        - name: "Anthropic (Claude)"
+          x: 9.2
+          y: 8.8
+          size: 55
+        - name: "Google (Gemini)"
+          x: 8.8
+          y: 9.0
+          size: 58
+        - name: "Microsoft Copilot"
+          x: 7.2
+          y: 9.5
+          size: 70
+        - name: "Salesforce Einstein"
+          x: 6.8
+          y: 8.8
+          size: 50
+        - name: "Meta (LLaMA)"
+          x: 8.5
+          y: 4.2
+          size: 45
+        - name: "Mistral AI"
+          x: 7.8
+          y: 3.8
+          size: 35
+        - name: "开源项目群"
+          x: 5.5
+          y: 3.0
+          size: 40
+    images:
+      - role: "bg"
+        css_spec: "background-size:cover"
+        mask_alpha: 0.84
+        prompt: "极深蓝黑色背景，发光的坐标轴线条，青蓝色网格，科技仪表盘风格，无文字无数字"
+        output: "images/slide-05-bg.jpg"
+        aspect: "16:9"
+
+  - index: 6
+    type: "chart"
+    layout: "Chart-A"
+    title: "技术驱动力六维雷达：推理规划领跑，记忆个性化待升"
+    eyebrow: "TECH CAPABILITY · 技术能力评估"
+    text_density: "medium"
+    chart_slide: true
+    chart_type: "radar"
+    chart_data:
+      dimensions: ["多模态理解", "长上下文处理", "工具调用能力", "记忆与个性化", "推理与规划", "安全与对齐"]
+      values: [9.2, 8.8, 8.5, 7.2, 8.9, 7.5]
+    key_insights:
+      - label: "最强维度"
+        value: "多模态理解 9.2"
+      - label: "高速进步"
+        value: "推理规划 8.9"
+      - label: "待突破"
+        value: "记忆个性化 7.2"
+    images:
+      - role: "bg"
+        css_spec: "background-size:cover"
+        mask_alpha: 0.82
+        prompt: "极深蓝黑色背景，六边形蜘蛛网状发光线条，科技雷达扫描效果，青蓝色脉冲光晕，无文字无数字"
+        output: "images/slide-06-bg.jpg"
+        aspect: "16:9"
+
+  - index: 7
+    type: "chart"
+    layout: "Chart-B"
+    title: "企业落地七大挑战：幻觉可靠性与数据安全居前两位"
+    eyebrow: "ENTERPRISE INSIGHT · 落地挑战调研"
+    text_density: "high"
+    chart_slide: true
+    chart_type: "hbar"
+    chart_data:
+      labels: ["幻觉与可靠性问题", "数据安全与隐私合规", "与现有系统集成成本高", "员工接受度与培训", "ROI难以量化", "运行成本过高"]
+      values: [71, 68, 61, 53, 48, 44]
+      unit: "%"
+      note: "调研样本：1,200家企业，多选题"
+    images:
+      - role: "bg"
+        css_spec: "background-size:cover"
+        mask_alpha: 0.84
+        prompt: "极深蓝黑色背景，细密竖向扫描线，左侧微弱紫色渐变光晕，极简科技底纹，无主体，无文字无数字"
+        output: "images/slide-07-bg.jpg"
+        aspect: "16:9"
+
+  - index: 8
+    type: "content"
+    layout: "Content-B"
+    title: "三大关键预测：从协作者到AI经济体的进化路径"
+    eyebrow: "THREE-YEAR FORECAST · 2025–2027"
+    text_density: "high"
+    chart_slide: false
+    timeline:
+      - year: "2025"
+        theme: "从「助手」升级为「协作者」"
+        tag: "协作元年"
+        tag_color: "c1"
+        points:
+          - "多步骤自主任务完成率超80%，Agent真正接管复杂工作流，人工干预降至不足20%"
+          - "企业级Agent平台进入标准化阶段，部署成本较2024年下降60%，中小企业开始普及"
+          - "欧美监管框架相继落地，AI责任链正式确立，合规体系建设进入快车道"
+      - year: "2026"
+        theme: "多Agent协作网络成为新范式"
+        tag: "范式转移"
+        tag_color: "c2"
+        points:
+          - "MCP成为Agent通信行业标准，跨厂商互操作全面打通，Agent生态初步形成"
+          - "「Agent Ops」成为新的IT职能，专职Agent运维团队在500强企业中普及率超60%"
+          - "医疗/法律/金融垂直Agent大规模商用，相关岗位替代率超30%，新岗位同步涌现"
+      - year: "2027"
+        theme: "AI Agent经济体初步形成"
+        tag: "经济体"
+        tag_color: "c1"
+        points:
+          - "AI Agent完成的GDP贡献超$2万亿，成为继劳动力和资本之后的第三生产要素"
+          - "人类与Agent 1:3协作比例成为白领工作常态，人类专注创意决策，Agent处理执行"
+          - "Agent自主研发、自主创业的真实商业案例出现，引发伦理与法律深度讨论"
+    images:
+      - role: "bg"
+        css_spec: "background-size:cover;background-position:60% center"
+        mask_alpha: 0.65
+        prompt: "未来城市时间轴场景，2025年近未来办公，2026年多AI协作网络节点，2027年AI经济体宏观场景，青蓝紫色渐变，竖向时间线光效，无文字无数字"
+        output: "images/slide-08-bg.jpg"
+        aspect: "16:9"
+      - role: "content"
+        css_spec: "width:42%;height:100%;background-size:cover;background-position:center 30%"
+        div_id: "content-visual"
+        prompt: "三个时代的科技演进全景：近未来全息AI助手、多Agent协作网络、未来城市AI经济生态，纵向叙事，青蓝紫色光效，高细节，主体填充画面，无文字无数字"
+        output: "images/slide-08-content.jpg"
+        aspect: "3:4"
+
+  - index: 9
+    type: "chart"
+    layout: "Chart-C"
+    title: "2024-2025年主要融资事件：xAI领跑$60亿估值制高点"
+    eyebrow: "INVESTMENT MAP · 融资事件一览"
+    text_density: "high"
+    chart_slide: true
+    chart_type: "bubble"
+    chart_data:
+      companies:
+        - name: "xAI"
+          round: "C"
+          amount: 60
+          x: 9
+          y: 9
+        - name: "Anthropic"
+          round: "E"
+          amount: 40
+          x: 8
+          y: 8.5
+        - name: "Mistral AI"
+          round: "B"
+          amount: 6.4
+          x: 6
+          y: 6
+        - name: "Cohere"
+          round: "D"
+          amount: 5
+          x: 5
+          y: 7
+        - name: "Perplexity"
+          round: "C"
+          amount: 5
+          x: 7
+          y: 5
+        - name: "Cursor"
+          round: "B"
+          amount: 1
+          x: 6
+          y: 4
+      note: "气泡大小代表融资金额"
+    side_stats:
+      left:
+        - value: "$60亿"
+          label: "xAI单轮最高"
+        - value: "Series E"
+          label: "Anthropic轮次最高"
+      right:
+        - value: "$380亿"
+          label: "总投资规模"
+        - value: "a16z领投"
+          label: "最活跃机构"
+    images:
+      - role: "bg"
+        css_spec: "background-size:cover"
+        mask_alpha: 0.84
+        prompt: "极深蓝黑色背景，散落的发光圆形节点，投资网络连接线，青蓝紫色光晕，金融科技感，无文字无数字"
+        output: "images/slide-09-bg.jpg"
+        aspect: "16:9"
+
+  - index: 10
+    type: "closing"
+    layout: "Closing-A"
+    title: "抓住18个月窗口期：现在行动，定义未来竞争格局"
+    eyebrow: "CONCLUSION & ACTION PLAN · 结论与行动建议"
+    text_density: "high"
+    chart_slide: false
+    conclusions:
+      - num: "1"
+        text: "AI Agent已从「技术实验」进入「商业规模化」，窗口期只剩18–24个月，先行者将建立难以复制的数据飞轮与工作流壁垒"
+      - num: "2"
+        text: "竞争护城河正从「模型能力」转向「工作流深度集成」，能力平权时代，与业务的集成深度决定最终胜负"
+      - num: "3"
+        text: "中国市场本土化Agent产品将在2026年迎来爆发，政策红利+场景优势+工程能力三重催化，不可错过"
+    cta: "现在行动，领先者的优势将在2026年变成不可逾越的壁垒——等待的代价是永久丧失生态位"
+    actions:
+      - num: "①"
+        text: "立即建立AI Agent试点，优先选择数据分析和客服场景，6周内验证ROI，形成可复制方法论"
+      - num: "②"
+        text: "组建跨职能「AI Agent工作组」，纳入业务、技术、法务三方，打通决策链路，避免孤岛推进"
+      - num: "③"
+        text: "升级数据基础设施，确保Agent有高质量、结构化、可追溯的数据可用，这是Agent效能的底层"
+      - num: "④"
+        text: "制定AI使用规范和伦理准则，在监管落地前主动合规，建立信任资产和行业口碑"
+      - num: "⑤"
+        text: "与上下游合作伙伴探索Agent互操作标准，率先占据生态枢纽位，构建长期竞争壁垒"
+    mini_stats:
+      - value: "18月"
+        label: "窗口期剩余"
+        color: "c1"
+      - value: "$1.27T"
+        label: "2027年市场"
+        color: "c2"
+      - value: "62%"
+        label: "企业已采用"
+        color: "c1"
+      - value: "800万+"
+        label: "活跃Agent"
+        color: "c2"
+    footer: "未来科技研究院 · futuretech-research.com · 2025年3月"
+    images:
+      - role: "bg"
+        css_spec: "background-size:cover"
+        mask_alpha: 0.75
+        prompt: "未来商业城市全景，高楼大厦顶层办公室俯瞰，青蓝色科技光效，火箭发射轨迹和目标靶心隐喻，成功感，无文字无数字"
+        output: "images/slide-10-bg.jpg"
+        aspect: "16:9"

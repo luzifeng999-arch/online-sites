@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>五大场景 — AI Agent 市场趋势报告</title>
+<style>
+:root{
+  --bg:#050A14;--container:#0D1B2A;--container-2:#112233;
+  --accent:#00D4FF;--accent-soft:rgba(0,212,255,0.12);
+  --c1:#00D4FF;--c1-soft:rgba(0,212,255,0.12);
+  --c2:#A855F7;--c2-soft:rgba(168,85,247,0.12);
+  --text-primary:#E8F4FD;--text-secondary:#7ECFEF;--text-muted:#4A90A4;
+  --border:rgba(0,212,255,0.15);--radius:8px;--font:'Inter','PingFang SC',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  width:1280px;height:720px;overflow:hidden;
+  font-family:var(--font);background-color:var(--bg);
+  background-image:
+    radial-gradient(ellipse 55% 70% at 88% -10%,rgba(0,170,255,0.20) 0%,transparent 60%),
+    linear-gradient(rgba(5,10,20,0.78),rgba(5,10,20,0.78)),
+    url('images/slide-04-bg.jpg');
+  background-size:auto,auto,cover;
+  position:relative;
+}
+body::before{
+  content:'';position:absolute;top:-60px;right:-60px;width:260px;height:260px;border-radius:50%;
+  background:radial-gradient(circle,rgba(0,212,255,0.18) 0%,transparent 70%);
+  pointer-events:none;z-index:0;
+}
+
+/* 页头 */
+.page-header{position:absolute;top:36px;left:52px;right:52px;height:72px;z-index:1;}
+.ph-eyebrow{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:6px;}
+.ph-title{font-size:26px;font-weight:700;color:var(--text-primary);line-height:1.2;letter-spacing:-0.3px;}
+.ph-line{width:48px;height:2px;background:var(--accent);margin-top:6px;border-radius:1px;}
+
+/* ── Gamma G-3 错落布局 ── */
+.stagger-grid{
+  position:absolute;top:120px;left:52px;right:52px;bottom:48px;
+  display:flex;gap:16px;align-items:flex-start;
+}
+.sc-col{display:flex;flex-direction:column;flex:1;}
+/* 偶数列下沉 */
+.sc-col:nth-child(even){margin-top:52px;}
+.sc-pct{
+  font-size:36px;font-weight:900;line-height:1;
+  margin-bottom:8px;letter-spacing:-1px;
+}
+.sc-col.c1 .sc-pct{color:var(--c1);}
+.sc-col.c2 .sc-pct{color:var(--c2);}
+.sc-card{
+  background:rgba(255,255,255,0.05);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,0.10);
+  border-radius:var(--radius);
+  padding:16px 14px;
+  display:flex;flex-direction:column;gap:8px;
+}
+.sc-col.c1 .sc-card{border-top:2px solid var(--c1);}
+.sc-col.c2 .sc-card{border-top:2px solid var(--c2);}
+.sc-icon{font-size:26px;line-height:1;}
+.sc-name{font-size:13px;font-weight:700;color:var(--text-primary);line-height:1.3;}
+.sc-products{font-size:11px;color:var(--text-muted);line-height:1.5;}
+/* 进度条 */
+.sc-bar-wrap{height:3px;background:rgba(0,212,255,0.10);border-radius:2px;margin-top:4px;}
+.sc-bar{height:100%;border-radius:2px;}
+.sc-col.c1 .sc-bar{background:var(--c1);}
+.sc-col.c2 .sc-bar{background:var(--c2);}
+
+/* 底部洞察条 */
+.insight-bar{
+  position:absolute;bottom:10px;left:52px;right:52px;
+  background:rgba(0,0,0,0.40);backdrop-filter:blur(12px);
+  border:1px solid rgba(168,85,247,0.28);border-radius:10px;
+  padding:10px 20px;font-size:13.5px;color:rgba(200,220,255,0.60);line-height:1.5;
+}
+.hl{color:var(--c1);font-weight:700;}
+.hl2{color:var(--c2);font-weight:700;}
+
+.slide-num{position:absolute;right:24px;bottom:14px;font-size:12px;color:var(--text-muted);z-index:2;}
+
+[contenteditable]:hover{outline:1px dashed rgba(0,212,255,0.4);cursor:text;}
+[contenteditable]:focus{outline:1px solid var(--accent);background:rgba(0,212,255,0.05);border-radius:2px;}
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="ph-eyebrow">MARKET LANDSCAPE · 应用场景分布</div>
+  <div class="ph-title" contenteditable="true">五大核心应用场景：代码开发领跑 28%，客服销售紧随 22%</div>
+  <div class="ph-line"></div>
+</div>
+
+<div class="stagger-grid">
+  <!-- 场景1 — 代码生成 28% c1 高位 -->
+  <div class="sc-col c1">
+    <div class="sc-pct" contenteditable="true">28%</div>
+    <div class="sc-card">
+      <div class="sc-icon">💻</div>
+      <div class="sc-name" contenteditable="true">代码生成与软件开发</div>
+      <div class="sc-products" contenteditable="true">GitHub Copilot、Cursor、CodeFlicker</div>
+      <div class="sc-bar-wrap"><div class="sc-bar" style="width:28%"></div></div>
+    </div>
+  </div>
+  <!-- 场景2 — 客服销售 22% c2 低位 -->
+  <div class="sc-col c2">
+    <div class="sc-pct" contenteditable="true">22%</div>
+    <div class="sc-card">
+      <div class="sc-icon">💬</div>
+      <div class="sc-name" contenteditable="true">客服与销售自动化</div>
+      <div class="sc-products" contenteditable="true">Salesforce Einstein、Intercom Fin</div>
+      <div class="sc-bar-wrap"><div class="sc-bar" style="width:22%"></div></div>
+    </div>
+  </div>
+  <!-- 场景3 — 数据分析 19% c1 高位 -->
+  <div class="sc-col c1">
+    <div class="sc-pct" contenteditable="true">19%</div>
+    <div class="sc-card">
+      <div class="sc-icon">📊</div>
+      <div class="sc-name" contenteditable="true">数据分析与商业智能</div>
+      <div class="sc-products" contenteditable="true">Julius AI、Paradigm、Shortcut</div>
+      <div class="sc-bar-wrap"><div class="sc-bar" style="width:19%"></div></div>
+    </div>
+  </div>
+  <!-- 场景4 — 内容创作 16% c2 低位 -->
+  <div class="sc-col c2">
+    <div class="sc-pct" contenteditable="true">16%</div>
+    <div class="sc-card">
+      <div class="sc-icon">✍️</div>
+      <div class="sc-name" contenteditable="true">内容创作与营销</div>
+      <div class="sc-products" contenteditable="true">Jasper、Copy.ai、Notion AI</div>
+      <div class="sc-bar-wrap"><div class="sc-bar" style="width:16%"></div></div>
+    </div>
+  </div>
+  <!-- 场景5 — 研究知识 15% c1 高位 -->
+  <div class="sc-col c1">
+    <div class="sc-pct" contenteditable="true">15%</div>
+    <div class="sc-card">
+      <div class="sc-icon">🔍</div>
+      <div class="sc-name" contenteditable="true">研究与知识管理</div>
+      <div class="sc-products" contenteditable="true">Perplexity、Mem、Elicit</div>
+      <div class="sc-bar-wrap"><div class="sc-bar" style="width:15%"></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="insight-bar" contenteditable="true">
+  格局解读：<span class="hl">代码+客服</span>合计占据 50% 市场，技术可替代性高、ROI清晰是关键；<span class="hl2">研究与知识管理</span>增速最快，2026年有望跃升至第三位
+</div>
+
+<div class="slide-num" contenteditable="false">4 / 10</div>
+</body>
+</html>

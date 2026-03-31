@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2025年全球 AI Agent 市场趋势报告</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:100%;height:100%;background:#000;font-family:'Inter','PingFang SC',sans-serif;overflow:hidden;}
+
+/* ── 顶部进度条 ── */
+#progress-bar{
+  position:fixed;top:0;left:0;right:0;height:2px;z-index:200;
+  background:rgba(0,212,255,0.12);
+}
+#progress-fill{height:100%;background:linear-gradient(90deg,#00D4FF,#A855F7);transition:width 0.28s ease;}
+
+/* ── 演示舞台 ── */
+#stage{
+  position:fixed;top:2px;left:0;right:0;bottom:64px;
+  display:flex;align-items:center;justify-content:center;
+  background:#000;
+  overflow:hidden;
+}
+/* 双缓冲 iframe */
+.slide-frame{
+  position:absolute;
+  width:1280px;height:720px;
+  border:none;
+  transform-origin:center center;
+  transition:opacity 0.28s ease;
+  background:#050A14;
+}
+#frame-a{opacity:1;z-index:2;}
+#frame-b{opacity:0;z-index:1;}
+
+/* ── 底部控制栏 ── */
+#controls{
+  position:fixed;bottom:0;left:0;right:0;height:64px;
+  background:rgba(5,10,20,0.96);backdrop-filter:blur(20px);
+  border-top:1px solid rgba(0,212,255,0.12);
+  display:flex;align-items:center;gap:16px;padding:0 20px;
+  z-index:100;
+}
+/* 导航按钮 */
+.nav-btn{
+  width:36px;height:36px;border-radius:8px;border:1px solid rgba(0,212,255,0.2);
+  background:rgba(0,212,255,0.06);color:#7ECFEF;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:16px;
+  flex-shrink:0;transition:all 0.15s;
+}
+.nav-btn:hover{background:rgba(0,212,255,0.15);border-color:rgba(0,212,255,0.4);color:#E8F4FD;}
+.nav-btn:disabled{opacity:0.3;cursor:not-allowed;}
+
+/* 幻灯片计数 */
+#slide-count{font-size:13px;color:#7ECFEF;min-width:56px;text-align:center;}
+
+/* 缩略图轨道 */
+#thumb-track{
+  flex:1;display:flex;gap:6px;align-items:center;overflow-x:auto;
+  padding:4px 0;scrollbar-width:thin;scrollbar-color:rgba(0,212,255,0.2) transparent;
+}
+#thumb-track::-webkit-scrollbar{height:3px;}
+#thumb-track::-webkit-scrollbar-thumb{background:rgba(0,212,255,0.2);border-radius:2px;}
+.thumb{
+  flex-shrink:0;width:96px;height:54px;border-radius:5px;cursor:pointer;
+  border:2px solid transparent;overflow:hidden;position:relative;
+  background:#0D1B2A;transition:border-color 0.15s;
+}
+.thumb.active{border-color:#00D4FF;box-shadow:0 0 8px rgba(0,212,255,0.35);}
+.thumb:hover:not(.active){border-color:rgba(0,212,255,0.35);}
+.thumb iframe{
+  width:1280px;height:720px;
+  transform-origin:top left;
+  transform:scale(0.075);
+  pointer-events:none;border:none;
+}
+.thumb-num{
+  position:absolute;bottom:2px;right:4px;
+  font-size:8.5px;color:rgba(200,220,255,0.45);
+  pointer-events:none;
+}
+
+/* 背景色切换器（5档） */
+#bg-switcher{display:flex;gap:6px;align-items:center;flex-shrink:0;}
+.bg-dot{
+  width:16px;height:16px;border-radius:50%;cursor:pointer;
+  border:2px solid transparent;transition:border-color 0.15s;
+}
+.bg-dot:hover{border-color:rgba(255,255,255,0.5);}
+.bg-dot.active{border-color:#00D4FF;}
+
+/* 全屏按钮 */
+#fullscreen-btn{
+  width:36px;height:36px;border-radius:8px;border:1px solid rgba(0,212,255,0.2);
+  background:rgba(0,212,255,0.06);color:#7ECFEF;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:14px;
+  flex-shrink:0;transition:all 0.15s;
+}
+#fullscreen-btn:hover{background:rgba(0,212,255,0.15);border-color:rgba(0,212,255,0.4);}
+
+/* 模式标签 */
+.mode-badge{
+  font-size:10px;letter-spacing:2px;text-transform:uppercase;
+  color:#00D4FF;background:rgba(0,212,255,0.10);
+  border:1px solid rgba(0,212,255,0.20);border-radius:4px;
+  padding:3px 8px;flex-shrink:0;
+}
+
+/* 键盘提示 */
+#kbd-hint{font-size:10.5px;color:rgba(200,220,255,0.28);flex-shrink:0;white-space:nowrap;}
+</style>
+</head>
+<body>
+
+<!-- 进度条 -->
+<div id="progress-bar"><div id="progress-fill"></div></div>
+
+<!-- 演示舞台 — 双缓冲 iframe -->
+<div id="stage">
+  <iframe id="frame-a" class="slide-frame" src="slide-01.html" scrolling="no"></iframe>
+  <iframe id="frame-b" class="slide-frame" src="" scrolling="no"></iframe>
+</div>
+
+<!-- 底部控制栏 -->
+<div id="controls">
+  <button class="nav-btn" id="btn-prev" title="上一页 ←" disabled>&#8592;</button>
+  <div id="slide-count">1 / 10</div>
+  <button class="nav-btn" id="btn-next" title="下一页 →">&#8594;</button>
+
+  <!-- 缩略图轨道 -->
+  <div id="thumb-track"></div>
+
+  <!-- 背景色切换 -->
+  <div id="bg-switcher">
+    <div class="bg-dot active" style="background:#000" data-bg="#000" title="纯黑"></div>
+    <div class="bg-dot" style="background:#111" data-bg="#111" title="深灰"></div>
+    <div class="bg-dot" style="background:#1a1a2e" data-bg="#1a1a2e" title="深蓝"></div>
+    <div class="bg-dot" style="background:#2a2a2a" data-bg="#2a2a2a" title="中灰"></div>
+    <div class="bg-dot" style="background:linear-gradient(45deg,#555 25%,#888 25%,#888 50%,#555 50%,#555 75%,#888 75%,#888)" data-bg="checker" title="棋盘格"></div>
+  </div>
+
+  <button id="fullscreen-btn" title="全屏">⛶</button>
+  <div class="mode-badge">PROFESSIONAL</div>
+  <div id="kbd-hint">← → 翻页 &nbsp;·&nbsp; F 全屏</div>
+</div>
+
+<script>
+const TOTAL = 10;
+const FILES = Array.from({length:TOTAL},(_,i)=>`slide-${String(i+1).padStart(2,'0')}.html`);
+
+let cur = 0;              // 当前显示的索引
+let active = 'a';         // 当前前景 frame id
+let transitioning = false;
+
+const frameA = document.getElementById('frame-a');
+const frameB = document.getElementById('frame-b');
+const btnPrev= document.getElementById('btn-prev');
+const btnNext= document.getElementById('btn-next');
+const cntEl  = document.getElementById('slide-count');
+const prog   = document.getElementById('progress-fill');
+const stage  = document.getElementById('stage');
+const track  = document.getElementById('thumb-track');
+
+function getFront(){return active==='a'?frameA:frameB;}
+function getBack() {return active==='a'?frameB:frameA;}
+
+/* 缩放 1280×720 适配舞台 */
+function scaleFrames(){
+  const sw=stage.clientWidth, sh=stage.clientHeight;
+  const scale=Math.min(sw/1280, sh/720);
+  [frameA,frameB].forEach(f=>{f.style.transform=`scale(${scale})`;});
+}
+scaleFrames();
+window.addEventListener('resize',scaleFrames);
+
+/* ── 双缓冲切换 ── */
+function goTo(n,direction){
+  if(transitioning||n===cur||n<0||n>=TOTAL) return;
+  transitioning=true;
+
+  const front=getFront();
+  const back =getBack();
+
+  // 加载目标页到后景
+  back.style.opacity='0';
+  back.style.zIndex='1';
+  back.src=FILES[n];
+
+  back.onload=()=>{
+    // 交叉淡入
+    back.style.zIndex='2';
+    back.style.opacity='1';
+    front.style.opacity='0';
+    // 切换 active
+    active=(active==='a')?'b':'a';
+    cur=n;
+    updateUI();
+    // 400ms 后清除旧 frame
+    setTimeout(()=>{
+      front.style.zIndex='1';
+      transitioning=false;
+    },320);
+  };
+}
+
+function updateUI(){
+  cntEl.textContent=`${cur+1} / ${TOTAL}`;
+  prog.style.width=`${(cur+1)/TOTAL*100}%`;
+  btnPrev.disabled=(cur===0);
+  btnNext.disabled=(cur===TOTAL-1);
+  // 更新缩略图激活态
+  document.querySelectorAll('.thumb').forEach((t,i)=>{
+    t.classList.toggle('active',i===cur);
+    if(i===cur) t.scrollIntoView({behavior:'smooth',inline:'nearest',block:'nearest'});
+  });
+}
+
+btnPrev.addEventListener('click',()=>goTo(cur-1,-1));
+btnNext.addEventListener('click',()=>goTo(cur+1,1));
+
+/* 键盘导航 */
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='ArrowDown'||e.key===' ') {e.preventDefault();goTo(cur+1,1);}
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp') {e.preventDefault();goTo(cur-1,-1);}
+  if(e.key==='f'||e.key==='F') toggleFullscreen();
+  if(e.key>='1'&&e.key<='9') goTo(+e.key-1,1);
+  if(e.key==='0') goTo(9,1);
+});
+
+/* 全屏 */
+function toggleFullscreen(){
+  if(!document.fullscreenElement){document.documentElement.requestFullscreen&&document.documentElement.requestFullscreen();}
+  else{document.exitFullscreen&&document.exitFullscreen();}
+}
+document.getElementById('fullscreen-btn').addEventListener('click',toggleFullscreen);
+
+/* 背景色切换 */
+document.querySelectorAll('.bg-dot').forEach(dot=>{
+  dot.addEventListener('click',()=>{
+    document.querySelectorAll('.bg-dot').forEach(d=>d.classList.remove('active'));
+    dot.classList.add('active');
+    const bg=dot.dataset.bg;
+    if(bg==='checker'){
+      stage.style.background='repeating-conic-gradient(#555 0% 25%,#888 0% 50%) 0 0/20px 20px';
+    } else {
+      stage.style.background=bg;
+    }
+  });
+});
+
+/* 生成缩略图 */
+FILES.forEach((f,i)=>{
+  const thumb=document.createElement('div');
+  thumb.className='thumb'+(i===0?' active':'');
+  thumb.title=`幻灯片 ${i+1}`;
+  const iframe=document.createElement('iframe');
+  iframe.src=f;
+  iframe.scrolling='no';
+  const num=document.createElement('div');
+  num.className='thumb-num';
+  num.textContent=i+1;
+  thumb.appendChild(iframe);
+  thumb.appendChild(num);
+  thumb.addEventListener('click',()=>goTo(i,i>cur?1:-1));
+  track.appendChild(thumb);
+});
+
+// 初始状态
+updateUI();
+</script>
+</body>
+</html>

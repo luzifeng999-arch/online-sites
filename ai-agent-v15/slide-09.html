@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>融资事件 — AI Agent 市场趋势报告</title>
+<style>
+:root{
+  --bg:#050A14;--container:#0D1B2A;
+  --accent:#00D4FF;--c1:#00D4FF;--c2:#A855F7;
+  --text-primary:#E8F4FD;--text-secondary:#7ECFEF;--text-muted:#4A90A4;
+  --border:rgba(0,212,255,0.15);--radius:8px;--font:'Inter','PingFang SC',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  width:1280px;height:720px;overflow:hidden;
+  font-family:var(--font);background-color:var(--bg);
+  background-image:
+    radial-gradient(ellipse 55% 70% at 88% -10%,rgba(0,170,255,0.20) 0%,transparent 60%),
+    linear-gradient(rgba(5,10,20,0.84),rgba(5,10,20,0.84)),
+    url('images/slide-09-bg.jpg');
+  background-size:auto,auto,cover;
+  position:relative;
+}
+body::before{
+  content:'';position:absolute;top:-60px;right:-60px;width:260px;height:260px;border-radius:50%;
+  background:radial-gradient(circle,rgba(0,212,255,0.18) 0%,transparent 70%);
+  pointer-events:none;z-index:0;
+}
+
+/* 页头 */
+.page-header{position:absolute;top:36px;left:52px;right:52px;height:72px;z-index:1;}
+.ph-eyebrow{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:6px;}
+.ph-title{font-size:26px;font-weight:700;color:var(--text-primary);line-height:1.2;letter-spacing:-0.3px;}
+.ph-line{width:48px;height:2px;background:var(--accent);margin-top:6px;border-radius:1px;}
+
+/* Chart-C 图表居中+两侧注释 */
+.body-row{position:absolute;top:120px;left:52px;right:52px;bottom:50px;display:flex;gap:16px;align-items:stretch;z-index:1;}
+.side-cards{
+  width:200px;flex-shrink:0;
+  display:flex;flex-direction:column;justify-content:space-between;gap:10px;
+}
+.sc{
+  flex:1;
+  background:rgba(255,255,255,0.05);backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,0.10);border-radius:var(--radius);
+  padding:14px 16px;
+  display:flex;flex-direction:column;justify-content:center;gap:5px;
+}
+.sc.c1{border-top:2px solid var(--c1);}
+.sc.c2{border-top:2px solid var(--c2);}
+.sc-val{font-size:24px;font-weight:900;line-height:1;}
+.sc.c1 .sc-val{color:var(--c1);}
+.sc.c2 .sc-val{color:var(--c2);}
+.sc-lbl{font-size:11.5px;color:var(--text-secondary);}
+
+#chart-container{flex:1;min-width:0;}
+
+/* 洞察条 */
+.insight-bar{
+  position:absolute;bottom:10px;left:52px;right:52px;
+  background:rgba(0,0,0,0.40);backdrop-filter:blur(12px);
+  border:1px solid rgba(168,85,247,0.28);border-radius:10px;
+  padding:10px 20px;font-size:13px;color:rgba(200,220,255,0.60);line-height:1.5;
+}
+.hl{color:var(--c1);font-weight:700;}
+.hl2{color:var(--c2);font-weight:700;}
+
+.slide-num{position:absolute;right:24px;bottom:14px;font-size:12px;color:var(--text-muted);z-index:2;}
+[contenteditable]:hover{outline:1px dashed rgba(0,212,255,0.4);cursor:text;}
+[contenteditable]:focus{outline:1px solid var(--accent);background:rgba(0,212,255,0.05);border-radius:2px;}
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="ph-eyebrow">INVESTMENT MAP · 融资事件一览</div>
+  <div class="ph-title" contenteditable="true">2024–2025年主要融资事件：xAI单轮$60亿领跑，总规模$380亿</div>
+  <div class="ph-line"></div>
+</div>
+
+<div class="body-row">
+  <!-- 左侧注释 -->
+  <div class="side-cards">
+    <div class="sc c1">
+      <div class="sc-val" contenteditable="true">$60亿</div>
+      <div class="sc-lbl" contenteditable="true">xAI 单轮最高融资</div>
+    </div>
+    <div class="sc c2">
+      <div class="sc-val" contenteditable="true">Series E</div>
+      <div class="sc-lbl" contenteditable="true">Anthropic 融资轮次最高</div>
+    </div>
+  </div>
+
+  <!-- 中间气泡图 -->
+  <div id="chart-container"></div>
+
+  <!-- 右侧注释 -->
+  <div class="side-cards">
+    <div class="sc c1">
+      <div class="sc-val" contenteditable="true">$380亿</div>
+      <div class="sc-lbl" contenteditable="true">2024–25年总投资规模</div>
+    </div>
+    <div class="sc c2">
+      <div class="sc-val" contenteditable="true">a16z</div>
+      <div class="sc-lbl" contenteditable="true">最活跃投资机构，领投5轮</div>
+    </div>
+  </div>
+</div>
+
+<div class="insight-bar" contenteditable="true">
+  资本格局：<span class="hl">xAI / Anthropic / Google DeepMind</span> 三强占据 85% 融资份额，头部集中度极高；<span class="hl2">垂直Agent</span>（Cursor、Perplexity）正在成为下一个融资热点，预计2025下半年创下新高
+</div>
+<div class="slide-num" contenteditable="false">9 / 10</div>
+
+<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+<script>
+const chart = echarts.init(document.getElementById('chart-container'));
+const raw = [
+  {name:'xAI',          round:'C',  amount:60,  x:9,  y:9,   color:'#00D4FF'},
+  {name:'Anthropic',    round:'E',  amount:40,  x:8,  y:8.5, color:'#00D4FF'},
+  {name:'Google\nGemini',round:'—', amount:35,  x:8.8,y:9.0, color:'#7ECFEF'},
+  {name:'Mistral AI',   round:'B',  amount:6.4, x:6,  y:6,   color:'#A855F7'},
+  {name:'Cohere',       round:'D',  amount:5,   x:5,  y:7,   color:'#A855F7'},
+  {name:'Perplexity',   round:'C',  amount:5,   x:7,  y:5,   color:'#A855F7'},
+  {name:'Cursor',       round:'B',  amount:1,   x:6,  y:4,   color:'#10B981'},
+];
+
+chart.setOption({
+  backgroundColor:'transparent',
+  tooltip:{
+    trigger:'item',
+    backgroundColor:'rgba(5,10,20,0.92)',borderColor:'rgba(0,212,255,0.3)',
+    textStyle:{color:'#E8F4FD'},
+    formatter:p=>`<b>${p.data.name.replace('\n',' ')}</b><br>轮次：${p.data.round}<br>融资：$${p.data.amount}亿`
+  },
+  xAxis:{
+    type:'value',min:4,max:10,name:'技术实力',
+    nameLocation:'end',nameTextStyle:{color:'#4A90A4',fontSize:11},
+    axisLabel:{color:'#7ECFEF',fontSize:11},
+    splitLine:{lineStyle:{color:'rgba(0,212,255,0.08)'}},
+    axisLine:{lineStyle:{color:'rgba(0,212,255,0.18)'}}
+  },
+  yAxis:{
+    type:'value',min:3,max:10,name:'市场影响力',
+    nameLocation:'end',nameTextStyle:{color:'#4A90A4',fontSize:11},
+    axisLabel:{color:'#7ECFEF',fontSize:11},
+    splitLine:{lineStyle:{color:'rgba(0,212,255,0.08)'}},
+    axisLine:{lineStyle:{color:'rgba(0,212,255,0.18)'}}
+  },
+  grid:{top:20,right:50,bottom:36,left:56},
+  series:[{
+    type:'scatter',
+    data:raw.map(d=>({
+      value:[d.x,d.y,d.amount],
+      name:d.name,round:d.round,amount:d.amount,
+      symbolSize:Math.sqrt(d.amount)*7+8,
+      itemStyle:{color:d.color,opacity:0.82,borderColor:d.color,borderWidth:1},
+    })),
+    label:{
+      show:true,position:'right',
+      formatter:p=>p.data.name.replace('\n',' '),
+      color:'#7ECFEF',fontSize:11.5
+    }
+  }]
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>技术雷达 — AI Agent 市场趋势报告</title>
+<style>
+:root{
+  --bg:#050A14;--container:#0D1B2A;
+  --accent:#00D4FF;--c1:#00D4FF;--c2:#A855F7;
+  --text-primary:#E8F4FD;--text-secondary:#7ECFEF;--text-muted:#4A90A4;
+  --border:rgba(0,212,255,0.15);--radius:8px;--font:'Inter','PingFang SC',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  width:1280px;height:720px;overflow:hidden;
+  font-family:var(--font);background-color:var(--bg);
+  background-image:
+    radial-gradient(ellipse 55% 70% at 88% -10%,rgba(0,170,255,0.20) 0%,transparent 60%),
+    linear-gradient(rgba(5,10,20,0.82),rgba(5,10,20,0.82)),
+    url('images/slide-06-bg.jpg');
+  background-size:auto,auto,cover;
+  position:relative;
+}
+body::before{
+  content:'';position:absolute;top:-60px;right:-60px;width:260px;height:260px;border-radius:50%;
+  background:radial-gradient(circle,rgba(0,212,255,0.18) 0%,transparent 70%);
+  pointer-events:none;z-index:0;
+}
+
+/* 页头 */
+.page-header{position:absolute;top:36px;left:52px;right:52px;height:72px;z-index:1;}
+.ph-eyebrow{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:6px;}
+.ph-title{font-size:26px;font-weight:700;color:var(--text-primary);line-height:1.2;letter-spacing:-0.3px;}
+.ph-line{width:48px;height:2px;background:var(--accent);margin-top:6px;border-radius:1px;}
+
+/* Chart-A 左文右图 40/60 */
+.body-row{position:absolute;top:120px;left:52px;right:52px;bottom:50px;display:flex;gap:24px;z-index:1;}
+.left-text{
+  width:280px;flex-shrink:0;
+  display:flex;flex-direction:column;justify-content:space-between;
+  gap:0;
+}
+.left-title{font-size:14px;font-weight:700;color:var(--text-secondary);margin-bottom:12px;}
+.insight-cards{display:flex;flex-direction:column;gap:8px;}
+.ic{
+  background:rgba(255,255,255,0.05);backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,0.10);border-radius:var(--radius);
+  padding:12px 14px;
+}
+.ic-label{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
+.ic-value{font-size:20px;font-weight:800;color:var(--c1);}
+.ic.c2 .ic-value{color:var(--c2);}
+.ic-desc{font-size:12px;color:var(--text-secondary);line-height:1.4;margin-top:3px;}
+
+#chart-container{flex:1;min-width:0;}
+
+.insight-bar{
+  position:absolute;bottom:10px;left:52px;right:52px;
+  background:rgba(0,0,0,0.40);backdrop-filter:blur(12px);
+  border:1px solid rgba(168,85,247,0.28);border-radius:10px;
+  padding:10px 20px;font-size:13px;color:rgba(200,220,255,0.60);line-height:1.5;
+}
+.hl{color:var(--c1);font-weight:700;}
+.hl2{color:var(--c2);font-weight:700;}
+
+.slide-num{position:absolute;right:24px;bottom:14px;font-size:12px;color:var(--text-muted);z-index:2;}
+[contenteditable]:hover{outline:1px dashed rgba(0,212,255,0.4);cursor:text;}
+[contenteditable]:focus{outline:1px solid var(--accent);background:rgba(0,212,255,0.05);border-radius:2px;}
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="ph-eyebrow">TECH CAPABILITY · 技术能力评估</div>
+  <div class="ph-title" contenteditable="true">技术驱动力六维雷达：推理规划领跑，记忆个性化仍是最大短板</div>
+  <div class="ph-line"></div>
+</div>
+
+<div class="body-row">
+  <div class="left-text">
+    <div>
+      <div class="left-title">能力评分总览（满分10）</div>
+      <div class="insight-cards">
+        <div class="ic">
+          <div class="ic-label">最强维度</div>
+          <div class="ic-value" contenteditable="true">多模态 9.2</div>
+          <div class="ic-desc" contenteditable="true">视觉+语音+文字三模态融合已达行业峰值</div>
+        </div>
+        <div class="ic">
+          <div class="ic-label">高速进步</div>
+          <div class="ic-value" contenteditable="true">推理规划 8.9</div>
+          <div class="ic-desc" contenteditable="true">Chain-of-Thought 突破，复杂任务自主规划能力大幅提升</div>
+        </div>
+        <div class="ic c2">
+          <div class="ic-label">核心瓶颈</div>
+          <div class="ic-value" contenteditable="true">记忆个性化 7.2</div>
+          <div class="ic-desc" contenteditable="true">长期记忆与用户偏好适配仍是2025年最大技术缺口</div>
+        </div>
+        <div class="ic c2">
+          <div class="ic-label">待突破</div>
+          <div class="ic-value" contenteditable="true">安全对齐 7.5</div>
+          <div class="ic-desc" contenteditable="true">监管压力下安全评分将是2026年部署的关键门槛</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="chart-container"></div>
+</div>
+
+<div class="insight-bar" contenteditable="true">
+  技术判断：<span class="hl">多模态+推理规划</span>（9.2/8.9分）形成「认知双引擎」，驱动复杂自主任务；<span class="hl2">记忆个性化</span>（7.2分）成为最大瓶颈，突破后将彻底改变人机协作方式
+</div>
+<div class="slide-num" contenteditable="false">6 / 10</div>
+
+<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+<script>
+const chart = echarts.init(document.getElementById('chart-container'));
+chart.setOption({
+  backgroundColor:'transparent',
+  tooltip:{
+    trigger:'item',
+    backgroundColor:'rgba(5,10,20,0.92)',borderColor:'rgba(0,212,255,0.3)',
+    textStyle:{color:'#E8F4FD'}
+  },
+  legend:{show:false},
+  radar:{
+    radius:'72%',center:['50%','52%'],
+    indicator:[
+      {name:'多模态理解',max:10},{name:'长上下文处理',max:10},{name:'工具调用能力',max:10},
+      {name:'记忆与个性化',max:10},{name:'推理与规划',max:10},{name:'安全与对齐',max:10}
+    ],
+    axisName:{color:'#7ECFEF',fontSize:12.5,fontWeight:500},
+    splitLine:{lineStyle:{color:'rgba(0,212,255,0.12)'}},
+    splitArea:{areaStyle:{color:['rgba(0,212,255,0.02)','rgba(0,212,255,0.05)']}},
+    axisLine:{lineStyle:{color:'rgba(0,212,255,0.20)'}}
+  },
+  series:[{
+    type:'radar',
+    data:[{
+      value:[9.2,8.8,8.5,7.2,8.9,7.5],
+      name:'AI Agent 技术能力',
+      areaStyle:{color:{type:'linear',x:0,y:0,x2:1,y2:1,colorStops:[{offset:0,color:'rgba(0,212,255,0.30)'},{offset:1,color:'rgba(168,85,247,0.20)'}]}},
+      lineStyle:{color:'#00D4FF',width:2.5},
+      itemStyle:{color:'#00D4FF',borderColor:'#E8F4FD',borderWidth:2},
+      label:{show:true,formatter:p=>p.value.toFixed(1),color:'#00D4FF',fontSize:13,fontWeight:700}
+    }]
+  }]
+});
+</script>
+</body>
+</html>

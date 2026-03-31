@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>企业挑战 — AI Agent 市场趋势报告</title>
+<style>
+:root{
+  --bg:#050A14;--container:#0D1B2A;
+  --accent:#00D4FF;--c1:#00D4FF;--c2:#A855F7;
+  --text-primary:#E8F4FD;--text-secondary:#7ECFEF;--text-muted:#4A90A4;
+  --border:rgba(0,212,255,0.15);--radius:8px;--font:'Inter','PingFang SC',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  width:1280px;height:720px;overflow:hidden;
+  font-family:var(--font);background-color:var(--bg);
+  background-image:
+    radial-gradient(ellipse 55% 70% at 88% -10%,rgba(0,170,255,0.18) 0%,transparent 60%),
+    linear-gradient(rgba(5,10,20,0.84),rgba(5,10,20,0.84)),
+    url('images/slide-07-bg.jpg');
+  background-size:auto,auto,cover;
+  position:relative;
+}
+body::before{
+  content:'';position:absolute;top:-60px;right:-60px;width:260px;height:260px;border-radius:50%;
+  background:radial-gradient(circle,rgba(0,212,255,0.18) 0%,transparent 70%);
+  pointer-events:none;z-index:0;
+}
+
+/* 页头 */
+.page-header{position:absolute;top:36px;left:52px;right:52px;height:72px;z-index:1;}
+.ph-eyebrow{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:6px;}
+.ph-title{font-size:26px;font-weight:700;color:var(--text-primary);line-height:1.2;letter-spacing:-0.3px;}
+.ph-line{width:48px;height:2px;background:var(--accent);margin-top:6px;border-radius:1px;}
+
+/* 图表区 */
+#chart-container{position:absolute;top:120px;left:52px;right:52px;bottom:52px;z-index:1;}
+
+/* 来源+洞察 */
+.insight-bar{
+  position:absolute;bottom:10px;left:52px;right:52px;
+  background:rgba(0,0,0,0.40);backdrop-filter:blur(12px);
+  border:1px solid rgba(168,85,247,0.28);border-radius:10px;
+  padding:10px 20px;font-size:13px;color:rgba(200,220,255,0.60);line-height:1.5;
+}
+.hl{color:var(--c1);font-weight:700;}
+.hl2{color:var(--c2);font-weight:700;}
+
+.slide-num{position:absolute;right:24px;bottom:14px;font-size:12px;color:var(--text-muted);z-index:2;}
+[contenteditable]:hover{outline:1px dashed rgba(0,212,255,0.4);cursor:text;}
+[contenteditable]:focus{outline:1px solid var(--accent);background:rgba(0,212,255,0.05);border-radius:2px;}
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="ph-eyebrow">ENTERPRISE INSIGHT · 落地挑战调研</div>
+  <div class="ph-title" contenteditable="true">企业落地六大挑战：幻觉可靠性与数据安全高居前两位</div>
+  <div class="ph-line"></div>
+</div>
+
+<div id="chart-container"></div>
+
+<div class="insight-bar" contenteditable="true">
+  核心障碍：<span class="hl">幻觉+安全</span>（71%/68%）是技术层面的双重掣肘，短期难以完全解决；<span class="hl2">集成成本</span>（61%）是工程层面首要挑战，企业需要专业 Agent Ops 团队支撑 &nbsp;|&nbsp; 样本：1,200家企业，多选题
+</div>
+<div class="slide-num" contenteditable="false">7 / 10</div>
+
+<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+<script>
+const chart = echarts.init(document.getElementById('chart-container'));
+const labels = ['幻觉与可靠性问题','数据安全与隐私合规','与现有系统集成成本高','员工接受度与培训','ROI难以量化','运行成本过高'];
+const vals   = [71,68,61,53,48,44];
+const colors = vals.map(v=>v>=65?'#00D4FF':v>=55?'#7ECFEF':'rgba(0,212,255,0.45)');
+
+chart.setOption({
+  backgroundColor:'transparent',
+  tooltip:{
+    trigger:'axis',axisPointer:{type:'none'},
+    backgroundColor:'rgba(5,10,20,0.92)',borderColor:'rgba(0,212,255,0.3)',
+    textStyle:{color:'#E8F4FD'},
+    formatter:p=>`${p[0].name}&nbsp;: <b>${p[0].value}%</b>`
+  },
+  grid:{top:8,right:80,bottom:20,left:200},
+  xAxis:{
+    type:'value',max:100,
+    axisLabel:{color:'#7ECFEF',fontSize:11,formatter:'{value}%'},
+    splitLine:{lineStyle:{color:'rgba(0,212,255,0.08)'}},
+    axisLine:{show:false}
+  },
+  yAxis:{
+    type:'category',data:[...labels].reverse(),
+    axisLabel:{color:'#E8F4FD',fontSize:12.5,width:185,overflow:'truncate'},
+    axisLine:{lineStyle:{color:'rgba(0,212,255,0.15)'}}
+  },
+  series:[{
+    type:'bar',
+    data:[...vals].reverse().map((v,i)=>({
+      value:v,
+      itemStyle:{
+        color:{type:'linear',x:0,y:0,x2:1,y2:0,
+          colorStops:[{offset:0,color:'rgba(0,212,255,0.30)'},{offset:1,color:colors[[...vals].reverse().indexOf(v)]}]},
+        borderRadius:[0,5,5,0]
+      }
+    })),
+    barMaxWidth:36,
+    label:{show:true,position:'right',color:'#7ECFEF',fontSize:13,fontWeight:700,formatter:'{c}%'}
+  }]
+});
+</script>
+</body>
+</html>

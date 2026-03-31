@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>三大预测 — AI Agent 市场趋势报告</title>
+<style>
+:root{
+  --bg:#050A14;--container:#0D1B2A;
+  --accent:#00D4FF;--c1:#00D4FF;--c1-soft:rgba(0,212,255,0.12);
+  --c2:#A855F7;--c2-soft:rgba(168,85,247,0.12);
+  --text-primary:#E8F4FD;--text-secondary:#7ECFEF;--text-muted:#4A90A4;
+  --border:rgba(0,212,255,0.15);--radius:8px;--font:'Inter','PingFang SC',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  width:1280px;height:720px;overflow:hidden;
+  font-family:var(--font);background-color:var(--bg);
+  background-image:
+    radial-gradient(ellipse 60% 80% at 90% -15%,rgba(0,170,255,0.20) 0%,transparent 60%),
+    linear-gradient(rgba(5,10,20,0.65),rgba(5,10,20,0.65)),
+    url('images/slide-08-bg.jpg');
+  background-size:auto,auto,cover;
+  background-position:center,center,60% center;
+  position:relative;
+}
+body::before{
+  content:'';position:absolute;top:-60px;right:-60px;width:260px;height:260px;border-radius:50%;
+  background:radial-gradient(circle,rgba(0,212,255,0.18) 0%,transparent 70%);
+  pointer-events:none;z-index:0;
+}
+
+/* 页头 */
+.page-header{position:absolute;top:36px;left:52px;right:52px;height:72px;z-index:1;}
+.ph-eyebrow{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:6px;}
+.ph-title{font-size:26px;font-weight:700;color:var(--text-primary);line-height:1.2;letter-spacing:-0.3px;}
+.ph-line{width:48px;height:2px;background:var(--accent);margin-top:6px;border-radius:1px;}
+
+/* Content-B — 左时间线 右配图 */
+.body-row{position:absolute;top:120px;left:52px;right:52px;bottom:14px;display:flex;gap:24px;z-index:1;}
+
+/* 左侧时间线区（58%宽） */
+.left-tl{
+  flex:3;
+  display:flex;flex-direction:column;
+  gap:0;
+}
+
+/* Rule 37：三条时间线 flex:1 等分全高 */
+.tl-item{
+  flex:1;
+  display:flex;gap:16px;
+  position:relative;
+  padding-bottom:12px;
+}
+/* 竖向连线（Rule 16 修正：线不穿年份文字）*/
+.tl-item::before{
+  content:'';
+  position:absolute;left:21px;top:28px;bottom:0;
+  width:2px;
+  background:linear-gradient(to bottom,rgba(0,212,255,0.5),rgba(168,85,247,0.3));
+}
+.tl-item:last-child::before{display:none;}
+
+/* 左侧年份轴 */
+.tl-axis{
+  flex-shrink:0;width:44px;
+  display:flex;flex-direction:column;align-items:center;
+  gap:4px;padding-top:2px;
+}
+.tl-dot{
+  width:14px;height:14px;border-radius:50%;flex-shrink:0;z-index:1;
+  border:2.5px solid;
+}
+.tl-item.c1 .tl-dot{border-color:var(--c1);background:rgba(0,212,255,0.20);}
+.tl-item.c2 .tl-dot{border-color:var(--c2);background:rgba(168,85,247,0.20);}
+.tl-year{font-size:11px;font-weight:700;color:var(--text-muted);text-align:center;letter-spacing:0.5px;}
+
+/* 右侧内容 */
+.tl-content{flex:1;background:rgba(255,255,255,0.05);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.10);border-radius:var(--radius);padding:11px 14px;}
+.tl-item.c1 .tl-content{border-left:3px solid var(--c1);}
+.tl-item.c2 .tl-content{border-left:3px solid var(--c2);}
+.tl-header{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.tl-tag{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;padding:2px 7px;border-radius:3px;font-weight:700;}
+.tl-item.c1 .tl-tag{background:var(--c1-soft);color:var(--c1);}
+.tl-item.c2 .tl-tag{background:var(--c2-soft);color:var(--c2);}
+.tl-theme{font-size:13px;font-weight:700;color:var(--text-primary);}
+.tl-points{list-style:none;display:flex;flex-direction:column;gap:3px;}
+.tl-points li{
+  font-size:11.5px;color:var(--text-secondary);line-height:1.55;
+  padding-left:12px;position:relative;
+}
+.tl-points li::before{content:'·';position:absolute;left:0;color:var(--accent);font-size:16px;top:-2px;}
+
+/* 右侧配图（42%宽） */
+#content-visual{
+  flex:0 0 42%;
+  height:100%;border-radius:var(--radius);overflow:hidden;
+  background-image:
+    linear-gradient(to right,rgba(5,10,20,0.60) 0%,rgba(5,10,20,0.10) 20%,transparent 50%),
+    url('images/slide-08-content.jpg');
+  background-size:cover;background-position:center 30%;
+  background-color:var(--container);
+}
+
+.slide-num{position:absolute;right:24px;bottom:14px;font-size:12px;color:var(--text-muted);z-index:2;}
+[contenteditable]:hover{outline:1px dashed rgba(0,212,255,0.4);cursor:text;}
+[contenteditable]:focus{outline:1px solid var(--accent);background:rgba(0,212,255,0.05);border-radius:2px;}
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="ph-eyebrow">THREE-YEAR FORECAST · 2025 – 2027</div>
+  <div class="ph-title" contenteditable="true">三大关键预测：从AI协作者到AI经济体的三年进化路径</div>
+  <div class="ph-line"></div>
+</div>
+
+<div class="body-row">
+  <!-- 左侧三条时间线 — flex:1 均分 -->
+  <div class="left-tl">
+
+    <!-- 2025 -->
+    <div class="tl-item c1">
+      <div class="tl-axis">
+        <div class="tl-dot"></div>
+        <div class="tl-year">2025</div>
+      </div>
+      <div class="tl-content">
+        <div class="tl-header">
+          <div class="tl-tag">协作元年</div>
+          <div class="tl-theme" contenteditable="true">从「助手」升级为「协作者」</div>
+        </div>
+        <ul class="tl-points">
+          <li contenteditable="true">多步骤自主任务完成率超80%，Agent真正接管复杂工作流，人工干预降至不足20%</li>
+          <li contenteditable="true">企业级Agent平台标准化，部署成本较2024年下降60%，中小企业开始普及</li>
+          <li contenteditable="true">欧美监管框架相继落地，AI责任链正式确立，合规体系建设进入快车道</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 2026 -->
+    <div class="tl-item c2">
+      <div class="tl-axis">
+        <div class="tl-dot"></div>
+        <div class="tl-year">2026</div>
+      </div>
+      <div class="tl-content">
+        <div class="tl-header">
+          <div class="tl-tag">范式转移</div>
+          <div class="tl-theme" contenteditable="true">多Agent协作网络成为新范式</div>
+        </div>
+        <ul class="tl-points">
+          <li contenteditable="true">MCP成为Agent通信行业标准，跨厂商互操作全面打通，生态初步形成</li>
+          <li contenteditable="true">「Agent Ops」成为新IT职能，专职运维团队在500强企业普及率超60%</li>
+          <li contenteditable="true">医疗/法律/金融垂直Agent大规模商用，相关岗位替代率超30%，新岗位同步涌现</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 2027 -->
+    <div class="tl-item c1">
+      <div class="tl-axis">
+        <div class="tl-dot"></div>
+        <div class="tl-year">2027</div>
+      </div>
+      <div class="tl-content">
+        <div class="tl-header">
+          <div class="tl-tag">经济体</div>
+          <div class="tl-theme" contenteditable="true">AI Agent经济体初步形成</div>
+        </div>
+        <ul class="tl-points">
+          <li contenteditable="true">AI Agent贡献GDP超$2万亿，成为劳动力和资本之外的第三生产要素</li>
+          <li contenteditable="true">人类与Agent 1:3协作比例成白领工作常态，人类专注创意，Agent处理执行</li>
+          <li contenteditable="true">Agent自主研发、自主创业的真实商业案例出现，引发伦理与法律深度讨论</li>
+        </ul>
+      </div>
+    </div>
+
+  </div><!-- /.left-tl -->
+
+  <!-- 右侧配图 -->
+  <div id="content-visual"></div>
+</div>
+
+<div class="slide-num" contenteditable="false">8 / 10</div>
+</body>
+</html>

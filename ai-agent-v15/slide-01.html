@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>封面 — 2025年全球 AI Agent 市场趋势报告</title>
+<style>
+:root {
+  --bg:#050A14; --container:#0D1B2A; --container-2:#112233;
+  --accent:#00D4FF; --accent-soft:rgba(0,212,255,0.12);
+  --c2:#A855F7; --c2-soft:rgba(168,85,247,0.12);
+  --text-primary:#E8F4FD; --text-secondary:#7ECFEF; --text-muted:#4A90A4;
+  --border:rgba(0,212,255,0.15); --radius:8px; --font:'Inter','PingFang SC',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  width:1280px;height:720px;overflow:hidden;
+  font-family:var(--font);background-color:var(--bg);
+  background-image:
+    radial-gradient(ellipse 55% 70% at 88% -10%,rgba(0,170,255,0.22) 0%,transparent 60%),
+    linear-gradient(rgba(5,10,20,0.50),rgba(5,10,20,0.50)),
+    url('images/slide-01-bg.jpg');
+  background-size:auto,auto,cover;
+  background-position:center,center,center right;
+  display:flex;align-items:center;
+}
+/* ── Cover-D 左文右配图 ── */
+.cover-left{
+  flex:3;display:flex;flex-direction:column;gap:18px;
+  padding:0 56px 0 72px;
+  position:relative;z-index:1;
+}
+.cover-right{
+  flex:2;height:100%;position:relative;z-index:1;flex-shrink:0;
+}
+#cover-visual{
+  width:100%;height:100%;
+  background-image:
+    linear-gradient(to right,rgba(5,10,20,0.70) 0%,rgba(5,10,20,0.15) 30%,transparent 60%),
+    url('images/slide-01-content.jpg');
+  background-size:cover;background-position:center;
+  background-color:var(--container-2);
+}
+#cover-visual::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 50% 60% at 50% 40%,rgba(0,212,255,0.18) 0%,transparent 70%);
+  pointer-events:none;
+}
+
+/* eyebrow */
+.eyebrow{font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);font-weight:600;}
+/* main title */
+.cover-title{font-size:48px;font-weight:900;line-height:1.1;color:var(--text-primary);letter-spacing:-0.5px;}
+.cover-accent{color:var(--accent);}
+/* sub */
+.cover-sub{font-size:16px;color:var(--text-secondary);line-height:1.6;max-width:500px;}
+/* divider */
+.cover-divider{width:56px;height:3px;background:var(--accent);border-radius:2px;margin-top:2px;}
+/* meta */
+.cover-meta{font-size:13px;color:var(--text-muted);display:flex;gap:20px;align-items:center;}
+.cover-meta-dot{width:4px;height:4px;border-radius:50%;background:var(--accent);opacity:0.5;}
+
+/* 右上角装饰光晕 */
+body::before{
+  content:'';position:absolute;top:-60px;right:-60px;
+  width:300px;height:300px;border-radius:50%;
+  background:radial-gradient(circle,rgba(0,212,255,0.22) 0%,transparent 70%);
+  pointer-events:none;z-index:0;
+}
+
+.slide-num{position:absolute;right:28px;bottom:16px;font-size:12px;color:var(--text-muted);z-index:2;}
+
+[contenteditable]:hover{outline:1px dashed rgba(0,212,255,0.4);cursor:text;}
+[contenteditable]:focus{outline:1px solid var(--accent);background:rgba(0,212,255,0.05);border-radius:2px;}
+</style>
+</head>
+<body>
+
+<div class="cover-left">
+  <div class="eyebrow" contenteditable="true">ANNUAL REPORT · 2025 · 市场趋势报告</div>
+  <h1 class="cover-title" contenteditable="true">2025年全球<br><span class="cover-accent">AI Agent</span><br>市场趋势报告</h1>
+  <p class="cover-sub" contenteditable="true">从工具到同事——AI Agent 正在重塑每一个工作流，企业变革窗口期仅剩 18 个月</p>
+  <div class="cover-divider"></div>
+  <div class="cover-meta">
+    <span contenteditable="true">未来科技研究院</span>
+    <div class="cover-meta-dot"></div>
+    <span contenteditable="true">futuretech-research.com</span>
+    <div class="cover-meta-dot"></div>
+    <span contenteditable="true">2025年3月</span>
+  </div>
+</div>
+
+<div class="cover-right">
+  <div id="cover-visual"></div>
+</div>
+
+<div class="slide-num" contenteditable="false">1 / 10</div>
+</body>
+</html>
