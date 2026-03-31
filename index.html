@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>luzifeng · 在线预览合集</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0D0D0F;
+      --surface: #18181B;
+      --surface-2: #232329;
+      --border: #2A2A32;
+      --border-hover: #444450;
+      --text: #F4F4F5;
+      --text-muted: #71717A;
+      --text-dim: #52525B;
+      --accent: #A855F7;
+      --accent-glow: rgba(168, 85, 247, 0.12);
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', system-ui, sans-serif;
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* ─── Header ─── */
+    header {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 60px 24px 0;
+      text-align: center;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 5px 14px 5px 8px;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+
+    .badge-dot {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #A855F7, #EC4899);
+      font-size: 11px; font-weight: 700; color: #fff;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    h1 {
+      font-size: clamp(28px, 4.5vw, 48px);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 12px;
+    }
+
+    h1 em {
+      font-style: normal;
+      background: linear-gradient(120deg, #A855F7, #EC4899 60%, #F97316);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .sub {
+      font-size: 14px;
+      color: var(--text-muted);
+      max-width: 400px;
+      margin: 0 auto 40px;
+    }
+
+    /* ─── URL bar decoration ─── */
+    .url-bar {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-muted);
+      margin-bottom: 56px;
+    }
+
+    .url-dot { width: 8px; height: 8px; border-radius: 50%; background: #22C55E; }
+
+    /* ─── Main ─── */
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+
+    .section-hd {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    .section-n {
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-dim);
+    }
+
+    /* ─── Grid ─── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 14px;
+    }
+
+    /* ─── Card ─── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: border-color .2s, transform .2s, box-shadow .2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 12px;
+      opacity: 0;
+      transition: opacity .25s;
+    }
+
+    .card:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 16px 48px rgba(0,0,0,.45);
+    }
+
+    .card:hover::after { opacity: 1; }
+
+    /* accent glow per color */
+    .c-purple::after { background: radial-gradient(circle at 0 0, rgba(168,85,247,.09), transparent 55%); }
+    .c-blue::after   { background: radial-gradient(circle at 0 0, rgba(59,130,246,.09), transparent 55%); }
+    .c-green::after  { background: radial-gradient(circle at 0 0, rgba(34,197,94,.09), transparent 55%); }
+    .c-orange::after { background: radial-gradient(circle at 0 0, rgba(249,115,22,.09), transparent 55%); }
+    .c-pink::after   { background: radial-gradient(circle at 0 0, rgba(236,72,153,.09), transparent 55%); }
+    .c-teal::after   { background: radial-gradient(circle at 0 0, rgba(20,184,166,.09), transparent 55%); }
+
+    .card-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+
+    .icon {
+      width: 36px; height: 36px;
+      border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; flex-shrink: 0;
+    }
+    .i-purple { background: rgba(168,85,247,.14); }
+    .i-blue   { background: rgba(59,130,246,.14); }
+    .i-green  { background: rgba(34,197,94,.14); }
+    .i-orange { background: rgba(249,115,22,.14); }
+    .i-pink   { background: rgba(236,72,153,.14); }
+    .i-teal   { background: rgba(20,184,166,.14); }
+
+    .pill {
+      font-size: 10px; font-weight: 600;
+      padding: 2px 8px; border-radius: 100px;
+    }
+    .pill-live { background: rgba(34,197,94,.14); color: #22C55E; }
+    .pill-new  { background: rgba(168,85,247,.14); color: #A855F7; }
+
+    .card-title {
+      font-size: 14px; font-weight: 600;
+      color: var(--text); line-height: 1.3;
+    }
+
+    .card-desc {
+      font-size: 12px; color: var(--text-muted);
+      line-height: 1.55; flex: 1;
+    }
+
+    .card-foot {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      margin-top: 4px;
+    }
+
+    .card-tags { display: flex; gap: 5px; flex-wrap: wrap; }
+
+    .tag {
+      font-size: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-dim);
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 1px 6px;
+    }
+
+    .arrow {
+      color: var(--text-dim); font-size: 13px;
+      transition: color .2s, transform .2s;
+    }
+    .card:hover .arrow { color: var(--text-muted); transform: translate(2px,-2px); }
+
+    /* ─── Divider ─── */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 40px 0 32px;
+    }
+
+    /* ─── URL rule section ─── */
+    .rule-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px 28px;
+    }
+
+    .rule-title {
+      font-size: 13px; font-weight: 600;
+      color: var(--text-muted); margin-bottom: 16px;
+    }
+
+    .rule-row {
+      display: flex; gap: 12px;
+      align-items: flex-start;
+      font-size: 12px; color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    .rule-row:last-child { margin-bottom: 0; }
+
+    .rule-k {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--accent);
+      background: var(--accent-glow);
+      border-radius: 4px;
+      padding: 2px 8px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* ─── Footer ─── */
+    footer {
+      text-align: center;
+      border-top: 1px solid var(--border);
+      padding: 20px;
+      font-size: 11px;
+      color: var(--text-dim);
+    }
+
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    @media (max-width: 560px) {
+      header { padding: 36px 16px 0; }
+      main { padding: 0 16px 60px; }
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="badge">
+    <div class="badge-dot">L</div>
+    luzifeng · GitHub Pages 在线预览
+  </div>
+  <h1>在线 <em>预览合集</em></h1>
+  <p class="sub">把 HTML 文件推送到这个仓库，就能变成永久在线的网址，随时分享给同事预览。</p>
+  <div class="url-bar">
+    <div class="url-dot"></div>
+    luzifeng999-arch.github.io/online-sites/
+  </div>
+</header>
+
+<main>
+
+  <div class="section-hd">
+    <span class="section-label">所有项目</span>
+    <span class="section-n" id="count">— 个在线</span>
+  </div>
+
+  <div class="grid" id="grid">
+
+    <!-- ════════════════════════════════════
+         ↓ 在这里添加项目卡片 ↓
+         复制下面的 <a class="card ..."> 块，修改内容即可
+         ════════════════════════════════════ -->
+
+    <!-- 项目卡片示例：模式广场 v2 -->
+    <a class="card c-purple" href="prompt-plaza-v2/viewer.html" target="_blank">
+      <div class="card-row">
+        <div class="icon i-purple">🏛️</div>
+        <span class="pill pill-live">● LIVE</span>
+      </div>
+      <div class="card-title">模式广场 v2</div>
+      <div class="card-desc">AI Prompt 模板市场 · 5页PC端交互原型</div>
+      <div class="card-foot">
+        <div class="card-tags">
+          <span class="tag">UI原型</span>
+          <span class="tag">5页</span>
+        </div>
+        <span class="arrow">↗</span>
+      </div>
+    </a>
+
+    <!-- ════════════════════════════════════
+         ↑ 在这里添加项目卡片 ↑
+         ════════════════════════════════════ -->
+
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- URL 规则说明 -->
+  <div class="rule-box">
+    <div class="rule-title">📐 URL 生成规则</div>
+    <div class="rule-row">
+      <span class="rule-k">单页项目</span>
+      <span>将 <code style="font-family:monospace;background:var(--surface-2);padding:1px 5px;border-radius:3px">项目名.html</code> 放在根目录 → 访问 <code style="font-family:monospace;background:var(--surface-2);padding:1px 5px;border-radius:3px">…/online-sites/项目名.html</code></span>
+    </div>
+    <div class="rule-row">
+      <span class="rule-k">多页项目</span>
+      <span>建一个文件夹 <code style="font-family:monospace;background:var(--surface-2);padding:1px 5px;border-radius:3px">项目名/</code>，入口文件命名 <code style="font-family:monospace;background:var(--surface-2);padding:1px 5px;border-radius:3px">index.html</code> 或 <code style="font-family:monospace;background:var(--surface-2);padding:1px 5px;border-radius:3px">viewer.html</code> → 访问 <code style="font-family:monospace;background:var(--surface-2);padding:1px 5px;border-radius:3px">…/online-sites/项目名/</code></span>
+    </div>
+    <div class="rule-row">
+      <span class="rule-k">分享链接</span>
+      <span>直接把完整 URL 发给同事，他们无需登录 GitHub 即可预览</span>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <a href="https://github.com/luzifeng999-arch/online-sites" target="_blank">GitHub 仓库</a>
+  · luzifeng © 2026
+</footer>
+
+<script>
+  // 自动统计卡片数
+  const n = document.querySelectorAll('#grid .card').length;
+  document.getElementById('count').textContent = n + ' 个在线';
+</script>
+</body>
+</html>
