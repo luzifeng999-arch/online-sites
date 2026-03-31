@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>DataBoard — 看板编辑器</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+<style>
+/* ========== DESIGN TOKENS ========== */
+:root {
+  --color-primary:        #4F6EF7;
+  --color-primary-light:  #EEF1FE;
+  --color-primary-dark:   #3352D9;
+  --color-accent:         #22C7A9;
+  --color-bg:             #F5F7FA;
+  --color-sidebar:        #1A1E2E;
+  --color-sidebar-hover:  #252B3E;
+  --color-sidebar-active: #2E3650;
+  --color-surface:        #FFFFFF;
+  --color-border:         #E4E8F0;
+  --color-text-primary:   #1A1E2E;
+  --color-text-secondary: #6B7A99;
+  --color-danger:         #F25B5B;
+  --color-warning:        #F8A742;
+  --color-success:        #22C7A9;
+  --left-panel:           220px;
+  --right-panel:          260px;
+  --topbar-height:        52px;
+  --radius-sm:            6px;
+  --radius-md:            10px;
+  --radius-lg:            14px;
+  --shadow-sm:            0 1px 3px rgba(26,30,46,.06), 0 1px 2px rgba(26,30,46,.04);
+  --shadow-md:            0 4px 12px rgba(26,30,46,.08);
+  --font:                 'DM Sans', system-ui, sans-serif;
+  --transition:           0.18s ease;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--font); background: var(--color-bg);
+  color: var(--color-text-primary); font-size: 13px;
+  height: 100vh; overflow: hidden; display: flex; flex-direction: column;
+}
+
+/* ========== EDITOR TOPBAR ========== */
+.editor-topbar {
+  height: var(--topbar-height);
+  background: var(--color-sidebar);
+  display: flex; align-items: center;
+  padding: 0 16px;
+  gap: 12px;
+  flex-shrink: 0;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+.back-btn {
+  display: flex; align-items: center; gap: 6px;
+  color: rgba(255,255,255,.5);
+  text-decoration: none; font-size: 13px;
+  padding: 5px 8px; border-radius: var(--radius-sm);
+  transition: var(--transition);
+  border: none; background: none; cursor: pointer; font-family: var(--font);
+}
+.back-btn:hover { color: rgba(255,255,255,.85); background: var(--color-sidebar-hover); }
+.topbar-divider { width: 1px; height: 20px; background: rgba(255,255,255,.1); }
+.board-name-edit {
+  display: flex; align-items: center; gap: 8px;
+}
+.board-name-input {
+  background: transparent; border: none; outline: none;
+  color: #fff; font-size: 14px; font-weight: 600;
+  font-family: var(--font); padding: 4px 8px; border-radius: var(--radius-sm);
+  transition: var(--transition);
+}
+.board-name-input:hover { background: rgba(255,255,255,.08); }
+.board-name-input:focus { background: rgba(255,255,255,.12); }
+.save-status { font-size: 11px; color: rgba(255,255,255,.35); display: flex; align-items: center; gap: 4px; }
+.save-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--color-success); }
+.topbar-spacer { flex: 1; }
+.editor-topbar-actions { display: flex; gap: 8px; align-items: center; }
+.tbtn {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 6px 12px; font-size: 12.5px; font-weight: 500;
+  border-radius: var(--radius-sm); cursor: pointer; border: none;
+  font-family: var(--font); transition: var(--transition);
+}
+.tbtn-ghost { background: rgba(255,255,255,.08); color: rgba(255,255,255,.65); }
+.tbtn-ghost:hover { background: rgba(255,255,255,.15); color: #fff; }
+.tbtn-primary { background: var(--color-primary); color: #fff; }
+.tbtn-primary:hover { background: var(--color-primary-dark); }
+.tbtn-success { background: var(--color-accent); color: #fff; }
+.tbtn-success:hover { filter: brightness(1.08); }
+.zoom-group { display: flex; align-items: center; gap: 2px; background: rgba(255,255,255,.08); border-radius: var(--radius-sm); padding: 2px; }
+.zoom-btn { background: none; border: none; color: rgba(255,255,255,.55); cursor: pointer; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-family: var(--font); font-size: 13px; transition: var(--transition); }
+.zoom-btn:hover { background: rgba(255,255,255,.1); color: #fff; }
+.zoom-val { font-size: 12px; color: rgba(255,255,255,.65); padding: 0 6px; font-variant-numeric: tabular-nums; }
+
+/* ========== EDITOR BODY ========== */
+.editor-body {
+  flex: 1; display: flex; overflow: hidden;
+}
+
+/* ========== LEFT PANEL (Component Library) ========== */
+.left-panel {
+  width: var(--left-panel);
+  background: var(--color-surface);
+  border-right: 1px solid var(--color-border);
+  display: flex; flex-direction: column;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.panel-tabs {
+  display: flex; border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+.panel-tab {
+  flex: 1; padding: 10px 0; font-size: 12px; font-weight: 500;
+  color: var(--color-text-secondary); cursor: pointer; text-align: center;
+  border-bottom: 2px solid transparent; transition: var(--transition);
+  border: none; background: none; font-family: var(--font);
+}
+.panel-tab.active { color: var(--color-primary); border-bottom-color: var(--color-primary); }
+.panel-tab:not(.active):hover { color: var(--color-text-primary); }
+.panel-search {
+  padding: 10px;
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+.panel-search input {
+  width: 100%; background: var(--color-bg); border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm); padding: 6px 10px;
+  font-size: 12px; font-family: var(--font); color: var(--color-text-primary);
+  outline: none; transition: var(--transition);
+}
+.panel-search input:focus { border-color: var(--color-primary); }
+.panel-search input::placeholder { color: var(--color-text-secondary); }
+
+.comp-scroll { flex: 1; overflow-y: auto; padding: 10px; }
+.comp-section-label { font-size: 10px; font-weight: 600; letter-spacing: .8px; text-transform: uppercase; color: var(--color-text-secondary); margin: 8px 4px 6px; }
+.comp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 10px; }
+.comp-item {
+  background: var(--color-bg); border: 1px solid var(--color-border);
+  border-radius: var(--radius-md); padding: 10px 8px;
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  cursor: grab; transition: var(--transition); user-select: none;
+}
+.comp-item:hover { border-color: var(--color-primary); background: var(--color-primary-light); box-shadow: var(--shadow-sm); }
+.comp-item:active { cursor: grabbing; }
+.comp-icon {
+  width: 36px; height: 28px; border-radius: 4px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--color-text-secondary);
+  overflow: hidden;
+}
+.comp-item:hover .comp-icon { border-color: var(--color-primary); color: var(--color-primary); }
+.comp-name { font-size: 11px; color: var(--color-text-secondary); text-align: center; font-weight: 500; line-height: 1.2; }
+.comp-item:hover .comp-name { color: var(--color-primary); }
+
+/* Miniature chart previews in comp-icon */
+.mini-bar { display: flex; align-items: flex-end; gap: 2px; height: 18px; }
+.mini-bar span { width: 4px; border-radius: 1px; background: currentColor; }
+.mini-line { width: 28px; height: 18px; }
+.mini-pie { width: 18px; height: 18px; border-radius: 50%; background: conic-gradient(currentColor 0 40%, rgba(107,122,153,.2) 40% 70%, rgba(107,122,153,.15) 70%); }
+.mini-area { width: 28px; height: 18px; }
+.mini-table { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; }
+.mini-table span { height: 4px; background: currentColor; border-radius: 1px; opacity: .5; }
+.mini-table span:nth-child(1), .mini-table span:nth-child(4), .mini-table span:nth-child(7) { opacity: 1; }
+.mini-kpi { font-size: 16px; font-weight: 700; }
+.mini-gauge { width: 20px; height: 10px; border-radius: 20px 20px 0 0; border: 3px solid currentColor; border-bottom: none; position: relative; }
+.mini-gauge::after { content: ''; position: absolute; bottom: -2px; left: 50%; transform: translateX(-50%) rotate(-30deg); transform-origin: bottom; width: 2px; height: 8px; background: currentColor; border-radius: 1px; }
+
+/* ========== CANVAS AREA ========== */
+.canvas-area {
+  flex: 1; overflow: auto;
+  background:
+    radial-gradient(circle, #d5dae8 1px, transparent 1px),
+    var(--color-bg);
+  background-size: 20px 20px;
+  position: relative;
+  display: flex; align-items: flex-start; justify-content: flex-start;
+  padding: 40px;
+}
+.canvas-board {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg), 0 0 0 1px var(--color-border);
+  min-width: 900px; min-height: 600px;
+  position: relative;
+  flex-shrink: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 80px 260px 200px;
+  gap: 16px;
+  padding: 20px;
+}
+/* Title row spans full width */
+.canvas-title-row {
+  grid-column: 1 / -1;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 8px;
+}
+.canvas-board-title { font-size: 16px; font-weight: 700; color: var(--color-text-primary); }
+.canvas-board-sub { font-size: 12px; color: var(--color-text-secondary); margin-top: 2px; }
+.canvas-badge { font-size: 11px; padding: 4px 10px; border-radius: 20px; background: var(--color-primary-light); color: var(--color-primary); font-weight: 600; }
+
+/* Canvas widgets */
+.c-widget {
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  cursor: pointer;
+  transition: var(--transition);
+  position: relative;
+  display: flex; flex-direction: column;
+}
+.c-widget:hover { border-color: var(--color-primary); box-shadow: 0 0 0 3px var(--color-primary-light), var(--shadow-md); }
+.c-widget.selected { border-color: var(--color-primary); box-shadow: 0 0 0 3px var(--color-primary-light); }
+.c-widget-header { padding: 10px 14px 6px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+.c-widget-title { font-size: 12px; font-weight: 600; color: var(--color-text-primary); }
+.c-widget-handle {
+  width: 18px; height: 18px; display: flex; align-items: center; justify-content: center;
+  color: var(--color-text-secondary); opacity: 0; transition: var(--transition);
+  cursor: move;
+}
+.c-widget:hover .c-widget-handle { opacity: 1; }
+.c-widget-body { flex: 1; padding: 0 14px 10px; }
+.chart-container { width: 100%; height: 100%; }
+
+/* KPI widget */
+.kpi-widget { display: flex; flex-direction: column; justify-content: center; padding: 16px 18px; }
+.kpi-label { font-size: 11px; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; }
+.kpi-value { font-size: 30px; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1; margin-bottom: 8px; }
+.kpi-trend { font-size: 12px; font-weight: 500; display: flex; align-items: center; gap: 4px; }
+.kpi-trend.up { color: var(--color-success); }
+.kpi-trend.down { color: var(--color-danger); }
+
+/* Selection handles */
+.resize-handle {
+  position: absolute; width: 8px; height: 8px;
+  background: var(--color-primary); border: 2px solid #fff;
+  border-radius: 2px; cursor: se-resize;
+  opacity: 0; transition: var(--transition);
+}
+.c-widget.selected .resize-handle { opacity: 1; }
+.resize-handle.br { bottom: -4px; right: -4px; }
+.resize-handle.bl { bottom: -4px; left: -4px; cursor: sw-resize; }
+.resize-handle.tr { top: -4px; right: -4px; cursor: ne-resize; }
+.resize-handle.tl { top: -4px; left: -4px; cursor: nw-resize; }
+
+/* Canvas empty slot */
+.c-slot {
+  border: 1.5px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--color-border); cursor: pointer; transition: var(--transition);
+}
+.c-slot:hover { border-color: var(--color-primary); color: var(--color-primary); background: var(--color-primary-light); }
+.c-slot-inner { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.c-slot-inner span { font-size: 11px; font-weight: 500; }
+
+/* ========== RIGHT PANEL (Config) ========== */
+.right-panel {
+  width: var(--right-panel);
+  background: var(--color-surface);
+  border-left: 1px solid var(--color-border);
+  display: flex; flex-direction: column;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.rp-header {
+  padding: 14px 16px 12px;
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+.rp-title { font-size: 13px; font-weight: 600; color: var(--color-text-primary); margin-bottom: 2px; }
+.rp-sub { font-size: 11px; color: var(--color-text-secondary); }
+.rp-tabs {
+  display: flex; border-bottom: 1px solid var(--color-border); flex-shrink: 0;
+}
+.rp-tab {
+  flex: 1; padding: 9px 0; font-size: 12px; font-weight: 500;
+  color: var(--color-text-secondary); text-align: center; cursor: pointer;
+  border-bottom: 2px solid transparent; transition: var(--transition);
+  border: none; background: none; font-family: var(--font);
+}
+.rp-tab.active { color: var(--color-primary); border-bottom-color: var(--color-primary); }
+.rp-tab:not(.active):hover { color: var(--color-text-primary); }
+
+.rp-scroll { flex: 1; overflow-y: auto; padding: 14px; }
+.config-group { margin-bottom: 18px; }
+.config-group-title { font-size: 11px; font-weight: 600; letter-spacing: .6px; text-transform: uppercase; color: var(--color-text-secondary); margin-bottom: 8px; }
+.config-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; gap: 8px; }
+.config-label { font-size: 12px; color: var(--color-text-secondary); flex-shrink: 0; }
+.config-input {
+  flex: 1; background: var(--color-bg); border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm); padding: 5px 8px;
+  font-size: 12px; font-family: var(--font); color: var(--color-text-primary);
+  outline: none; transition: var(--transition); min-width: 0;
+}
+.config-input:focus { border-color: var(--color-primary); }
+.config-select {
+  flex: 1; background: var(--color-bg); border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm); padding: 5px 8px;
+  font-size: 12px; font-family: var(--font); color: var(--color-text-primary);
+  outline: none; cursor: pointer; min-width: 0;
+}
+.config-select:focus { border-color: var(--color-primary); }
+.config-toggle {
+  display: flex; background: var(--color-bg); border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm); padding: 2px;
+}
+.config-toggle button {
+  padding: 3px 8px; font-size: 11px; font-weight: 500; border: none; background: none;
+  cursor: pointer; border-radius: 4px; font-family: var(--font);
+  color: var(--color-text-secondary); transition: var(--transition);
+}
+.config-toggle button.active { background: var(--color-surface); color: var(--color-text-primary); box-shadow: var(--shadow-sm); }
+.config-color-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+.color-swatch { width: 20px; height: 20px; border-radius: 4px; cursor: pointer; border: 2px solid transparent; transition: var(--transition); }
+.color-swatch.active, .color-swatch:hover { border-color: var(--color-primary); transform: scale(1.1); }
+.slider-wrap { flex: 1; display: flex; align-items: center; gap: 8px; }
+.slider-wrap input[type=range] {
+  flex: 1; height: 4px; accent-color: var(--color-primary); cursor: pointer;
+}
+.slider-val { font-size: 11px; color: var(--color-text-secondary); font-variant-numeric: tabular-nums; width: 26px; text-align: right; }
+
+.datasource-badge {
+  display: flex; align-items: center; gap: 6px;
+  background: rgba(34,199,169,.1); border: 1px solid rgba(34,199,169,.3);
+  border-radius: var(--radius-md); padding: 8px 10px; margin-bottom: 8px;
+}
+.datasource-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--color-accent); flex-shrink: 0; }
+.datasource-name { font-size: 12px; font-weight: 500; color: var(--color-text-primary); flex: 1; }
+.datasource-switch { font-size: 11px; color: var(--color-primary); cursor: pointer; font-weight: 500; }
+
+/* ========== SCROLLBAR ========== */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #c5cce0; }
+</style>
+</head>
+<body>
+
+<!-- EDITOR TOPBAR -->
+<header class="editor-topbar">
+  <a class="back-btn" href="page-01-dashboard.html">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+    返回
+  </a>
+  <div class="topbar-divider"></div>
+  <div class="board-name-edit">
+    <input class="board-name-input" type="text" value="Q2 销售业绩全景看板" spellcheck="false">
+    <div class="save-status">
+      <span class="save-dot"></span>
+      已自动保存
+    </div>
+  </div>
+  <div class="topbar-spacer"></div>
+  <div class="editor-topbar-actions">
+    <div class="zoom-group">
+      <button class="zoom-btn" onclick="changeZoom(-10)" aria-label="缩小">−</button>
+      <span class="zoom-val" id="zoom-display">100%</span>
+      <button class="zoom-btn" onclick="changeZoom(10)" aria-label="放大">+</button>
+    </div>
+    <div class="topbar-divider"></div>
+    <button class="tbtn tbtn-ghost">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 .49-4.21"/></svg>
+      撤销
+    </button>
+    <button class="tbtn tbtn-ghost">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-.49-4.21"/></svg>
+      重做
+    </button>
+    <div class="topbar-divider"></div>
+    <button class="tbtn tbtn-ghost" onclick="location.href='page-04-preview.html'">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+      预览
+    </button>
+    <button class="tbtn tbtn-ghost">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      分享
+    </button>
+    <button class="tbtn tbtn-primary">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+      保存
+    </button>
+  </div>
+</header>
+
+<!-- EDITOR BODY -->
+<div class="editor-body">
+
+  <!-- LEFT PANEL: Component Library -->
+  <aside class="left-panel">
+    <div class="panel-tabs">
+      <button class="panel-tab active" onclick="switchPanelTab(this, 'comps')">组件</button>
+      <button class="panel-tab" onclick="switchPanelTab(this, 'layers')">图层</button>
+      <button class="panel-tab" onclick="switchPanelTab(this, 'assets')">素材</button>
+    </div>
+    <div class="panel-search">
+      <input type="text" placeholder="搜索组件…">
+    </div>
+    <div class="comp-scroll" id="panel-comps">
+      <div class="comp-section-label">图表</div>
+      <div class="comp-grid">
+        <div class="comp-item" title="拖入画布" draggable="true" ondragstart="onDragStart(event,'bar')">
+          <div class="comp-icon">
+            <div class="mini-bar">
+              <span style="height:8px"></span><span style="height:14px"></span><span style="height:10px"></span><span style="height:18px"></span><span style="height:12px"></span>
+            </div>
+          </div>
+          <span class="comp-name">柱状图</span>
+        </div>
+        <div class="comp-item" draggable="true" ondragstart="onDragStart(event,'line')">
+          <div class="comp-icon">
+            <svg class="mini-line" viewBox="0 0 28 18" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="2,14 8,8 14,11 20,4 26,7"/></svg>
+          </div>
+          <span class="comp-name">折线图</span>
+        </div>
+        <div class="comp-item" draggable="true" ondragstart="onDragStart(event,'pie')">
+          <div class="comp-icon">
+            <div class="mini-pie"></div>
+          </div>
+          <span class="comp-name">饼图</span>
+        </div>
+        <div class="comp-item" draggable="true" ondragstart="onDragStart(event,'area')">
+          <div class="comp-icon">
+            <svg class="mini-area" viewBox="0 0 28 18" fill="none">
+              <path d="M2 14 8 8 14 11 20 4 26 7 26 16 2 16Z" fill="currentColor" opacity=".3" stroke="currentColor" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <span class="comp-name">面积图</span>
+        </div>
+        <div class="comp-item" draggable="true" ondragstart="onDragStart(event,'scatter')">
+          <div class="comp-icon">
+            <svg width="28" height="18" viewBox="0 0 28 18" fill="none">
+              <circle cx="6" cy="12" r="2" fill="currentColor" opacity=".7"/>
+              <circle cx="14" cy="7" r="2.5" fill="currentColor" opacity=".6"/>
+              <circle cx="20" cy="10" r="1.5" fill="currentColor" opacity=".8"/>
+              <circle cx="24" cy="5" r="2" fill="currentColor" opacity=".5"/>
+            </svg>
+          </div>
+          <span class="comp-name">散点图</span>
+        </div>
+        <div class="comp-item" draggable="true" ondragstart="onDragStart(event,'gauge')">
+          <div class="comp-icon">
+            <div class="mini-gauge"></div>
+          </div>
+          <span class="comp-name">仪表盘</span>
+        </div>
+      </div>
+
+      <div class="comp-section-label">数据展示</div>
+      <div class="comp-grid">
+        <div class="comp-item" draggable="true" ondragstart="onDragStart(event,'kpi')">
+          <div class="comp-icon"><span class="mini-kpi">99</span></div>
+          <span class="comp-name">KPI 卡片</span>
+        </div>
+        <div class="comp-item" draggable="true" ondragstart="onDragStart(event,'table')">
+          <div class="comp-icon">
+            <div class="mini-table">
+              <span></span><span></span><span></span>
+              <span></span><span></span><span></span>
+              <span></span><span></span><span></span>
+            </div>
+          </div>
+          <span class="comp-name">数据表格</span>
+        </div>
+        <div class="comp-item" draggable="true" ondragstart="onDragStart(event,'progress')">
+          <div class="comp-icon">
+            <svg width="28" height="18" viewBox="0 0 28 18">
+              <rect x="2" y="6" width="24" height="6" rx="3" fill="rgba(107,122,153,.15)"/>
+              <rect x="2" y="6" width="16" height="6" rx="3" fill="currentColor" opacity=".7"/>
+            </svg>
+          </div>
+          <span class="comp-name">进度条</span>
+        </div>
+        <div class="comp-item" draggable="true" ondragstart="onDragStart(event,'text')">
+          <div class="comp-icon">
+            <svg width="22" height="16" viewBox="0 0 22 16" fill="none">
+              <rect x="2" y="2" width="18" height="2.5" rx="1" fill="currentColor" opacity=".8"/>
+              <rect x="2" y="6.5" width="14" height="2" rx="1" fill="currentColor" opacity=".5"/>
+              <rect x="2" y="10.5" width="10" height="2" rx="1" fill="currentColor" opacity=".3"/>
+            </svg>
+          </div>
+          <span class="comp-name">文本框</span>
+        </div>
+      </div>
+
+      <div class="comp-section-label">辅助元素</div>
+      <div class="comp-grid">
+        <div class="comp-item" draggable="true">
+          <div class="comp-icon">
+            <svg width="22" height="16" viewBox="0 0 22 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="18" height="12" rx="2"/></svg>
+          </div>
+          <span class="comp-name">分隔卡片</span>
+        </div>
+        <div class="comp-item" draggable="true">
+          <div class="comp-icon">
+            <svg width="22" height="16" viewBox="0 0 22 16" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="2" y1="8" x2="20" y2="8"/></svg>
+          </div>
+          <span class="comp-name">分隔线</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Layers Panel (hidden by default) -->
+    <div class="comp-scroll" id="panel-layers" style="display:none;">
+      <div style="padding: 8px 4px;">
+        <div style="display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:6px;background:var(--color-primary-light);border:1px solid rgba(79,110,247,.2);margin-bottom:4px;cursor:pointer;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/></svg>
+          <span style="font-size:12px;font-weight:500;color:var(--color-primary);flex:1;">销售趋势折线图</span>
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-secondary)" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:6px;margin-bottom:4px;cursor:pointer;" onmouseover="this.style.background='var(--color-bg)'" onmouseout="this.style.background='transparent'">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-secondary)" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/></svg>
+          <span style="font-size:12px;color:var(--color-text-secondary);flex:1;">分类饼图</span>
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-secondary)" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:6px;margin-bottom:4px;cursor:pointer;" onmouseover="this.style.background='var(--color-bg)'" onmouseout="this.style.background='transparent'">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-secondary)" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          <span style="font-size:12px;color:var(--color-text-secondary);flex:1;">KPI — 总收入</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:6px;margin-bottom:4px;cursor:pointer;" onmouseover="this.style.background='var(--color-bg)'" onmouseout="this.style.background='transparent'">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-secondary)" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          <span style="font-size:12px;color:var(--color-text-secondary);flex:1;">KPI — 订单量</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:6px;cursor:pointer;" onmouseover="this.style.background='var(--color-bg)'" onmouseout="this.style.background='transparent'">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-secondary)" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+          <span style="font-size:12px;color:var(--color-text-secondary);flex:1;">数据明细表格</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- CANVAS AREA -->
+  <main class="canvas-area" id="canvas-area">
+    <div class="canvas-board" id="canvas-board">
+      <!-- Title Row -->
+      <div class="canvas-title-row">
+        <div>
+          <div class="canvas-board-title">Q2 销售业绩全景看板</div>
+          <div class="canvas-board-sub">数据源：销售数据库 · 更新于 2 分钟前</div>
+        </div>
+        <span class="canvas-badge">实时数据</span>
+      </div>
+
+      <!-- KPI 1 -->
+      <div class="c-widget" id="w-kpi1" onclick="selectWidget('w-kpi1')">
+        <div class="kpi-widget">
+          <div class="kpi-label">总收入</div>
+          <div class="kpi-value" style="color:var(--color-primary)">¥2.48M</div>
+          <div class="kpi-trend up">↑ 18.3% 较上季度</div>
+        </div>
+        <div class="resize-handle br"></div>
+      </div>
+
+      <!-- KPI 2 -->
+      <div class="c-widget" id="w-kpi2" onclick="selectWidget('w-kpi2')">
+        <div class="kpi-widget">
+          <div class="kpi-label">订单数量</div>
+          <div class="kpi-value" style="color:var(--color-accent)">3,847</div>
+          <div class="kpi-trend up">↑ 12.6%</div>
+        </div>
+        <div class="resize-handle br"></div>
+      </div>
+
+      <!-- KPI 3 -->
+      <div class="c-widget" id="w-kpi3" onclick="selectWidget('w-kpi3')">
+        <div class="kpi-widget">
+          <div class="kpi-label">客单价</div>
+          <div class="kpi-value" style="color:var(--color-warning)">¥644</div>
+          <div class="kpi-trend down">↓ 2.1%</div>
+        </div>
+        <div class="resize-handle br"></div>
+      </div>
+
+      <!-- Line Chart (spans 2 cols) -->
+      <div class="c-widget selected" id="w-line" onclick="selectWidget('w-line')" style="grid-column: 1 / 3;">
+        <div class="c-widget-header">
+          <span class="c-widget-title">月度收入趋势</span>
+          <div class="c-widget-handle">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="5" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="19" r="1"/></svg>
+          </div>
+        </div>
+        <div class="c-widget-body">
+          <div class="chart-container" id="line-chart"></div>
+        </div>
+        <div class="resize-handle br"></div>
+        <div class="resize-handle bl"></div>
+        <div class="resize-handle tr"></div>
+        <div class="resize-handle tl"></div>
+      </div>
+
+      <!-- Pie Chart -->
+      <div class="c-widget" id="w-pie" onclick="selectWidget('w-pie')">
+        <div class="c-widget-header">
+          <span class="c-widget-title">品类占比</span>
+          <div class="c-widget-handle">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="5" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="19" r="1"/></svg>
+          </div>
+        </div>
+        <div class="c-widget-body">
+          <div class="chart-container" id="pie-chart"></div>
+        </div>
+        <div class="resize-handle br"></div>
+      </div>
+
+      <!-- Bar Chart (spans 2 cols) -->
+      <div class="c-widget" id="w-bar" onclick="selectWidget('w-bar')" style="grid-column: 1 / 3;">
+        <div class="c-widget-header">
+          <span class="c-widget-title">区域销售排名</span>
+          <div class="c-widget-handle">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="5" r="1"/><circle cx="15" cy="5" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="9" cy="19" r="1"/><circle cx="15" cy="19" r="1"/></svg>
+          </div>
+        </div>
+        <div class="c-widget-body">
+          <div class="chart-container" id="bar-chart"></div>
+        </div>
+        <div class="resize-handle br"></div>
+      </div>
+
+      <!-- Empty slot -->
+      <div class="c-slot" onclick="addWidget()">
+        <div class="c-slot-inner">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span>拖入组件</span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- RIGHT PANEL: Config -->
+  <aside class="right-panel">
+    <div class="rp-header">
+      <div class="rp-title">图表配置</div>
+      <div class="rp-sub">月度收入趋势 · 折线图</div>
+    </div>
+    <div class="rp-tabs">
+      <button class="rp-tab active" onclick="switchRpTab(this,'style')">样式</button>
+      <button class="rp-tab" onclick="switchRpTab(this,'data')">数据</button>
+      <button class="rp-tab" onclick="switchRpTab(this,'interact')">交互</button>
+    </div>
+    <div class="rp-scroll" id="rp-style">
+      <!-- Style Tab -->
+      <div class="config-group">
+        <div class="config-group-title">标题</div>
+        <div class="config-row">
+          <span class="config-label">标题文本</span>
+          <input class="config-input" type="text" value="月度收入趋势">
+        </div>
+        <div class="config-row">
+          <span class="config-label">字号</span>
+          <div class="slider-wrap">
+            <input type="range" min="10" max="24" value="12" oninput="this.nextElementSibling.textContent=this.value+'px'">
+            <span class="slider-val">12px</span>
+          </div>
+        </div>
+      </div>
+      <div class="config-group">
+        <div class="config-group-title">数据源</div>
+        <div class="datasource-badge">
+          <div class="datasource-dot"></div>
+          <span class="datasource-name">销售数据库</span>
+          <span class="datasource-switch" onclick="location.href='page-03-datasource.html'">切换</span>
+        </div>
+        <div class="config-row">
+          <span class="config-label">X 轴字段</span>
+          <select class="config-select">
+            <option>月份</option>
+            <option>季度</option>
+            <option>日期</option>
+          </select>
+        </div>
+        <div class="config-row">
+          <span class="config-label">Y 轴字段</span>
+          <select class="config-select">
+            <option>收入金额</option>
+            <option>订单数量</option>
+            <option>客单价</option>
+          </select>
+        </div>
+      </div>
+      <div class="config-group">
+        <div class="config-group-title">图表样式</div>
+        <div class="config-row">
+          <span class="config-label">图表类型</span>
+          <div class="config-toggle">
+            <button class="active">折线</button>
+            <button>曲线</button>
+            <button>阶梯</button>
+          </div>
+        </div>
+        <div class="config-row">
+          <span class="config-label">显示面积</span>
+          <div class="config-toggle">
+            <button class="active">开</button>
+            <button>关</button>
+          </div>
+        </div>
+        <div class="config-row">
+          <span class="config-label">主色</span>
+          <div>
+            <div class="config-color-row">
+              <div class="color-swatch active" style="background:#4F6EF7;" title="#4F6EF7"></div>
+              <div class="color-swatch" style="background:#22C7A9;" title="#22C7A9"></div>
+              <div class="color-swatch" style="background:#F8A742;" title="#F8A742"></div>
+              <div class="color-swatch" style="background:#F25B5B;" title="#F25B5B"></div>
+              <div class="color-swatch" style="background:#9B5FEA;" title="#9B5FEA"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="config-group">
+        <div class="config-group-title">图例 & 标签</div>
+        <div class="config-row">
+          <span class="config-label">显示图例</span>
+          <div class="config-toggle">
+            <button class="active">开</button>
+            <button>关</button>
+          </div>
+        </div>
+        <div class="config-row">
+          <span class="config-label">数据标签</span>
+          <div class="config-toggle">
+            <button>开</button>
+            <button class="active">关</button>
+          </div>
+        </div>
+      </div>
+      <div class="config-group">
+        <div class="config-group-title">尺寸 & 位置</div>
+        <div class="config-row">
+          <span class="config-label">宽度</span>
+          <input class="config-input" type="text" value="600" style="width:64px;flex:none;">
+          <span class="config-label">高度</span>
+          <input class="config-input" type="text" value="260" style="width:64px;flex:none;">
+        </div>
+        <div class="config-row">
+          <span class="config-label">X</span>
+          <input class="config-input" type="text" value="20" style="width:64px;flex:none;">
+          <span class="config-label">Y</span>
+          <input class="config-input" type="text" value="100" style="width:64px;flex:none;">
+        </div>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<script>
+// ECharts init
+document.addEventListener('DOMContentLoaded', function() {
+  // Line chart
+  var lineEl = document.getElementById('line-chart');
+  if (lineEl) {
+    var lineChart = echarts.init(lineEl);
+    lineChart.setOption({
+      grid: { top:20, right:20, bottom:28, left:48 },
+      tooltip: { trigger:'axis', backgroundColor:'rgba(26,30,46,.85)', borderColor:'transparent', textStyle:{color:'#fff',fontSize:12} },
+      xAxis: { type:'category', data:['1月','2月','3月','4月','5月','6月'], axisLine:{lineStyle:{color:'#E4E8F0'}}, axisLabel:{color:'#6B7A99',fontSize:11} },
+      yAxis: { type:'value', axisLabel:{color:'#6B7A99',fontSize:11,formatter:v=>v>=10000?v/10000+'w':v}, splitLine:{lineStyle:{color:'#F0F3FA',type:'dashed'}} },
+      series: [{
+        type:'line', smooth:true,
+        data:[180000,220000,195000,280000,310000,248000],
+        lineStyle:{color:'#4F6EF7',width:2.5},
+        itemStyle:{color:'#4F6EF7'},
+        areaStyle:{color:{type:'linear',x:0,y:0,x2:0,y2:1,colorStops:[{offset:0,color:'rgba(79,110,247,.2)'},{offset:1,color:'rgba(79,110,247,0)'}]}},
+        symbol:'circle', symbolSize:6,
+      }]
+    });
+  }
+
+  // Pie chart
+  var pieEl = document.getElementById('pie-chart');
+  if (pieEl) {
+    var pieChart = echarts.init(pieEl);
+    pieChart.setOption({
+      tooltip: { trigger:'item', backgroundColor:'rgba(26,30,46,.85)', borderColor:'transparent', textStyle:{color:'#fff',fontSize:12} },
+      legend: { orient:'vertical', left:0, top:'center', textStyle:{fontSize:10, color:'#6B7A99'}, itemWidth:10, itemHeight:10 },
+      series: [{
+        type:'pie', radius:['38%','62%'], center:['62%','50%'],
+        data:[
+          {value:42,name:'电子产品',itemStyle:{color:'#4F6EF7'}},
+          {value:28,name:'家居用品',itemStyle:{color:'#22C7A9'}},
+          {value:18,name:'服饰箱包',itemStyle:{color:'#F8A742'}},
+          {value:12,name:'其他',itemStyle:{color:'#E4E8F0'}},
+        ],
+        label:{show:false}, emphasis:{scale:true,scaleSize:4},
+        itemStyle:{borderRadius:3, borderWidth:2, borderColor:'#fff'}
+      }]
+    });
+  }
+
+  // Bar chart
+  var barEl = document.getElementById('bar-chart');
+  if (barEl) {
+    var barChart = echarts.init(barEl);
+    barChart.setOption({
+      grid: { top:10, right:20, bottom:28, left:64 },
+      tooltip: { trigger:'axis', backgroundColor:'rgba(26,30,46,.85)', borderColor:'transparent', textStyle:{color:'#fff',fontSize:12} },
+      xAxis: { type:'value', axisLabel:{color:'#6B7A99',fontSize:11}, splitLine:{lineStyle:{color:'#F0F3FA',type:'dashed'}} },
+      yAxis: { type:'category', data:['华东','华南','华北','西南','西北'], axisLine:{show:false}, axisTick:{show:false}, axisLabel:{color:'#6B7A99',fontSize:11} },
+      series: [{
+        type:'bar', barMaxWidth:18,
+        data:[{value:87, itemStyle:{color:'#4F6EF7'}},{value:74,itemStyle:{color:'#22C7A9'}},{value:65,itemStyle:{color:'#F8A742'}},{value:52,itemStyle:{color:'#9B5FEA'}},{value:38,itemStyle:{color:'#F25B5B'}}],
+        itemStyle:{borderRadius:[0,4,4,0]},
+        label:{show:true, position:'right', fontSize:11, color:'#6B7A99', formatter:'{c}w'}
+      }]
+    });
+  }
+});
+
+// Widget selection
+var selectedWidget = 'w-line';
+function selectWidget(id) {
+  document.querySelectorAll('.c-widget').forEach(w => w.classList.remove('selected'));
+  var el = document.getElementById(id);
+  if (el) el.classList.add('selected');
+  selectedWidget = id;
+}
+
+// Zoom
+var zoomLevel = 100;
+function changeZoom(delta) {
+  zoomLevel = Math.min(200, Math.max(50, zoomLevel + delta));
+  document.getElementById('zoom-display').textContent = zoomLevel + '%';
+  document.getElementById('canvas-board').style.transform = 'scale(' + zoomLevel/100 + ')';
+  document.getElementById('canvas-board').style.transformOrigin = 'top left';
+}
+
+// Panel tabs
+function switchPanelTab(el, type) {
+  document.querySelectorAll('.panel-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('panel-comps').style.display = type === 'comps' ? '' : 'none';
+  document.getElementById('panel-layers').style.display = type === 'layers' ? '' : 'none';
+}
+
+// RP tabs
+function switchRpTab(el, type) {
+  document.querySelectorAll('.rp-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// Drag
+function onDragStart(e, type) {
+  e.dataTransfer.setData('comp-type', type);
+}
+
+function addWidget() {
+  alert('从左侧组件库拖入组件，或点击"+"添加');
+}
+</script>
+</body>
+</html>

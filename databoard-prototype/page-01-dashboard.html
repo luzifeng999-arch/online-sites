@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>DataBoard — 工作台首页</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ========== DESIGN TOKENS ========== */
+:root {
+  --color-primary:        #4F6EF7;
+  --color-primary-light:  #EEF1FE;
+  --color-primary-dark:   #3352D9;
+  --color-accent:         #22C7A9;
+  --color-bg:             #F5F7FA;
+  --color-sidebar:        #1A1E2E;
+  --color-sidebar-hover:  #252B3E;
+  --color-sidebar-active: #2E3650;
+  --color-surface:        #FFFFFF;
+  --color-border:         #E4E8F0;
+  --color-text-primary:   #1A1E2E;
+  --color-text-secondary: #6B7A99;
+  --color-danger:         #F25B5B;
+  --color-warning:        #F8A742;
+  --color-success:        #22C7A9;
+  --sidebar-width:        220px;
+  --header-height:        60px;
+  --radius-sm:            6px;
+  --radius-md:            10px;
+  --radius-lg:            14px;
+  --shadow-sm:            0 1px 3px rgba(26,30,46,.06), 0 1px 2px rgba(26,30,46,.04);
+  --shadow-md:            0 4px 12px rgba(26,30,46,.08), 0 2px 4px rgba(26,30,46,.04);
+  --shadow-lg:            0 8px 24px rgba(26,30,46,.10);
+  --font:                 'DM Sans', system-ui, sans-serif;
+  --transition:           0.18s ease;
+}
+
+/* ========== RESET ========== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font); background: var(--color-bg); color: var(--color-text-primary); font-size: 14px; line-height: 1.5; overflow: hidden; height: 100vh; display: flex; }
+
+/* ========== SIDEBAR ========== */
+.sidebar {
+  width: var(--sidebar-width);
+  background: var(--color-sidebar);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 10;
+}
+.sidebar-logo {
+  height: var(--header-height);
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+.logo-icon {
+  width: 32px; height: 32px;
+  background: var(--color-primary);
+  border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; color: #fff; font-size: 14px;
+  margin-right: 10px;
+  flex-shrink: 0;
+}
+.logo-text { color: #fff; font-weight: 600; font-size: 15px; letter-spacing: .3px; }
+.logo-badge { background: var(--color-primary); color: #fff; font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 4px; margin-left: 6px; letter-spacing: .5px; }
+
+.sidebar-nav { flex: 1; padding: 12px 0; overflow-y: auto; }
+.nav-section-label {
+  font-size: 10px; font-weight: 600; letter-spacing: 1px;
+  color: rgba(255,255,255,.3); text-transform: uppercase;
+  padding: 16px 20px 6px;
+}
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 20px;
+  color: rgba(255,255,255,.55);
+  text-decoration: none;
+  font-size: 13.5px; font-weight: 500;
+  border-radius: 0;
+  cursor: pointer;
+  transition: var(--transition);
+  position: relative;
+  border: none; background: none; width: 100%; text-align: left;
+}
+.nav-item:hover { background: var(--color-sidebar-hover); color: rgba(255,255,255,.85); }
+.nav-item.active {
+  background: var(--color-sidebar-active);
+  color: #fff;
+}
+.nav-item.active::before {
+  content: '';
+  position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+  width: 3px; height: 20px;
+  background: var(--color-primary);
+  border-radius: 0 3px 3px 0;
+}
+.nav-icon { width: 18px; height: 18px; opacity: .7; flex-shrink: 0; }
+.nav-item.active .nav-icon, .nav-item:hover .nav-icon { opacity: 1; }
+.nav-badge {
+  margin-left: auto;
+  background: var(--color-primary);
+  color: #fff; font-size: 10px; font-weight: 700;
+  padding: 1px 6px; border-radius: 10px;
+  font-variant-numeric: tabular-nums;
+}
+
+.sidebar-footer {
+  padding: 16px 12px;
+  border-top: 1px solid rgba(255,255,255,.06);
+}
+.user-card {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: var(--transition);
+}
+.user-card:hover { background: var(--color-sidebar-hover); }
+.user-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-weight: 700; font-size: 12px; flex-shrink: 0;
+}
+.user-info { flex: 1; min-width: 0; }
+.user-name { color: #fff; font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.user-role { color: rgba(255,255,255,.35); font-size: 11px; }
+.user-more { color: rgba(255,255,255,.3); }
+
+/* ========== MAIN ========== */
+.main { flex: 1; display: flex; flex-direction: column; min-width: 0; overflow: hidden; }
+
+/* ========== TOPBAR ========== */
+.topbar {
+  height: var(--header-height);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  display: flex; align-items: center;
+  padding: 0 24px;
+  gap: 16px;
+  flex-shrink: 0;
+}
+.topbar-title { font-size: 16px; font-weight: 600; color: var(--color-text-primary); }
+.topbar-spacer { flex: 1; }
+.search-box {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 7px 12px;
+  width: 240px;
+  transition: var(--transition);
+}
+.search-box:focus-within { border-color: var(--color-primary); background: #fff; box-shadow: 0 0 0 3px var(--color-primary-light); }
+.search-box input { border: none; background: none; outline: none; font-size: 13px; color: var(--color-text-primary); width: 100%; font-family: var(--font); }
+.search-box input::placeholder { color: var(--color-text-secondary); }
+.search-icon { color: var(--color-text-secondary); flex-shrink: 0; }
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 16px;
+  font-size: 13.5px; font-weight: 500;
+  border-radius: var(--radius-md);
+  cursor: pointer; border: none; outline: none;
+  transition: var(--transition); font-family: var(--font);
+}
+.btn-primary { background: var(--color-primary); color: #fff; }
+.btn-primary:hover { background: var(--color-primary-dark); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+.btn-ghost { background: transparent; color: var(--color-text-secondary); border: 1px solid var(--color-border); }
+.btn-ghost:hover { background: var(--color-bg); color: var(--color-text-primary); }
+.icon-btn {
+  width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: var(--radius-md); border: 1px solid var(--color-border);
+  background: transparent; cursor: pointer; color: var(--color-text-secondary);
+  transition: var(--transition);
+}
+.icon-btn:hover { background: var(--color-bg); color: var(--color-text-primary); }
+.notif-dot { position: relative; }
+.notif-dot::after {
+  content: ''; position: absolute; top: 6px; right: 6px;
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--color-danger);
+  border: 1.5px solid var(--color-surface);
+}
+
+/* ========== CONTENT ========== */
+.content { flex: 1; overflow-y: auto; padding: 28px 28px 40px; }
+
+/* ========== STATS ROW ========== */
+.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }
+.stat-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 20px 22px;
+  display: flex; align-items: flex-start; justify-content: space-between;
+  transition: var(--transition);
+  box-shadow: var(--shadow-sm);
+}
+.stat-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+.stat-label { font-size: 12px; font-weight: 500; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 8px; }
+.stat-value { font-size: 26px; font-weight: 700; color: var(--color-text-primary); font-variant-numeric: tabular-nums; line-height: 1; margin-bottom: 8px; }
+.stat-trend {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 12px; font-weight: 500; padding: 2px 7px; border-radius: 6px;
+}
+.stat-trend.up { background: rgba(34,199,169,.12); color: var(--color-success); }
+.stat-trend.down { background: rgba(242,91,91,.12); color: var(--color-danger); }
+.stat-icon-wrap {
+  width: 44px; height: 44px; border-radius: var(--radius-md);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.stat-icon-wrap.blue { background: var(--color-primary-light); color: var(--color-primary); }
+.stat-icon-wrap.teal { background: rgba(34,199,169,.12); color: var(--color-accent); }
+.stat-icon-wrap.orange { background: rgba(248,167,66,.12); color: var(--color-warning); }
+.stat-icon-wrap.red { background: rgba(242,91,91,.12); color: var(--color-danger); }
+
+/* ========== SECTION HEADER ========== */
+.section-header { display: flex; align-items: center; margin-bottom: 16px; }
+.section-title { font-size: 15px; font-weight: 600; color: var(--color-text-primary); }
+.section-spacer { flex: 1; }
+.view-all { font-size: 13px; color: var(--color-primary); cursor: pointer; text-decoration: none; font-weight: 500; }
+.view-all:hover { text-decoration: underline; }
+
+/* ========== TAB BAR ========== */
+.tab-bar { display: flex; gap: 4px; background: var(--color-bg); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 3px; margin-bottom: 20px; width: fit-content; }
+.tab-item { padding: 6px 16px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 500; color: var(--color-text-secondary); cursor: pointer; transition: var(--transition); border: none; background: none; font-family: var(--font); }
+.tab-item.active { background: var(--color-surface); color: var(--color-text-primary); box-shadow: var(--shadow-sm); }
+.tab-item:not(.active):hover { color: var(--color-text-primary); }
+
+/* ========== BOARD GRID ========== */
+.boards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.board-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: var(--shadow-sm);
+}
+.board-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-3px); border-color: var(--color-primary); }
+.board-thumb {
+  height: 140px;
+  position: relative;
+  overflow: hidden;
+  background: var(--color-bg);
+}
+.board-thumb-content { width: 100%; height: 100%; display: flex; flex-direction: column; padding: 10px; gap: 6px; }
+.board-thumb-row { display: flex; gap: 6px; flex: 1; }
+.thumb-block { border-radius: 4px; flex: 1; }
+.board-thumb-bar { height: 6px; border-radius: 3px; background: var(--color-border); overflow: hidden; }
+.board-thumb-bar-fill { height: 100%; border-radius: 3px; }
+.board-tag {
+  position: absolute; top: 10px; right: 10px;
+  font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 5px;
+}
+.board-tag.shared { background: rgba(79,110,247,.15); color: var(--color-primary); }
+.board-tag.personal { background: rgba(107,122,153,.12); color: var(--color-text-secondary); }
+.board-info { padding: 14px 16px 16px; }
+.board-name { font-size: 14px; font-weight: 600; color: var(--color-text-primary); margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.board-meta { font-size: 12px; color: var(--color-text-secondary); margin-bottom: 12px; }
+.board-footer { display: flex; align-items: center; justify-content: space-between; }
+.board-avatars { display: flex; }
+.board-avatar {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+  border: 2px solid var(--color-surface);
+  margin-left: -6px; display: flex; align-items: center; justify-content: center;
+  font-size: 9px; font-weight: 700; color: #fff;
+}
+.board-avatar:first-child { margin-left: 0; }
+.board-actions { display: flex; gap: 4px; }
+.board-action-btn {
+  width: 28px; height: 28px; border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--color-text-secondary); border: none; background: transparent;
+  cursor: pointer; transition: var(--transition);
+}
+.board-action-btn:hover { background: var(--color-bg); color: var(--color-text-primary); }
+
+/* NEW BOARD CARD */
+.board-card-new {
+  background: transparent;
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius-lg);
+  min-height: 230px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+  cursor: pointer; transition: var(--transition); color: var(--color-text-secondary);
+}
+.board-card-new:hover { border-color: var(--color-primary); color: var(--color-primary); background: var(--color-primary-light); }
+.new-icon { width: 44px; height: 44px; border-radius: 50%; background: var(--color-border); display: flex; align-items: center; justify-content: center; transition: var(--transition); }
+.board-card-new:hover .new-icon { background: rgba(79,110,247,.2); }
+.new-label { font-size: 13px; font-weight: 500; }
+
+/* ========== SCROLLBAR ========== */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #c5cce0; }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">DB</div>
+    <span class="logo-text">DataBoard</span>
+    <span class="logo-badge">Beta</span>
+  </div>
+  <nav class="sidebar-nav">
+    <span class="nav-section-label">主菜单</span>
+    <a class="nav-item active" href="page-01-dashboard.html">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      工作台
+    </a>
+    <a class="nav-item" href="page-02-editor.html">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="9" x2="21" y2="9"/></svg>
+      编辑器
+    </a>
+    <a class="nav-item" href="page-03-datasource.html">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+      数据源
+      <span class="nav-badge">4</span>
+    </a>
+    <span class="nav-section-label">协作</span>
+    <a class="nav-item" href="#">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      团队成员
+    </a>
+    <a class="nav-item" href="#">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      通知
+    </a>
+    <span class="nav-section-label">系统</span>
+    <a class="nav-item" href="#">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M6.34 17.66l-1.41 1.41M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2m16 0h2M12 2v2m0 16v2"/></svg>
+      设置
+    </a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="user-card">
+      <div class="user-avatar">张</div>
+      <div class="user-info">
+        <div class="user-name">张明辉</div>
+        <div class="user-role">管理员</div>
+      </div>
+      <svg class="user-more" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <span class="topbar-title">工作台</span>
+    <div class="topbar-spacer"></div>
+    <div class="search-box">
+      <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="搜索看板…">
+    </div>
+    <button class="icon-btn notif-dot" aria-label="通知">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+    </button>
+    <button class="btn btn-primary" onclick="location.href='page-02-editor.html'">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      新建看板
+    </button>
+  </header>
+
+  <!-- CONTENT -->
+  <div class="content">
+    <!-- STATS -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div>
+          <div class="stat-label">看板总数</div>
+          <div class="stat-value">24</div>
+          <span class="stat-trend up">↑ 3 本月</span>
+        </div>
+        <div class="stat-icon-wrap blue">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div>
+          <div class="stat-label">数据源</div>
+          <div class="stat-value">4</div>
+          <span class="stat-trend up">↑ 1 本周</span>
+        </div>
+        <div class="stat-icon-wrap teal">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div>
+          <div class="stat-label">团队成员</div>
+          <div class="stat-value">8</div>
+          <span class="stat-trend up">↑ 2 新加入</span>
+        </div>
+        <div class="stat-icon-wrap orange">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div>
+          <div class="stat-label">今日访问</div>
+          <div class="stat-value">126</div>
+          <span class="stat-trend down">↓ 5% 较昨日</span>
+        </div>
+        <div class="stat-icon-wrap red">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOARDS -->
+    <div class="section-header">
+      <span class="section-title">我的看板</span>
+      <div class="topbar-spacer"></div>
+      <!-- Tab bar -->
+      <div class="tab-bar">
+        <button class="tab-item active" onclick="switchTab(this, 'all')">全部</button>
+        <button class="tab-item" onclick="switchTab(this, 'my')">我的</button>
+        <button class="tab-item" onclick="switchTab(this, 'shared')">共享</button>
+        <button class="tab-item" onclick="switchTab(this, 'starred')">收藏</button>
+      </div>
+    </div>
+
+    <div class="boards-grid" id="boards-grid">
+      <!-- Board 1 -->
+      <div class="board-card" onclick="location.href='page-02-editor.html'">
+        <div class="board-thumb" style="background: linear-gradient(135deg,#EEF1FE,#E8F8F5)">
+          <div class="board-thumb-content">
+            <div class="board-thumb-row">
+              <div class="thumb-block" style="background:var(--color-primary);opacity:.7;border-radius:6px;"></div>
+              <div style="width:60%;display:flex;flex-direction:column;gap:5px;">
+                <div class="thumb-block" style="background:var(--color-accent);opacity:.6;border-radius:4px;height:40%;"></div>
+                <div class="thumb-block" style="background:var(--color-warning);opacity:.6;border-radius:4px;"></div>
+              </div>
+            </div>
+            <div class="board-thumb-bar"><div class="board-thumb-bar-fill" style="width:68%;background:var(--color-primary);"></div></div>
+            <div class="board-thumb-bar"><div class="board-thumb-bar-fill" style="width:42%;background:var(--color-accent);"></div></div>
+          </div>
+          <span class="board-tag shared">共享</span>
+        </div>
+        <div class="board-info">
+          <div class="board-name">Q2 销售业绩全景看板</div>
+          <div class="board-meta">更新于 3 小时前 · 6 个图表</div>
+          <div class="board-footer">
+            <div class="board-avatars">
+              <div class="board-avatar">张</div>
+              <div class="board-avatar">李</div>
+              <div class="board-avatar">王</div>
+            </div>
+            <div class="board-actions">
+              <button class="board-action-btn" aria-label="收藏" onclick="event.stopPropagation()">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              </button>
+              <button class="board-action-btn" aria-label="更多" onclick="event.stopPropagation()">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Board 2 -->
+      <div class="board-card" onclick="location.href='page-02-editor.html'">
+        <div class="board-thumb" style="background: linear-gradient(135deg,#F0FFF9,#EEF1FE)">
+          <div class="board-thumb-content">
+            <div class="board-thumb-row">
+              <div style="flex:1;display:flex;flex-direction:column;gap:4px;">
+                <div class="thumb-block" style="background:var(--color-accent);opacity:.7;border-radius:3px;height:30%;"></div>
+                <div class="thumb-block" style="background:var(--color-accent);opacity:.5;border-radius:3px;height:50%;"></div>
+                <div class="thumb-block" style="background:var(--color-accent);opacity:.3;border-radius:3px;height:20%;"></div>
+              </div>
+              <div style="flex:1;display:flex;flex-direction:column;gap:4px;">
+                <div class="thumb-block" style="background:var(--color-primary);opacity:.6;border-radius:3px;height:60%;"></div>
+                <div class="thumb-block" style="background:var(--color-primary);opacity:.4;border-radius:3px;height:40%;"></div>
+              </div>
+              <div style="flex:1;display:flex;flex-direction:column;gap:4px;">
+                <div class="thumb-block" style="background:var(--color-warning);opacity:.7;border-radius:3px;height:45%;"></div>
+                <div class="thumb-block" style="background:var(--color-warning);opacity:.5;border-radius:3px;height:55%;"></div>
+              </div>
+            </div>
+          </div>
+          <span class="board-tag personal">个人</span>
+        </div>
+        <div class="board-info">
+          <div class="board-name">用户增长监控</div>
+          <div class="board-meta">更新于 昨天 · 4 个图表</div>
+          <div class="board-footer">
+            <div class="board-avatars">
+              <div class="board-avatar">张</div>
+            </div>
+            <div class="board-actions">
+              <button class="board-action-btn" aria-label="收藏" onclick="event.stopPropagation()">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              </button>
+              <button class="board-action-btn" aria-label="更多" onclick="event.stopPropagation()">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Board 3 -->
+      <div class="board-card" onclick="location.href='page-02-editor.html'">
+        <div class="board-thumb" style="background: linear-gradient(135deg,#FFF8EE,#FFF0F0)">
+          <div class="board-thumb-content">
+            <div class="board-thumb-row" style="gap:4px;">
+              <div style="flex:1;background:var(--color-warning);opacity:.6;border-radius:50%;aspect-ratio:1;max-width:80px;max-height:80px;margin:auto;"></div>
+              <div style="flex:1;display:flex;flex-direction:column;gap:5px;justify-content:center;">
+                <div style="display:flex;gap:4px;align-items:center;"><div style="width:10px;height:10px;border-radius:2px;background:var(--color-warning);opacity:.8;"></div><div style="height:6px;border-radius:3px;background:var(--color-border);flex:1;"></div></div>
+                <div style="display:flex;gap:4px;align-items:center;"><div style="width:10px;height:10px;border-radius:2px;background:var(--color-danger);opacity:.7;"></div><div style="height:6px;border-radius:3px;background:var(--color-border);flex:1;"></div></div>
+                <div style="display:flex;gap:4px;align-items:center;"><div style="width:10px;height:10px;border-radius:2px;background:var(--color-primary);opacity:.7;"></div><div style="height:6px;border-radius:3px;background:var(--color-border);flex:1;"></div></div>
+              </div>
+            </div>
+          </div>
+          <span class="board-tag shared">共享</span>
+        </div>
+        <div class="board-info">
+          <div class="board-name">运营成本分析</div>
+          <div class="board-meta">更新于 2 天前 · 3 个图表</div>
+          <div class="board-footer">
+            <div class="board-avatars">
+              <div class="board-avatar">李</div>
+              <div class="board-avatar">周</div>
+            </div>
+            <div class="board-actions">
+              <button class="board-action-btn" aria-label="收藏" onclick="event.stopPropagation()">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              </button>
+              <button class="board-action-btn" aria-label="更多" onclick="event.stopPropagation()">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Board 4 -->
+      <div class="board-card" onclick="location.href='page-02-editor.html'">
+        <div class="board-thumb" style="background: linear-gradient(135deg,#EEF1FE,#F0FFF9)">
+          <div class="board-thumb-content">
+            <div class="board-thumb-row">
+              <div class="thumb-block" style="background:var(--color-primary);opacity:.5;border-radius:4px;"></div>
+              <div class="thumb-block" style="background:var(--color-success);opacity:.5;border-radius:4px;"></div>
+            </div>
+            <div class="board-thumb-bar"><div class="board-thumb-bar-fill" style="width:88%;background:linear-gradient(90deg,var(--color-primary),var(--color-accent));"></div></div>
+          </div>
+          <span class="board-tag personal">个人</span>
+        </div>
+        <div class="board-info">
+          <div class="board-name">产品转化漏斗</div>
+          <div class="board-meta">更新于 1 周前 · 5 个图表</div>
+          <div class="board-footer">
+            <div class="board-avatars">
+              <div class="board-avatar">张</div>
+            </div>
+            <div class="board-actions">
+              <button class="board-action-btn" aria-label="收藏" onclick="event.stopPropagation()">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              </button>
+              <button class="board-action-btn" aria-label="更多" onclick="event.stopPropagation()">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Board 5 -->
+      <div class="board-card" onclick="location.href='page-02-editor.html'">
+        <div class="board-thumb" style="background:linear-gradient(135deg,#1A1E2E,#2E3650)">
+          <div class="board-thumb-content">
+            <div class="board-thumb-row">
+              <div style="flex:2;display:flex;flex-direction:column;gap:5px;justify-content:center;">
+                <div style="height:8px;border-radius:4px;background:rgba(79,110,247,.8);width:70%;"></div>
+                <div style="height:5px;border-radius:3px;background:rgba(255,255,255,.15);width:90%;"></div>
+                <div style="height:5px;border-radius:3px;background:rgba(255,255,255,.15);width:60%;"></div>
+              </div>
+              <div style="flex:1;background:rgba(34,199,169,.3);border-radius:6px;display:flex;align-items:center;justify-content:center;">
+                <div style="width:30px;height:30px;border-radius:50%;border:3px solid rgba(34,199,169,.8);"></div>
+              </div>
+            </div>
+          </div>
+          <span class="board-tag shared">共享</span>
+        </div>
+        <div class="board-info">
+          <div class="board-name">大屏监控中心</div>
+          <div class="board-meta">更新于 3 天前 · 8 个图表</div>
+          <div class="board-footer">
+            <div class="board-avatars">
+              <div class="board-avatar">王</div>
+              <div class="board-avatar">陈</div>
+              <div class="board-avatar">周</div>
+            </div>
+            <div class="board-actions">
+              <button class="board-action-btn" aria-label="预览" onclick="event.stopPropagation();location.href='page-04-preview.html'">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+              <button class="board-action-btn" aria-label="更多" onclick="event.stopPropagation()">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- New Board -->
+      <div class="board-card-new" onclick="location.href='page-02-editor.html'">
+        <div class="new-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </div>
+        <span class="new-label">新建看板</span>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+function switchTab(el, type) {
+  document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+</script>
+</body>
+</html>

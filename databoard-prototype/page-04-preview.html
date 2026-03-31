@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>DataBoard — 大屏预览</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+<style>
+:root {
+  --color-primary:   #4F6EF7;
+  --color-accent:    #22C7A9;
+  --color-warning:   #F8A742;
+  --color-danger:    #F25B5B;
+  --color-success:   #22C7A9;
+  --color-bg:        #090D1A;
+  --color-panel:     #0D1428;
+  --color-border:    rgba(79,110,247,.2);
+  --color-text:      #E4EBFF;
+  --color-muted:     rgba(228,235,255,.4);
+  --font:            'DM Sans', system-ui, sans-serif;
+  --glow-blue:       0 0 20px rgba(79,110,247,.25);
+  --glow-teal:       0 0 20px rgba(34,199,169,.2);
+  --radius:          10px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100%; height: 100%; }
+body {
+  font-family: var(--font);
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: 13px;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  background-image:
+    radial-gradient(ellipse 60% 40% at 50% 0%, rgba(79,110,247,.06) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 30% at 80% 80%, rgba(34,199,169,.04) 0%, transparent 60%);
+}
+
+/* TOP BAR */
+.preview-topbar {
+  height: 52px;
+  background: rgba(13,20,40,.8);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--color-border);
+  display: flex; align-items: center;
+  padding: 0 20px;
+  gap: 12px;
+  flex-shrink: 0;
+  position: relative;
+}
+.preview-topbar-center {
+  position: absolute; left: 50%; transform: translateX(-50%);
+  display: flex; align-items: center; gap: 10px;
+}
+.preview-logo-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--color-accent);
+  animation: blink 2s infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+.preview-board-name { font-size: 14px; font-weight: 700; letter-spacing: .5px; }
+.preview-live-badge {
+  font-size: 10px; font-weight: 700; letter-spacing: 1px;
+  color: var(--color-accent); background: rgba(34,199,169,.12);
+  border: 1px solid rgba(34,199,169,.25);
+  padding: 2px 8px; border-radius: 20px;
+}
+.pbar-spacer { flex: 1; }
+.pbar-time { font-size: 12px; color: var(--color-muted); font-variant-numeric: tabular-nums; }
+.pbar-btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 5px 12px; font-size: 12px; font-weight: 500;
+  border-radius: 6px; cursor: pointer; border: none; font-family: var(--font);
+  transition: .15s;
+}
+.pbar-btn-ghost { background: rgba(255,255,255,.06); color: rgba(228,235,255,.6); border: 1px solid rgba(255,255,255,.1); }
+.pbar-btn-ghost:hover { background: rgba(255,255,255,.1); color: var(--color-text); }
+.pbar-btn-exit { background: rgba(242,91,91,.12); color: var(--color-danger); border: 1px solid rgba(242,91,91,.2); }
+.pbar-btn-exit:hover { background: rgba(242,91,91,.2); }
+
+/* MAIN GRID */
+.preview-body {
+  flex: 1; overflow: hidden;
+  display: grid;
+  /* 3-column layout: left | center | right — all fluid, no fixed widths */
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 2.2fr) minmax(0, 1.1fr);
+  grid-template-rows: auto 1fr auto;
+  gap: 10px;
+  padding: 10px;
+  min-width: 0;
+}
+
+/* PANEL BASE */
+.pcard {
+  background: var(--color-panel);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  display: flex; flex-direction: column;
+  min-width: 0;
+}
+.pcard-header {
+  padding: 8px 12px;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0;
+}
+.pcard-title {
+  font-size: 10px; font-weight: 600; letter-spacing: .8px;
+  text-transform: uppercase; color: var(--color-primary);
+  display: flex; align-items: center; gap: 6px;
+}
+.pcard-title::before {
+  content: ''; display: block;
+  width: 3px; height: 11px; border-radius: 2px;
+  background: var(--color-primary);
+}
+.pcard-body { flex: 1; padding: 0 12px 10px; overflow: hidden; min-height: 0; }
+
+/* KPI ROW — spans all 3 columns, 5 cards in one row */
+.kpi-row {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+.kpi-card {
+  background: var(--color-panel);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  display: flex; align-items: center; gap: 10px;
+  position: relative; overflow: hidden;
+  transition: .18s;
+  min-width: 0;
+}
+.kpi-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+}
+.kpi-card:nth-child(1)::before { background: var(--color-primary); }
+.kpi-card:nth-child(2)::before { background: var(--color-accent); }
+.kpi-card:nth-child(3)::before { background: var(--color-warning); }
+.kpi-card:nth-child(4)::before { background: var(--color-danger); }
+.kpi-card:nth-child(5)::before { background: #9B5FEA; }
+.kpi-card:hover { border-color: var(--color-primary); box-shadow: var(--glow-blue); }
+.kpi-icon-wrap { width: 32px; height: 32px; border-radius: 7px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.kpi-info { flex: 1; min-width: 0; }
+.kpi-label-dark { font-size: 9px; font-weight: 600; letter-spacing: .5px; text-transform: uppercase; color: var(--color-muted); margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.kpi-val-dark { font-size: 18px; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }
+.kpi-change { font-size: 10px; margin-top: 3px; font-weight: 500; }
+
+/* CENTER top area  */
+.center-top { grid-column: 2; grid-row: 1; }
+/* For kpi-row spans all 3 cols row 1 */
+
+/* CHART AREA */
+.chart-fill { width: 100%; height: 100%; }
+
+/* MAP PLACEHOLDER */
+.map-placeholder {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: 8px;
+  background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(79,110,247,.05) 0%, transparent 80%);
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); border-radius: 3px; }
+
+/* GLOW text */
+.glow-text { text-shadow: 0 0 12px currentColor; }
+
+/* MARQUEE */
+.marquee-wrap { overflow: hidden; width: 100%; }
+.marquee-inner { display: flex; gap: 48px; animation: marquee 20s linear infinite; white-space: nowrap; }
+@keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+.marquee-item { font-size: 12px; color: var(--color-muted); display: flex; align-items: center; gap: 8px; }
+.marquee-item span { color: var(--color-text); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+/* RANKING TABLE */
+.rank-table { width: 100%; }
+.rank-row { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid rgba(79,110,247,.08); }
+.rank-row:last-child { border-bottom: none; }
+.rank-num { width: 20px; height: 20px; border-radius: 4px; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.rank-num.t1 { background: rgba(248,167,66,.25); color: var(--color-warning); }
+.rank-num.t2 { background: rgba(107,122,153,.25); color: #aab; }
+.rank-num.t3 { background: rgba(180,100,60,.25); color: #cb8a; }
+.rank-num.tn { background: rgba(255,255,255,.05); color: var(--color-muted); }
+.rank-name { flex: 1; font-size: 12px; }
+.rank-val { font-size: 12px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.rank-bar-wrap { width: 60px; height: 4px; background: rgba(255,255,255,.07); border-radius: 2px; }
+.rank-bar-fill { height: 100%; border-radius: 2px; background: var(--color-primary); }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="preview-topbar">
+  <button class="pbar-btn pbar-btn-ghost" onclick="location.href='page-01-dashboard.html'">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+    退出
+  </button>
+  <button class="pbar-btn pbar-btn-ghost" onclick="location.href='page-02-editor.html'">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+    编辑
+  </button>
+  <div class="pbar-spacer"></div>
+  <div class="preview-topbar-center">
+    <div class="preview-logo-dot"></div>
+    <span class="preview-board-name">大屏监控中心</span>
+    <span class="preview-live-badge">LIVE</span>
+  </div>
+  <div class="pbar-spacer"></div>
+  <div class="pbar-time" id="clock">--:--:--</div>
+  <button class="pbar-btn pbar-btn-ghost">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+    全屏
+  </button>
+  <button class="pbar-btn pbar-btn-ghost">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+    分享
+  </button>
+</header>
+
+<!-- BODY GRID -->
+<div class="preview-body">
+
+  <!-- KPI ROW -->
+  <div class="kpi-row">
+    <div class="kpi-card">
+      <div class="kpi-icon-wrap" style="background:rgba(79,110,247,.15);">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4F6EF7" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      </div>
+      <div class="kpi-info">
+        <div class="kpi-label-dark">总收入</div>
+        <div class="kpi-val-dark" style="color:#4F6EF7" class="glow-text">¥2.48M</div>
+        <div class="kpi-change" style="color:var(--color-accent)">↑ 18.3%</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon-wrap" style="background:rgba(34,199,169,.15);">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22C7A9" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      </div>
+      <div class="kpi-info">
+        <div class="kpi-label-dark">订单量</div>
+        <div class="kpi-val-dark" style="color:#22C7A9">3,847</div>
+        <div class="kpi-change" style="color:var(--color-accent)">↑ 12.6%</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon-wrap" style="background:rgba(248,167,66,.15);">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F8A742" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      </div>
+      <div class="kpi-info">
+        <div class="kpi-label-dark">活跃用户</div>
+        <div class="kpi-val-dark" style="color:#F8A742">12,460</div>
+        <div class="kpi-change" style="color:var(--color-accent)">↑ 7.2%</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon-wrap" style="background:rgba(242,91,91,.15);">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F25B5B" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+      </div>
+      <div class="kpi-info">
+        <div class="kpi-label-dark">服务器负载</div>
+        <div class="kpi-val-dark" style="color:#F25B5B">68%</div>
+        <div class="kpi-change" style="color:var(--color-danger)">↑ 5.4%</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon-wrap" style="background:rgba(155,95,234,.15);">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9B5FEA" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      </div>
+      <div class="kpi-info">
+        <div class="kpi-label-dark">转化率</div>
+        <div class="kpi-val-dark" style="color:#9B5FEA">4.87%</div>
+        <div class="kpi-change" style="color:var(--color-accent)">↑ 0.3pt</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LEFT COLUMN -->
+  <div style="display:flex;flex-direction:column;gap:10px;grid-row:2/4;min-width:0;overflow:hidden;">
+    <!-- Rank -->
+    <div class="pcard" style="flex:1;min-height:0;">
+      <div class="pcard-header">
+        <span class="pcard-title">区域销售排名</span>
+      </div>
+      <div class="pcard-body">
+        <div class="rank-table">
+          <div class="rank-row">
+            <div class="rank-num t1">1</div>
+            <span class="rank-name">华东地区</span>
+            <div class="rank-bar-wrap"><div class="rank-bar-fill" style="width:100%;background:#4F6EF7;"></div></div>
+            <span class="rank-val" style="color:#4F6EF7">87w</span>
+          </div>
+          <div class="rank-row">
+            <div class="rank-num t2">2</div>
+            <span class="rank-name">华南地区</span>
+            <div class="rank-bar-wrap"><div class="rank-bar-fill" style="width:85%;background:#22C7A9;"></div></div>
+            <span class="rank-val" style="color:#22C7A9">74w</span>
+          </div>
+          <div class="rank-row">
+            <div class="rank-num t3">3</div>
+            <span class="rank-name">华北地区</span>
+            <div class="rank-bar-wrap"><div class="rank-bar-fill" style="width:75%;background:#F8A742;"></div></div>
+            <span class="rank-val" style="color:#F8A742">65w</span>
+          </div>
+          <div class="rank-row">
+            <div class="rank-num tn">4</div>
+            <span class="rank-name">西南地区</span>
+            <div class="rank-bar-wrap"><div class="rank-bar-fill" style="width:60%;"></div></div>
+            <span class="rank-val">52w</span>
+          </div>
+          <div class="rank-row">
+            <div class="rank-num tn">5</div>
+            <span class="rank-name">西北地区</span>
+            <div class="rank-bar-wrap"><div class="rank-bar-fill" style="width:44%;background:#9B5FEA;"></div></div>
+            <span class="rank-val" style="color:#9B5FEA">38w</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Pie -->
+    <div class="pcard" style="flex:1;min-height:0;">
+      <div class="pcard-header">
+        <span class="pcard-title">品类占比</span>
+      </div>
+      <div class="pcard-body">
+        <div class="chart-fill" id="pie-preview"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CENTER COLUMN -->
+  <div style="display:flex;flex-direction:column;gap:10px;grid-row:2/4;min-width:0;overflow:hidden;">
+    <!-- Main line chart -->
+    <div class="pcard" style="flex:1.8;min-height:0;">
+      <div class="pcard-header">
+        <span class="pcard-title">月度收入趋势</span>
+        <span style="font-size:11px;color:var(--color-muted);font-variant-numeric:tabular-nums">近 6 个月</span>
+      </div>
+      <div class="pcard-body">
+        <div class="chart-fill" id="line-preview"></div>
+      </div>
+    </div>
+    <!-- Marquee ticker -->
+    <div class="pcard" style="flex-shrink:0;height:50px;justify-content:center;">
+      <div style="padding:0 14px;overflow:hidden;display:flex;align-items:center;">
+        <span style="font-size:10px;font-weight:700;letter-spacing:.8px;color:var(--color-primary);text-transform:uppercase;margin-right:16px;white-space:nowrap;">实时动态</span>
+        <div class="marquee-wrap">
+          <div class="marquee-inner">
+            <span class="marquee-item">华东区新增订单 <span>+32</span></span>
+            <span class="marquee-item">用户 ID:20481 完成购买 <span>¥2,440</span></span>
+            <span class="marquee-item">API 数据源同步完成</span>
+            <span class="marquee-item">华南区转化率提升 <span>+0.8%</span></span>
+            <span class="marquee-item">系统运行正常 <span>99.98%</span> uptime</span>
+            <!-- duplicate for seamless loop -->
+            <span class="marquee-item">华东区新增订单 <span>+32</span></span>
+            <span class="marquee-item">用户 ID:20481 完成购买 <span>¥2,440</span></span>
+            <span class="marquee-item">API 数据源同步完成</span>
+            <span class="marquee-item">华南区转化率提升 <span>+0.8%</span></span>
+            <span class="marquee-item">系统运行正常 <span>99.98%</span> uptime</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Bar chart bottom -->
+    <div class="pcard" style="flex:1;min-height:0;">
+      <div class="pcard-header">
+        <span class="pcard-title">渠道转化漏斗</span>
+      </div>
+      <div class="pcard-body">
+        <div class="chart-fill" id="funnel-preview"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT COLUMN -->
+  <div style="display:flex;flex-direction:column;gap:10px;grid-row:2/4;min-width:0;overflow:hidden;">
+    <!-- Gauge -->
+    <div class="pcard" style="flex:1;min-height:0;">
+      <div class="pcard-header">
+        <span class="pcard-title">目标完成率</span>
+      </div>
+      <div class="pcard-body">
+        <div class="chart-fill" id="gauge-preview"></div>
+      </div>
+    </div>
+    <!-- Recent events -->
+    <div class="pcard" style="flex:1.2;min-height:0;overflow:hidden;">
+      <div class="pcard-header">
+        <span class="pcard-title">最新事件</span>
+      </div>
+      <div class="pcard-body" style="overflow-y:auto;">
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="display:flex;gap:8px;align-items:flex-start;">
+            <div style="width:6px;height:6px;border-radius:50%;background:var(--color-success);margin-top:5px;flex-shrink:0;box-shadow:0 0 6px var(--color-success);"></div>
+            <div><div style="font-size:12px;font-weight:500;">华东销售日报生成</div><div style="font-size:10px;color:var(--color-muted);">2 分钟前</div></div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:flex-start;">
+            <div style="width:6px;height:6px;border-radius:50%;background:var(--color-primary);margin-top:5px;flex-shrink:0;box-shadow:0 0 6px var(--color-primary);"></div>
+            <div><div style="font-size:12px;font-weight:500;">数据源同步完成</div><div style="font-size:10px;color:var(--color-muted);">8 分钟前</div></div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:flex-start;">
+            <div style="width:6px;height:6px;border-radius:50%;background:var(--color-warning);margin-top:5px;flex-shrink:0;box-shadow:0 0 6px var(--color-warning);"></div>
+            <div><div style="font-size:12px;font-weight:500;">服务器 CPU 超过 65%</div><div style="font-size:10px;color:var(--color-muted);">15 分钟前</div></div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:flex-start;">
+            <div style="width:6px;height:6px;border-radius:50%;background:var(--color-success);margin-top:5px;flex-shrink:0;box-shadow:0 0 6px var(--color-success);"></div>
+            <div><div style="font-size:12px;font-weight:500;">Q2 报表已导出</div><div style="font-size:10px;color:var(--color-muted);">31 分钟前</div></div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:flex-start;">
+            <div style="width:6px;height:6px;border-radius:50%;background:var(--color-danger);margin-top:5px;flex-shrink:0;box-shadow:0 0 6px var(--color-danger);"></div>
+            <div><div style="font-size:12px;font-weight:500;">CSV 数据源连接失败</div><div style="font-size:10px;color:var(--color-muted);">2 小时前</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// Clock
+function updateClock() {
+  var now = new Date();
+  var h = String(now.getHours()).padStart(2,'0');
+  var m = String(now.getMinutes()).padStart(2,'0');
+  var s = String(now.getSeconds()).padStart(2,'0');
+  document.getElementById('clock').textContent = h+':'+m+':'+s;
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+var darkTooltip = { trigger:'axis', backgroundColor:'rgba(13,20,40,.95)', borderColor:'rgba(79,110,247,.3)', textStyle:{color:'#E4EBFF',fontSize:12} };
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Line chart
+  var lineEl = document.getElementById('line-preview');
+  if (lineEl) {
+    var lc = echarts.init(lineEl, 'dark');
+    lc.setOption({
+      backgroundColor:'transparent',
+      grid:{top:16,right:12,bottom:28,left:44},
+      tooltip:darkTooltip,
+      xAxis:{type:'category',data:['1月','2月','3月','4月','5月','6月'],axisLine:{lineStyle:{color:'rgba(79,110,247,.2)'}},axisLabel:{color:'rgba(228,235,255,.5)',fontSize:11}},
+      yAxis:{type:'value',axisLabel:{color:'rgba(228,235,255,.5)',fontSize:11,formatter:v=>v>=10000?v/10000+'w':v},splitLine:{lineStyle:{color:'rgba(79,110,247,.08)',type:'dashed'}}},
+      series:[
+        {type:'line',smooth:true,data:[180000,220000,195000,280000,310000,248000],lineStyle:{color:'#4F6EF7',width:2.5},itemStyle:{color:'#4F6EF7'},areaStyle:{color:{type:'linear',x:0,y:0,x2:0,y2:1,colorStops:[{offset:0,color:'rgba(79,110,247,.35)'},{offset:1,color:'rgba(79,110,247,0)'}]}},symbol:'circle',symbolSize:5},
+        {type:'line',smooth:true,data:[120000,160000,140000,195000,210000,185000],lineStyle:{color:'#22C7A9',width:2,type:'dashed'},itemStyle:{color:'#22C7A9'},symbol:'none'},
+      ]
+    });
+  }
+
+  // Pie chart
+  var pieEl = document.getElementById('pie-preview');
+  if (pieEl) {
+    var pc = echarts.init(pieEl, 'dark');
+    pc.setOption({
+      backgroundColor:'transparent',
+      tooltip:{trigger:'item',backgroundColor:'rgba(13,20,40,.95)',borderColor:'rgba(79,110,247,.3)',textStyle:{color:'#E4EBFF',fontSize:12}},
+      legend:{orient:'vertical',left:0,top:'center',textStyle:{fontSize:10,color:'rgba(228,235,255,.5)'},itemWidth:8,itemHeight:8},
+      series:[{type:'pie',radius:['40%','68%'],center:['65%','50%'],data:[{value:42,name:'电子',itemStyle:{color:'#4F6EF7'}},{value:28,name:'家居',itemStyle:{color:'#22C7A9'}},{value:18,name:'服饰',itemStyle:{color:'#F8A742'}},{value:12,name:'其他',itemStyle:{color:'rgba(228,235,255,.15)'}}],label:{show:false},itemStyle:{borderRadius:4,borderWidth:2,borderColor:' #0D1428'},emphasis:{scale:true,scaleSize:4}}]
+    });
+  }
+
+  // Gauge
+  var gaugeEl = document.getElementById('gauge-preview');
+  if (gaugeEl) {
+    var gc = echarts.init(gaugeEl, 'dark');
+    gc.setOption({
+      backgroundColor:'transparent',
+      series:[{
+        type:'gauge',
+        startAngle:210,endAngle:-30,
+        min:0,max:100,
+        progress:{show:true,width:10,itemStyle:{color:{type:'linear',x:0,y:0,x2:1,y2:0,colorStops:[{offset:0,color:'#4F6EF7'},{offset:1,color:'#22C7A9'}]}}},
+        axisLine:{lineStyle:{width:10,color:[[1,'rgba(79,110,247,.12)']]}},
+        axisTick:{show:false},splitLine:{show:false},axisLabel:{show:false},
+        pointer:{length:'50%',width:4,itemStyle:{color:'#4F6EF7'}},
+        anchor:{show:true,size:10,itemStyle:{color:'#4F6EF7',borderWidth:2,borderColor:'rgba(79,110,247,.3)'}},
+        data:[{value:78,detail:{formatter:'{value}%',color:'#E4EBFF',fontSize:20,fontWeight:700,offsetCenter:[0,'40%']}}],
+        detail:{fontSize:20},
+        title:{color:'rgba(228,235,255,.4)',fontSize:11,offsetCenter:[0,'65%']}
+      }]
+    });
+  }
+
+  // Funnel
+  var funnelEl = document.getElementById('funnel-preview');
+  if (funnelEl) {
+    var fc = echarts.init(funnelEl, 'dark');
+    fc.setOption({
+      backgroundColor:'transparent',
+      tooltip:{trigger:'item',backgroundColor:'rgba(13,20,40,.95)',borderColor:'rgba(79,110,247,.3)',textStyle:{color:'#E4EBFF',fontSize:12}},
+      series:[{
+        type:'funnel',left:'5%',width:'70%',top:4,bottom:4,
+        data:[{value:100,name:'访问',itemStyle:{color:'rgba(79,110,247,.7)'}},{value:62,name:'浏览',itemStyle:{color:'rgba(79,110,247,.55)'}},{value:34,name:'加购',itemStyle:{color:'rgba(34,199,169,.6)'}},{value:18,name:'付款',itemStyle:{color:'rgba(34,199,169,.8)'}},{value:8,name:'复购',itemStyle:{color:'rgba(248,167,66,.8)'}}],
+        label:{position:'right',color:'rgba(228,235,255,.6)',fontSize:11},
+        itemStyle:{borderWidth:2,borderColor:'#0D1428'},
+        gap:3
+      }]
+    });
+  }
+});
+</script>
+</body>
+</html>

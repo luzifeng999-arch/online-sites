@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>DataBoard — 数据源管理</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --color-primary:        #4F6EF7;
+  --color-primary-light:  #EEF1FE;
+  --color-primary-dark:   #3352D9;
+  --color-accent:         #22C7A9;
+  --color-bg:             #F5F7FA;
+  --color-sidebar:        #1A1E2E;
+  --color-sidebar-hover:  #252B3E;
+  --color-sidebar-active: #2E3650;
+  --color-surface:        #FFFFFF;
+  --color-border:         #E4E8F0;
+  --color-text-primary:   #1A1E2E;
+  --color-text-secondary: #6B7A99;
+  --color-danger:         #F25B5B;
+  --color-warning:        #F8A742;
+  --color-success:        #22C7A9;
+  --sidebar-width:        220px;
+  --header-height:        60px;
+  --radius-sm:            6px;
+  --radius-md:            10px;
+  --radius-lg:            14px;
+  --shadow-sm:            0 1px 3px rgba(26,30,46,.06), 0 1px 2px rgba(26,30,46,.04);
+  --shadow-md:            0 4px 12px rgba(26,30,46,.08);
+  --shadow-lg:            0 8px 24px rgba(26,30,46,.10);
+  --font:                 'DM Sans', system-ui, sans-serif;
+  --transition:           0.18s ease;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font); background: var(--color-bg); color: var(--color-text-primary); font-size: 14px; line-height: 1.5; overflow: hidden; height: 100vh; display: flex; }
+
+/* SIDEBAR */
+.sidebar { width: var(--sidebar-width); background: var(--color-sidebar); height: 100vh; display: flex; flex-direction: column; flex-shrink: 0; }
+.sidebar-logo { height: var(--header-height); display: flex; align-items: center; padding: 0 20px; border-bottom: 1px solid rgba(255,255,255,.06); }
+.logo-icon { width: 32px; height: 32px; background: var(--color-primary); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff; font-size: 14px; margin-right: 10px; flex-shrink: 0; }
+.logo-text { color: #fff; font-weight: 600; font-size: 15px; }
+.logo-badge { background: var(--color-primary); color: #fff; font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 4px; margin-left: 6px; }
+.sidebar-nav { flex: 1; padding: 12px 0; }
+.nav-section-label { font-size: 10px; font-weight: 600; letter-spacing: 1px; color: rgba(255,255,255,.3); text-transform: uppercase; padding: 16px 20px 6px; }
+.nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 20px; color: rgba(255,255,255,.55); text-decoration: none; font-size: 13.5px; font-weight: 500; cursor: pointer; transition: var(--transition); position: relative; border: none; background: none; width: 100%; text-align: left; font-family: var(--font); }
+.nav-item:hover { background: var(--color-sidebar-hover); color: rgba(255,255,255,.85); }
+.nav-item.active { background: var(--color-sidebar-active); color: #fff; }
+.nav-item.active::before { content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 3px; height: 20px; background: var(--color-primary); border-radius: 0 3px 3px 0; }
+.nav-icon { width: 18px; height: 18px; opacity: .7; flex-shrink: 0; }
+.nav-item.active .nav-icon, .nav-item:hover .nav-icon { opacity: 1; }
+.nav-badge { margin-left: auto; background: var(--color-primary); color: #fff; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 10px; }
+.sidebar-footer { padding: 16px 12px; border-top: 1px solid rgba(255,255,255,.06); }
+.user-card { display: flex; align-items: center; gap: 10px; padding: 8px; border-radius: var(--radius-md); cursor: pointer; transition: var(--transition); }
+.user-card:hover { background: var(--color-sidebar-hover); }
+.user-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--color-primary), var(--color-accent)); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 12px; flex-shrink: 0; }
+.user-info { flex: 1; }
+.user-name { color: #fff; font-size: 13px; font-weight: 500; }
+.user-role { color: rgba(255,255,255,.35); font-size: 11px; }
+
+/* MAIN */
+.main { flex: 1; display: flex; flex-direction: column; min-width: 0; overflow: hidden; }
+.topbar { height: var(--header-height); background: var(--color-surface); border-bottom: 1px solid var(--color-border); display: flex; align-items: center; padding: 0 24px; gap: 16px; flex-shrink: 0; }
+.topbar-title { font-size: 16px; font-weight: 600; }
+.topbar-spacer { flex: 1; }
+.search-box { display: flex; align-items: center; gap: 8px; background: var(--color-bg); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 7px 12px; width: 240px; transition: var(--transition); }
+.search-box:focus-within { border-color: var(--color-primary); background: #fff; box-shadow: 0 0 0 3px var(--color-primary-light); }
+.search-box input { border: none; background: none; outline: none; font-size: 13px; color: var(--color-text-primary); width: 100%; font-family: var(--font); }
+.search-box input::placeholder { color: var(--color-text-secondary); }
+.btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 16px; font-size: 13.5px; font-weight: 500; border-radius: var(--radius-md); cursor: pointer; border: none; outline: none; transition: var(--transition); font-family: var(--font); }
+.btn-primary { background: var(--color-primary); color: #fff; }
+.btn-primary:hover { background: var(--color-primary-dark); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+.btn-ghost { background: transparent; color: var(--color-text-secondary); border: 1px solid var(--color-border); }
+.btn-ghost:hover { background: var(--color-bg); color: var(--color-text-primary); }
+.content { flex: 1; overflow-y: auto; padding: 28px; }
+
+/* STATS */
+.ds-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }
+.ds-stat { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: 16px 18px; display: flex; align-items: center; gap: 14px; box-shadow: var(--shadow-sm); }
+.ds-stat-icon { width: 40px; height: 40px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.ds-stat-num { font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1; }
+.ds-stat-label { font-size: 12px; color: var(--color-text-secondary); margin-top: 2px; }
+
+/* TABLE CARD */
+.table-card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); overflow: hidden; }
+.table-header { padding: 16px 20px; border-bottom: 1px solid var(--color-border); display: flex; align-items: center; gap: 12px; }
+.table-title { font-size: 14px; font-weight: 600; }
+.table-count { font-size: 12px; color: var(--color-text-secondary); }
+.table-spacer { flex: 1; }
+.filter-btn { display: inline-flex; align-items: center; gap: 5px; padding: 5px 12px; font-size: 12px; font-weight: 500; border: 1px solid var(--color-border); border-radius: var(--radius-sm); background: transparent; color: var(--color-text-secondary); cursor: pointer; font-family: var(--font); transition: var(--transition); }
+.filter-btn:hover { color: var(--color-text-primary); background: var(--color-bg); }
+.filter-btn.active { border-color: var(--color-primary); color: var(--color-primary); background: var(--color-primary-light); }
+
+/* TABLE */
+table { width: 100%; border-collapse: collapse; }
+thead th { padding: 10px 20px; text-align: left; font-size: 11px; font-weight: 600; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: .5px; background: var(--color-bg); border-bottom: 1px solid var(--color-border); white-space: nowrap; }
+tbody tr { border-bottom: 1px solid var(--color-border); transition: var(--transition); }
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: var(--color-bg); }
+tbody td { padding: 14px 20px; font-size: 13px; vertical-align: middle; }
+
+.ds-type-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+.ds-type-badge.excel { background: rgba(34,199,169,.12); color: var(--color-success); }
+.ds-type-badge.api { background: rgba(79,110,247,.12); color: var(--color-primary); }
+.ds-type-badge.db { background: rgba(248,167,66,.12); color: var(--color-warning); }
+.ds-type-badge.csv { background: rgba(107,122,153,.12); color: var(--color-text-secondary); }
+
+.status-dot { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; }
+.status-dot::before { content: ''; display: block; width: 7px; height: 7px; border-radius: 50%; }
+.status-dot.ok::before { background: var(--color-success); }
+.status-dot.error::before { background: var(--color-danger); }
+.status-dot.syncing::before { background: var(--color-warning); animation: pulse 1.2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+.table-action-group { display: flex; gap: 4px; }
+.tbl-btn { width: 30px; height: 30px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; color: var(--color-text-secondary); border: 1px solid transparent; background: transparent; cursor: pointer; transition: var(--transition); }
+.tbl-btn:hover { background: var(--color-bg); border-color: var(--color-border); color: var(--color-text-primary); }
+.tbl-btn.danger:hover { color: var(--color-danger); border-color: rgba(242,91,91,.2); background: rgba(242,91,91,.06); }
+
+.ds-name-cell { display: flex; align-items: center; gap: 10px; }
+.ds-icon { width: 34px; height: 34px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.ds-icon.excel { background: rgba(34,199,169,.12); color: var(--color-success); }
+.ds-icon.api { background: rgba(79,110,247,.12); color: var(--color-primary); }
+.ds-icon.db { background: rgba(248,167,66,.12); color: var(--color-warning); }
+.ds-icon.csv { background: rgba(107,122,153,.12); color: var(--color-text-secondary); }
+.ds-main-name { font-size: 13.5px; font-weight: 600; }
+.ds-sub-name { font-size: 11px; color: var(--color-text-secondary); }
+
+/* MODAL OVERLAY */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(26,30,46,.5);
+  backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 100;
+  opacity: 0; pointer-events: none; transition: opacity var(--transition);
+}
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  width: 520px;
+  box-shadow: var(--shadow-lg), 0 0 0 1px var(--color-border);
+  overflow: hidden;
+  transform: translateY(12px); transition: transform var(--transition);
+}
+.modal-overlay.open .modal { transform: translateY(0); }
+.modal-header { padding: 20px 24px 16px; border-bottom: 1px solid var(--color-border); display: flex; align-items: center; justify-content: space-between; }
+.modal-title { font-size: 15px; font-weight: 700; }
+.modal-close { width: 28px; height: 28px; border: none; background: var(--color-bg); border-radius: var(--radius-sm); cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--color-text-secondary); transition: var(--transition); }
+.modal-close:hover { background: var(--color-border); color: var(--color-text-primary); }
+.modal-body { padding: 20px 24px; }
+.modal-footer { padding: 16px 24px; border-top: 1px solid var(--color-border); display: flex; justify-content: flex-end; gap: 10px; }
+
+/* TYPE SELECTOR */
+.type-selector { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
+.type-opt { border: 1.5px solid var(--color-border); border-radius: var(--radius-md); padding: 14px 8px; display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; transition: var(--transition); }
+.type-opt:hover { border-color: var(--color-primary); background: var(--color-primary-light); }
+.type-opt.active { border-color: var(--color-primary); background: var(--color-primary-light); }
+.type-opt-icon { width: 36px; height: 36px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; }
+.type-opt-name { font-size: 12px; font-weight: 500; color: var(--color-text-secondary); }
+.type-opt.active .type-opt-name { color: var(--color-primary); }
+
+.form-group { margin-bottom: 16px; }
+.form-label { font-size: 12px; font-weight: 600; color: var(--color-text-secondary); margin-bottom: 6px; display: flex; align-items: center; gap: 4px; }
+.form-input { width: 100%; background: var(--color-bg); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 8px 12px; font-size: 13px; font-family: var(--font); color: var(--color-text-primary); outline: none; transition: var(--transition); }
+.form-input:focus { border-color: var(--color-primary); background: #fff; box-shadow: 0 0 0 3px var(--color-primary-light); }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form-hint { font-size: 11px; color: var(--color-text-secondary); margin-top: 4px; }
+
+/* upload area */
+.upload-area { border: 2px dashed var(--color-border); border-radius: var(--radius-md); padding: 24px; text-align: center; cursor: pointer; transition: var(--transition); }
+.upload-area:hover { border-color: var(--color-primary); background: var(--color-primary-light); }
+.upload-icon { width: 40px; height: 40px; border-radius: 50%; background: var(--color-bg); display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; color: var(--color-text-secondary); }
+.upload-area:hover .upload-icon { background: rgba(79,110,247,.15); color: var(--color-primary); }
+.upload-label { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+.upload-sub { font-size: 11px; color: var(--color-text-secondary); }
+
+::-webkit-scrollbar { width: 5px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">DB</div>
+    <span class="logo-text">DataBoard</span>
+    <span class="logo-badge">Beta</span>
+  </div>
+  <nav class="sidebar-nav">
+    <span class="nav-section-label">主菜单</span>
+    <a class="nav-item" href="page-01-dashboard.html">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      工作台
+    </a>
+    <a class="nav-item" href="page-02-editor.html">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="9" x2="21" y2="9"/></svg>
+      编辑器
+    </a>
+    <a class="nav-item active" href="page-03-datasource.html">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+      数据源
+      <span class="nav-badge">4</span>
+    </a>
+    <span class="nav-section-label">协作</span>
+    <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>团队成员</a>
+    <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>通知</a>
+    <span class="nav-section-label">系统</span>
+    <a class="nav-item" href="#"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M6.34 17.66l-1.41 1.41M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2m16 0h2M12 2v2m0 16v2"/></svg>设置</a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="user-card">
+      <div class="user-avatar">张</div>
+      <div class="user-info"><div class="user-name">张明辉</div><div class="user-role">管理员</div></div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+  <header class="topbar">
+    <span class="topbar-title">数据源管理</span>
+    <div class="topbar-spacer"></div>
+    <div class="search-box">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="搜索数据源…">
+    </div>
+    <button class="btn btn-primary" onclick="openModal()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      添加数据源
+    </button>
+  </header>
+
+  <div class="content">
+    <!-- Stats -->
+    <div class="ds-stats">
+      <div class="ds-stat">
+        <div class="ds-stat-icon" style="background:var(--color-primary-light);color:var(--color-primary)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+        </div>
+        <div><div class="ds-stat-num">4</div><div class="ds-stat-label">数据源总数</div></div>
+      </div>
+      <div class="ds-stat">
+        <div class="ds-stat-icon" style="background:rgba(34,199,169,.12);color:var(--color-success)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div><div class="ds-stat-num" style="color:var(--color-success)">3</div><div class="ds-stat-label">连接正常</div></div>
+      </div>
+      <div class="ds-stat">
+        <div class="ds-stat-icon" style="background:rgba(242,91,91,.12);color:var(--color-danger)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        </div>
+        <div><div class="ds-stat-num" style="color:var(--color-danger)">1</div><div class="ds-stat-label">连接失败</div></div>
+      </div>
+      <div class="ds-stat">
+        <div class="ds-stat-icon" style="background:rgba(248,167,66,.12);color:var(--color-warning)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-.49-4.21"/></svg>
+        </div>
+        <div><div class="ds-stat-num">12</div><div class="ds-stat-label">今日同步次数</div></div>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-card">
+      <div class="table-header">
+        <span class="table-title">全部数据源</span>
+        <span class="table-count">共 4 条</span>
+        <div class="table-spacer"></div>
+        <button class="filter-btn active">全部</button>
+        <button class="filter-btn" onclick="filterType(this,'Excel')">Excel</button>
+        <button class="filter-btn" onclick="filterType(this,'API')">API</button>
+        <button class="filter-btn" onclick="filterType(this,'数据库')">数据库</button>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>数据源</th>
+            <th>类型</th>
+            <th>状态</th>
+            <th>最近同步</th>
+            <th>同步频率</th>
+            <th>使用看板</th>
+            <th style="text-align:right">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div class="ds-name-cell">
+                <div class="ds-icon excel">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                </div>
+                <div>
+                  <div class="ds-main-name">销售数据 Q2.xlsx</div>
+                  <div class="ds-sub-name">sales-q2-2024.xlsx · 2.4MB</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="ds-type-badge excel">📊 Excel</span></td>
+            <td><span class="status-dot ok">正常</span></td>
+            <td><span style="font-variant-numeric:tabular-nums">3 分钟前</span></td>
+            <td>每 10 分钟</td>
+            <td>
+              <div style="display:flex;gap:4px;flex-wrap:wrap;">
+                <span style="font-size:11px;padding:2px 6px;border-radius:4px;background:var(--color-primary-light);color:var(--color-primary);font-weight:500;">Q2 销售</span>
+                <span style="font-size:11px;padding:2px 6px;border-radius:4px;background:var(--color-primary-light);color:var(--color-primary);font-weight:500;">区域排名</span>
+              </div>
+            </td>
+            <td>
+              <div class="table-action-group" style="justify-content:flex-end;">
+                <button class="tbl-btn" title="刷新" onclick="showToast('正在同步...')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-.49-4.21"/></svg></button>
+                <button class="tbl-btn" title="配置"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M6.34 17.66l-1.41 1.41M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2m16 0h2M12 2v2m0 16v2"/></svg></button>
+                <button class="tbl-btn danger" title="删除" onclick="confirmDelete()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="ds-name-cell">
+                <div class="ds-icon api">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                </div>
+                <div>
+                  <div class="ds-main-name">用户行为 API</div>
+                  <div class="ds-sub-name">api.example.com/v2/behavior</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="ds-type-badge api">🔗 API</span></td>
+            <td><span class="status-dot syncing">同步中</span></td>
+            <td>1 分钟前</td>
+            <td>实时</td>
+            <td>
+              <span style="font-size:11px;padding:2px 6px;border-radius:4px;background:var(--color-primary-light);color:var(--color-primary);font-weight:500;">用户增长</span>
+            </td>
+            <td>
+              <div class="table-action-group" style="justify-content:flex-end;">
+                <button class="tbl-btn" title="刷新"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-.49-4.21"/></svg></button>
+                <button class="tbl-btn" title="配置"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M6.34 17.66l-1.41 1.41M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2m16 0h2M12 2v2m0 16v2"/></svg></button>
+                <button class="tbl-btn danger" title="删除" onclick="confirmDelete()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="ds-name-cell">
+                <div class="ds-icon db">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+                </div>
+                <div>
+                  <div class="ds-main-name">运营 MySQL 数据库</div>
+                  <div class="ds-sub-name">db.internal:3306 / ops_prod</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="ds-type-badge db">🗄️ 数据库</span></td>
+            <td><span class="status-dot ok">正常</span></td>
+            <td>15 分钟前</td>
+            <td>每小时</td>
+            <td>
+              <div style="display:flex;gap:4px;flex-wrap:wrap;">
+                <span style="font-size:11px;padding:2px 6px;border-radius:4px;background:rgba(248,167,66,.12);color:var(--color-warning);font-weight:500;">成本分析</span>
+                <span style="font-size:11px;padding:2px 6px;border-radius:4px;background:rgba(248,167,66,.12);color:var(--color-warning);font-weight:500;">大屏监控</span>
+              </div>
+            </td>
+            <td>
+              <div class="table-action-group" style="justify-content:flex-end;">
+                <button class="tbl-btn" title="刷新"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-.49-4.21"/></svg></button>
+                <button class="tbl-btn" title="配置"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M6.34 17.66l-1.41 1.41M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2m16 0h2M12 2v2m0 16v2"/></svg></button>
+                <button class="tbl-btn danger" title="删除" onclick="confirmDelete()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="ds-name-cell">
+                <div class="ds-icon csv">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>
+                </div>
+                <div>
+                  <div class="ds-main-name">产品转化数据.csv</div>
+                  <div class="ds-sub-name">funnel-2024.csv · 856KB</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="ds-type-badge csv">📄 CSV</span></td>
+            <td><span class="status-dot error">失败</span></td>
+            <td>2 小时前</td>
+            <td>手动</td>
+            <td>
+              <span style="font-size:11px;padding:2px 6px;border-radius:4px;background:var(--color-bg);color:var(--color-text-secondary);font-weight:500;">产品转化</span>
+            </td>
+            <td>
+              <div class="table-action-group" style="justify-content:flex-end;">
+                <button class="tbl-btn" title="重试" onclick="showToast('重新尝试连接...')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-.49-4.21"/></svg></button>
+                <button class="tbl-btn" title="配置"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M6.34 17.66l-1.41 1.41M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2m16 0h2M12 2v2m0 16v2"/></svg></button>
+                <button class="tbl-btn danger" title="删除" onclick="confirmDelete()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<!-- ADD DATASOURCE MODAL -->
+<div class="modal-overlay" id="modal" onclick="handleOverlayClick(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">添加数据源</span>
+      <button class="modal-close" onclick="closeModal()" aria-label="关闭">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="type-selector" id="type-selector">
+        <div class="type-opt active" onclick="selectType(this,'excel')">
+          <div class="type-opt-icon" style="background:rgba(34,199,169,.12);color:var(--color-success)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          </div>
+          <span class="type-opt-name">Excel</span>
+        </div>
+        <div class="type-opt" onclick="selectType(this,'api')">
+          <div class="type-opt-icon" style="background:rgba(79,110,247,.12);color:var(--color-primary)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+          </div>
+          <span class="type-opt-name">REST API</span>
+        </div>
+        <div class="type-opt" onclick="selectType(this,'db')">
+          <div class="type-opt-icon" style="background:rgba(248,167,66,.12);color:var(--color-warning)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+          </div>
+          <span class="type-opt-name">数据库</span>
+        </div>
+        <div class="type-opt" onclick="selectType(this,'csv')">
+          <div class="type-opt-icon" style="background:rgba(107,122,153,.12);color:var(--color-text-secondary)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>
+          </div>
+          <span class="type-opt-name">CSV</span>
+        </div>
+      </div>
+
+      <!-- Excel / CSV upload form -->
+      <div id="form-excel">
+        <div class="form-group">
+          <label class="form-label">数据源名称</label>
+          <input class="form-input" type="text" placeholder="例如：Q3 销售数据">
+        </div>
+        <div class="form-group">
+          <label class="form-label">上传文件</label>
+          <div class="upload-area" onclick="this.nextElementSibling&&this.nextElementSibling.click()">
+            <div class="upload-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            </div>
+            <div class="upload-label">点击或拖拽文件至此</div>
+            <div class="upload-sub">支持 .xlsx, .xls，最大 50MB</div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">同步频率</label>
+          <select class="form-input">
+            <option>手动同步</option>
+            <option>每 10 分钟</option>
+            <option>每小时</option>
+            <option>每天</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal()">取消</button>
+      <button class="btn" style="background:var(--color-bg);border:1px solid var(--color-border);color:var(--color-text-secondary);" onclick="testConn()">测试连接</button>
+      <button class="btn btn-primary" onclick="saveDS()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast" style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--color-sidebar);color:#fff;padding:10px 20px;border-radius:var(--radius-md);font-size:13px;font-weight:500;box-shadow:var(--shadow-lg);opacity:0;transition:all .3s;pointer-events:none;z-index:200;white-space:nowrap;"></div>
+
+<script>
+function openModal() {
+  document.getElementById('modal').classList.add('open');
+}
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+}
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('modal')) closeModal();
+}
+function selectType(el, type) {
+  document.querySelectorAll('.type-opt').forEach(o => o.classList.remove('active'));
+  el.classList.add('active');
+}
+function testConn() { showToast('✓ 连接测试成功'); }
+function saveDS() { closeModal(); showToast('✓ 数据源已添加'); }
+function confirmDelete() {
+  if (confirm('确认删除该数据源？关联看板将无法获取新数据。')) showToast('数据源已删除');
+}
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg; t.style.opacity = '1'; t.style.transform = 'translateX(-50%) translateY(0)';
+  setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateX(-50%) translateY(20px)'; }, 2500);
+}
+function filterType(el, type) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+}
+</script>
+</body>
+</html>

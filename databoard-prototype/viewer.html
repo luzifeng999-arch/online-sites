@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1440">
+<title>DataBoard — 原型 Viewer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --color-primary:       #4F6EF7;
+  --color-primary-light: #EEF1FE;
+  --color-primary-dark:  #3352D9;
+  --color-accent:        #22C7A9;
+  /* ✅ 统一配色：与产品页保持一致 */
+  --color-bg-viewer:     #F5F7FA;       /* 与页面 bg 一致 */
+  --color-panel:         #1A1E2E;       /* 与产品侧边栏一致 */
+  --color-surface:       #FFFFFF;
+  --color-border:        rgba(255,255,255,.08);
+  --color-border-light:  #E4E8F0;       /* 亮色区域的边框 */
+  --color-text:          #FFFFFF;
+  --color-text-body:     #1A1E2E;
+  --color-muted:         rgba(255,255,255,.45);
+  --font:                'DM Sans', system-ui, sans-serif;
+  --radius:              8px;
+  --sidebar-w:           260px;
+  --topbar-h:            52px;
+  --transition:          0.18s ease;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100%; height: 100%; overflow: hidden; }
+body {
+  font-family: var(--font);
+  background: var(--color-bg-viewer);
+  color: var(--color-text);
+  display: flex; flex-direction: column;
+}
+
+/* ========== TOPBAR ========== */
+.v-topbar {
+  height: var(--topbar-h);
+  background: var(--color-panel);
+  border-bottom: 1px solid var(--color-border);
+  display: flex; align-items: center;
+  padding: 0 20px;
+  gap: 14px;
+  flex-shrink: 0;
+}
+.v-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+.v-logo-icon {
+  width: 28px; height: 28px; border-radius: 6px;
+  background: var(--color-primary);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; color: #fff;
+}
+.v-logo-text { font-size: 14px; font-weight: 700; color: var(--color-text); }
+.v-logo-badge { font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 4px; background: var(--color-primary); color: #fff; letter-spacing: .5px; }
+.v-divider { width: 1px; height: 20px; background: var(--color-border); }
+.v-product-name { font-size: 13px; font-weight: 500; color: var(--color-muted); }
+.v-spacer { flex: 1; }
+.v-page-counter { font-size: 12px; color: var(--color-muted); font-variant-numeric: tabular-nums; }
+.v-btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 6px 12px; font-size: 12px; font-weight: 500;
+  border-radius: var(--radius); cursor: pointer; border: none;
+  font-family: var(--font); transition: var(--transition);
+}
+.v-btn-ghost { background: rgba(255,255,255,.08); color: rgba(255,255,255,.65); border: 1px solid rgba(255,255,255,.1); }
+.v-btn-ghost:hover { background: rgba(255,255,255,.15); color: var(--color-text); }
+.v-btn-primary { background: var(--color-primary); color: #fff; }
+.v-btn-primary:hover { filter: brightness(1.1); }
+.v-nav-btn {
+  width: 32px; height: 32px; border-radius: var(--radius);
+  background: rgba(255,255,255,.05); border: none; cursor: pointer;
+  color: var(--color-muted); display: flex; align-items: center; justify-content: center;
+  transition: var(--transition);
+}
+.v-nav-btn:hover:not(:disabled) { background: rgba(255,255,255,.15); color: var(--color-text); }
+.v-nav-btn:disabled { opacity: .3; cursor: not-allowed; }
+
+/* ========== BODY ========== */
+.v-body {
+  flex: 1; display: flex; overflow: hidden;
+}
+
+/* ========== LEFT SIDEBAR ========== */
+.v-sidebar {
+  width: var(--sidebar-w);
+  background: var(--color-panel);
+  border-right: 1px solid var(--color-border);
+  display: flex; flex-direction: column;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.v-sidebar-header {
+  padding: 14px 16px 10px;
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+.v-sidebar-title { font-size: 11px; font-weight: 600; letter-spacing: .8px; text-transform: uppercase; color: var(--color-muted); }
+.v-pages-list { flex: 1; overflow-y: auto; padding: 8px; }
+.v-page-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 10px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: var(--transition);
+  margin-bottom: 3px;
+  border: 1px solid transparent;
+}
+.v-page-item:hover { background: rgba(255,255,255,.04); }
+.v-page-item.active { background: rgba(79,110,247,.12); border-color: rgba(79,110,247,.25); }
+.v-page-thumb {
+  width: 52px; height: 34px; border-radius: 4px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.08);
+  overflow: hidden; flex-shrink: 0; position: relative;
+}
+.v-page-thumb-inner { width: 100%; height: 100%; display: flex; flex-direction: column; padding: 4px; gap: 2px; }
+.v-page-num {
+  width: 18px; height: 18px; border-radius: 5px;
+  background: rgba(255,255,255,.05);
+  font-size: 10px; font-weight: 700; color: var(--color-muted);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.v-page-item.active .v-page-num { background: var(--color-primary); color: #fff; }
+.v-page-info { flex: 1; min-width: 0; }
+.v-page-name { font-size: 12.5px; font-weight: 500; color: var(--color-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.v-page-type { font-size: 10px; color: var(--color-muted); margin-top: 1px; }
+.v-page-item.active .v-page-name { color: var(--color-primary); }
+
+.v-sidebar-footer {
+  padding: 12px 10px;
+  border-top: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+.v-ds-info { display: flex; align-items: center; gap: 8px; padding: 8px 10px; background: rgba(34,199,169,.08); border-radius: var(--radius); border: 1px solid rgba(34,199,169,.15); }
+.v-ds-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--color-accent); flex-shrink: 0; animation: blink 2s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+.v-ds-text { font-size: 11px; color: rgba(34,199,169,.8); font-weight: 500; }
+
+/* ========== CANVAS ========== */
+.v-canvas {
+  flex: 1; overflow: auto;
+  display: flex; align-items: center; justify-content: center;
+  /* ✅ 亮色画布背景，与产品页统一 */
+  background:
+    radial-gradient(circle, #d5dae8 1px, transparent 1px),
+    var(--color-bg-viewer);
+  background-size: 24px 24px;
+  padding: 32px;
+  position: relative;
+}
+
+/* PC FRAME — ✅ 与产品侧边栏同色，深蓝灰色外框 */
+.v-pc-frame {
+  background: #1A1E2E;
+  border-radius: 12px;
+  box-shadow: 0 0 0 1px rgba(26,30,46,.15), 0 16px 48px rgba(26,30,46,.2);
+  overflow: hidden;
+  position: relative;
+  flex-shrink: 0;
+}
+.v-pc-titlebar {
+  height: 32px;
+  background: #141825;
+  display: flex; align-items: center;
+  padding: 0 12px;
+  gap: 6px;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+  flex-shrink: 0;
+}
+.v-pc-dot { width: 10px; height: 10px; border-radius: 50%; }
+.v-pc-url {
+  flex: 1; margin: 0 12px;
+  background: rgba(255,255,255,.08);
+  border-radius: 4px; height: 18px;
+  display: flex; align-items: center; padding: 0 8px;
+  font-size: 10px; color: rgba(255,255,255,.4);
+  overflow: hidden; white-space: nowrap;
+}
+.v-pc-url-lock { color: var(--color-accent); margin-right: 4px; }
+.v-pc-actions { display: flex; gap: 4px; }
+.v-pc-action { width: 18px; height: 18px; border-radius: 3px; background: rgba(255,255,255,.06); display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,.3); }
+
+.v-pc-screen {
+  background: #F5F7FA;
+  overflow: hidden;
+}
+.v-iframe {
+  display: block; border: none;
+  width: 100%; height: 100%;
+}
+
+/* Scale controls overlay — ✅ 亮色主题 */
+.v-scale-controls {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  gap: 4px;
+  background: rgba(255,255,255,.92);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius);
+  padding: 4px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 2px 8px rgba(26,30,46,.1);
+}
+.v-scale-btn {
+  width: 28px; height: 28px;
+  border-radius: 5px; border: none;
+  background: transparent; cursor: pointer;
+  color: #6B7A99; font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+  transition: var(--transition); font-family: var(--font);
+}
+.v-scale-btn:hover { background: var(--color-primary-light); color: var(--color-primary); }
+.v-scale-label { font-size: 11px; color: #6B7A99; padding: 0 6px; display: flex; align-items: center; font-variant-numeric: tabular-nums; }
+
+/* ========== SCROLLBAR ========== */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+/* Canvas scroll area uses light scrollbar */
+.v-canvas::-webkit-scrollbar-thumb { background: #c5cce0; border-radius: 3px; }
+.v-canvas::-webkit-scrollbar-thumb:hover { background: #aab0c8; }
+/* Sidebar uses dark scrollbar */
+.v-pages-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,.15); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="v-topbar">
+  <a class="v-logo" href="#">
+    <div class="v-logo-icon">DB</div>
+    <span class="v-logo-text">DataBoard</span>
+    <span class="v-logo-badge">Prototype</span>
+  </a>
+  <div class="v-divider"></div>
+  <span class="v-product-name">轻量级数据看板</span>
+  <div class="v-spacer"></div>
+  <button class="v-nav-btn" id="btn-prev" onclick="navigate(-1)" disabled aria-label="上一页">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+  </button>
+  <span class="v-page-counter" id="page-counter">1 / 4</span>
+  <button class="v-nav-btn" id="btn-next" onclick="navigate(1)" aria-label="下一页">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+  </button>
+  <div class="v-divider"></div>
+  <button class="v-btn v-btn-ghost" onclick="toggleSidebar()">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    页面导航
+  </button>
+  <button class="v-btn v-btn-ghost" onclick="resetScale()">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+    适配屏幕
+  </button>
+  <button class="v-btn v-btn-primary" onclick="openInNew()">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+    独立打开
+  </button>
+</header>
+
+<!-- BODY -->
+<div class="v-body">
+  <!-- SIDEBAR -->
+  <aside class="v-sidebar" id="v-sidebar">
+    <div class="v-sidebar-header">
+      <div class="v-sidebar-title">页面导航</div>
+    </div>
+    <div class="v-pages-list" id="v-pages-list">
+      <!-- Will be rendered by JS -->
+    </div>
+    <div class="v-sidebar-footer">
+      <div class="v-ds-info">
+        <div class="v-ds-dot"></div>
+        <div class="v-ds-text">PC 端 · 1280px 宽度</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- CANVAS -->
+  <main class="v-canvas" id="v-canvas">
+    <div class="v-pc-frame" id="v-pc-frame">
+      <!-- Title bar -->
+      <div class="v-pc-titlebar">
+        <div class="v-pc-dot" style="background:#FF5F57;"></div>
+        <div class="v-pc-dot" style="background:#FFBD2E;"></div>
+        <div class="v-pc-dot" style="background:#28C840;"></div>
+        <div class="v-pc-url">
+          <span class="v-pc-url-lock">🔒</span>
+          <span id="url-bar">localhost/databoard/page-01-dashboard.html</span>
+        </div>
+        <div class="v-pc-actions">
+          <div class="v-pc-action"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></div>
+          <div class="v-pc-action"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
+          <div class="v-pc-action"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-.49-4.21"/></svg></div>
+        </div>
+      </div>
+      <!-- Screen -->
+      <div class="v-pc-screen" id="v-pc-screen">
+        <iframe class="v-iframe" id="v-iframe" src="" title="DataBoard 原型预览"></iframe>
+      </div>
+    </div>
+
+    <!-- Scale controls -->
+    <div class="v-scale-controls">
+      <button class="v-scale-btn" onclick="changeScale(-0.1)" aria-label="缩小">−</button>
+      <span class="v-scale-label" id="scale-label">80%</span>
+      <button class="v-scale-btn" onclick="changeScale(0.1)" aria-label="放大">+</button>
+    </div>
+  </main>
+</div>
+
+<script>
+var pages = [
+  { file: 'page-01-dashboard.html', name: '工作台首页', type: '看板列表', url: 'page-01-dashboard.html' },
+  { file: 'page-02-editor.html',    name: '看板编辑器',  type: '三栏编辑器', url: 'page-02-editor.html' },
+  { file: 'page-03-datasource.html',name: '数据源管理',  type: '数据管理', url: 'page-03-datasource.html' },
+  { file: 'page-04-preview.html',   name: '大屏预览',    type: '全屏展示', url: 'page-04-preview.html' },
+];
+
+var thumbColors = [
+  ['#4F6EF7','#22C7A9'],
+  ['#1A1E2E','#4F6EF7'],
+  ['#F5F7FA','#22C7A9'],
+  ['#090D1A','#4F6EF7'],
+];
+
+var currentIdx = 0;
+var currentScale = 0.8;
+var sidebarVisible = true;
+
+// Build page list
+function buildPageList() {
+  var list = document.getElementById('v-pages-list');
+  list.innerHTML = '';
+  pages.forEach(function(p, i) {
+    var item = document.createElement('div');
+    item.className = 'v-page-item' + (i === currentIdx ? ' active' : '');
+    item.setAttribute('data-idx', i);
+    item.onclick = function() { loadPage(i); };
+
+    var c = thumbColors[i];
+    item.innerHTML = `
+      <div class="v-page-thumb">
+        <div class="v-page-thumb-inner" style="background:${c[0]}">
+          <div style="height:6px;border-radius:2px;background:${c[1]};opacity:.7;width:80%;"></div>
+          <div style="height:4px;border-radius:2px;background:rgba(255,255,255,.15);width:60%;"></div>
+          <div style="flex:1;border-radius:2px;background:rgba(255,255,255,.08);"></div>
+        </div>
+      </div>
+      <div class="v-page-num">${i+1}</div>
+      <div class="v-page-info">
+        <div class="v-page-name">${p.name}</div>
+        <div class="v-page-type">${p.type}</div>
+      </div>
+    `;
+    list.appendChild(item);
+  });
+}
+
+function loadPage(idx) {
+  currentIdx = Math.max(0, Math.min(idx, pages.length - 1));
+  var p = pages[currentIdx];
+
+  // Update iframe src only — no height manipulation
+  document.getElementById('v-iframe').src = p.file;
+
+  // Update URL bar
+  document.getElementById('url-bar').textContent = 'localhost/databoard/' + p.url;
+
+  // Update counter
+  document.getElementById('page-counter').textContent = (currentIdx + 1) + ' / ' + pages.length;
+
+  // Update nav buttons
+  document.getElementById('btn-prev').disabled = currentIdx === 0;
+  document.getElementById('btn-next').disabled = currentIdx === pages.length - 1;
+
+  // Update sidebar highlight
+  document.querySelectorAll('.v-page-item').forEach(function(el, i) {
+    el.classList.toggle('active', i === currentIdx);
+  });
+}
+
+function navigate(delta) {
+  loadPage(currentIdx + delta);
+}
+
+// Scale
+function applyScale() {
+  var frame = document.getElementById('v-pc-frame');
+  frame.style.transform = 'scale(' + currentScale + ')';
+  frame.style.transformOrigin = 'top center';
+  document.getElementById('scale-label').textContent = Math.round(currentScale * 100) + '%';
+}
+
+function changeScale(delta) {
+  currentScale = Math.min(1.5, Math.max(0.3, +(currentScale + delta).toFixed(2)));
+  applyScale();
+}
+
+function resetScale() {
+  // Compute scale to fit canvas
+  var canvas = document.getElementById('v-canvas');
+  var canvasW = canvas.clientWidth - 64;
+  var canvasH = canvas.clientHeight - 64;
+  var frameW = 1280 + 2; // screen width + borders
+  var frameH = 800 + 32; // screen height + titlebar
+  var scaleW = canvasW / frameW;
+  var scaleH = canvasH / frameH;
+  currentScale = Math.min(scaleW, scaleH, 1);
+  currentScale = +currentScale.toFixed(2);
+  applyScale();
+}
+
+function toggleSidebar() {
+  sidebarVisible = !sidebarVisible;
+  var sb = document.getElementById('v-sidebar');
+  sb.style.width = sidebarVisible ? '' : '0';
+  sb.style.overflow = sidebarVisible ? '' : 'hidden';
+}
+
+function openInNew() {
+  window.open(pages[currentIdx].file, '_blank');
+}
+
+// PC screen size
+function setScreenSize() {
+  var screen = document.getElementById('v-pc-screen');
+  screen.style.width = '1280px';
+  screen.style.height = '800px';
+  var iframe = document.getElementById('v-iframe');
+  iframe.style.width = '1280px';
+  iframe.style.height = '800px';
+}
+
+// Init
+document.addEventListener('DOMContentLoaded', function() {
+  setScreenSize();
+  buildPageList();
+  loadPage(0);
+  resetScale();
+});
+</script>
+</body>
+</html>
