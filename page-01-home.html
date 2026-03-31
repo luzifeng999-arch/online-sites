@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>广场首页 — 模式广场</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800&display=swap" rel="stylesheet">
+  <style>
+    /* ===== DESIGN TOKENS — Purple Creative ===== */
+    :root {
+      --color-primary:        #A855F7;
+      --color-primary-hover:  #9333EA;
+      --color-primary-light:  rgba(168,85,247,0.10);
+      --color-primary-mid:    rgba(168,85,247,0.18);
+      --color-primary-fg:     #FFFFFF;
+      --color-bg:             #FAFAFA;
+      --color-surface:        #FFFFFF;
+      --color-surface-2:      #F5F3FF;
+      --color-border:         #E9E4FB;
+      --color-border-light:   #DDD6FE;
+      --color-muted:          #6B7280;
+      --color-foreground:     #18181B;
+      --color-success:        #10B981; --color-success-bg:#ECFDF5;
+      --color-warning:        #F59E0B; --color-warning-bg:#FFFBEB;
+      --color-error:          #EF4444; --color-error-bg:#FEF2F2;
+      --font-sans:    'DM Sans', system-ui, sans-serif;
+      --font-display: 'DM Sans', sans-serif;
+      --font-mono:    'JetBrains Mono', monospace;
+      --font-weight-regular:400; --font-weight-medium:500;
+      --font-weight-semibold:600; --font-weight-bold:700; --font-weight-extrabold:800;
+      --text-xs:11px; --text-sm:13px; --text-base:15px; --text-md:16px;
+      --text-lg:18px; --text-xl:20px; --text-2xl:24px; --text-3xl:32px; --text-4xl:42px;
+      --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-5:20px;
+      --space-6:24px; --space-8:32px; --space-10:40px; --space-12:48px; --space-16:64px;
+      --radius-xs:4px; --radius-sm:6px; --radius-md:10px; --radius-lg:14px;
+      --radius-xl:20px; --radius-2xl:28px; --radius-full:9999px;
+      --shadow-xs:0 1px 2px rgba(0,0,0,0.05);
+      --shadow-sm:0 1px 4px rgba(0,0,0,0.07),0 1px 2px rgba(0,0,0,0.04);
+      --shadow-md:0 4px 12px rgba(0,0,0,0.08),0 2px 4px rgba(0,0,0,0.04);
+      --shadow-lg:0 8px 24px rgba(0,0,0,0.10);
+      --shadow-purple:0 4px 20px rgba(168,85,247,0.22);
+      --duration-fast:100ms; --duration-base:180ms; --duration-slow:300ms;
+      --ease-default:cubic-bezier(0.4,0,0.2,1);
+      --ease-spring:cubic-bezier(0.34,1.56,0.64,1);
+      --nav-height:62px; --sidebar-width:220px; --content-max:1240px;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { font-size:16px; scroll-behavior:smooth; }
+    body { font-family:var(--font-sans); background:var(--color-bg); color:var(--color-foreground); line-height:1.5; -webkit-font-smoothing:antialiased; }
+    a { color:inherit; text-decoration:none; }
+    button { cursor:pointer; font-family:inherit; border:none; background:none; }
+    img { max-width:100%; display:block; }
+
+    /* ===== NAV ===== */
+    .nav {
+      position:sticky; top:0; z-index:200; height:var(--nav-height);
+      background:rgba(255,255,255,0.92); backdrop-filter:blur(16px);
+      border-bottom:1px solid var(--color-border);
+    }
+    .nav-inner {
+      max-width:var(--content-max); margin:0 auto; padding:0 var(--space-8);
+      height:100%; display:flex; align-items:center; gap:var(--space-6);
+    }
+    .nav-logo {
+      display:flex; align-items:center; gap:var(--space-2); flex-shrink:0;
+      font-weight:var(--font-weight-extrabold); font-size:var(--text-lg); color:var(--color-primary);
+    }
+    .nav-logo-mark {
+      width:30px; height:30px; border-radius:var(--radius-md);
+      background:linear-gradient(135deg,var(--color-primary),#7C3AED);
+      display:flex; align-items:center; justify-content:center;
+      font-size:15px; color:#fff;
+    }
+    /* 分类 Tab 栏 */
+    .nav-tabs { display:flex; align-items:center; gap:2px; flex:1; }
+    .nav-tab {
+      padding:var(--space-2) var(--space-3); border-radius:var(--radius-sm);
+      font-size:var(--text-sm); color:var(--color-muted); cursor:pointer;
+      transition:all var(--duration-base) var(--ease-default); white-space:nowrap;
+    }
+    .nav-tab:hover { color:var(--color-foreground); background:var(--color-surface-2); }
+    .nav-tab.active { color:var(--color-primary); font-weight:var(--font-weight-semibold); background:var(--color-primary-light); }
+    /* 搜索 */
+    .nav-search {
+      display:flex; align-items:center; gap:var(--space-2);
+      height:36px; padding:0 var(--space-4); width:220px;
+      background:var(--color-surface-2); border:1px solid var(--color-border);
+      border-radius:var(--radius-full); font-size:var(--text-sm);
+      color:var(--color-muted); cursor:text; transition:all var(--duration-base);
+    }
+    .nav-search:focus-within { border-color:var(--color-primary); background:#fff; box-shadow:0 0 0 3px var(--color-primary-light); }
+    .nav-search input { border:none; outline:none; background:transparent; font-family:var(--font-sans); font-size:var(--text-sm); color:var(--color-foreground); flex:1; }
+    .nav-search input::placeholder { color:var(--color-muted); }
+    .nav-actions { display:flex; align-items:center; gap:var(--space-2); flex-shrink:0; }
+    .btn {
+      display:inline-flex; align-items:center; justify-content:center; gap:var(--space-2);
+      padding:var(--space-2) var(--space-5); border-radius:var(--radius-sm);
+      font-size:var(--text-sm); font-weight:var(--font-weight-medium); font-family:var(--font-sans);
+      cursor:pointer; border:none; transition:all var(--duration-base) var(--ease-default); white-space:nowrap;
+    }
+    .btn:active { transform:scale(0.97); }
+    .btn-primary { background:var(--color-primary); color:var(--color-primary-fg); }
+    .btn-primary:hover { background:var(--color-primary-hover); box-shadow:var(--shadow-purple); }
+    .btn-ghost { background:transparent; color:var(--color-muted); }
+    .btn-ghost:hover { background:var(--color-surface-2); color:var(--color-foreground); }
+    .btn-sm { padding:var(--space-1) var(--space-3); font-size:var(--text-xs); }
+    .avatar-btn {
+      width:34px; height:34px; border-radius:var(--radius-full);
+      background:linear-gradient(135deg,var(--color-primary),#7C3AED);
+      display:flex; align-items:center; justify-content:center;
+      color:#fff; font-weight:var(--font-weight-bold); font-size:var(--text-sm);
+      cursor:pointer; transition:transform var(--duration-base);
+    }
+    .avatar-btn:hover { transform:scale(1.05); }
+
+    /* ===== HERO ===== */
+    .hero {
+      background:linear-gradient(160deg,#FAF5FF 0%,#EDE9FE 40%,#F5F3FF 100%);
+      padding:var(--space-16) 0 var(--space-12);
+      text-align:center; position:relative; overflow:hidden;
+    }
+    .hero::before {
+      content:''; position:absolute; top:-120px; left:50%; transform:translateX(-50%);
+      width:800px; height:800px; border-radius:50%;
+      background:radial-gradient(circle,rgba(168,85,247,0.12) 0%,transparent 65%);
+      pointer-events:none;
+    }
+    .hero-inner { max-width:760px; margin:0 auto; padding:0 var(--space-8); position:relative; }
+    .hero-badge {
+      display:inline-flex; align-items:center; gap:var(--space-2);
+      padding:5px var(--space-4); background:var(--color-primary-light);
+      border:1px solid var(--color-primary-mid); border-radius:var(--radius-full);
+      font-size:var(--text-xs); font-weight:var(--font-weight-semibold);
+      color:var(--color-primary); margin-bottom:var(--space-6); letter-spacing:0.03em;
+    }
+    .hero-title {
+      font-size:var(--text-4xl); font-weight:var(--font-weight-extrabold);
+      color:var(--color-foreground); line-height:1.18; margin-bottom:var(--space-5);
+      letter-spacing:-0.02em;
+    }
+    .hero-title em { font-style:normal; color:var(--color-primary); }
+    .hero-subtitle { font-size:var(--text-lg); color:var(--color-muted); margin-bottom:var(--space-8); line-height:1.6; }
+    .hero-search {
+      display:flex; align-items:center; gap:0;
+      background:#fff; border:1.5px solid var(--color-border-light);
+      border-radius:var(--radius-xl); box-shadow:var(--shadow-md);
+      padding:var(--space-2) var(--space-2) var(--space-2) var(--space-5);
+      max-width:640px; margin:0 auto;
+      transition:box-shadow var(--duration-base), border-color var(--duration-base);
+    }
+    .hero-search:focus-within { border-color:var(--color-primary); box-shadow:var(--shadow-purple); }
+    .hero-search-icon { font-size:18px; color:var(--color-muted); flex-shrink:0; }
+    .hero-search input {
+      flex:1; border:none; outline:none; font-family:var(--font-sans);
+      font-size:var(--text-md); padding:var(--space-2) var(--space-3); background:transparent;
+      color:var(--color-foreground);
+    }
+    .hero-search input::placeholder { color:var(--color-muted); }
+    .hero-search-cat {
+      display:flex; align-items:center; gap:4px;
+      padding:0 var(--space-3); border-left:1px solid var(--color-border);
+      font-size:var(--text-sm); color:var(--color-muted);
+      cursor:pointer; white-space:nowrap; height:36px; flex-shrink:0;
+    }
+    .hero-search-cat:hover { color:var(--color-primary); }
+    .hero-search-btn {
+      background:var(--color-primary); color:#fff; border:none;
+      padding:var(--space-2) var(--space-5); border-radius:var(--radius-lg);
+      font-size:var(--text-sm); font-weight:var(--font-weight-semibold);
+      font-family:var(--font-sans); cursor:pointer;
+      transition:all var(--duration-base); white-space:nowrap; flex-shrink:0;
+    }
+    .hero-search-btn:hover { background:var(--color-primary-hover); }
+    .hero-stats {
+      display:flex; align-items:center; justify-content:center;
+      gap:var(--space-8); margin-top:var(--space-8);
+    }
+    .hero-stat { text-align:center; }
+    .hero-stat-num { font-size:var(--text-2xl); font-weight:var(--font-weight-extrabold); color:var(--color-foreground); font-variant-numeric:tabular-nums; }
+    .hero-stat-label { font-size:var(--text-xs); color:var(--color-muted); margin-top:2px; }
+    .hero-stat-sep { width:1px; height:36px; background:var(--color-border-light); }
+
+    /* ===== MAIN LAYOUT ===== */
+    .main-layout {
+      max-width:var(--content-max); margin:0 auto;
+      padding:var(--space-10) var(--space-8) var(--space-16);
+      display:flex; gap:var(--space-8); align-items:flex-start;
+    }
+
+    /* ===== 左侧筛选栏 ===== */
+    .filter-sidebar {
+      width:var(--sidebar-width); flex-shrink:0;
+      position:sticky; top:calc(var(--nav-height) + var(--space-5));
+    }
+    .filter-section { margin-bottom:var(--space-6); }
+    .filter-section-title {
+      font-size:var(--text-xs); font-weight:var(--font-weight-semibold);
+      color:var(--color-muted); text-transform:uppercase;
+      letter-spacing:0.08em; margin-bottom:var(--space-3);
+    }
+    .filter-list { display:flex; flex-direction:column; gap:2px; }
+    .filter-item {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:var(--space-2) var(--space-3); border-radius:var(--radius-sm);
+      font-size:var(--text-sm); color:var(--color-muted);
+      cursor:pointer; transition:all var(--duration-base);
+    }
+    .filter-item:hover { background:var(--color-surface-2); color:var(--color-foreground); }
+    .filter-item.active { background:var(--color-primary-light); color:var(--color-primary); font-weight:var(--font-weight-medium); }
+    .filter-item-icon { font-size:15px; margin-right:var(--space-2); }
+    .filter-item-left { display:flex; align-items:center; }
+    .filter-item-count { font-size:var(--text-xs); color:var(--color-muted); }
+    .filter-item.active .filter-item-count { color:var(--color-primary); opacity:0.7; }
+    .filter-divider { height:1px; background:var(--color-border); margin:var(--space-5) 0; }
+
+    /* 标签云 */
+    .tag-cloud { display:flex; flex-wrap:wrap; gap:var(--space-2); }
+    .tag {
+      padding:3px var(--space-3); border-radius:var(--radius-full);
+      font-size:var(--text-xs); background:var(--color-surface-2);
+      border:1px solid var(--color-border); color:var(--color-muted);
+      cursor:pointer; transition:all var(--duration-base);
+    }
+    .tag:hover { border-color:var(--color-primary); color:var(--color-primary); background:var(--color-primary-light); }
+    .tag.active { border-color:var(--color-primary); color:var(--color-primary); background:var(--color-primary-light); font-weight:var(--font-weight-medium); }
+
+    /* ===== 右侧内容区 ===== */
+    .content-area { flex:1; min-width:0; }
+
+    /* 工具栏 */
+    .content-toolbar {
+      display:flex; align-items:center; justify-content:space-between;
+      margin-bottom:var(--space-6); gap:var(--space-4);
+    }
+    .content-toolbar-left { display:flex; align-items:center; gap:var(--space-3); }
+    .toolbar-label { font-size:var(--text-sm); color:var(--color-muted); }
+    .toolbar-label strong { color:var(--color-foreground); }
+    .sort-group { display:flex; gap:3px; background:var(--color-surface-2); padding:3px; border-radius:var(--radius-sm); }
+    .sort-btn {
+      padding:4px var(--space-3); border-radius:4px; font-size:var(--text-xs);
+      font-weight:var(--font-weight-medium); font-family:var(--font-sans);
+      cursor:pointer; border:none; background:transparent; color:var(--color-muted);
+      transition:all var(--duration-base);
+    }
+    .sort-btn:hover { color:var(--color-foreground); }
+    .sort-btn.active { background:var(--color-surface); color:var(--color-foreground); box-shadow:var(--shadow-xs); }
+
+    /* 卡片网格 */
+    .card-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:var(--space-5); }
+
+    /* 模板卡片 */
+    .tpl-card {
+      background:var(--color-surface); border:1px solid var(--color-border);
+      border-radius:var(--radius-lg); overflow:hidden;
+      cursor:pointer; transition:all var(--duration-base) var(--ease-default);
+      display:flex; flex-direction:column;
+    }
+    .tpl-card:hover {
+      border-color:var(--color-primary-mid);
+      box-shadow:0 8px 28px rgba(168,85,247,0.12),0 2px 8px rgba(0,0,0,0.04);
+      transform:translateY(-2px);
+    }
+    /* 封面 */
+    .tpl-cover {
+      height:96px; display:flex; align-items:center; justify-content:center;
+      font-size:36px; position:relative; flex-shrink:0;
+    }
+    .cover-purple { background:linear-gradient(135deg,#FAF5FF,#EDE9FE); }
+    .cover-blue   { background:linear-gradient(135deg,#EFF6FF,#DBEAFE); }
+    .cover-green  { background:linear-gradient(135deg,#F0FDF4,#BBF7D0); }
+    .cover-orange { background:linear-gradient(135deg,#FFF7ED,#FED7AA); }
+    .cover-pink   { background:linear-gradient(135deg,#FDF2F8,#FBCFE8); }
+    .cover-teal   { background:linear-gradient(135deg,#F0FDFA,#CCFBF1); }
+    .tpl-cover-fav {
+      position:absolute; top:var(--space-2); right:var(--space-2);
+      width:28px; height:28px; border-radius:var(--radius-full);
+      background:rgba(255,255,255,0.85); backdrop-filter:blur(4px);
+      display:flex; align-items:center; justify-content:center;
+      font-size:14px; border:1px solid var(--color-border);
+      cursor:pointer; transition:all var(--duration-base);
+      opacity:0;
+    }
+    .tpl-card:hover .tpl-cover-fav { opacity:1; }
+    .tpl-cover-fav:hover { background:#fff; transform:scale(1.1); }
+    .tpl-cover-fav.active { opacity:1; color:#EF4444; }
+    /* 卡片内容 */
+    .tpl-body { padding:var(--space-4); flex:1; display:flex; flex-direction:column; gap:var(--space-2); }
+    .tpl-name {
+      font-size:var(--text-base); font-weight:var(--font-weight-semibold);
+      color:var(--color-foreground); display:-webkit-box;
+      -webkit-box-orient:vertical; -webkit-line-clamp:2; overflow:hidden; line-height:1.35;
+    }
+    .tpl-desc {
+      font-size:var(--text-sm); color:var(--color-muted); line-height:1.5;
+      display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; overflow:hidden; flex:1;
+    }
+    .tpl-tags { display:flex; gap:var(--space-1); flex-wrap:wrap; }
+    .tpl-tag {
+      padding:2px var(--space-2); background:var(--color-surface-2);
+      border-radius:var(--radius-full); font-size:var(--text-xs); color:var(--color-muted);
+    }
+    /* 卡片底部 */
+    .tpl-footer {
+      padding:var(--space-3) var(--space-4);
+      border-top:1px solid var(--color-border);
+      display:flex; align-items:center; justify-content:space-between;
+    }
+    .tpl-author { display:flex; align-items:center; gap:var(--space-2); }
+    .tpl-avatar {
+      width:22px; height:22px; border-radius:var(--radius-full);
+      background:linear-gradient(135deg,var(--color-primary),#7C3AED);
+      display:flex; align-items:center; justify-content:center;
+      font-size:10px; font-weight:var(--font-weight-bold); color:#fff; flex-shrink:0;
+    }
+    .tpl-author-name { font-size:var(--text-xs); color:var(--color-muted); }
+    .tpl-stats { display:flex; align-items:center; gap:var(--space-3); }
+    .tpl-stat { display:flex; align-items:center; gap:4px; font-size:var(--text-xs); color:var(--color-muted); font-variant-numeric:tabular-nums; }
+
+    /* 加载更多 */
+    .load-more-wrap { text-align:center; margin-top:var(--space-10); }
+    .btn-outline {
+      padding:var(--space-3) var(--space-8); border-radius:var(--radius-sm);
+      font-size:var(--text-sm); font-weight:var(--font-weight-medium); font-family:var(--font-sans);
+      background:transparent; color:var(--color-primary); border:1.5px solid var(--color-primary-mid);
+      cursor:pointer; transition:all var(--duration-base);
+    }
+    .btn-outline:hover { background:var(--color-primary-light); }
+
+    /* Toast */
+    #toast-ct { position:fixed; bottom:24px; right:24px; z-index:2000; display:flex; flex-direction:column; gap:8px; pointer-events:none; }
+  </style>
+</head>
+<body>
+
+<!-- ===== NAV ===== -->
+<nav class="nav" aria-label="主导航">
+  <div class="nav-inner">
+    <a href="page-01-home.html" class="nav-logo" title="模式广场首页">
+      <div class="nav-logo-mark">✦</div>
+      <span>模式广场</span>
+    </a>
+    <div class="nav-tabs" role="tablist">
+      <div class="nav-tab active" onclick="filterCat('全部',this)" role="tab">全部</div>
+      <div class="nav-tab" onclick="filterCat('写作',this)" role="tab">✍️ 写作</div>
+      <div class="nav-tab" onclick="filterCat('设计',this)" role="tab">🎨 设计</div>
+      <div class="nav-tab" onclick="filterCat('编程',this)" role="tab">💻 编程</div>
+      <div class="nav-tab" onclick="filterCat('营销',this)" role="tab">📣 营销</div>
+      <div class="nav-tab" onclick="filterCat('数据',this)" role="tab">📊 数据</div>
+      <div class="nav-tab" onclick="filterCat('教育',this)" role="tab">📚 教育</div>
+    </div>
+    <div class="nav-search" title="搜索模板">
+      <span class="nav-search-icon">🔍</span>
+      <input type="text" placeholder="搜索模板…" aria-label="搜索模板" oninput="handleSearch(this.value)">
+    </div>
+    <div class="nav-actions">
+      <a href="page-04-publish.html" class="btn btn-primary btn-sm" title="发布新模板">+ 发布模板</a>
+      <a href="page-05-profile.html" class="avatar-btn" title="个人中心" aria-label="个人中心">L</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero" aria-label="页面横幅">
+  <div class="hero-inner">
+    <div class="hero-badge">🚀 全新升级 · 5,238 个精选 Prompt 模板</div>
+    <h1 class="hero-title">发现最好用的 <em>AI Prompt</em> 模板</h1>
+    <p class="hero-subtitle">社区贡献的高质量提示词，覆盖写作、设计、编程、营销等场景<br>一键复制或在线调用，让 AI 真正帮你干活</p>
+    <div class="hero-search" role="search">
+      <span class="hero-search-icon">🔍</span>
+      <input type="text" placeholder="搜索模板名称、使用场景…" aria-label="搜索模板">
+      <div class="hero-search-cat" onclick="showToast('分类下拉即将上线','')">
+        所有分类 ▾
+      </div>
+      <button class="hero-search-btn" onclick="showToast('搜索功能演示中','')">搜索</button>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-num">5,238</div>
+        <div class="hero-stat-label">精选模板</div>
+      </div>
+      <div class="hero-stat-sep"></div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">128K</div>
+        <div class="hero-stat-label">月活用户</div>
+      </div>
+      <div class="hero-stat-sep"></div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">2.4M</div>
+        <div class="hero-stat-label">月使用次数</div>
+      </div>
+      <div class="hero-stat-sep"></div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">12K</div>
+        <div class="hero-stat-label">贡献者</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== MAIN ===== -->
+<div class="main-layout">
+  <!-- 左侧筛选 -->
+  <aside class="filter-sidebar" aria-label="分类筛选">
+    <div class="filter-section">
+      <div class="filter-section-title">内容分类</div>
+      <div class="filter-list" id="cat-list">
+        <div class="filter-item active" onclick="filterCatSide(this,'全部')"><div class="filter-item-left"><span class="filter-item-icon">🌐</span>全部</div><span class="filter-item-count">5,238</span></div>
+        <div class="filter-item" onclick="filterCatSide(this,'写作')"><div class="filter-item-left"><span class="filter-item-icon">✍️</span>写作创作</div><span class="filter-item-count">1,842</span></div>
+        <div class="filter-item" onclick="filterCatSide(this,'设计')"><div class="filter-item-left"><span class="filter-item-icon">🎨</span>设计创意</div><span class="filter-item-count">763</span></div>
+        <div class="filter-item" onclick="filterCatSide(this,'编程')"><div class="filter-item-left"><span class="filter-item-icon">💻</span>编程开发</div><span class="filter-item-count">1,124</span></div>
+        <div class="filter-item" onclick="filterCatSide(this,'营销')"><div class="filter-item-left"><span class="filter-item-icon">📣</span>营销推广</div><span class="filter-item-count">589</span></div>
+        <div class="filter-item" onclick="filterCatSide(this,'数据')"><div class="filter-item-left"><span class="filter-item-icon">📊</span>数据分析</div><span class="filter-item-count">412</span></div>
+        <div class="filter-item" onclick="filterCatSide(this,'教育')"><div class="filter-item-left"><span class="filter-item-icon">📚</span>教育学习</div><span class="filter-item-count">308</span></div>
+        <div class="filter-item" onclick="filterCatSide(this,'商业')"><div class="filter-item-left"><span class="filter-item-icon">💼</span>商业策划</div><span class="filter-item-count">200</span></div>
+      </div>
+    </div>
+
+    <div class="filter-divider"></div>
+
+    <div class="filter-section">
+      <div class="filter-section-title">热门标签</div>
+      <div class="tag-cloud">
+        <span class="tag active" onclick="this.classList.toggle('active')">GPT-4o</span>
+        <span class="tag" onclick="this.classList.toggle('active')">文案生成</span>
+        <span class="tag" onclick="this.classList.toggle('active')">代码审查</span>
+        <span class="tag" onclick="this.classList.toggle('active')">SEO优化</span>
+        <span class="tag" onclick="this.classList.toggle('active')">电商运营</span>
+        <span class="tag" onclick="this.classList.toggle('active')">周报总结</span>
+        <span class="tag" onclick="this.classList.toggle('active')">产品需求</span>
+        <span class="tag" onclick="this.classList.toggle('active')">数据报告</span>
+      </div>
+    </div>
+
+    <div class="filter-divider"></div>
+
+    <div class="filter-section">
+      <div class="filter-section-title">支持模型</div>
+      <div class="filter-list">
+        <div class="filter-item active" onclick="toggleFilterItem(this)"><div class="filter-item-left"><span class="filter-item-icon">🤖</span>GPT-4o</div></div>
+        <div class="filter-item" onclick="toggleFilterItem(this)"><div class="filter-item-left"><span class="filter-item-icon">🧠</span>Claude 3</div></div>
+        <div class="filter-item" onclick="toggleFilterItem(this)"><div class="filter-item-left"><span class="filter-item-icon">💎</span>Gemini Pro</div></div>
+        <div class="filter-item" onclick="toggleFilterItem(this)"><div class="filter-item-left"><span class="filter-item-icon">🌟</span>全部通用</div></div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- 右侧内容区 -->
+  <div class="content-area">
+    <div class="content-toolbar">
+      <div class="content-toolbar-left">
+        <span class="toolbar-label">共 <strong id="result-count">5,238</strong> 个模板</span>
+      </div>
+      <div class="sort-group" role="group" aria-label="排序方式">
+        <button class="sort-btn active" onclick="setSort(this,'热度')">🔥 最热</button>
+        <button class="sort-btn" onclick="setSort(this,'最新')">🆕 最新</button>
+        <button class="sort-btn" onclick="setSort(this,'精选')">⭐ 精选</button>
+      </div>
+    </div>
+
+    <!-- 卡片网格 -->
+    <div class="card-grid" id="card-grid">
+
+      <!-- Card 1 -->
+      <div class="tpl-card" onclick="window.location.href='page-02-detail.html'" title="产品描述撰写大师">
+        <div class="tpl-cover cover-purple">
+          ✍️
+          <div class="tpl-cover-fav" onclick="event.stopPropagation();toggleFav(this)" aria-label="收藏">♡</div>
+        </div>
+        <div class="tpl-body">
+          <div class="tpl-name">产品描述撰写大师</div>
+          <div class="tpl-desc">根据产品信息自动生成专业的电商产品描述，支持多种语气风格和目标受众定制。</div>
+          <div class="tpl-tags"><span class="tpl-tag">写作</span><span class="tpl-tag">电商</span><span class="tpl-tag">GPT-4o</span></div>
+        </div>
+        <div class="tpl-footer">
+          <div class="tpl-author">
+            <div class="tpl-avatar">L</div>
+            <span class="tpl-author-name">luzifeng</span>
+          </div>
+          <div class="tpl-stats">
+            <span class="tpl-stat">🔥 12.4K</span>
+            <span class="tpl-stat">⭐ 4.9</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="tpl-card" onclick="window.location.href='page-02-detail.html'" title="代码审查专家">
+        <div class="tpl-cover cover-blue">
+          💻
+          <div class="tpl-cover-fav" onclick="event.stopPropagation();toggleFav(this)" aria-label="收藏">♡</div>
+        </div>
+        <div class="tpl-body">
+          <div class="tpl-name">代码审查专家</div>
+          <div class="tpl-desc">深度分析代码质量、安全漏洞、性能瓶颈，给出可执行的改进建议，支持多种编程语言。</div>
+          <div class="tpl-tags"><span class="tpl-tag">编程</span><span class="tpl-tag">代码审查</span></div>
+        </div>
+        <div class="tpl-footer">
+          <div class="tpl-author">
+            <div class="tpl-avatar" style="background:linear-gradient(135deg,#3B82F6,#1D4ED8)">W</div>
+            <span class="tpl-author-name">wangkai</span>
+          </div>
+          <div class="tpl-stats">
+            <span class="tpl-stat">🔥 9.8K</span>
+            <span class="tpl-stat">⭐ 4.8</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="tpl-card" onclick="window.location.href='page-02-detail.html'" title="社媒营销文案生成器">
+        <div class="tpl-cover cover-pink">
+          📣
+          <div class="tpl-cover-fav" onclick="event.stopPropagation();toggleFav(this)" aria-label="收藏">♡</div>
+        </div>
+        <div class="tpl-body">
+          <div class="tpl-name">社媒营销文案生成器</div>
+          <div class="tpl-desc">针对微博、小红书、抖音等平台特点，生成风格各异的营销文案和互动话题。</div>
+          <div class="tpl-tags"><span class="tpl-tag">营销</span><span class="tpl-tag">社交媒体</span></div>
+        </div>
+        <div class="tpl-footer">
+          <div class="tpl-author">
+            <div class="tpl-avatar" style="background:linear-gradient(135deg,#EC4899,#BE185D)">M</div>
+            <span class="tpl-author-name">mengxia</span>
+          </div>
+          <div class="tpl-stats">
+            <span class="tpl-stat">🔥 7.2K</span>
+            <span class="tpl-stat">⭐ 4.7</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="tpl-card" onclick="window.location.href='page-02-detail.html'" title="数据分析报告生成器">
+        <div class="tpl-cover cover-teal">
+          📊
+          <div class="tpl-cover-fav" onclick="event.stopPropagation();toggleFav(this)" aria-label="收藏">♡</div>
+        </div>
+        <div class="tpl-body">
+          <div class="tpl-name">数据分析报告生成器</div>
+          <div class="tpl-desc">输入数据指标，自动生成结构化分析报告，包含趋势解读、异常识别和业务建议。</div>
+          <div class="tpl-tags"><span class="tpl-tag">数据</span><span class="tpl-tag">报告</span></div>
+        </div>
+        <div class="tpl-footer">
+          <div class="tpl-author">
+            <div class="tpl-avatar" style="background:linear-gradient(135deg,#10B981,#047857)">Z</div>
+            <span class="tpl-author-name">zhaolei</span>
+          </div>
+          <div class="tpl-stats">
+            <span class="tpl-stat">🔥 5.8K</span>
+            <span class="tpl-stat">⭐ 4.8</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 5 -->
+      <div class="tpl-card" onclick="window.location.href='page-02-detail.html'" title="UI设计评审助手">
+        <div class="tpl-cover cover-orange">
+          🎨
+          <div class="tpl-cover-fav" onclick="event.stopPropagation();toggleFav(this)" aria-label="收藏">♡</div>
+        </div>
+        <div class="tpl-body">
+          <div class="tpl-name">UI 设计评审助手</div>
+          <div class="tpl-desc">从用户体验、视觉层次、交互逻辑三个维度评审界面设计，给出专业改进意见。</div>
+          <div class="tpl-tags"><span class="tpl-tag">设计</span><span class="tpl-tag">UX</span></div>
+        </div>
+        <div class="tpl-footer">
+          <div class="tpl-author">
+            <div class="tpl-avatar" style="background:linear-gradient(135deg,#F59E0B,#D97706)">X</div>
+            <span class="tpl-author-name">xiaoyu</span>
+          </div>
+          <div class="tpl-stats">
+            <span class="tpl-stat">🔥 4.5K</span>
+            <span class="tpl-stat">⭐ 4.6</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 6 -->
+      <div class="tpl-card" onclick="window.location.href='page-02-detail.html'" title="课程大纲设计助手">
+        <div class="tpl-cover cover-green">
+          📚
+          <div class="tpl-cover-fav" onclick="event.stopPropagation();toggleFav(this)" aria-label="收藏">♡</div>
+        </div>
+        <div class="tpl-body">
+          <div class="tpl-name">课程大纲设计助手</div>
+          <div class="tpl-desc">根据学习目标和受众特点，系统化设计课程结构、知识点分解和学习路径规划。</div>
+          <div class="tpl-tags"><span class="tpl-tag">教育</span><span class="tpl-tag">课程设计</span></div>
+        </div>
+        <div class="tpl-footer">
+          <div class="tpl-author">
+            <div class="tpl-avatar" style="background:linear-gradient(135deg,#10B981,#065F46)">C</div>
+            <span class="tpl-author-name">chenmin</span>
+          </div>
+          <div class="tpl-stats">
+            <span class="tpl-stat">🔥 3.1K</span>
+            <span class="tpl-stat">⭐ 4.5</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 7 -->
+      <div class="tpl-card" onclick="window.location.href='page-02-detail.html'" title="商业计划书框架">
+        <div class="tpl-cover cover-purple">
+          💼
+          <div class="tpl-cover-fav" onclick="event.stopPropagation();toggleFav(this)" aria-label="收藏">♡</div>
+        </div>
+        <div class="tpl-body">
+          <div class="tpl-name">商业计划书框架</div>
+          <div class="tpl-desc">自动生成完整的商业计划书结构，包含市场分析、竞争策略、财务预测等核心模块。</div>
+          <div class="tpl-tags"><span class="tpl-tag">商业</span><span class="tpl-tag">创业</span></div>
+        </div>
+        <div class="tpl-footer">
+          <div class="tpl-author">
+            <div class="tpl-avatar" style="background:linear-gradient(135deg,#A855F7,#6D28D9)">H</div>
+            <span class="tpl-author-name">hengli</span>
+          </div>
+          <div class="tpl-stats">
+            <span class="tpl-stat">🔥 2.9K</span>
+            <span class="tpl-stat">⭐ 4.7</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 8 -->
+      <div class="tpl-card" onclick="window.location.href='page-02-detail.html'" title="邮件标题优化师">
+        <div class="tpl-cover cover-blue">
+          📧
+          <div class="tpl-cover-fav" onclick="event.stopPropagation();toggleFav(this)" aria-label="收藏">♡</div>
+        </div>
+        <div class="tpl-body">
+          <div class="tpl-name">邮件标题优化师</div>
+          <div class="tpl-desc">分析邮件主旨，生成高开信率的邮件标题，支持 A/B 测试文案变体输出。</div>
+          <div class="tpl-tags"><span class="tpl-tag">营销</span><span class="tpl-tag">邮件</span></div>
+        </div>
+        <div class="tpl-footer">
+          <div class="tpl-author">
+            <div class="tpl-avatar" style="background:linear-gradient(135deg,#3B82F6,#1E40AF)">J</div>
+            <span class="tpl-author-name">jiaxing</span>
+          </div>
+          <div class="tpl-stats">
+            <span class="tpl-stat">🔥 2.3K</span>
+            <span class="tpl-stat">⭐ 4.4</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 9 -->
+      <div class="tpl-card" onclick="window.location.href='page-02-detail.html'" title="技术文档写作助手">
+        <div class="tpl-cover cover-teal">
+          📝
+          <div class="tpl-cover-fav" onclick="event.stopPropagation();toggleFav(this)" aria-label="收藏">♡</div>
+        </div>
+        <div class="tpl-body">
+          <div class="tpl-name">技术文档写作助手</div>
+          <div class="tpl-desc">将技术细节转化为清晰易读的文档，自动生成 API 说明、README、使用指南等。</div>
+          <div class="tpl-tags"><span class="tpl-tag">编程</span><span class="tpl-tag">文档</span></div>
+        </div>
+        <div class="tpl-footer">
+          <div class="tpl-author">
+            <div class="tpl-avatar" style="background:linear-gradient(135deg,#14B8A6,#0F766E)">T</div>
+            <span class="tpl-author-name">tianyu</span>
+          </div>
+          <div class="tpl-stats">
+            <span class="tpl-stat">🔥 1.9K</span>
+            <span class="tpl-stat">⭐ 4.6</span>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /card-grid -->
+
+    <div class="load-more-wrap">
+      <button class="btn-outline" onclick="showToast('正在加载更多模板…','')">加载更多</button>
+    </div>
+  </div><!-- /content-area -->
+</div><!-- /main-layout -->
+
+<div id="toast-ct"></div>
+
+<script>
+  function filterCat(cat, el) {
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    const sideItems = document.querySelectorAll('#cat-list .filter-item');
+    sideItems.forEach(i => {
+      const text = i.querySelector('.filter-item-left').textContent.trim();
+      i.classList.toggle('active', cat === '全部' ? text.includes('全部') : text.includes(cat));
+    });
+    showToast(cat === '全部' ? '显示全部模板' : `已筛选：${cat}`, '');
+  }
+
+  function filterCatSide(el, cat) {
+    document.querySelectorAll('#cat-list .filter-item').forEach(i => i.classList.remove('active'));
+    el.classList.add('active');
+    document.querySelectorAll('.nav-tab').forEach(t => {
+      t.classList.toggle('active', cat === '全部' ? t.textContent.trim() === '全部' : t.textContent.includes(cat));
+    });
+  }
+
+  function toggleFilterItem(el) { el.classList.toggle('active'); }
+
+  function setSort(btn, sort) {
+    document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    showToast(`排序：${sort}`, '');
+  }
+
+  function toggleFav(btn) {
+    const isFav = btn.classList.toggle('active');
+    btn.textContent = isFav ? '♥' : '♡';
+    showToast(isFav ? '已收藏 💜' : '已取消收藏', isFav ? 'success' : '');
+  }
+
+  function handleSearch(val) {
+    if (val.length > 0) document.getElementById('result-count').textContent = '—';
+    else document.getElementById('result-count').textContent = '5,238';
+  }
+
+  function showToast(msg, type = '', dur = 2400) {
+    const c = document.getElementById('toast-ct');
+    const colors = { success:'#10B981', error:'#EF4444', '':'#18181B' };
+    const t = document.createElement('div');
+    t.style.cssText = `background:${colors[type]||colors['']};color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;font-weight:500;box-shadow:0 4px 16px rgba(0,0,0,0.15);pointer-events:all;transform:translateX(120%);transition:transform 0.28s cubic-bezier(0.34,1.56,0.64,1);white-space:nowrap;`;
+    t.textContent = msg;
+    c.appendChild(t);
+    requestAnimationFrame(() => requestAnimationFrame(() => { t.style.transform = 'translateX(0)'; }));
+    setTimeout(() => { t.style.transform = 'translateX(120%)'; setTimeout(() => t.remove(), 300); }, dur);
+  }
+</script>
+</body>
+</html>

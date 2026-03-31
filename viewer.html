@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>模式广场 · 原型预览</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary:#A855F7; --primary-hover:#9333EA;
+      --primary-light:rgba(168,85,247,0.10);
+      --bg:#0F0A1A; --surface:rgba(255,255,255,0.04);
+      --surface-hover:rgba(255,255,255,0.08);
+      --border:rgba(255,255,255,0.10); --border-hover:rgba(168,85,247,0.5);
+      --fg:#F5F5F5; --muted:rgba(255,255,255,0.45);
+      --font:'DM Sans',system-ui,sans-serif;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html, body { height:100%; font-family:var(--font); }
+    body { background:var(--bg); color:var(--fg); display:flex; flex-direction:column; overflow:hidden; -webkit-font-smoothing:antialiased; }
+
+    /* TOPBAR */
+    .topbar {
+      height:56px; flex-shrink:0; background:rgba(255,255,255,0.03);
+      border-bottom:1px solid var(--border); display:flex; align-items:center;
+      padding:0 24px; gap:16px; backdrop-filter:blur(20px); z-index:10;
+    }
+    .topbar-logo { display:flex; align-items:center; gap:8px; font-weight:800; font-size:16px; color:var(--primary); }
+    .logo-mark { width:28px; height:28px; border-radius:7px; background:linear-gradient(135deg,#A855F7,#7C3AED); display:flex; align-items:center; justify-content:center; font-size:13px; color:#fff; }
+    .topbar-divider { width:1px; height:20px; background:var(--border); }
+    .topbar-title { font-size:13px; font-weight:500; color:rgba(255,255,255,0.6); }
+    .topbar-spacer { flex:1; }
+    .topbar-badge { padding:3px 10px; border-radius:20px; background:var(--primary-light); border:1px solid rgba(168,85,247,0.3); font-size:11px; font-weight:600; color:var(--primary); letter-spacing:0.04em; }
+    .topbar-btns { display:flex; gap:8px; }
+    .topbar-btn { padding:6px 14px; border-radius:6px; font-size:12px; font-weight:500; font-family:var(--font); cursor:pointer; border:none; transition:all 180ms; }
+    .btn-open { background:var(--primary); color:#fff; }
+    .btn-open:hover { background:var(--primary-hover); }
+    .btn-copy { background:var(--surface); color:rgba(255,255,255,0.7); border:1px solid var(--border); }
+    .btn-copy:hover { background:var(--surface-hover); color:#fff; }
+
+    /* BODY LAYOUT */
+    .body { flex:1; display:flex; overflow:hidden; }
+
+    /* SIDEBAR */
+    .sidebar {
+      width:220px; flex-shrink:0; background:rgba(255,255,255,0.02);
+      border-right:1px solid var(--border); display:flex; flex-direction:column;
+      overflow-y:auto; padding:16px 0;
+    }
+    .sidebar::-webkit-scrollbar { width:3px; }
+    .sidebar::-webkit-scrollbar-track { background:transparent; }
+    .sidebar::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.12); border-radius:2px; }
+    .sidebar-label { font-size:10px; font-weight:700; color:rgba(255,255,255,0.3); letter-spacing:0.1em; text-transform:uppercase; padding:0 16px; margin-bottom:8px; margin-top:4px; }
+    .nav-item {
+      display:flex; align-items:center; gap:10px; padding:9px 16px;
+      font-size:13px; color:rgba(255,255,255,0.55); cursor:pointer;
+      border-left:2px solid transparent; transition:all 160ms;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+      position:relative;
+    }
+    .nav-item:hover { background:var(--surface-hover); color:rgba(255,255,255,0.88); }
+    .nav-item.active { background:var(--primary-light); color:var(--primary); border-left-color:var(--primary); font-weight:600; }
+    .nav-item-icon { font-size:15px; flex-shrink:0; }
+    .nav-item-num { margin-left:auto; font-size:10px; font-weight:700; color:rgba(255,255,255,0.2); flex-shrink:0; }
+    .nav-item.active .nav-item-num { color:var(--primary); opacity:0.6; }
+    .sidebar-divider { height:1px; background:var(--border); margin:12px 0; }
+
+    /* FRAME WRAP */
+    .frame-wrap { flex:1; display:flex; flex-direction:column; overflow:hidden; background:#0A0612; }
+    .frame-toolbar {
+      height:40px; flex-shrink:0; background:rgba(255,255,255,0.02);
+      border-bottom:1px solid var(--border); display:flex; align-items:center;
+      padding:0 16px; gap:10px;
+    }
+    .frame-url { flex:1; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:6px; padding:4px 12px; font-size:12px; color:rgba(255,255,255,0.5); font-family:monospace; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .frame-icon-btn { width:28px; height:28px; border-radius:5px; background:transparent; border:none; cursor:pointer; color:rgba(255,255,255,0.4); font-size:14px; display:flex; align-items:center; justify-content:center; transition:all 160ms; }
+    .frame-icon-btn:hover { background:var(--surface-hover); color:rgba(255,255,255,0.8); }
+    iframe { flex:1; width:100%; border:none; }
+
+    /* LOADING */
+    .loading { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; color:rgba(255,255,255,0.3); font-size:14px; display:none; }
+    .spinner { width:28px; height:28px; border:2.5px solid rgba(255,255,255,0.1); border-top-color:var(--primary); border-radius:50%; animation:spin 0.8s linear infinite; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+
+    /* STATUS BAR */
+    .statusbar { height:28px; flex-shrink:0; background:rgba(255,255,255,0.02); border-top:1px solid var(--border); display:flex; align-items:center; padding:0 16px; gap:16px; }
+    .status-dot { width:7px; height:7px; border-radius:50%; background:#10B981; box-shadow:0 0 6px #10B981; flex-shrink:0; }
+    .status-text { font-size:11px; color:rgba(255,255,255,0.3); }
+    .status-spacer { flex:1; }
+    .status-hotkey { font-size:10px; color:rgba(255,255,255,0.2); font-family:monospace; }
+  </style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-logo">
+    <div class="logo-mark">✦</div>
+    <span>模式广场</span>
+  </div>
+  <div class="topbar-divider"></div>
+  <span class="topbar-title">AI Prompt 模板市场 · UI 原型</span>
+  <div class="topbar-spacer"></div>
+  <span class="topbar-badge">Purple Creative</span>
+  <div class="topbar-btns">
+    <button class="topbar-btn btn-open" onclick="openInNewTab()" title="在新标签页打开当前页面">↗ 新标签打开</button>
+    <button class="topbar-btn btn-copy" onclick="copyCurrentUrl()" title="复制当前页面链接">🔗 复制链接</button>
+  </div>
+</div>
+
+<!-- BODY -->
+<div class="body">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar" aria-label="原型页面导航">
+    <div class="sidebar-label">页面列表</div>
+
+    <div class="nav-item active" data-page="page-01-home.html" onclick="loadPage(this)" title="广场首页">
+      <span class="nav-item-icon">🏠</span>
+      <span>广场首页</span>
+      <span class="nav-item-num">01</span>
+    </div>
+    <div class="nav-item" data-page="page-02-detail.html" onclick="loadPage(this)" title="模板详情页">
+      <span class="nav-item-icon">📄</span>
+      <span>模板详情</span>
+      <span class="nav-item-num">02</span>
+    </div>
+    <div class="nav-item" data-page="page-03-playground.html" onclick="loadPage(this)" title="在线调用页">
+      <span class="nav-item-icon">⚡</span>
+      <span>在线调用</span>
+      <span class="nav-item-num">03</span>
+    </div>
+    <div class="nav-item" data-page="page-04-publish.html" onclick="loadPage(this)" title="发布模板页">
+      <span class="nav-item-icon">🚀</span>
+      <span>发布模板</span>
+      <span class="nav-item-num">04</span>
+    </div>
+    <div class="nav-item" data-page="page-05-profile.html" onclick="loadPage(this)" title="个人中心页">
+      <span class="nav-item-icon">👤</span>
+      <span>个人中心</span>
+      <span class="nav-item-num">05</span>
+    </div>
+
+    <div class="sidebar-divider"></div>
+
+    <div class="sidebar-label">设计规范</div>
+    <div style="padding:12px 16px;font-size:12px;color:rgba(255,255,255,0.35);line-height:1.8">
+      <div>主色: <span style="color:#A855F7;font-weight:600">#A855F7</span></div>
+      <div>字体: <span style="color:rgba(255,255,255,0.55)">DM Sans</span></div>
+      <div>等宽: <span style="color:rgba(255,255,255,0.55)">JetBrains Mono</span></div>
+      <div style="margin-top:8px">页面数: <strong style="color:rgba(255,255,255,0.7)">5</strong></div>
+      <div>设备: <strong style="color:rgba(255,255,255,0.7)">PC 1280px</strong></div>
+    </div>
+
+    <div class="sidebar-divider"></div>
+
+    <div class="sidebar-label">用户流程</div>
+    <div style="padding:8px 16px;display:flex;flex-direction:column;gap:6px;font-size:11px;color:rgba(255,255,255,0.35);line-height:1.6">
+      <div>① 广场首页 → 浏览/搜索</div>
+      <div>② 模板详情 → 查看 Prompt</div>
+      <div>③ 在线调用 → 填写变量</div>
+      <div>④ 发布模板 → 3 步向导</div>
+      <div>⑤ 个人中心 → 管理发布</div>
+    </div>
+  </nav>
+
+  <!-- FRAME AREA -->
+  <div class="frame-wrap">
+    <div class="frame-toolbar">
+      <button class="frame-icon-btn" onclick="historyBack()" title="后退" aria-label="后退">‹</button>
+      <button class="frame-icon-btn" onclick="historyForward()" title="前进" aria-label="前进">›</button>
+      <button class="frame-icon-btn" onclick="reloadFrame()" title="刷新" aria-label="刷新">↺</button>
+      <div class="frame-url" id="frame-url" title="当前页面路径">page-01-home.html</div>
+      <button class="frame-icon-btn" onclick="openInNewTab()" title="新标签打开" aria-label="新标签打开">↗</button>
+    </div>
+    <div class="loading" id="loading-indicator">
+      <div class="spinner"></div>
+      <span>加载中…</span>
+    </div>
+    <iframe id="preview-frame" src="page-01-home.html" title="原型预览" onload="onFrameLoad()" allow="clipboard-write"></iframe>
+  </div>
+
+</div>
+
+<!-- STATUS BAR -->
+<div class="statusbar">
+  <div class="status-dot"></div>
+  <span class="status-text" id="status-text">已加载：广场首页</span>
+  <div class="status-spacer"></div>
+  <span class="status-hotkey">← → 方向键切换页面</span>
+  <span class="status-hotkey" style="margin-left:8px">R 刷新</span>
+</div>
+
+<script>
+  const PAGES = [
+    { file:'page-01-home.html',    name:'广场首页',   icon:'🏠' },
+    { file:'page-02-detail.html',  name:'模板详情',   icon:'📄' },
+    { file:'page-03-playground.html', name:'在线调用', icon:'⚡' },
+    { file:'page-04-publish.html', name:'发布模板',   icon:'🚀' },
+    { file:'page-05-profile.html', name:'个人中心',   icon:'👤' },
+  ];
+  let currentIdx = 0;
+
+  function loadPage(el) {
+    const page = el.dataset.page;
+    const idx = PAGES.findIndex(p => p.file === page);
+    if (idx === -1) return;
+    currentIdx = idx;
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    el.classList.add('active');
+    const frame = document.getElementById('preview-frame');
+    document.getElementById('frame-url').textContent = page;
+    document.getElementById('loading-indicator').style.display = 'flex';
+    frame.style.display = 'none';
+    frame.src = page;
+    document.getElementById('status-text').textContent = `已加载：${PAGES[idx].icon} ${PAGES[idx].name}`;
+  }
+
+  function onFrameLoad() {
+    document.getElementById('loading-indicator').style.display = 'none';
+    document.getElementById('preview-frame').style.display = 'block';
+  }
+
+  function reloadFrame() {
+    const frame = document.getElementById('preview-frame');
+    document.getElementById('loading-indicator').style.display = 'flex';
+    frame.style.display = 'none';
+    frame.src = frame.src;
+  }
+
+  function historyBack() {
+    if (currentIdx > 0) loadPage(document.querySelectorAll('.nav-item')[currentIdx - 1]);
+  }
+  function historyForward() {
+    if (currentIdx < PAGES.length - 1) loadPage(document.querySelectorAll('.nav-item')[currentIdx + 1]);
+  }
+
+  function openInNewTab() {
+    const src = document.getElementById('preview-frame').src;
+    window.open(src, '_blank');
+  }
+
+  function copyCurrentUrl() {
+    const src = document.getElementById('preview-frame').src;
+    navigator.clipboard.writeText(src).then(() => {
+      const btn = document.querySelector('.btn-copy');
+      const orig = btn.textContent;
+      btn.textContent = '✅ 已复制';
+      setTimeout(() => btn.textContent = orig, 2000);
+    });
+  }
+
+  // 键盘快捷键
+  document.addEventListener('keydown', e => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    if (e.key === 'ArrowRight') historyForward();
+    if (e.key === 'ArrowLeft') historyBack();
+    if (e.key === 'r' || e.key === 'R') reloadFrame();
+  });
+</script>
+</body>
+</html>

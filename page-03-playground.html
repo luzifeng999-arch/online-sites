@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>在线调用 — 产品描述撰写大师 — 模式广场</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-primary:#A855F7; --color-primary-hover:#9333EA;
+      --color-primary-light:rgba(168,85,247,0.10); --color-primary-mid:rgba(168,85,247,0.18);
+      --color-primary-fg:#FFFFFF;
+      --color-bg:#FAFAFA; --color-surface:#FFFFFF; --color-surface-2:#F5F3FF;
+      --color-border:#E9E4FB; --color-border-light:#DDD6FE;
+      --color-muted:#6B7280; --color-foreground:#18181B;
+      --color-success:#10B981; --color-error:#EF4444;
+      --font-sans:'DM Sans',system-ui,sans-serif;
+      --font-mono:'JetBrains Mono','Fira Code',monospace;
+      --font-weight-regular:400; --font-weight-medium:500;
+      --font-weight-semibold:600; --font-weight-bold:700; --font-weight-extrabold:800;
+      --text-xs:11px; --text-sm:13px; --text-base:15px; --text-md:16px;
+      --text-lg:18px; --text-xl:20px; --text-2xl:24px;
+      --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-5:20px;
+      --space-6:24px; --space-8:32px; --space-10:40px;
+      --radius-xs:4px; --radius-sm:6px; --radius-md:10px; --radius-lg:14px; --radius-full:9999px;
+      --shadow-xs:0 1px 2px rgba(0,0,0,0.05);
+      --shadow-sm:0 1px 4px rgba(0,0,0,0.07);
+      --shadow-md:0 4px 12px rgba(0,0,0,0.08);
+      --shadow-purple:0 4px 20px rgba(168,85,247,0.22);
+      --duration-base:180ms; --duration-slow:300ms;
+      --ease-default:cubic-bezier(0.4,0,0.2,1);
+      --ease-spring:cubic-bezier(0.34,1.56,0.64,1);
+      --nav-height:62px; --bar-height:64px;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html,body { height:100%; }
+    body { font-family:var(--font-sans); background:var(--color-bg); color:var(--color-foreground); -webkit-font-smoothing:antialiased; display:flex; flex-direction:column; overflow:hidden; }
+    a { color:inherit; text-decoration:none; }
+    button { cursor:pointer; font-family:inherit; border:none; background:none; }
+    textarea,input { font-family:var(--font-sans); }
+
+    /* ===== NAV ===== */
+    .nav { height:var(--nav-height); background:rgba(255,255,255,0.92); backdrop-filter:blur(16px); border-bottom:1px solid var(--color-border); flex-shrink:0; }
+    .nav-inner { max-width:100%; padding:0 var(--space-8); height:100%; display:flex; align-items:center; gap:var(--space-4); }
+    .nav-back { display:flex; align-items:center; gap:var(--space-2); font-size:var(--text-sm); color:var(--color-muted); cursor:pointer; padding:var(--space-2) var(--space-3); border-radius:var(--radius-sm); transition:all var(--duration-base); }
+    .nav-back:hover { background:var(--color-surface-2); color:var(--color-foreground); }
+    .nav-divider { width:1px; height:20px; background:var(--color-border); flex-shrink:0; }
+    .nav-tpl-name { font-size:var(--text-base); font-weight:var(--font-weight-semibold); color:var(--color-foreground); }
+    .nav-badge { padding:3px var(--space-3); border-radius:var(--radius-full); background:var(--color-primary-light); color:var(--color-primary); font-size:var(--text-xs); font-weight:var(--font-weight-medium); }
+    .nav-spacer { flex:1; }
+    .nav-actions { display:flex; align-items:center; gap:var(--space-2); }
+    .btn { display:inline-flex; align-items:center; justify-content:center; gap:var(--space-2); padding:var(--space-2) var(--space-5); border-radius:var(--radius-sm); font-size:var(--text-sm); font-weight:var(--font-weight-medium); font-family:var(--font-sans); cursor:pointer; border:none; transition:all var(--duration-base) var(--ease-default); white-space:nowrap; }
+    .btn:active { transform:scale(0.97); }
+    .btn-primary { background:var(--color-primary); color:var(--color-primary-fg); }
+    .btn-primary:hover { background:var(--color-primary-hover); box-shadow:var(--shadow-purple); }
+    .btn-secondary { background:var(--color-surface); color:var(--color-foreground); border:1px solid var(--color-border); }
+    .btn-secondary:hover { background:var(--color-surface-2); }
+    .btn-ghost { background:transparent; color:var(--color-muted); }
+    .btn-ghost:hover { background:var(--color-surface-2); color:var(--color-foreground); }
+    .btn-success { background:var(--color-success); color:#fff; }
+    .btn-success:hover { opacity:0.9; }
+
+    /* ===== WORKSPACE ===== */
+    .workspace { flex:1; display:flex; overflow:hidden; }
+
+    /* 左侧表单区 */
+    .form-panel {
+      width:420px; flex-shrink:0; background:var(--color-surface);
+      border-right:1px solid var(--color-border);
+      display:flex; flex-direction:column; overflow:hidden;
+    }
+    .form-panel-header {
+      padding:var(--space-5) var(--space-6);
+      border-bottom:1px solid var(--color-border); flex-shrink:0;
+    }
+    .form-panel-title { font-size:var(--text-base); font-weight:var(--font-weight-semibold); margin-bottom:3px; }
+    .form-panel-sub { font-size:var(--text-xs); color:var(--color-muted); }
+    .form-panel-body { flex:1; overflow-y:auto; padding:var(--space-6); display:flex; flex-direction:column; gap:var(--space-5); }
+    .form-panel-body::-webkit-scrollbar { width:4px; } .form-panel-body::-webkit-scrollbar-track { background:transparent; } .form-panel-body::-webkit-scrollbar-thumb { background:var(--color-border-light); border-radius:2px; }
+
+    /* 表单项 */
+    .form-field { display:flex; flex-direction:column; gap:var(--space-2); }
+    .form-label { font-size:var(--text-sm); font-weight:var(--font-weight-medium); color:var(--color-foreground); display:flex; align-items:center; gap:var(--space-1); }
+    .form-label-var { font-size:var(--text-xs); color:var(--color-primary); font-family:var(--font-mono); background:var(--color-primary-light); padding:1px 6px; border-radius:var(--radius-xs); }
+    .form-hint { font-size:var(--text-xs); color:var(--color-muted); line-height:1.5; }
+    .input {
+      height:40px; padding:0 var(--space-4);
+      background:var(--color-bg); border:1.5px solid var(--color-border);
+      border-radius:var(--radius-sm); font-size:var(--text-sm);
+      color:var(--color-foreground); outline:none; width:100%;
+      transition:border-color var(--duration-base),box-shadow var(--duration-base);
+    }
+    .input::placeholder { color:var(--color-muted); opacity:0.7; }
+    .input:hover { border-color:var(--color-primary); }
+    .input:focus { border-color:var(--color-primary); box-shadow:0 0 0 3px var(--color-primary-light); }
+    .textarea { min-height:80px; padding:var(--space-3) var(--space-4); resize:vertical; line-height:1.6; }
+    /* 选择器组 */
+    .select-group { display:flex; gap:var(--space-2); flex-wrap:wrap; }
+    .select-chip {
+      padding:5px var(--space-3); border-radius:var(--radius-full);
+      font-size:var(--text-xs); font-weight:var(--font-weight-medium);
+      font-family:var(--font-sans); cursor:pointer;
+      background:var(--color-surface-2); color:var(--color-muted);
+      border:1.5px solid var(--color-border);
+      transition:all var(--duration-base);
+    }
+    .select-chip:hover { border-color:var(--color-primary); color:var(--color-primary); }
+    .select-chip.active { background:var(--color-primary-light); border-color:var(--color-primary); color:var(--color-primary); }
+
+    /* 进度条 */
+    .form-progress { padding:var(--space-4) var(--space-6); border-top:1px solid var(--color-border); flex-shrink:0; }
+    .progress-label { display:flex; justify-content:space-between; font-size:var(--text-xs); color:var(--color-muted); margin-bottom:var(--space-2); }
+    .progress-bar { height:4px; background:var(--color-border); border-radius:var(--radius-full); overflow:hidden; }
+    .progress-fill { height:100%; background:linear-gradient(90deg,var(--color-primary),#7C3AED); border-radius:var(--radius-full); transition:width var(--duration-slow) var(--ease-default); }
+
+    /* 右侧预览区 */
+    .preview-panel {
+      flex:1; display:flex; flex-direction:column; overflow:hidden; background:var(--color-bg);
+    }
+    .preview-panel-header {
+      padding:var(--space-4) var(--space-6); border-bottom:1px solid var(--color-border);
+      display:flex; align-items:center; justify-content:space-between; flex-shrink:0;
+      background:var(--color-surface);
+    }
+    .preview-panel-title { font-size:var(--text-base); font-weight:var(--font-weight-semibold); }
+    .preview-panel-sub { font-size:var(--text-xs); color:var(--color-muted); }
+    .preview-tools { display:flex; align-items:center; gap:var(--space-2); }
+    .char-count { font-size:var(--text-xs); color:var(--color-muted); font-variant-numeric:tabular-nums; }
+
+    /* 预览文本区 */
+    .preview-body { flex:1; overflow-y:auto; padding:var(--space-8); }
+    .preview-body::-webkit-scrollbar { width:6px; } .preview-body::-webkit-scrollbar-track { background:transparent; } .preview-body::-webkit-scrollbar-thumb { background:var(--color-border); border-radius:3px; }
+    .preview-text {
+      background:var(--color-surface); border-radius:var(--radius-lg);
+      border:1px solid var(--color-border); padding:var(--space-8);
+      font-family:var(--font-mono); font-size:13px; line-height:1.8;
+      color:var(--color-foreground); white-space:pre-wrap; word-break:break-word;
+      min-height:300px; max-width:760px; margin:0 auto;
+    }
+    .preview-var-filled { color:var(--color-primary); font-weight:var(--font-weight-semibold); background:var(--color-primary-light); padding:0 3px; border-radius:3px; }
+    .preview-var-empty { color:var(--color-muted); background:var(--color-surface-2); padding:0 3px; border-radius:3px; border:1px dashed var(--color-border-light); }
+
+    /* 底部操作栏 */
+    .bottom-bar {
+      height:var(--bar-height); background:var(--color-surface);
+      border-top:1px solid var(--color-border);
+      display:flex; align-items:center; justify-content:space-between;
+      padding:0 var(--space-8); flex-shrink:0; gap:var(--space-4);
+    }
+    .bottom-bar-left { display:flex; align-items:center; gap:var(--space-2); font-size:var(--text-sm); color:var(--color-muted); }
+    .bottom-bar-right { display:flex; align-items:center; gap:var(--space-3); }
+    .btn-chatgpt {
+      display:flex; align-items:center; gap:var(--space-2);
+      padding:var(--space-2) var(--space-5); border-radius:var(--radius-sm);
+      font-size:var(--text-sm); font-weight:var(--font-weight-semibold); font-family:var(--font-sans);
+      background:#19C37D; color:#fff; border:none; cursor:pointer;
+      transition:all var(--duration-base);
+    }
+    .btn-chatgpt:hover { background:#16a368; }
+
+    /* Toast */
+    #toast-ct { position:fixed; bottom:80px; right:24px; z-index:2000; display:flex; flex-direction:column; gap:8px; pointer-events:none; }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" aria-label="工具栏">
+  <div class="nav-inner">
+    <a href="page-02-detail.html" class="nav-back" title="返回模板详情">← 返回</a>
+    <div class="nav-divider"></div>
+    <span class="nav-tpl-name">产品描述撰写大师</span>
+    <span class="nav-badge">✍️ 写作</span>
+    <div class="nav-spacer"></div>
+    <div class="nav-actions">
+      <a href="page-01-home.html" class="btn btn-ghost">广场首页</a>
+      <a href="page-05-profile.html" style="width:34px;height:34px;border-radius:9999px;background:linear-gradient(135deg,#A855F7,#7C3AED);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px" title="个人中心">L</a>
+    </div>
+  </div>
+</nav>
+
+<!-- WORKSPACE -->
+<div class="workspace">
+
+  <!-- 左侧：变量填写表单 -->
+  <div class="form-panel" aria-label="变量填写区">
+    <div class="form-panel-header">
+      <div class="form-panel-title">📝 填写变量</div>
+      <div class="form-panel-sub">根据你的需求填写以下变量，右侧实时预览完整 Prompt</div>
+    </div>
+    <div class="form-panel-body" id="form-body">
+
+      <div class="form-field">
+        <label class="form-label" for="var-product">
+          产品名称
+          <span class="form-label-var">{{产品名称}}</span>
+        </label>
+        <input class="input" id="var-product" type="text" placeholder="如：DX超薄便携充电宝" oninput="updatePreview()" aria-label="产品名称">
+      </div>
+
+      <div class="form-field">
+        <label class="form-label" for="var-category">
+          产品类别
+          <span class="form-label-var">{{产品类别}}</span>
+        </label>
+        <input class="input" id="var-category" type="text" placeholder="如：电子配件 / 3C数码" oninput="updatePreview()" aria-label="产品类别">
+      </div>
+
+      <div class="form-field">
+        <label class="form-label" for="var-features">
+          核心功能与特点
+          <span class="form-label-var">{{核心功能与特点}}</span>
+        </label>
+        <textarea class="input textarea" id="var-features" placeholder="如：20000mAh大容量、支持65W快充、重量仅180g…" oninput="updatePreview()" aria-label="核心功能与特点"></textarea>
+        <span class="form-hint">可输入多个特点，用逗号或换行分隔</span>
+      </div>
+
+      <div class="form-field">
+        <label class="form-label" for="var-audience">
+          目标用户群体
+          <span class="form-label-var">{{目标用户群体}}</span>
+        </label>
+        <input class="input" id="var-audience" type="text" placeholder="如：商务出行人士、学生、数码爱好者" oninput="updatePreview()" aria-label="目标用户群体">
+      </div>
+
+      <div class="form-field">
+        <label class="form-label">
+          语气风格
+          <span class="form-label-var">{{语气风格}}</span>
+        </label>
+        <div class="select-group" id="style-group">
+          <button class="select-chip active" onclick="selectChip(this,'style-group','专业')" data-val="专业">📋 专业</button>
+          <button class="select-chip" onclick="selectChip(this,'style-group','活泼')" data-val="活泼">🎉 活泼</button>
+          <button class="select-chip" onclick="selectChip(this,'style-group','高端')" data-val="高端">💎 高端</button>
+          <button class="select-chip" onclick="selectChip(this,'style-group','亲民')" data-val="亲民">🤝 亲民</button>
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label class="form-label">
+          字数范围
+          <span class="form-label-var">{{字数范围}}</span>
+        </label>
+        <div class="select-group" id="wordcount-group">
+          <button class="select-chip active" onclick="selectChip(this,'wordcount-group','100-200字')" data-val="100-200字">100-200字</button>
+          <button class="select-chip" onclick="selectChip(this,'wordcount-group','200-400字')" data-val="200-400字">200-400字</button>
+          <button class="select-chip" onclick="selectChip(this,'wordcount-group','400-600字')" data-val="400-600字">400-600字</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 填写进度 -->
+    <div class="form-progress">
+      <div class="progress-label">
+        <span>填写进度</span>
+        <span id="progress-pct">0 / 6 项</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill" style="width:33%"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 右侧：实时预览 -->
+  <div class="preview-panel" aria-label="Prompt 预览区">
+    <div class="preview-panel-header">
+      <div>
+        <div class="preview-panel-title">⚡ 实时预览</div>
+        <div class="preview-panel-sub">随填写自动更新的完整 Prompt</div>
+      </div>
+      <div class="preview-tools">
+        <span class="char-count" id="char-count">0 字符</span>
+        <button class="btn btn-ghost" onclick="resetForm()" title="重置所有输入">↺ 重置</button>
+      </div>
+    </div>
+    <div class="preview-body">
+      <div class="preview-text" id="preview-text"></div>
+    </div>
+
+    <!-- 底部操作栏 -->
+    <div class="bottom-bar">
+      <div class="bottom-bar-left">
+        ✅ <span id="ready-text" style="color:var(--color-muted)">请填写左侧变量</span>
+      </div>
+      <div class="bottom-bar-right">
+        <button class="btn btn-secondary" onclick="copyFinal()" id="btn-copy-final" title="复制最终 Prompt">
+          📋 复制 Prompt
+        </button>
+        <button class="btn-chatgpt" onclick="sendToChatGPT()" title="一键发送到 ChatGPT">
+          <span>✦</span> 发送到 ChatGPT
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /workspace -->
+
+<div id="toast-ct"></div>
+
+<script>
+  // ===== 模板原始内容 =====
+  const TEMPLATE = `# 产品描述撰写大师
+
+你是一位专业的电商文案撰写专家，擅长为各类产品创作吸引消费者的描述文案。
+
+## 输入信息
+- 产品名称：{{产品名称}}
+- 产品类别：{{产品类别}}
+- 核心功能：{{核心功能与特点}}
+- 目标受众：{{目标用户群体}}
+- 语气风格：{{语气风格}}
+- 字数要求：{{字数范围}}
+
+## 输出要求
+请按以下结构输出产品描述：
+
+1. 主标题（10-20字，抓人眼球，突出核心卖点）
+
+2. 核心卖点（3-5条，每条一句话，用 • 符号列出）
+
+3. 使用场景（2-3个具体场景，让用户产生代入感）
+
+4. 行动引导（1句号召性文案，推动购买决策）
+
+## 注意事项
+- 避免过度夸大，保持真实可信
+- 针对{{目标用户群体}}调整措辞
+- 符合{{语气风格}}的整体调性`;
+
+  const VAR_IDS = {
+    '产品名称':      'var-product',
+    '产品类别':      'var-category',
+    '核心功能与特点': 'var-features',
+    '目标用户群体':   'var-audience',
+  };
+
+  function getSelectedChip(groupId) {
+    const active = document.querySelector(`#${groupId} .select-chip.active`);
+    return active ? active.dataset.val : '';
+  }
+
+  function updatePreview() {
+    let result = TEMPLATE;
+    let filled = 0;
+    const total = 6;
+
+    // 文本变量
+    for (const [varName, elId] of Object.entries(VAR_IDS)) {
+      const val = (document.getElementById(elId)?.value || '').trim();
+      if (val) filled++;
+      const re = new RegExp(`\\{\\{${varName}\\}\\}`, 'g');
+      result = result.replace(re, val || `{{${varName}}}`);
+    }
+
+    // 选择器变量
+    const style = getSelectedChip('style-group');
+    const wordcount = getSelectedChip('wordcount-group');
+    if (style) { filled++; result = result.replace(/\{\{语气风格\}\}/g, style); }
+    if (wordcount) { filled++; result = result.replace(/\{\{字数范围\}\}/g, wordcount); }
+
+    // 渲染高亮
+    const previewEl = document.getElementById('preview-text');
+    const highlighted = result
+      .replace(/</g,'&lt;')
+      .replace(/\{\{([^}]+)\}\}/g, '<span class="preview-var-empty">{{$1}}</span>');
+
+    // 对已填写的变量着色
+    let final = highlighted;
+    for (const [varName, elId] of Object.entries(VAR_IDS)) {
+      const val = (document.getElementById(elId)?.value || '').trim();
+      if (val) {
+        const re = new RegExp(val.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'), 'g');
+        final = final.replace(re, `<span class="preview-var-filled">${val}</span>`);
+      }
+    }
+    if (style) final = final.replace(new RegExp(style,'g'), `<span class="preview-var-filled">${style}</span>`);
+    if (wordcount) final = final.replace(new RegExp(wordcount.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'g'), `<span class="preview-var-filled">${wordcount}</span>`);
+
+    previewEl.innerHTML = final;
+
+    // 字符数
+    const charLen = result.length;
+    document.getElementById('char-count').textContent = `${charLen} 字符`;
+
+    // 进度
+    const pct = Math.round((filled / total) * 100);
+    document.getElementById('progress-fill').style.width = `${Math.max(pct,8)}%`;
+    document.getElementById('progress-pct').textContent = `${filled} / ${total} 项`;
+
+    // 就绪提示
+    const readyEl = document.getElementById('ready-text');
+    if (filled >= 4) {
+      readyEl.textContent = '✅ 变量填写完整，可以复制或发送';
+      readyEl.style.color = 'var(--color-success)';
+    } else {
+      readyEl.textContent = `已填写 ${filled} / ${total}，继续完善变量`;
+      readyEl.style.color = 'var(--color-muted)';
+    }
+  }
+
+  function selectChip(el, groupId, val) {
+    document.querySelectorAll(`#${groupId} .select-chip`).forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    updatePreview();
+  }
+
+  function copyFinal() {
+    const previewEl = document.getElementById('preview-text');
+    const text = previewEl.innerText || previewEl.textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.getElementById('btn-copy-final');
+      const orig = btn.textContent;
+      btn.textContent = '✅ 已复制';
+      showToast('完整 Prompt 已复制 ✅','success');
+      setTimeout(() => { btn.textContent = orig; }, 2000);
+    }).catch(() => showToast('复制失败，请手动选中文本',''));
+  }
+
+  function sendToChatGPT() {
+    const previewEl = document.getElementById('preview-text');
+    const text = encodeURIComponent(previewEl.innerText || previewEl.textContent);
+    showToast('正在跳转到 ChatGPT… 🚀','success');
+    setTimeout(() => window.open(`https://chat.openai.com/?q=${text}`, '_blank'), 800);
+  }
+
+  function resetForm() {
+    Object.values(VAR_IDS).forEach(id => { const el = document.getElementById(id); if(el) el.value=''; });
+    updatePreview();
+    showToast('已重置所有输入','');
+  }
+
+  function showToast(msg, type='', dur=2400) {
+    const c = document.getElementById('toast-ct');
+    const colors = { success:'#10B981', error:'#EF4444', '':'#18181B' };
+    const t = document.createElement('div');
+    t.style.cssText = `background:${colors[type]||colors['']};color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;font-weight:500;box-shadow:0 4px 16px rgba(0,0,0,0.15);pointer-events:all;transform:translateX(120%);transition:transform 0.28s cubic-bezier(0.34,1.56,0.64,1);white-space:nowrap;`;
+    t.textContent = msg;
+    c.appendChild(t);
+    requestAnimationFrame(() => requestAnimationFrame(() => { t.style.transform='translateX(0)'; }));
+    setTimeout(() => { t.style.transform='translateX(120%)'; setTimeout(() => t.remove(),300); }, dur);
+  }
+
+  // 初始化
+  updatePreview();
+</script>
+</body>
+</html>

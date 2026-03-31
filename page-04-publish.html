@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>发布模板 — 模式广场</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-primary:#A855F7; --color-primary-hover:#9333EA;
+      --color-primary-light:rgba(168,85,247,0.10); --color-primary-mid:rgba(168,85,247,0.18);
+      --color-primary-fg:#FFFFFF;
+      --color-bg:#FAFAFA; --color-surface:#FFFFFF; --color-surface-2:#F5F3FF;
+      --color-border:#E9E4FB; --color-border-light:#DDD6FE;
+      --color-muted:#6B7280; --color-foreground:#18181B;
+      --color-success:#10B981; --color-success-bg:#ECFDF5;
+      --color-warning:#F59E0B; --color-error:#EF4444; --color-error-bg:#FEF2F2;
+      --font-sans:'DM Sans',system-ui,sans-serif;
+      --font-mono:'JetBrains Mono','Fira Code',monospace;
+      --font-weight-regular:400; --font-weight-medium:500;
+      --font-weight-semibold:600; --font-weight-bold:700; --font-weight-extrabold:800;
+      --text-xs:11px; --text-sm:13px; --text-base:15px; --text-md:16px;
+      --text-lg:18px; --text-xl:20px; --text-2xl:24px;
+      --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-5:20px;
+      --space-6:24px; --space-8:32px; --space-10:40px; --space-12:48px; --space-16:64px;
+      --radius-xs:4px; --radius-sm:6px; --radius-md:10px; --radius-lg:14px;
+      --radius-xl:20px; --radius-2xl:28px; --radius-full:9999px;
+      --shadow-xs:0 1px 2px rgba(0,0,0,0.05);
+      --shadow-sm:0 1px 4px rgba(0,0,0,0.07);
+      --shadow-md:0 4px 12px rgba(0,0,0,0.08);
+      --shadow-lg:0 8px 24px rgba(0,0,0,0.10);
+      --shadow-purple:0 4px 20px rgba(168,85,247,0.22);
+      --duration-base:180ms; --duration-slow:300ms;
+      --ease-default:cubic-bezier(0.4,0,0.2,1);
+      --ease-spring:cubic-bezier(0.34,1.56,0.64,1);
+      --nav-height:62px;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { font-size:16px; scroll-behavior:smooth; }
+    body { font-family:var(--font-sans); background:var(--color-bg); color:var(--color-foreground); -webkit-font-smoothing:antialiased; min-height:100vh; }
+    a { color:inherit; text-decoration:none; }
+    button { cursor:pointer; font-family:inherit; border:none; background:none; }
+    textarea, input, select { font-family:var(--font-sans); }
+
+    /* NAV */
+    .nav { position:sticky; top:0; z-index:200; height:var(--nav-height); background:rgba(255,255,255,0.92); backdrop-filter:blur(16px); border-bottom:1px solid var(--color-border); }
+    .nav-inner { max-width:1240px; margin:0 auto; padding:0 var(--space-8); height:100%; display:flex; align-items:center; gap:var(--space-4); }
+    .nav-logo { display:flex; align-items:center; gap:var(--space-2); font-weight:var(--font-weight-extrabold); font-size:var(--text-lg); color:var(--color-primary); flex-shrink:0; }
+    .nav-logo-mark { width:30px; height:30px; border-radius:var(--radius-md); background:linear-gradient(135deg,var(--color-primary),#7C3AED); display:flex; align-items:center; justify-content:center; font-size:15px; color:#fff; }
+    .nav-spacer { flex:1; }
+    .nav-title { font-size:var(--text-base); font-weight:var(--font-weight-semibold); color:var(--color-foreground); }
+    .nav-sub { font-size:var(--text-xs); color:var(--color-muted); }
+    .btn { display:inline-flex; align-items:center; justify-content:center; gap:var(--space-2); padding:var(--space-2) var(--space-5); border-radius:var(--radius-sm); font-size:var(--text-sm); font-weight:var(--font-weight-medium); font-family:var(--font-sans); cursor:pointer; border:none; transition:all var(--duration-base) var(--ease-default); white-space:nowrap; }
+    .btn:active { transform:scale(0.97); }
+    .btn-primary { background:var(--color-primary); color:var(--color-primary-fg); }
+    .btn-primary:hover { background:var(--color-primary-hover); box-shadow:var(--shadow-purple); }
+    .btn-secondary { background:var(--color-surface); color:var(--color-foreground); border:1px solid var(--color-border); }
+    .btn-secondary:hover { background:var(--color-surface-2); }
+    .btn-ghost { background:transparent; color:var(--color-muted); }
+    .btn-ghost:hover { background:var(--color-surface-2); color:var(--color-foreground); }
+    .btn-lg { padding:var(--space-3) var(--space-8); font-size:var(--text-md); border-radius:var(--radius-md); }
+    .btn-success { background:var(--color-success); color:#fff; }
+    .btn-success:hover { opacity:0.9; }
+    .btn:disabled { opacity:0.4; cursor:not-allowed; pointer-events:none; }
+
+    /* STEP BAR */
+    .step-bar-wrap { background:var(--color-surface); border-bottom:1px solid var(--color-border); padding:var(--space-6) 0; }
+    .step-bar { max-width:640px; margin:0 auto; display:flex; align-items:center; }
+    .step { display:flex; flex-direction:column; align-items:center; gap:var(--space-1); flex:1; position:relative; }
+    .step::before { content:''; position:absolute; top:17px; left:calc(50% + 20px); right:calc(-50% + 20px); height:2px; background:var(--color-border); z-index:0; transition:background var(--duration-slow); }
+    .step:last-child::before { display:none; }
+    .step-circle { width:34px; height:34px; border-radius:var(--radius-full); display:flex; align-items:center; justify-content:center; font-size:var(--text-sm); font-weight:var(--font-weight-bold); border:2px solid var(--color-border); background:var(--color-surface); color:var(--color-muted); z-index:1; transition:all var(--duration-slow); }
+    .step-label { font-size:var(--text-xs); font-weight:var(--font-weight-medium); color:var(--color-muted); white-space:nowrap; transition:color var(--duration-base); }
+    .step.active .step-circle { border-color:var(--color-primary); background:var(--color-primary); color:#fff; }
+    .step.active .step-label { color:var(--color-primary); font-weight:var(--font-weight-semibold); }
+    .step.done .step-circle { border-color:var(--color-success); background:var(--color-success); color:#fff; }
+    .step.done .step-label { color:var(--color-success); }
+    .step.done::before { background:var(--color-success); }
+
+    /* MAIN */
+    .publish-main { max-width:1100px; margin:0 auto; padding:var(--space-10) var(--space-8) var(--space-16); display:flex; gap:var(--space-8); align-items:flex-start; }
+    .publish-form { flex:1; min-width:0; }
+    .publish-preview { width:320px; flex-shrink:0; position:sticky; top:calc(var(--nav-height) + var(--space-5)); }
+
+    /* SECTION */
+    .section-card { background:var(--color-surface); border:1px solid var(--color-border); border-radius:var(--radius-lg); padding:var(--space-8); margin-bottom:var(--space-5); }
+    .section-title { font-size:var(--text-lg); font-weight:var(--font-weight-bold); margin-bottom:var(--space-1); }
+    .section-sub { font-size:var(--text-sm); color:var(--color-muted); margin-bottom:var(--space-6); }
+    .form-row { display:grid; grid-template-columns:1fr 1fr; gap:var(--space-5); }
+    .form-row.single { grid-template-columns:1fr; }
+    .form-field { display:flex; flex-direction:column; gap:var(--space-2); }
+    .form-label { font-size:var(--text-sm); font-weight:var(--font-weight-medium); color:var(--color-foreground); }
+    .required { color:var(--color-error); margin-left:2px; }
+    .form-hint { font-size:var(--text-xs); color:var(--color-muted); }
+    .input { height:40px; padding:0 var(--space-4); background:var(--color-bg); border:1.5px solid var(--color-border); border-radius:var(--radius-sm); font-size:var(--text-sm); color:var(--color-foreground); outline:none; width:100%; transition:border-color var(--duration-base),box-shadow var(--duration-base); }
+    .input::placeholder { color:var(--color-muted); opacity:0.7; }
+    .input:hover { border-color:var(--color-primary); }
+    .input:focus { border-color:var(--color-primary); box-shadow:0 0 0 3px var(--color-primary-light); }
+    .textarea { height:auto; min-height:96px; padding:var(--space-3) var(--space-4); resize:vertical; line-height:1.6; }
+    .select { appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; padding-right:36px; cursor:pointer; }
+
+    /* 封面选择 */
+    .cover-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:var(--space-2); }
+    .cover-option { aspect-ratio:16/9; border-radius:var(--radius-md); cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:24px; border:2px solid transparent; transition:all var(--duration-base); }
+    .cover-option:hover { transform:scale(1.03); border-color:var(--color-border-light); }
+    .cover-option.selected { border-color:var(--color-primary); box-shadow:0 0 0 2px var(--color-primary-light); }
+    .cover-1 { background:linear-gradient(135deg,#FAF5FF,#EDE9FE); }
+    .cover-2 { background:linear-gradient(135deg,#EFF6FF,#DBEAFE); }
+    .cover-3 { background:linear-gradient(135deg,#F0FDF4,#BBF7D0); }
+    .cover-4 { background:linear-gradient(135deg,#FFF7ED,#FED7AA); }
+    .cover-5 { background:linear-gradient(135deg,#FDF2F8,#FBCFE8); }
+
+    /* Prompt 编辑器 */
+    .prompt-editor-wrap { position:relative; }
+    .prompt-editor {
+      width:100%; min-height:280px; padding:var(--space-5);
+      background:var(--color-foreground); border-radius:var(--radius-lg);
+      font-family:var(--font-mono); font-size:13px; line-height:1.75;
+      color:rgba(255,255,255,0.88); resize:vertical; outline:none; border:none;
+      transition:box-shadow var(--duration-base);
+    }
+    .prompt-editor:focus { box-shadow:0 0 0 2px var(--color-primary); }
+    .editor-toolbar { display:flex; align-items:center; gap:var(--space-2); margin-bottom:var(--space-3); flex-wrap:wrap; }
+    .var-insert-btn { padding:4px var(--space-3); border-radius:var(--radius-full); font-size:var(--text-xs); font-weight:var(--font-weight-medium); font-family:var(--font-sans); background:var(--color-primary-light); color:var(--color-primary); border:1px solid var(--color-primary-mid); cursor:pointer; transition:all var(--duration-base); }
+    .var-insert-btn:hover { background:var(--color-primary); color:#fff; }
+    .editor-hint { font-size:var(--text-xs); color:var(--color-muted); margin-top:var(--space-3); }
+    .editor-hint code { font-family:var(--font-mono); background:var(--color-surface-2); padding:1px 6px; border-radius:3px; color:var(--color-primary); }
+
+    /* 变量管理 */
+    .var-list { display:flex; flex-direction:column; gap:var(--space-2); margin-top:var(--space-4); }
+    .var-item { display:flex; align-items:center; gap:var(--space-3); padding:var(--space-3) var(--space-4); background:var(--color-surface-2); border-radius:var(--radius-sm); border:1px solid var(--color-border); }
+    .var-name { font-family:var(--font-mono); font-size:var(--text-xs); font-weight:var(--font-weight-medium); color:var(--color-primary); background:var(--color-primary-light); padding:2px var(--space-2); border-radius:3px; flex-shrink:0; }
+    .var-input-small { flex:1; height:30px; padding:0 var(--space-3); background:#fff; border:1px solid var(--color-border); border-radius:var(--radius-xs); font-size:var(--text-xs); outline:none; transition:border-color var(--duration-base); }
+    .var-input-small:focus { border-color:var(--color-primary); }
+    .var-remove { font-size:16px; color:var(--color-muted); cursor:pointer; width:24px; height:24px; border-radius:var(--radius-full); display:flex; align-items:center; justify-content:center; transition:all var(--duration-base); flex-shrink:0; }
+    .var-remove:hover { background:var(--color-error-bg); color:var(--color-error); }
+
+    /* 步骤3 预览卡 */
+    .preview-showcase { background:var(--color-surface); border:1px solid var(--color-border); border-radius:var(--radius-lg); overflow:hidden; }
+    .preview-cover { height:120px; display:flex; align-items:center; justify-content:center; font-size:48px; }
+    .preview-body-inner { padding:var(--space-5); }
+    .preview-name { font-size:var(--text-lg); font-weight:var(--font-weight-bold); margin-bottom:var(--space-2); }
+    .preview-desc { font-size:var(--text-sm); color:var(--color-muted); line-height:1.6; margin-bottom:var(--space-3); display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:3; overflow:hidden; }
+    .preview-tags { display:flex; flex-wrap:wrap; gap:var(--space-1); margin-bottom:var(--space-4); }
+    .preview-tag { padding:2px var(--space-2); background:var(--color-surface-2); border-radius:var(--radius-full); font-size:var(--text-xs); color:var(--color-muted); }
+    .preview-footer { display:flex; align-items:center; justify-content:space-between; padding:var(--space-3) var(--space-5); border-top:1px solid var(--color-border); }
+    .preview-author { display:flex; align-items:center; gap:var(--space-2); }
+    .preview-ava { width:22px; height:22px; border-radius:var(--radius-full); background:linear-gradient(135deg,#A855F7,#7C3AED); display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; color:#fff; }
+
+    /* 右侧小预览卡 */
+    .aside-card { background:var(--color-surface); border:1px solid var(--color-border); border-radius:var(--radius-lg); overflow:hidden; margin-bottom:var(--space-4); }
+    .aside-card-header { padding:var(--space-4) var(--space-5); border-bottom:1px solid var(--color-border); font-size:var(--text-sm); font-weight:var(--font-weight-semibold); }
+    .aside-card-body { padding:var(--space-4) var(--space-5); font-size:var(--text-sm); color:var(--color-muted); line-height:1.7; }
+    .checklist { display:flex; flex-direction:column; gap:var(--space-2); }
+    .check-item { display:flex; align-items:center; gap:var(--space-2); font-size:var(--text-sm); }
+    .check-icon { width:18px; height:18px; border-radius:var(--radius-full); display:flex; align-items:center; justify-content:center; font-size:10px; flex-shrink:0; }
+    .check-done { background:var(--color-success-bg); color:var(--color-success); }
+    .check-todo { background:var(--color-surface-2); color:var(--color-muted); border:1px solid var(--color-border); }
+
+    /* 底部操作栏 */
+    .action-bar { display:flex; align-items:center; justify-content:space-between; padding:var(--space-5) var(--space-8); background:var(--color-surface); border-top:1px solid var(--color-border); position:sticky; bottom:0; }
+    .action-bar-left { display:flex; align-items:center; gap:var(--space-3); }
+    .action-bar-right { display:flex; align-items:center; gap:var(--space-3); }
+    .step-indicator { font-size:var(--text-sm); color:var(--color-muted); }
+    .step-indicator strong { color:var(--color-foreground); }
+
+    /* 发布成功遮罩 */
+    .success-overlay { position:fixed; inset:0; z-index:1000; background:rgba(0,0,0,0.55); display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity var(--duration-slow); }
+    .success-overlay.open { opacity:1; pointer-events:all; }
+    .success-card { background:#fff; border-radius:var(--radius-2xl); padding:var(--space-12) var(--space-10); text-align:center; box-shadow:var(--shadow-lg); max-width:440px; width:100%; transform:scale(0.92); transition:transform var(--duration-slow) var(--ease-spring); }
+    .success-overlay.open .success-card { transform:scale(1); }
+    .success-icon { font-size:56px; margin-bottom:var(--space-5); }
+    .success-title { font-size:var(--text-2xl); font-weight:var(--font-weight-extrabold); margin-bottom:var(--space-3); }
+    .success-sub { font-size:var(--text-base); color:var(--color-muted); line-height:1.65; margin-bottom:var(--space-8); }
+    .success-btns { display:flex; gap:var(--space-3); justify-content:center; }
+
+    #toast-ct { position:fixed; bottom:80px; right:24px; z-index:2000; display:flex; flex-direction:column; gap:8px; pointer-events:none; }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="page-01-home.html" class="nav-logo" title="返回广场首页">
+      <div class="nav-logo-mark">✦</div>
+      <span>模式广场</span>
+    </a>
+    <div class="nav-spacer"></div>
+    <div style="text-align:center">
+      <div class="nav-title">发布新模板</div>
+      <div class="nav-sub" id="nav-step-sub">第 1 步 / 共 3 步</div>
+    </div>
+    <div class="nav-spacer"></div>
+    <div style="display:flex;align-items:center;gap:var(--space-2)">
+      <button class="btn btn-ghost" onclick="showToast('草稿已保存 ✅','success')">保存草稿</button>
+      <a href="page-01-home.html" class="btn btn-ghost" title="放弃发布">✕ 取消</a>
+    </div>
+  </div>
+</nav>
+
+<!-- STEP BAR -->
+<div class="step-bar-wrap">
+  <div class="step-bar">
+    <div class="step active" id="step-1">
+      <div class="step-circle">1</div>
+      <div class="step-label">基本信息</div>
+    </div>
+    <div class="step" id="step-2">
+      <div class="step-circle">2</div>
+      <div class="step-label">编写 Prompt</div>
+    </div>
+    <div class="step" id="step-3">
+      <div class="step-circle">3</div>
+      <div class="step-label">预览 &amp; 发布</div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="publish-main">
+
+  <!-- 左侧表单 -->
+  <div class="publish-form">
+
+    <!-- ===== STEP 1 ===== -->
+    <div id="panel-1">
+      <div class="section-card">
+        <div class="section-title">📋 基本信息</div>
+        <div class="section-sub">填写模板的基础资料，帮助用户快速了解你的模板</div>
+
+        <div style="display:flex;flex-direction:column;gap:var(--space-5)">
+          <div class="form-row">
+            <div class="form-field">
+              <label class="form-label" for="tpl-name">模板名称 <span class="required">*</span></label>
+              <input class="input" id="tpl-name" type="text" placeholder="起一个简洁有力的名称" maxlength="30" oninput="syncPreview()" aria-label="模板名称">
+              <span class="form-hint">建议 6-15 字，突出核心功能</span>
+            </div>
+            <div class="form-field">
+              <label class="form-label" for="tpl-cat">内容分类 <span class="required">*</span></label>
+              <select class="input select" id="tpl-cat" onchange="syncPreview()" aria-label="内容分类">
+                <option value="">请选择分类</option>
+                <option value="写作创作" selected>✍️ 写作创作</option>
+                <option value="设计创意">🎨 设计创意</option>
+                <option value="编程开发">💻 编程开发</option>
+                <option value="营销推广">📣 营销推广</option>
+                <option value="数据分析">📊 数据分析</option>
+                <option value="教育学习">📚 教育学习</option>
+                <option value="商业策划">💼 商业策划</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row single">
+            <div class="form-field">
+              <label class="form-label" for="tpl-desc">简介描述 <span class="required">*</span></label>
+              <textarea class="input textarea" id="tpl-desc" placeholder="用 1-3 句话介绍这个模板能做什么，解决什么问题…" maxlength="200" oninput="syncPreview()" aria-label="简介描述"></textarea>
+              <span class="form-hint">0 / 200 字</span>
+            </div>
+          </div>
+
+          <div class="form-row single">
+            <div class="form-field">
+              <label class="form-label" for="tpl-tags-input">标签 <span style="color:var(--color-muted);font-weight:400">（选填，用逗号分隔）</span></label>
+              <input class="input" id="tpl-tags-input" type="text" placeholder="如：GPT-4o, 电商, 文案生成" oninput="syncPreview()" aria-label="标签">
+            </div>
+          </div>
+
+          <div class="form-field">
+            <div class="form-label">封面选择</div>
+            <div class="cover-grid" id="cover-grid">
+              <div class="cover-option cover-1 selected" onclick="selectCover(this,0)" title="紫色渐变">✨</div>
+              <div class="cover-option cover-2" onclick="selectCover(this,1)" title="蓝色渐变">💡</div>
+              <div class="cover-option cover-3" onclick="selectCover(this,2)" title="绿色渐变">🌿</div>
+              <div class="cover-option cover-4" onclick="selectCover(this,3)" title="橙色渐变">🔥</div>
+              <div class="cover-option cover-5" onclick="selectCover(this,4)" title="粉色渐变">🌸</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== STEP 2 ===== -->
+    <div id="panel-2" style="display:none">
+      <div class="section-card">
+        <div class="section-title">🧩 编写 Prompt</div>
+        <div class="section-sub">在模板中使用 <code style="font-family:var(--font-mono);background:var(--color-surface-2);padding:1px 6px;border-radius:3px;color:var(--color-primary)">{{变量名}}</code> 语法插入动态变量</div>
+
+        <div class="editor-toolbar">
+          <span style="font-size:var(--text-xs);color:var(--color-muted)">快速插入变量：</span>
+          <button class="var-insert-btn" onclick="insertVar('目标受众')">+ 目标受众</button>
+          <button class="var-insert-btn" onclick="insertVar('产品名称')">+ 产品名称</button>
+          <button class="var-insert-btn" onclick="insertVar('语气风格')">+ 语气风格</button>
+          <button class="var-insert-btn" onclick="insertVar('关键词')">+ 关键词</button>
+          <button class="var-insert-btn" onclick="insertCustomVar()">+ 自定义…</button>
+        </div>
+
+        <div class="prompt-editor-wrap">
+          <textarea class="prompt-editor" id="prompt-editor" placeholder="在这里输入你的 Prompt 模板内容…
+
+示例：
+你是一位专业的{{角色定位}}，请帮我完成以下任务：
+
+任务目标：{{任务描述}}
+目标受众：{{目标受众}}
+输出风格：{{输出风格}}
+
+请按以下格式输出：..." oninput="extractVars()" aria-label="Prompt 内容编辑器"></textarea>
+        </div>
+        <div class="editor-hint">使用 <code>{{变量名}}</code> 语法添加动态变量，系统将自动识别并生成填写表单</div>
+
+        <!-- 变量列表 -->
+        <div style="margin-top:var(--space-6)">
+          <div style="font-size:var(--text-sm);font-weight:var(--font-weight-semibold);margin-bottom:var(--space-3);display:flex;align-items:center;justify-content:space-between">
+            <span>🔧 已识别变量 <span id="var-count" style="color:var(--color-muted);font-weight:400">(0 个)</span></span>
+            <span style="font-size:var(--text-xs);color:var(--color-muted)">为每个变量设置提示文字</span>
+          </div>
+          <div class="var-list" id="var-list">
+            <div style="padding:var(--space-5);text-align:center;color:var(--color-muted);font-size:var(--text-sm);background:var(--color-surface-2);border-radius:var(--radius-sm);border:1px dashed var(--color-border)">
+              在 Prompt 中使用 {{变量名}} 后，变量将自动显示在此处
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== STEP 3 ===== -->
+    <div id="panel-3" style="display:none">
+      <div class="section-card">
+        <div class="section-title">👁️ 预览效果</div>
+        <div class="section-sub">这是你的模板在广场上的展示效果，确认无误后点击「发布」</div>
+
+        <div class="preview-showcase" id="preview-showcase">
+          <div class="preview-cover cover-1" id="preview-cover-el">✨</div>
+          <div class="preview-body-inner">
+            <div class="preview-name" id="preview-name-el">（模板名称）</div>
+            <div class="preview-desc" id="preview-desc-el">在左侧填写基本信息后，这里将显示你的模板简介…</div>
+            <div class="preview-tags" id="preview-tags-el">
+              <span class="preview-tag">写作创作</span>
+            </div>
+          </div>
+          <div class="preview-footer">
+            <div class="preview-author">
+              <div class="preview-ava">L</div>
+              <span style="font-size:var(--text-xs);color:var(--color-muted)">luzifeng</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:var(--space-3)">
+              <span style="font-size:var(--text-xs);color:var(--color-muted)">🔥 0 使用</span>
+              <span style="font-size:var(--text-xs);color:var(--color-muted)">⭐ —</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 检查清单 -->
+        <div style="margin-top:var(--space-6)">
+          <div style="font-size:var(--text-sm);font-weight:var(--font-weight-semibold);margin-bottom:var(--space-4)">发布前检查</div>
+          <div class="checklist" id="checklist">
+            <div class="check-item"><div class="check-icon check-done">✓</div><span>模板名称已填写</span></div>
+            <div class="check-item"><div class="check-icon check-done">✓</div><span>内容分类已选择</span></div>
+            <div class="check-item"><div class="check-icon check-todo">·</div><span style="color:var(--color-muted)">简介描述待填写</span></div>
+            <div class="check-item"><div class="check-icon check-todo">·</div><span style="color:var(--color-muted)">Prompt 内容待编写</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /publish-form -->
+
+  <!-- 右侧辅助栏 -->
+  <aside class="publish-preview">
+    <!-- 实时预览小卡 (Step 1/2 显示) -->
+    <div class="aside-card" id="aside-live-preview">
+      <div class="aside-card-header">📱 实时预览</div>
+      <div class="aside-card-body" style="padding:0">
+        <div style="background:var(--color-bg);padding:var(--space-3)">
+          <div style="background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-lg);overflow:hidden">
+            <div class="preview-cover cover-1" id="aside-cover" style="height:72px;font-size:28px">✨</div>
+            <div style="padding:var(--space-3)">
+              <div id="aside-name" style="font-size:var(--text-sm);font-weight:var(--font-weight-semibold);color:var(--color-foreground);margin-bottom:4px">（未填写名称）</div>
+              <div id="aside-desc" style="font-size:var(--text-xs);color:var(--color-muted);display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden">（未填写简介）</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 发布建议 -->
+    <div class="aside-card">
+      <div class="aside-card-header">💡 发布建议</div>
+      <div class="aside-card-body">
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:var(--space-3)">
+          <li>✦ 名称简洁直白，让用户一眼知道用途</li>
+          <li>✦ 变量设计要精准，不要超过 6 个</li>
+          <li>✦ 在 Prompt 里加上输出格式要求效果更好</li>
+          <li>✦ 附上 1-2 个使用示例会大幅提升收藏率</li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+</div><!-- /publish-main -->
+
+<!-- 底部操作栏 -->
+<div class="action-bar">
+  <div class="action-bar-left">
+    <button class="btn btn-secondary" id="btn-prev" onclick="prevStep()" style="display:none">← 上一步</button>
+    <span class="step-indicator">第 <strong id="current-step-label">1</strong> 步，共 3 步</span>
+  </div>
+  <div class="action-bar-right">
+    <button class="btn btn-ghost" onclick="showToast('草稿已保存','success')">保存草稿</button>
+    <button class="btn btn-primary btn-lg" id="btn-next" onclick="nextStep()">继续 →</button>
+  </div>
+</div>
+
+<!-- 发布成功弹窗 -->
+<div class="success-overlay" id="success-overlay" role="dialog" aria-modal="true" aria-labelledby="success-title">
+  <div class="success-card">
+    <div class="success-icon">🎉</div>
+    <div class="success-title" id="success-title">发布成功！</div>
+    <div class="success-sub">你的模板已成功提交审核，预计 24 小时内上线。<br>上线后你将收到站内通知。</div>
+    <div class="success-btns">
+      <a href="page-05-profile.html" class="btn btn-secondary">查看我的模板</a>
+      <a href="page-01-home.html" class="btn btn-primary">返回广场</a>
+    </div>
+  </div>
+</div>
+
+<div id="toast-ct"></div>
+
+<script>
+  let currentStep = 1;
+  const COVER_EMOJIS = ['✨','💡','🌿','🔥','🌸'];
+  const COVER_CLASSES = ['cover-1','cover-2','cover-3','cover-4','cover-5'];
+  let selectedCoverIdx = 0;
+
+  function goStep(n) {
+    // 隐藏旧面板
+    document.getElementById(`panel-${currentStep}`).style.display = 'none';
+    // 更新步骤状态
+    for (let i = 1; i <= 3; i++) {
+      const el = document.getElementById(`step-${i}`);
+      el.className = 'step' + (i < n ? ' done' : i === n ? ' active' : '');
+    }
+    currentStep = n;
+    document.getElementById(`panel-${currentStep}`).style.display = '';
+    document.getElementById('current-step-label').textContent = currentStep;
+    document.getElementById('nav-step-sub').textContent = `第 ${currentStep} 步 / 共 3 步`;
+    document.getElementById('btn-prev').style.display = currentStep > 1 ? '' : 'none';
+
+    const btnNext = document.getElementById('btn-next');
+    if (currentStep === 3) {
+      btnNext.textContent = '🚀 立即发布';
+      btnNext.classList.add('btn-success');
+    } else {
+      btnNext.textContent = '继续 →';
+      btnNext.classList.remove('btn-success');
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (currentStep === 3) syncPreview3();
+  }
+
+  function nextStep() {
+    if (currentStep < 3) {
+      goStep(currentStep + 1);
+      showToast(currentStep === 2 ? '已进入 Prompt 编辑步骤' : '请预览并确认发布', '');
+    } else {
+      // 发布
+      document.getElementById('success-overlay').classList.add('open');
+    }
+  }
+  function prevStep() { if (currentStep > 1) goStep(currentStep - 1); }
+
+  function selectCover(el, idx) {
+    document.querySelectorAll('.cover-option').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedCoverIdx = idx;
+    syncPreview();
+  }
+
+  function syncPreview() {
+    const name = document.getElementById('tpl-name')?.value?.trim() || '';
+    const desc = document.getElementById('tpl-desc')?.value?.trim() || '';
+    const tagsRaw = document.getElementById('tpl-tags-input')?.value?.trim() || '';
+    const cat = document.getElementById('tpl-cat')?.value || '写作创作';
+    const emoji = COVER_EMOJIS[selectedCoverIdx];
+    const coverClass = COVER_CLASSES[selectedCoverIdx];
+
+    // aside 预览
+    document.getElementById('aside-name').textContent = name || '（未填写名称）';
+    document.getElementById('aside-desc').textContent = desc || '（未填写简介）';
+    const asideCover = document.getElementById('aside-cover');
+    asideCover.textContent = emoji;
+    asideCover.className = `preview-cover ${coverClass}`;
+    asideCover.style.height = '72px';
+    asideCover.style.fontSize = '28px';
+  }
+
+  function syncPreview3() {
+    const name = document.getElementById('tpl-name')?.value?.trim() || '';
+    const desc = document.getElementById('tpl-desc')?.value?.trim() || '';
+    const tagsRaw = document.getElementById('tpl-tags-input')?.value?.trim() || '';
+    const cat = document.getElementById('tpl-cat')?.value || '写作创作';
+    const emoji = COVER_EMOJIS[selectedCoverIdx];
+    const coverClass = COVER_CLASSES[selectedCoverIdx];
+
+    document.getElementById('preview-name-el').textContent = name || '（模板名称）';
+    document.getElementById('preview-desc-el').textContent = desc || '在左侧填写基本信息后，这里将显示你的模板简介…';
+    const previewCover = document.getElementById('preview-cover-el');
+    previewCover.textContent = emoji;
+    previewCover.className = `preview-cover ${coverClass}`;
+    const tagsEl = document.getElementById('preview-tags-el');
+    const tags = [cat, ...tagsRaw.split(',').map(t=>t.trim()).filter(Boolean)].slice(0,4);
+    tagsEl.innerHTML = tags.map(t => `<span class="preview-tag">${t}</span>`).join('');
+  }
+
+  function insertVar(varName) {
+    const editor = document.getElementById('prompt-editor');
+    const start = editor.selectionStart;
+    const end = editor.selectionEnd;
+    const text = editor.value;
+    editor.value = text.slice(0,start) + `{{${varName}}}` + text.slice(end);
+    editor.focus();
+    editor.setSelectionRange(start + varName.length + 4, start + varName.length + 4);
+    extractVars();
+  }
+
+  function insertCustomVar() {
+    const name = prompt('输入自定义变量名：');
+    if (name?.trim()) insertVar(name.trim());
+  }
+
+  function extractVars() {
+    const content = document.getElementById('prompt-editor').value;
+    const regex = /\{\{([^}]+)\}\}/g;
+    const found = new Set();
+    let m;
+    while ((m = regex.exec(content)) !== null) found.add(m[1]);
+    const vars = [...found];
+    document.getElementById('var-count').textContent = `(${vars.length} 个)`;
+    const list = document.getElementById('var-list');
+    if (vars.length === 0) {
+      list.innerHTML = '<div style="padding:var(--space-5);text-align:center;color:var(--color-muted);font-size:var(--text-sm);background:var(--color-surface-2);border-radius:var(--radius-sm);border:1px dashed var(--color-border)">在 Prompt 中使用 {{变量名}} 后，变量将自动显示在此处</div>';
+    } else {
+      list.innerHTML = vars.map(v => `
+        <div class="var-item">
+          <span class="var-name">{{${v}}}</span>
+          <input class="var-input-small" type="text" placeholder="提示文字，如：请输入产品名称" aria-label="${v}的提示文字">
+          <span class="var-remove" onclick="removeVar('${v}')" title="删除变量" aria-label="删除变量${v}">✕</span>
+        </div>`).join('');
+    }
+  }
+
+  function removeVar(name) {
+    const editor = document.getElementById('prompt-editor');
+    editor.value = editor.value.replace(new RegExp(`\\{\\{${name}\\}\\}`, 'g'), name);
+    extractVars();
+    showToast(`已移除变量 {{${name}}}`,'');
+  }
+
+  function showToast(msg, type='', dur=2400) {
+    const c = document.getElementById('toast-ct');
+    const colors = { success:'#10B981', error:'#EF4444', '':'#18181B' };
+    const t = document.createElement('div');
+    t.style.cssText = `background:${colors[type]||colors['']};color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;font-weight:500;box-shadow:0 4px 16px rgba(0,0,0,0.15);pointer-events:all;transform:translateX(120%);transition:transform 0.28s cubic-bezier(0.34,1.56,0.64,1);white-space:nowrap;`;
+    t.textContent = msg;
+    c.appendChild(t);
+    requestAnimationFrame(() => requestAnimationFrame(() => { t.style.transform='translateX(0)'; }));
+    setTimeout(() => { t.style.transform='translateX(120%)'; setTimeout(() => t.remove(),300); }, dur);
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') document.getElementById('success-overlay').classList.remove('open');
+  });
+</script>
+</body>
+</html>
