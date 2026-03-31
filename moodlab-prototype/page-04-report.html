@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>情绪报告 — MoodLab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-primary:#7C6FFF; --color-primary-hover:#6558F0;
+      --color-primary-light:rgba(124,111,255,0.12); --color-primary-fg:#FFFFFF;
+      --color-bg:#FAF9FF; --color-surface:#FFFFFF; --color-surface-2:#F3F0FF;
+      --color-border:#E8E4F3; --color-muted:#8E88A8; --color-foreground:#1A1730;
+      --color-success:#4ECBA0; --color-success-bg:#EDFAF4;
+      --color-warning:#FFAB40; --color-warning-bg:#FFF8EC;
+      --font-sans:'Nunito',system-ui,sans-serif;
+      --font-weight-regular:400; --font-weight-medium:500;
+      --font-weight-semibold:600; --font-weight-bold:700; --font-weight-extrabold:800;
+      --text-xs:11px; --text-sm:13px; --text-base:15px; --text-md:16px;
+      --text-lg:18px; --text-xl:20px; --text-2xl:24px;
+      --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px;
+      --space-5:20px; --space-6:24px; --space-8:32px; --space-10:40px;
+      --radius-sm:8px; --radius-md:12px; --radius-lg:16px;
+      --radius-xl:22px; --radius-2xl:32px; --radius-full:9999px;
+      --shadow-xs:0 1px 3px rgba(124,111,255,0.06);
+      --shadow-sm:0 2px 8px rgba(124,111,255,0.10);
+      --shadow-md:0 4px 16px rgba(124,111,255,0.14);
+      --shadow-lg:0 8px 28px rgba(124,111,255,0.22);
+      --duration-base:200ms; --duration-slow:350ms;
+      --ease-default:cubic-bezier(0.4,0,0.2,1);
+      --ease-spring:cubic-bezier(0.34,1.56,0.64,1);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html,body{width:100%;}
+    body{
+      font-family:var(--font-sans);
+      background:var(--color-bg);
+      color:var(--color-foreground);
+      line-height:1.5;
+      -webkit-font-smoothing:antialiased;
+      width:390px; min-height:844px;
+      margin:0 auto;
+      display:flex; flex-direction:column;
+      overflow-x:hidden;
+    }
+
+    /* STATUS BAR */
+    .status-bar{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;flex-shrink:0;}
+    .status-time{font-size:15px;font-weight:700;}
+    .status-icons{font-size:13px;}
+
+    /* TOP NAV */
+    .page-nav{
+      padding:0 var(--space-5) var(--space-2);
+      display:flex;align-items:center;justify-content:space-between;
+      flex-shrink:0;
+    }
+    .close-btn{width:40px;height:40px;border-radius:var(--radius-full);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;transition:all var(--duration-base);box-shadow:var(--shadow-xs);}
+    .close-btn:hover{background:var(--color-primary-light);}
+    .nav-title{font-size:var(--text-base);font-weight:var(--font-weight-bold);}
+    .share-btn{
+      display:flex;align-items:center;gap:6px;
+      padding:8px 16px;
+      background:var(--color-primary);color:#fff;
+      border-radius:var(--radius-full);
+      font-family:var(--font-sans);font-size:var(--text-sm);font-weight:var(--font-weight-bold);
+      border:none;cursor:pointer;
+      box-shadow:var(--shadow-sm);
+      transition:all var(--duration-base);
+    }
+    .share-btn:hover{background:var(--color-primary-hover);}
+
+    /* MAIN SCROLL */
+    .scroll-body{flex:1;overflow-y:auto;padding:0 0 var(--space-4);}
+
+    /* ── EMOTION CARD ── */
+    .emotion-poster{
+      margin:0 var(--space-5) var(--space-5);
+      border-radius:var(--radius-2xl);
+      overflow:hidden;
+      box-shadow:var(--shadow-lg);
+      position:relative;
+      min-height:200px;
+    }
+    .poster-bg{
+      padding:var(--space-6) var(--space-5);
+      background:linear-gradient(160deg,#7C6FFF 0%,#9F8FFF 60%,#C084FC 100%);
+      position:relative;
+      overflow:hidden;
+    }
+    .poster-bg::before{
+      content:'';position:absolute;inset:0;
+      background:radial-gradient(circle at 80% 20%, rgba(255,255,255,0.15) 0%, transparent 60%);
+    }
+    .poster-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:var(--space-4);position:relative;z-index:1;}
+    .poster-app-name{font-size:var(--text-xs);font-weight:var(--font-weight-bold);color:rgba(255,255,255,0.7);letter-spacing:0.1em;text-transform:uppercase;}
+    .poster-date{font-size:var(--text-xs);color:rgba(255,255,255,0.7);}
+    .poster-mood-row{display:flex;align-items:flex-end;gap:var(--space-4);margin-bottom:var(--space-4);position:relative;z-index:1;}
+    .poster-emoji{font-size:64px;line-height:1;filter:drop-shadow(0 4px 8px rgba(0,0,0,0.15));}
+    .poster-mood-info{}
+    .poster-mood-name{font-size:var(--text-2xl);font-weight:var(--font-weight-extrabold);color:#fff;margin-bottom:4px;}
+    .poster-intensity-bar{width:100px;height:6px;background:rgba(255,255,255,0.3);border-radius:3px;overflow:hidden;}
+    .poster-intensity-fill{height:100%;background:#fff;border-radius:3px;transition:width 1s var(--ease-default);}
+    .poster-weather{display:flex;align-items:center;gap:6px;font-size:var(--text-xs);color:rgba(255,255,255,0.7);}
+    .poster-quote{
+      background:rgba(255,255,255,0.15);backdrop-filter:blur(8px);
+      border-radius:var(--radius-lg);padding:var(--space-3) var(--space-4);
+      border-left:3px solid rgba(255,255,255,0.5);
+      font-size:var(--text-sm);color:#fff;line-height:1.6;
+      font-style:italic;position:relative;z-index:1;
+    }
+    .poster-quote::before{content:'"';font-size:24px;line-height:0;opacity:0.5;margin-right:4px;vertical-align:-6px;}
+
+    /* SCORE ROW */
+    .score-row{
+      margin:0 var(--space-5) var(--space-5);
+      display:flex;gap:var(--space-3);
+    }
+    .score-card{
+      flex:1;background:var(--color-surface);
+      border:1px solid var(--color-border);
+      border-radius:var(--radius-xl);
+      padding:var(--space-4);
+      text-align:center;
+      box-shadow:var(--shadow-xs);
+    }
+    .score-icon{font-size:22px;margin-bottom:var(--space-2);}
+    .score-val{font-size:var(--text-xl);font-weight:var(--font-weight-extrabold);color:var(--color-primary);}
+    .score-label{font-size:10px;color:var(--color-muted);font-weight:var(--font-weight-semibold);}
+
+    /* AI INSIGHT */
+    .ai-section{margin:0 var(--space-5) var(--space-5);}
+    .ai-section-title{
+      display:flex;align-items:center;gap:var(--space-2);
+      font-size:var(--text-base);font-weight:var(--font-weight-bold);
+      margin-bottom:var(--space-3);
+    }
+    .ai-badge{
+      padding:3px 10px;background:linear-gradient(135deg,#7C6FFF,#9F8FFF);
+      border-radius:var(--radius-full);font-size:10px;font-weight:var(--font-weight-bold);
+      color:#fff;letter-spacing:0.04em;
+    }
+    .ai-card{
+      background:linear-gradient(135deg,#FAF9FF,#F3F0FF);
+      border:1px solid rgba(124,111,255,0.2);
+      border-radius:var(--radius-xl);
+      padding:var(--space-4) var(--space-5);
+      box-shadow:var(--shadow-xs);
+    }
+    .ai-text{font-size:var(--text-sm);color:var(--color-foreground);line-height:1.8;}
+    .ai-highlight{
+      display:inline;
+      background:linear-gradient(135deg,rgba(124,111,255,0.15),rgba(192,132,252,0.12));
+      border-radius:4px;padding:0 4px;color:var(--color-primary);font-weight:var(--font-weight-bold);
+    }
+    .ai-tags{display:flex;flex-wrap:wrap;gap:var(--space-2);margin-top:var(--space-3);}
+    .ai-tag{padding:4px 12px;border-radius:var(--radius-full);font-size:11px;font-weight:var(--font-weight-semibold);background:var(--color-primary-light);color:var(--color-primary);}
+
+    /* ACTION SUGGESTION */
+    .action-card{
+      margin:0 var(--space-5) var(--space-5);
+      background:var(--color-success-bg);
+      border:1px solid rgba(78,203,160,0.25);
+      border-radius:var(--radius-xl);
+      padding:var(--space-4) var(--space-5);
+      box-shadow:var(--shadow-xs);
+    }
+    .action-header{display:flex;align-items:center;gap:var(--space-2);margin-bottom:var(--space-3);}
+    .action-header-title{font-size:var(--text-sm);font-weight:var(--font-weight-bold);color:var(--color-success);}
+    .action-list{display:flex;flex-direction:column;gap:var(--space-3);}
+    .action-item{
+      display:flex;align-items:center;gap:var(--space-3);
+      background:#fff;border:1px solid rgba(78,203,160,0.2);
+      border-radius:var(--radius-lg);padding:var(--space-3) var(--space-4);
+      cursor:pointer;transition:all var(--duration-base);
+    }
+    .action-item:hover{border-color:var(--color-success);transform:translateX(4px);}
+    .action-emoji{font-size:24px;flex-shrink:0;}
+    .action-name{font-size:var(--text-sm);font-weight:var(--font-weight-bold);}
+    .action-desc{font-size:10px;color:var(--color-muted);}
+    .action-arrow{margin-left:auto;color:var(--color-muted);font-size:14px;}
+
+    /* CBT TIP */
+    .cbt-card{
+      margin:0 var(--space-5) var(--space-5);
+      background:var(--color-warning-bg);
+      border:1px solid rgba(255,171,64,0.25);
+      border-radius:var(--radius-xl);
+      padding:var(--space-4) var(--space-5);
+    }
+    .cbt-header{display:flex;align-items:center;gap:var(--space-2);margin-bottom:var(--space-3);}
+    .cbt-title{font-size:var(--text-sm);font-weight:var(--font-weight-bold);color:var(--color-warning);}
+    .cbt-text{font-size:var(--text-sm);color:var(--color-foreground);line-height:1.7;}
+
+    /* BOTTOM ACTIONS */
+    .bottom-actions{
+      padding:var(--space-4) var(--space-5);
+      padding-bottom:calc(var(--space-4) + env(safe-area-inset-bottom));
+      display:flex;gap:var(--space-3);
+      flex-shrink:0;
+      background:var(--color-surface);
+      border-top:1px solid var(--color-border);
+    }
+    .btn-secondary{flex:1;height:48px;background:var(--color-surface-2);border:1px solid var(--color-border);border-radius:var(--radius-full);font-family:var(--font-sans);font-size:var(--text-sm);font-weight:var(--font-weight-bold);cursor:pointer;transition:all var(--duration-base);}
+    .btn-secondary:hover{background:var(--color-primary-light);border-color:var(--color-primary);}
+    .btn-primary{flex:1;height:48px;background:linear-gradient(135deg,#7C6FFF,#9F8FFF);color:#fff;border:none;border-radius:var(--radius-full);font-family:var(--font-sans);font-size:var(--text-sm);font-weight:var(--font-weight-bold);cursor:pointer;box-shadow:var(--shadow-sm);transition:all var(--duration-base);}
+    .btn-primary:hover{transform:translateY(-1px);box-shadow:var(--shadow-md);}
+
+    /* TOAST */
+    .toast-ct{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:2000;pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:var(--space-2);}
+    .toast{background:rgba(26,23,48,0.9);color:#fff;padding:var(--space-2) var(--space-5);border-radius:var(--radius-full);font-size:var(--text-sm);font-weight:var(--font-weight-semibold);white-space:nowrap;opacity:0;transform:translateY(8px);transition:all 0.25s var(--ease-spring);}
+    .toast.show{opacity:1;transform:translateY(0);}
+
+    /* LOADING STATE */
+    .ai-loading{
+      display:flex;align-items:center;gap:var(--space-3);
+      padding:var(--space-4);
+    }
+    .ai-loading-dots{display:flex;gap:6px;}
+    .ai-loading-dot{
+      width:8px;height:8px;border-radius:50%;
+      background:var(--color-primary);
+      animation:dot-bounce 1.2s ease-in-out infinite;
+    }
+    .ai-loading-dot:nth-child(1){animation-delay:0s;}
+    .ai-loading-dot:nth-child(2){animation-delay:0.2s;}
+    .ai-loading-dot:nth-child(3){animation-delay:0.4s;}
+    @keyframes dot-bounce{
+      0%,80%,100%{transform:scale(0.7);opacity:0.5;}
+      40%{transform:scale(1.1);opacity:1;}
+    }
+
+    /* page entrance animation */
+    .fade-up{opacity:0;transform:translateY(20px);transition:all 0.5s var(--ease-spring);}
+    .fade-up.visible{opacity:1;transform:translateY(0);}
+  </style>
+</head>
+<body>
+
+<!-- STATUS BAR -->
+<div class="status-bar">
+  <span class="status-time">9:41</span>
+  <span class="status-icons">📶 🛜 🔋</span>
+</div>
+
+<!-- TOP NAV -->
+<div class="page-nav">
+  <button class="close-btn" onclick="location.href='page-01-home.html'" title="返回首页" aria-label="关闭">✕</button>
+  <span class="nav-title">情绪分析报告</span>
+  <button class="share-btn" onclick="shareReport()" title="分享报告" aria-label="分享">
+    🔗 分享
+  </button>
+</div>
+
+<div class="scroll-body" id="scroll-body">
+
+  <!-- EMOTION POSTER CARD -->
+  <div class="emotion-poster fade-up" id="poster" style="transition-delay:0.05s;">
+    <div class="poster-bg" id="poster-bg">
+      <div class="poster-header">
+        <span class="poster-app-name">MoodLab</span>
+        <span class="poster-date" id="poster-date">2026年3月31日 · 🌤️ 晴天</span>
+      </div>
+      <div class="poster-mood-row">
+        <span class="poster-emoji" id="poster-emoji">😊</span>
+        <div class="poster-mood-info">
+          <div class="poster-mood-name" id="poster-mood-name">快乐</div>
+          <div style="display:flex;align-items:center;gap:var(--space-2);margin-bottom:6px;">
+            <div class="poster-intensity-bar">
+              <div class="poster-intensity-fill" id="poster-intensity-fill" style="width:0%;"></div>
+            </div>
+            <span style="font-size:11px;color:rgba(255,255,255,0.8);" id="poster-intensity-text">7/10</span>
+          </div>
+          <div class="poster-weather">☀️ 今天天气不错</div>
+        </div>
+      </div>
+      <div class="poster-quote" id="poster-quote">
+        今天发生了一件让我特别开心的事，和朋友一起喝了下午茶，聊了很久。
+      </div>
+    </div>
+  </div>
+
+  <!-- SCORE ROW -->
+  <div class="score-row fade-up" id="score-row" style="transition-delay:0.1s;">
+    <div class="score-card">
+      <div class="score-icon">💫</div>
+      <div class="score-val" id="score-mood">7.0</div>
+      <div class="score-label">心情指数</div>
+    </div>
+    <div class="score-card">
+      <div class="score-icon">🔥</div>
+      <div class="score-val">12</div>
+      <div class="score-label">连续打卡</div>
+    </div>
+    <div class="score-card">
+      <div class="score-icon">📊</div>
+      <div class="score-val">+2.3</div>
+      <div class="score-label">较昨日</div>
+    </div>
+  </div>
+
+  <!-- AI INSIGHT -->
+  <div class="ai-section fade-up" id="ai-section" style="transition-delay:0.15s;">
+    <div class="ai-section-title">
+      ✦ AI 情绪洞察
+      <span class="ai-badge">CBT · 分析</span>
+    </div>
+    <!-- 加载状态 -->
+    <div class="ai-card" id="ai-loading-card">
+      <div class="ai-loading">
+        <div class="ai-loading-dots">
+          <div class="ai-loading-dot"></div>
+          <div class="ai-loading-dot"></div>
+          <div class="ai-loading-dot"></div>
+        </div>
+        <span style="font-size:var(--text-sm);color:var(--color-muted);">AI 正在分析你的情绪…</span>
+      </div>
+    </div>
+    <!-- 结果 -->
+    <div class="ai-card" id="ai-result-card" style="display:none;">
+      <div class="ai-text" id="ai-text">
+        从你的记录来看，今天的<span class="ai-highlight">社交互动</span>是你情绪上升的主要来源。
+        与朋友共度的轻松时光，有效缓解了本周积累的工作压力。这是一种很健康的情绪调节方式！<br><br>
+        认知行为疗法（CBT）视角下，你表现出了良好的<span class="ai-highlight">积极重构</span>能力——
+        你主动安排了令自己放松的活动，这正是情绪自我调节的关键技能。
+      </div>
+      <div class="ai-tags" id="ai-tags">
+        <span class="ai-tag">🤝 社交支持</span>
+        <span class="ai-tag">✅ 积极重构</span>
+        <span class="ai-tag">💪 压力缓解</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACTION SUGGESTION -->
+  <div class="action-card fade-up" id="action-card" style="transition-delay:0.2s;">
+    <div class="action-header">
+      <span style="font-size:18px;">💚</span>
+      <span class="action-header-title">今日治愈建议</span>
+    </div>
+    <div class="action-list">
+      <div class="action-item" onclick="showToast('🎵 推荐：Forest Rain · 白噪音')" title="听白噪音">
+        <span class="action-emoji">🎵</span>
+        <div>
+          <div class="action-name">听一首白噪音</div>
+          <div class="action-desc">10分钟 · 帮助放松神经，巩固好心情</div>
+        </div>
+        <span class="action-arrow">›</span>
+      </div>
+      <div class="action-item" onclick="showToast('🌿 冥想引导已加载…')" title="5分钟冥想">
+        <span class="action-emoji">🌿</span>
+        <div>
+          <div class="action-name">5分钟正念冥想</div>
+          <div class="action-desc">感恩练习 · 强化积极情绪记忆</div>
+        </div>
+        <span class="action-arrow">›</span>
+      </div>
+      <div class="action-item" onclick="showToast('📔 写下3件感恩的事…')" title="感恩日记">
+        <span class="action-emoji">📔</span>
+        <div>
+          <div class="action-name">写下3件感恩的事</div>
+          <div class="action-desc">CBT感恩练习 · 提升幸福感</div>
+        </div>
+        <span class="action-arrow">›</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CBT TIP -->
+  <div class="cbt-card fade-up" style="transition-delay:0.25s;">
+    <div class="cbt-header">
+      <span style="font-size:18px;">💡</span>
+      <span class="cbt-title">今日 CBT 小知识</span>
+    </div>
+    <div class="cbt-text">
+      <strong>行为激活（Behavioral Activation）：</strong>
+      主动安排令自己愉快的活动，能有效打破消极情绪的恶性循环。你今天的行为正是很好的例子！
+      坚持这种模式，你会发现情绪稳定性逐步提升 🌱
+    </div>
+  </div>
+
+  <div style="height:var(--space-4);"></div>
+</div>
+
+<!-- BOTTOM ACTIONS -->
+<div class="bottom-actions">
+  <button class="btn-secondary" onclick="location.href='page-01-home.html'" title="返回首页">🏠 返回首页</button>
+  <button class="btn-primary" onclick="showToast('✅ 报告已保存至相册')" title="保存卡片">💾 保存卡片</button>
+</div>
+
+<div class="toast-ct" id="toast-ct"></div>
+
+<script>
+  // ── 读取记录数据 ──
+  const moodKey   = sessionStorage.getItem('ml_mood')       || 'happy';
+  const moodLabel = sessionStorage.getItem('ml_mood_label') || '快乐';
+  const intensity = parseInt(sessionStorage.getItem('ml_intensity') || '7');
+  const entryText = sessionStorage.getItem('ml_entry_text') || '今天发生了一件让我特别开心的事，和朋友一起喝了下午茶，聊了很久。';
+
+  const EMOJIS = {happy:'😊',calm:'😌',sad:'😔',anxious:'😤',angry:'😡',tired:'😴'};
+  const POSTER_GRADS = {
+    happy:'linear-gradient(160deg,#FFD166 0%,#FFC445 60%,#FFB020 100%)',
+    calm:'linear-gradient(160deg,#74D7E8 0%,#4ECDE0 60%,#2EC4D9 100%)',
+    sad:'linear-gradient(160deg,#7C9CF5 0%,#6B8EF0 60%,#5A7DE8 100%)',
+    anxious:'linear-gradient(160deg,#C084FC 0%,#A855F7 60%,#9333EA 100%)',
+    angry:'linear-gradient(160deg,#FC8181 0%,#F56565 60%,#E53E3E 100%)',
+    tired:'linear-gradient(160deg,#94A3B8 0%,#7E8FA5 60%,#64748B 100%)',
+  };
+  const AI_INSIGHTS = {
+    happy:`从你的记录来看，今天的<span class="ai-highlight">社交互动</span>是你情绪上升的主要来源。与朋友共度的轻松时光，有效缓解了本周积累的工作压力。CBT视角下，你表现出了良好的<span class="ai-highlight">积极重构</span>能力。`,
+    calm:`你今天处于稳定的<span class="ai-highlight">平静状态</span>，这是情绪健康的理想基线。CBT研究表明，保持这种稳定感需要有意识地<span class="ai-highlight">减少信息过载</span>，你做得很好。`,
+    sad:`悲伤情绪往往源于<span class="ai-highlight">失落感或期待落差</span>。你愿意记录并面对它，这本身就是一种勇气。CBT建议：把这份感受"说出来"是最好的第一步。`,
+    anxious:`焦虑通常与<span class="ai-highlight">对未来不确定的担忧</span>有关。你今天的记录透露出一些具体的压力源。CBT建议你把担忧具体化：<span class="ai-highlight">哪些是可控的，哪些不可控？</span>`,
+    angry:`愤怒是一种信号情绪，背后往往是<span class="ai-highlight">被侵犯的边界感或不公平感</span>。先让自己平静下来，再思考：这件事的核心诉求是什么？`,
+    tired:`身体和心理的疲惫在今天叠加了。CBT视角下，持续疲惫可能源于<span class="ai-highlight">自我要求过高</span>或睡眠债务积累，今晚好好休息是最重要的治愈。`
+  };
+  const AI_TAGS = {
+    happy:['🤝 社交支持','✅ 积极重构','💪 压力缓解'],
+    calm:['🧘 情绪稳定','🌿 专注当下','📴 信息减负'],
+    sad:['💬 情绪表达','🌧️ 接纳悲伤','🤗 自我关怀'],
+    anxious:['🎯 可控聚焦','🍃 深呼吸','📝 思维整理'],
+    angry:['🛡️ 边界识别','😤 情绪出口','🔄 认知重评'],
+    tired:['😴 优先休息','⏸️ 放慢节奏','💙 自我疼爱'],
+  };
+
+  // 设置 Poster
+  document.getElementById('poster-emoji').textContent = EMOJIS[moodKey]||'😊';
+  document.getElementById('poster-mood-name').textContent = moodLabel;
+  document.getElementById('poster-intensity-text').textContent = intensity+'/10';
+  document.getElementById('poster-bg').style.background = POSTER_GRADS[moodKey]||POSTER_GRADS.happy;
+  document.getElementById('score-mood').textContent = intensity.toFixed(1);
+
+  // 引用文本
+  const quote = entryText.length > 60 ? entryText.substring(0,60)+'…' : entryText;
+  document.getElementById('poster-quote').innerHTML = `"${quote}"`;
+
+  // 入场动画
+  setTimeout(()=>{
+    document.querySelectorAll('.fade-up').forEach((el,i)=>{
+      setTimeout(()=>el.classList.add('visible'), i*80);
+    });
+    // 强度条动画
+    setTimeout(()=>{
+      document.getElementById('poster-intensity-fill').style.width = (intensity/10*100)+'%';
+    }, 300);
+    // AI 加载
+    setTimeout(()=>{
+      document.getElementById('ai-loading-card').style.display='none';
+      document.getElementById('ai-result-card').style.display='block';
+      document.getElementById('ai-text').innerHTML = AI_INSIGHTS[moodKey]||AI_INSIGHTS.happy;
+      const tags = AI_TAGS[moodKey]||AI_TAGS.happy;
+      document.getElementById('ai-tags').innerHTML = tags.map(t=>`<span class="ai-tag">${t}</span>`).join('');
+    }, 2000);
+  }, 100);
+
+  function shareReport(){
+    showToast('📷 精美图片已保存至相册！');
+  }
+
+  function showToast(msg){
+    const c=document.getElementById('toast-ct');
+    const t=document.createElement('div'); t.className='toast'; t.textContent=msg; c.appendChild(t);
+    requestAnimationFrame(()=>requestAnimationFrame(()=>t.classList.add('show')));
+    setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),300);},2500);
+  }
+</script>
+</body>
+</html>

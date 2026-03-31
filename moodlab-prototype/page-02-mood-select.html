@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>情绪选择 — MoodLab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-primary:#9B8BF4; --color-primary-light:rgba(155,139,244,0.15);
+      --color-bg:#F8F7FF; --color-surface:#FFFFFF; --color-border:#E8E4FB;
+      --color-muted:#9B9BAD; --color-foreground:#1E1B3A; --color-sub:#6B6880;
+      --font:'Plus Jakarta Sans',system-ui,sans-serif;
+      --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px;
+      --space-5:20px; --space-6:24px; --space-8:32px; --space-10:40px;
+      --radius-sm:8px; --radius-md:14px; --radius-lg:20px; --radius-xl:28px; --radius-full:9999px;
+      --shadow-md:0 4px 20px rgba(0,0,0,0.12);
+      --dur:220ms; --ease:cubic-bezier(0.4,0,0.2,1);
+      --spring:cubic-bezier(0.34,1.56,0.64,1);
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    body {
+      font-family:var(--font); min-height:100vh;
+      display:flex; justify-content:center; align-items:flex-start;
+      -webkit-font-smoothing:antialiased; overflow-x:hidden;
+    }
+    .phone-shell {
+      width:390px; min-height:100vh; position:relative;
+      display:flex; flex-direction:column; overflow:hidden;
+      /* 背景色由JS动态修改 */
+      background:#F8F7FF;
+      transition:background 0.6s ease;
+    }
+
+    /* 沉浸式背景遮罩 */
+    .bg-layer {
+      position:absolute; inset:0; z-index:0;
+      background:linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(0,0,0,0.04) 100%);
+      pointer-events:none;
+    }
+
+    /* TOP BAR */
+    .topbar {
+      position:relative; z-index:10;
+      padding:var(--space-5) var(--space-5) 0;
+      display:flex; align-items:center; justify-content:space-between;
+    }
+    .back-btn {
+      width:38px; height:38px; border-radius:var(--radius-full);
+      background:rgba(255,255,255,0.7); backdrop-filter:blur(10px);
+      display:flex; align-items:center; justify-content:center;
+      font-size:18px; cursor:pointer; border:1px solid rgba(255,255,255,0.5);
+      transition:all var(--dur);
+    }
+    .back-btn:hover { background:#fff; }
+    .topbar-title { font-size:16px; font-weight:700; color:var(--color-foreground); opacity:0.9; }
+    .step-dots { display:flex; gap:5px; align-items:center; }
+    .step-dot {
+      width:6px; height:6px; border-radius:50%;
+      background:rgba(0,0,0,0.15); transition:all var(--dur);
+    }
+    .step-dot.active { width:18px; border-radius:3px; background:var(--color-primary); }
+
+    /* 主标题区 */
+    .main-title-area {
+      position:relative; z-index:10;
+      padding:var(--space-8) var(--space-5) var(--space-5);
+      text-align:center;
+    }
+    .main-q { font-size:22px; font-weight:800; color:var(--color-foreground); line-height:1.35; }
+    .main-sub { font-size:14px; color:var(--color-muted); margin-top:var(--space-2); }
+
+    /* 情绪面具网格 */
+    .mood-grid {
+      position:relative; z-index:10;
+      display:grid; grid-template-columns:repeat(3,1fr);
+      gap:var(--space-3); padding:0 var(--space-5);
+    }
+    .mood-card {
+      background:rgba(255,255,255,0.75); backdrop-filter:blur(10px);
+      border-radius:var(--radius-lg); padding:var(--space-5) var(--space-3);
+      display:flex; flex-direction:column; align-items:center; gap:var(--space-2);
+      cursor:pointer; border:2px solid rgba(255,255,255,0.6);
+      transition:all var(--dur) var(--spring); position:relative; overflow:hidden;
+    }
+    .mood-card:hover { transform:scale(1.04); background:rgba(255,255,255,0.9); }
+    .mood-card.selected {
+      border-color:var(--card-color,var(--color-primary));
+      background:rgba(255,255,255,0.95);
+      box-shadow:0 6px 20px var(--card-shadow,rgba(155,139,244,0.3));
+      transform:scale(1.06);
+    }
+    .mood-card.selected::after {
+      content:'✓'; position:absolute; top:6px; right:8px;
+      font-size:11px; font-weight:700;
+      color:var(--card-color,var(--color-primary));
+    }
+    .mood-emoji {
+      font-size:38px; transition:transform var(--dur) var(--spring);
+      line-height:1;
+    }
+    .mood-card.selected .mood-emoji { transform:scale(1.15); }
+    .mood-name { font-size:13px; font-weight:700; color:var(--color-foreground); }
+    .mood-desc { font-size:11px; color:var(--color-muted); text-align:center; }
+
+    /* 强度滑杆区 */
+    .intensity-section {
+      position:relative; z-index:10;
+      padding:var(--space-6) var(--space-5);
+      opacity:0; transform:translateY(16px);
+      transition:all 0.4s var(--spring); pointer-events:none;
+      max-height:0; overflow:hidden; padding-top:0; padding-bottom:0;
+    }
+    .intensity-section.visible {
+      opacity:1; transform:translateY(0); pointer-events:all;
+      max-height:220px; padding:var(--space-6) var(--space-5);
+    }
+    .intensity-header { display:flex; align-items:baseline; justify-content:space-between; margin-bottom:var(--space-4); }
+    .intensity-label { font-size:15px; font-weight:700; color:var(--color-foreground); }
+    .intensity-val { font-size:28px; font-weight:800; color:var(--color-primary); transition:color var(--dur); }
+
+    /* 自定义滑杆 */
+    .slider-wrap { position:relative; }
+    .slider-track {
+      height:8px; background:rgba(255,255,255,0.6); border-radius:var(--radius-full);
+      position:relative; overflow:hidden; backdrop-filter:blur(4px);
+      border:1px solid rgba(255,255,255,0.8);
+    }
+    .slider-fill {
+      position:absolute; top:0; left:0; height:100%;
+      background:linear-gradient(90deg,var(--color-primary),#C4B5FD);
+      border-radius:var(--radius-full); transition:width 0.1s;
+      width:50%;
+    }
+    input[type=range] {
+      position:absolute; top:-6px; left:0; width:100%;
+      opacity:0; cursor:pointer; height:20px; z-index:5;
+    }
+    .slider-thumb-visual {
+      position:absolute; top:50%; transform:translate(-50%,-50%);
+      width:22px; height:22px; border-radius:50%;
+      background:#fff; border:3px solid var(--color-primary);
+      box-shadow:0 2px 8px rgba(155,139,244,0.4);
+      transition:left 0.1s, transform var(--dur) var(--spring), box-shadow var(--dur);
+      pointer-events:none; left:50%;
+    }
+    .slider-labels {
+      display:flex; justify-content:space-between;
+      font-size:11px; color:var(--color-muted); margin-top:var(--space-3);
+      padding:0 2px;
+    }
+    /* 强度描述 */
+    .intensity-desc {
+      text-align:center; margin-top:var(--space-3);
+      font-size:13px; font-weight:500; color:var(--color-sub);
+      min-height:20px;
+    }
+
+    /* 下一步按钮 */
+    .next-btn-wrap {
+      position:relative; z-index:10;
+      padding:var(--space-5) var(--space-5) var(--space-6);
+      margin-top:auto;
+    }
+    .next-btn {
+      width:100%; height:52px; border-radius:var(--radius-full);
+      background:linear-gradient(135deg,var(--color-primary),#7C6FDB);
+      color:#fff; font-size:16px; font-weight:700; font-family:var(--font);
+      border:none; cursor:pointer; box-shadow:0 6px 20px rgba(155,139,244,0.38);
+      display:flex; align-items:center; justify-content:center; gap:var(--space-2);
+      transition:all var(--dur) var(--spring);
+      opacity:0.4; pointer-events:none;
+    }
+    .next-btn.enabled { opacity:1; pointer-events:all; }
+    .next-btn.enabled:hover { transform:scale(1.02); }
+    .next-btn.enabled:active { transform:scale(0.97); }
+  </style>
+</head>
+<body>
+<div class="phone-shell" id="phone-shell">
+  <div class="bg-layer"></div>
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="back-btn" onclick="window.history.back()" aria-label="返回">←</div>
+    <span class="topbar-title">记录心情</span>
+    <div class="step-dots">
+      <div class="step-dot active"></div>
+      <div class="step-dot"></div>
+    </div>
+  </div>
+
+  <!-- 主问题 -->
+  <div class="main-title-area">
+    <div class="main-q">现在，你感觉怎么样？</div>
+    <div class="main-sub">选择最接近你此刻状态的情绪</div>
+  </div>
+
+  <!-- 情绪面具 -->
+  <div class="mood-grid" id="mood-grid">
+    <div class="mood-card" data-mood="happy" data-color="#FFD166" data-shadow="rgba(255,209,102,0.35)" data-bg="#FFFBEB" onclick="selectMood(this)" title="快乐">
+      <div class="mood-emoji" id="emoji-happy">😊</div>
+      <div class="mood-name">快乐</div>
+      <div class="mood-desc">高兴、兴奋<br>满足感强</div>
+    </div>
+    <div class="mood-card" data-mood="calm" data-color="#81E5D6" data-shadow="rgba(129,229,214,0.35)" data-bg="#F0FDFA" onclick="selectMood(this)" title="平静">
+      <div class="mood-emoji" id="emoji-calm">😌</div>
+      <div class="mood-name">平静</div>
+      <div class="mood-desc">安宁、放松<br>内心平和</div>
+    </div>
+    <div class="mood-card" data-mood="anxious" data-color="#F4845F" data-shadow="rgba(244,132,95,0.35)" data-bg="#FFF5F2" onclick="selectMood(this)" title="焦虑">
+      <div class="mood-emoji" id="emoji-anxious">😰</div>
+      <div class="mood-name">焦虑</div>
+      <div class="mood-desc">担忧、紧张<br>心跳加速</div>
+    </div>
+    <div class="mood-card" data-mood="sad" data-color="#74B9FF" data-shadow="rgba(116,185,255,0.35)" data-bg="#EFF6FF" onclick="selectMood(this)" title="悲伤">
+      <div class="mood-emoji" id="emoji-sad">😔</div>
+      <div class="mood-name">悲伤</div>
+      <div class="mood-desc">低落、伤心<br>缺乏动力</div>
+    </div>
+    <div class="mood-card" data-mood="angry" data-color="#FF6B6B" data-shadow="rgba(255,107,107,0.35)" data-bg="#FFF1F1" onclick="selectMood(this)" title="愤怒">
+      <div class="mood-emoji" id="emoji-angry">😤</div>
+      <div class="mood-name">愤怒</div>
+      <div class="mood-desc">烦躁、愤怒<br>情绪激动</div>
+    </div>
+    <div class="mood-card" data-mood="tired" data-color="#A9B4C2" data-shadow="rgba(169,180,194,0.35)" data-bg="#F8FAFC" onclick="selectMood(this)" title="疲惫">
+      <div class="mood-emoji" id="emoji-tired">😴</div>
+      <div class="mood-name">疲惫</div>
+      <div class="mood-desc">疲劳、无力<br>需要休息</div>
+    </div>
+  </div>
+
+  <!-- 强度滑杆 -->
+  <div class="intensity-section" id="intensity-section">
+    <div class="intensity-header">
+      <div class="intensity-label" id="intensity-label">快乐程度</div>
+      <div class="intensity-val" id="intensity-val">5</div>
+    </div>
+    <div class="slider-wrap">
+      <div class="slider-track">
+        <div class="slider-fill" id="slider-fill"></div>
+      </div>
+      <input type="range" min="1" max="10" value="5" id="intensity-slider"
+        oninput="updateSlider(this.value)" aria-label="情绪强度">
+      <div class="slider-thumb-visual" id="thumb-visual"></div>
+    </div>
+    <div class="slider-labels">
+      <span>微弱</span><span>中等</span><span>强烈</span>
+    </div>
+    <div class="intensity-desc" id="intensity-desc">有一点开心的感觉</div>
+  </div>
+
+  <!-- 下一步 -->
+  <div class="next-btn-wrap">
+    <button class="next-btn" id="next-btn" onclick="goNext()" aria-label="下一步，填写内容">
+      继续记录 →
+    </button>
+  </div>
+</div>
+
+<script>
+  const MOODS = {
+    happy:   { bg:'#FFFDE8', label:'快乐程度', descs:['偶尔微笑','有点开心','心情不错','挺开心的','很快乐','非常快乐！','太开心了！','极度兴奋！','欣喜若狂！','幸福满溢！✨'] },
+    calm:    { bg:'#F0FDFA', label:'平静程度', descs:['心有杂念','稍微放松','比较平静','颇为平和','内心安宁','很平静','深度平静','极度安宁','近乎冥想','完全安定✨'] },
+    anxious: { bg:'#FFF5F2', label:'焦虑程度', descs:['轻微不安','有点担心','比较焦虑','心神不宁','较为焦虑','相当焦虑','十分焦虑','很难专注','极度焦虑','惊恐发作😰'] },
+    sad:     { bg:'#EFF6FF', label:'悲伤程度', descs:['有点低落','情绪不高','比较沮丧','心情很差','相当难过','很难受','非常悲伤','心都碎了','极度悲痛','泪流满面😢'] },
+    angry:   { bg:'#FFF1F1', label:'愤怒程度', descs:['微微烦躁','有点生气','比较烦','心里憋气','相当生气','很愤怒','非常愤怒','怒火中烧','极度愤怒','怒不可遏😤'] },
+    tired:   { bg:'#F8FAFC', label:'疲惫程度', descs:['稍有疲倦','有点累','比较疲惫','明显疲劳','很累了','极度疲惫','精疲力竭','完全没电','心力交瘁','彻底崩溃😴'] },
+  };
+
+  let selectedMood = null;
+  let intensity = 5;
+
+  function selectMood(el) {
+    document.querySelectorAll('.mood-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedMood = el.dataset.mood;
+    const color = el.dataset.color;
+    const shadow = el.dataset.shadow;
+    const bg = el.dataset.bg;
+    el.style.setProperty('--card-color', color);
+    el.style.setProperty('--card-shadow', shadow);
+
+    // 背景色变化
+    document.getElementById('phone-shell').style.background = bg;
+    document.getElementById('intensity-val').style.color = color;
+    document.getElementById('slider-fill').style.background = `linear-gradient(90deg, ${color}, ${lightenColor(color)})`;
+    document.getElementById('thumb-visual').style.borderColor = color;
+    document.getElementById('thumb-visual').style.boxShadow = `0 2px 8px ${shadow}`;
+
+    // 强度区域
+    const moodData = MOODS[selectedMood];
+    document.getElementById('intensity-label').textContent = moodData.label;
+    updateSlider(intensity);
+    document.getElementById('intensity-section').classList.add('visible');
+
+    // 按钮激活
+    document.getElementById('next-btn').classList.add('enabled');
+
+    // 表情微变形效果（通过短暂放大）
+    const emoji = el.querySelector('.mood-emoji');
+    emoji.style.transform = 'scale(1.3)';
+    setTimeout(() => emoji.style.transform = '', 300);
+  }
+
+  function updateSlider(val) {
+    intensity = parseInt(val);
+    const pct = (intensity - 1) / 9 * 100;
+    document.getElementById('slider-fill').style.width = pct + '%';
+    document.getElementById('thumb-visual').style.left = pct + '%';
+    document.getElementById('intensity-val').textContent = intensity;
+    if (selectedMood) {
+      const descs = MOODS[selectedMood].descs;
+      document.getElementById('intensity-desc').textContent = descs[intensity - 1] || '';
+    }
+  }
+
+  function lightenColor(hex) {
+    // 简单高亮版本
+    return hex.replace(/([0-9a-f]{2})/gi, (m, c) => {
+      const n = Math.min(255, parseInt(c, 16) + 40);
+      return n.toString(16).padStart(2,'0');
+    });
+  }
+
+  function goNext() {
+    if (!selectedMood) return;
+    // 存储选择结果（给下一页用）
+    sessionStorage.setItem('moodlab_mood', selectedMood);
+    sessionStorage.setItem('moodlab_intensity', intensity);
+    window.location.href = 'page-03-record-input.html';
+  }
+
+  // 初始化滑杆位置
+  updateSlider(5);
+</script>
+</body>
+</html>

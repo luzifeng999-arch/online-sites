@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MoodLab — 原型预览</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:system-ui,-apple-system,sans-serif;display:flex;height:100vh;overflow:hidden;background:#0F0C1E;color:#fff;}
+
+    /* 左侧导航 */
+    .v-sidebar{width:240px;flex-shrink:0;background:#17142A;border-right:1px solid #2A2545;display:flex;flex-direction:column;}
+    .v-logo{padding:18px 20px 16px;border-bottom:1px solid #2A2545;display:flex;align-items:center;gap:10px;}
+    .v-logo-icon{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,#7C6FFF,#C084FC);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+    .v-logo-text{font-size:15px;font-weight:800;color:#fff;}
+    .v-logo-sub{font-size:11px;color:#6B6890;margin-top:1px;}
+    .v-nav{flex:1;padding:10px 8px;overflow-y:auto;display:flex;flex-direction:column;gap:3px;}
+    .v-nav-section{font-size:10px;font-weight:700;color:#4A4668;text-transform:uppercase;letter-spacing:0.08em;padding:10px 12px 4px;}
+    .v-nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;font-size:13px;color:#9490B5;cursor:pointer;transition:all 0.15s;user-select:none;}
+    .v-nav-item:hover{background:#1F1C38;color:#C9C6E8;}
+    .v-nav-item.active{background:rgba(124,111,255,0.15);color:#9F8FFF;font-weight:700;}
+    .v-nav-emoji{font-size:16px;width:22px;text-align:center;flex-shrink:0;}
+    .v-nav-num{font-size:10px;color:#4A4668;width:20px;flex-shrink:0;}
+    .v-flow-line{display:flex;align-items:center;gap:6px;padding:3px 12px 3px 44px;font-size:10px;color:#4A4668;}
+    .v-flow-dot{width:5px;height:5px;border-radius:50%;background:#3A3655;flex-shrink:0;}
+    .v-flow-dot.active{background:#7C6FFF;}
+    .v-kb-hint{padding:12px 16px;border-top:1px solid #2A2545;font-size:10px;color:#4A4668;line-height:1.7;}
+
+    /* 主区 */
+    .v-main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+
+    /* 顶部工具栏 */
+    .v-toolbar{height:54px;background:#17142A;border-bottom:1px solid #2A2545;display:flex;align-items:center;gap:12px;padding:0 18px;flex-shrink:0;}
+    .v-toolbar-title{font-size:13px;color:#6B6890;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .v-toolbar-title strong{color:#C9C6E8;}
+    .v-device-group{display:flex;gap:4px;}
+    .v-device-btn{padding:5px 12px;border-radius:6px;font-size:11px;background:#252240;color:#6B6890;border:1px solid #2A2545;cursor:pointer;font-family:inherit;transition:all 0.15s;}
+    .v-device-btn.active{background:#7C6FFF;color:#fff;border-color:#7C6FFF;}
+    .v-device-btn:hover:not(.active){background:#2E2B4A;color:#C9C6E8;}
+    .v-open-btn{padding:5px 12px;border-radius:6px;font-size:11px;background:#252240;color:#C9C6E8;cursor:pointer;border:1px solid #2A2545;transition:all 0.15s;font-family:inherit;}
+    .v-open-btn:hover{background:#2E2B4A;}
+    .v-page-nav{display:flex;gap:4px;align-items:center;}
+    .v-page-nav-btn{width:28px;height:28px;border-radius:6px;background:#252240;border:1px solid #2A2545;color:#6B6890;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all 0.15s;font-family:inherit;}
+    .v-page-nav-btn:hover{background:#2E2B4A;color:#fff;}
+    .v-page-nav-btn:disabled{opacity:0.25;cursor:not-allowed;}
+    .v-page-counter{font-size:11px;color:#4A4668;padding:0 6px;display:flex;align-items:center;}
+
+    /* 内容区 */
+    .v-frame-area{flex:1;overflow:auto;display:flex;align-items:flex-start;justify-content:center;background:#0C0A1A;padding:32px 32px 60px;}
+    /* 手机壳 */
+    .v-phone-shell{
+      position:relative;
+      width:420px;
+      flex-shrink:0;
+    }
+    .v-phone-bezel{
+      background:#1A1730;
+      border-radius:52px;
+      padding:14px;
+      box-shadow:
+        0 0 0 2px #2A2545,
+        0 0 0 3px #3A3060,
+        0 32px 80px rgba(0,0,0,0.7),
+        0 8px 32px rgba(124,111,255,0.15);
+    }
+    .v-phone-screen{
+      border-radius:42px;
+      overflow:hidden;
+      background:#FAF9FF;
+      position:relative;
+      height:844px;
+    }
+    .v-phone-notch{
+      position:absolute;top:0;left:50%;transform:translateX(-50%);
+      width:120px;height:34px;background:#1A1730;border-radius:0 0 20px 20px;
+      z-index:10;
+    }
+    .v-phone-home-bar{
+      position:absolute;bottom:8px;left:50%;transform:translateX(-50%);
+      width:100px;height:4px;background:#ccc;border-radius:2px;z-index:10;
+      opacity:0.5;
+    }
+    .v-iframe{width:390px;height:844px;border:none;display:block;}
+    /* 侧边按钮装饰 */
+    .v-phone-side-btn{
+      position:absolute;right:-5px;top:120px;
+      width:4px;height:60px;background:#2A2545;border-radius:0 3px 3px 0;
+    }
+    .v-phone-side-btn.vol-up{top:80px;height:40px;}
+    .v-phone-side-btn.vol-dn{top:130px;height:40px;}
+    .v-phone-left-btn{
+      position:absolute;left:-5px;top:80px;
+      width:4px;height:60px;background:#2A2545;border-radius:3px 0 0 3px;
+    }
+
+    /* 缩放 — 根据窗口高度自动适配 */
+    body.scaled .v-phone-bezel{transform:scale(0.85);transform-origin:top center;}
+  </style>
+</head>
+<body>
+
+<!-- 左侧导航 -->
+<aside class="v-sidebar">
+  <div class="v-logo">
+    <div class="v-logo-icon">💜</div>
+    <div>
+      <div class="v-logo-text">MoodLab</div>
+      <div class="v-logo-sub">情绪实验室 · 移动端原型</div>
+    </div>
+  </div>
+  <nav class="v-nav" id="v-nav">
+    <div class="v-nav-section">核心流程 5 页</div>
+  </nav>
+  <div class="v-kb-hint">
+    ← → 键：切换页面<br>
+    ↗ 按钮：新标签打开<br>
+    双击手机壳：缩放切换
+  </div>
+</aside>
+
+<!-- 主区 -->
+<div class="v-main">
+  <div class="v-toolbar">
+    <span class="v-toolbar-title" id="v-toolbar-title">选择左侧页面开始预览</span>
+    <!-- 移动端：仅 Mobile 390 模式 -->
+    <div class="v-device-group">
+      <button class="v-device-btn active">📱 Mobile 390</button>
+    </div>
+    <div class="v-page-nav">
+      <button class="v-page-nav-btn" id="btn-prev" onclick="navigate(-1)" title="上一页 (←)" aria-label="上一页">‹</button>
+      <span class="v-page-counter" id="v-page-counter">— / —</span>
+      <button class="v-page-nav-btn" id="btn-next" onclick="navigate(1)" title="下一页 (→)" aria-label="下一页">›</button>
+    </div>
+    <button class="v-open-btn" onclick="openCurrent()" title="在新标签中打开当前页">↗ 新标签</button>
+  </div>
+  <div class="v-frame-area">
+    <div class="v-phone-shell">
+      <!-- 侧边按钮装饰 -->
+      <div class="v-phone-left-btn"></div>
+      <div class="v-phone-side-btn vol-up"></div>
+      <div class="v-phone-side-btn vol-dn" style="top:130px;"></div>
+      <div class="v-phone-bezel" id="phone-bezel" ondblclick="toggleScale()" title="双击切换缩放">
+        <div class="v-phone-screen">
+          <div class="v-phone-notch"></div>
+          <iframe class="v-iframe" id="v-iframe" src="" title="页面预览"></iframe>
+          <div class="v-phone-home-bar"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const pages = [
+    { num:'01', name:'首页',        file:'page-01-home.html',        emoji:'🏠', desc:'日历视图 · 情绪记录 · 连续打卡', flow:['日历视图','近期记录','底部导航'] },
+    { num:'02', name:'情绪选择',    file:'page-02-emotion-select.html', emoji:'😊', desc:'6种情绪面具 · 强度滑杆 · 背景变色', flow:['选情绪','调强度','确认'] },
+    { num:'03', name:'内容记录',    file:'page-03-record-input.html',  emoji:'✏️', desc:'文字/语音/图片 · AI引导问题', flow:['选输入方式','写内容','完成'] },
+    { num:'04', name:'情绪报告',    file:'page-04-report.html',        emoji:'✦', desc:'AI洞察 · 治愈建议 · 分享卡片', flow:['情绪海报','AI分析','行动建议'] },
+    { num:'05', name:'个人中心',    file:'page-05-profile.html',       emoji:'👤', desc:'雷达图 · 隐私设置 · 数据管理', flow:['数据分析','设置','隐私安全'] },
+  ];
+
+  let currentIdx = 0;
+  let isScaled = false;
+
+  function buildNav(){
+    const nav = document.getElementById('v-nav');
+    pages.forEach((p, i) => {
+      const item = document.createElement('div');
+      item.className = 'v-nav-item' + (i === 0 ? ' active' : '');
+      item.setAttribute('role','button');
+      item.setAttribute('aria-label',`第${p.num}页：${p.name}`);
+      item.innerHTML = `
+        <span class="v-nav-num">${p.num}</span>
+        <span class="v-nav-emoji">${p.emoji}</span>
+        <div style="flex:1;min-width:0;">
+          <div>${p.name}</div>
+          <div style="font-size:10px;color:#4A4668;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.desc}</div>
+        </div>`;
+      item.onclick = () => loadPage(i);
+      nav.appendChild(item);
+      // 流程子项
+      if(p.flow){
+        p.flow.forEach((step, si) => {
+          const fl = document.createElement('div');
+          fl.className = 'v-flow-line';
+          fl.innerHTML = `<div class="v-flow-dot${si===0?' active':''}"></div>${step}`;
+          nav.appendChild(fl);
+        });
+      }
+    });
+  }
+
+  function loadPage(idx){
+    currentIdx = Math.max(0, Math.min(idx, pages.length - 1));
+    const p = pages[currentIdx];
+
+    document.getElementById('v-iframe').src = p.file;
+    document.getElementById('v-toolbar-title').innerHTML = `<strong>${p.num}. ${p.name}</strong> — ${p.desc}`;
+
+    document.querySelectorAll('.v-nav-item').forEach((el, i) => el.classList.toggle('active', i === currentIdx));
+
+    document.getElementById('v-page-counter').textContent = `${currentIdx + 1} / ${pages.length}`;
+    document.getElementById('btn-prev').disabled = currentIdx === 0;
+    document.getElementById('btn-next').disabled = currentIdx === pages.length - 1;
+
+  }
+
+  function navigate(dir){ loadPage(currentIdx + dir); }
+  function openCurrent(){ if(pages[currentIdx]) window.open(pages[currentIdx].file, '_blank'); }
+
+  function toggleScale(){
+    isScaled = !isScaled;
+    document.body.classList.toggle('scaled', isScaled);
+  }
+
+  document.addEventListener('keydown', e => {
+    if(e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    if(e.key === 'ArrowRight') navigate(1);
+    if(e.key === 'ArrowLeft')  navigate(-1);
+  });
+
+  buildNav();
+  loadPage(0);
+</script>
+</body>
+</html>

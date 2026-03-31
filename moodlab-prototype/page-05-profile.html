@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>个人中心 — MoodLab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-primary:#7C6FFF; --color-primary-hover:#6558F0;
+      --color-primary-light:rgba(124,111,255,0.12); --color-primary-fg:#FFFFFF;
+      --color-bg:#FAF9FF; --color-surface:#FFFFFF; --color-surface-2:#F3F0FF;
+      --color-border:#E8E4F3; --color-muted:#8E88A8; --color-foreground:#1A1730;
+      --color-success:#4ECBA0; --color-success-bg:#EDFAF4;
+      --color-error:#FF6B6B; --color-error-bg:#FFF0F0;
+      --font-sans:'Nunito',system-ui,sans-serif;
+      --font-weight-regular:400; --font-weight-medium:500;
+      --font-weight-semibold:600; --font-weight-bold:700; --font-weight-extrabold:800;
+      --text-xs:11px; --text-sm:13px; --text-base:15px; --text-md:16px;
+      --text-lg:18px; --text-xl:20px; --text-2xl:24px;
+      --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px;
+      --space-5:20px; --space-6:24px; --space-8:32px;
+      --radius-sm:8px; --radius-md:12px; --radius-lg:16px;
+      --radius-xl:22px; --radius-2xl:32px; --radius-full:9999px;
+      --shadow-xs:0 1px 3px rgba(124,111,255,0.06);
+      --shadow-sm:0 2px 8px rgba(124,111,255,0.10);
+      --shadow-md:0 4px 16px rgba(124,111,255,0.14);
+      --duration-base:200ms; --duration-slow:350ms;
+      --ease-default:cubic-bezier(0.4,0,0.2,1);
+      --ease-spring:cubic-bezier(0.34,1.56,0.64,1);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html,body{width:100%;}
+    body{
+      font-family:var(--font-sans);
+      background:var(--color-bg);
+      color:var(--color-foreground);
+      line-height:1.5;
+      -webkit-font-smoothing:antialiased;
+      width:390px; min-height:844px;
+      margin:0 auto;
+      display:flex; flex-direction:column;
+      overflow-x:hidden;
+    }
+
+    /* STATUS BAR */
+    .status-bar{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;flex-shrink:0;}
+    .status-time{font-size:15px;font-weight:700;}
+    .status-icons{font-size:13px;}
+
+    /* SCROLL */
+    .scroll-body{flex:1;overflow-y:auto;}
+
+    /* HERO */
+    .profile-hero{
+      background:linear-gradient(160deg,#7C6FFF 0%,#9F8FFF 60%,#C084FC 100%);
+      padding:0 var(--space-5) var(--space-8);
+      position:relative;
+      overflow:hidden;
+    }
+    .profile-hero::before{
+      content:'';position:absolute;top:-60px;right:-60px;
+      width:200px;height:200px;border-radius:50%;
+      background:rgba(255,255,255,0.08);
+    }
+    .profile-hero::after{
+      content:'';position:absolute;bottom:-40px;left:-40px;
+      width:150px;height:150px;border-radius:50%;
+      background:rgba(255,255,255,0.06);
+    }
+    .hero-nav{display:flex;align-items:center;justify-content:space-between;padding:var(--space-1) 0 var(--space-5);position:relative;z-index:1;}
+    .hero-back{width:36px;height:36px;border-radius:var(--radius-full);background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;color:#fff;transition:all var(--duration-base);}
+    .hero-back:hover{background:rgba(255,255,255,0.3);}
+    .hero-title{font-size:var(--text-base);font-weight:var(--font-weight-bold);color:#fff;}
+    .hero-settings{width:36px;height:36px;border-radius:var(--radius-full);background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;color:#fff;transition:all var(--duration-base);}
+    .hero-settings:hover{background:rgba(255,255,255,0.3);}
+    .avatar-row{display:flex;align-items:flex-end;gap:var(--space-4);margin-bottom:var(--space-4);position:relative;z-index:1;}
+    .avatar{
+      width:80px;height:80px;border-radius:var(--radius-full);
+      background:linear-gradient(135deg,#fff,#F3F0FF);
+      border:3px solid rgba(255,255,255,0.8);
+      display:flex;align-items:center;justify-content:center;
+      font-size:36px;flex-shrink:0;
+      box-shadow:0 4px 16px rgba(0,0,0,0.15);
+    }
+    .avatar-info{}
+    .avatar-name{font-size:var(--text-xl);font-weight:var(--font-weight-extrabold);color:#fff;margin-bottom:4px;}
+    .avatar-bio{font-size:var(--text-xs);color:rgba(255,255,255,0.75);line-height:1.4;}
+    .edit-profile-btn{
+      display:inline-flex;align-items:center;gap:4px;
+      padding:6px 14px;
+      background:rgba(255,255,255,0.2);backdrop-filter:blur(8px);
+      border:1px solid rgba(255,255,255,0.35);border-radius:var(--radius-full);
+      font-family:var(--font-sans);font-size:var(--text-xs);font-weight:var(--font-weight-bold);
+      color:#fff;cursor:pointer;margin-left:auto;
+      transition:all var(--duration-base);
+    }
+    .edit-profile-btn:hover{background:rgba(255,255,255,0.3);}
+
+    /* STREAK MINI */
+    .streak-mini{
+      display:flex;gap:var(--space-4);
+      background:rgba(255,255,255,0.15);backdrop-filter:blur(8px);
+      border-radius:var(--radius-xl);padding:var(--space-3) var(--space-5);
+      position:relative;z-index:1;
+    }
+    .streak-mini-item{flex:1;text-align:center;}
+    .streak-mini-val{font-size:var(--text-xl);font-weight:var(--font-weight-extrabold);color:#fff;}
+    .streak-mini-label{font-size:10px;color:rgba(255,255,255,0.7);margin-top:1px;}
+
+    /* CONTENT */
+    .content{padding:var(--space-5);}
+
+    /* TABS */
+    .tabs{display:flex;background:var(--color-surface-2);border-radius:var(--radius-lg);padding:3px;margin-bottom:var(--space-5);}
+    .tab-btn{
+      flex:1;padding:8px 0;border-radius:var(--radius-md);
+      font-family:var(--font-sans);font-size:var(--text-sm);font-weight:var(--font-weight-semibold);
+      color:var(--color-muted);border:none;background:transparent;cursor:pointer;
+      transition:all var(--duration-base);
+    }
+    .tab-btn.active{background:var(--color-surface);color:var(--color-primary);box-shadow:var(--shadow-xs);}
+
+    .tab-panel{display:none;}
+    .tab-panel.active{display:block;}
+
+    /* RADAR */
+    .radar-wrap{
+      background:var(--color-surface);border:1px solid var(--color-border);
+      border-radius:var(--radius-xl);padding:var(--space-5);
+      box-shadow:var(--shadow-xs);margin-bottom:var(--space-4);
+    }
+    .radar-title{font-size:var(--text-sm);font-weight:var(--font-weight-bold);margin-bottom:var(--space-4);}
+    .radar-svg-wrap{display:flex;justify-content:center;margin-bottom:var(--space-4);}
+    .radar-legend{display:flex;flex-wrap:wrap;gap:var(--space-3);}
+    .radar-legend-item{display:flex;align-items:center;gap:6px;font-size:var(--text-xs);color:var(--color-muted);}
+    .radar-dot{width:8px;height:8px;border-radius:50%;}
+
+    /* TREND CHART */
+    .trend-wrap{
+      background:var(--color-surface);border:1px solid var(--color-border);
+      border-radius:var(--radius-xl);padding:var(--space-5);box-shadow:var(--shadow-xs);
+    }
+    .trend-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-4);}
+    .trend-title{font-size:var(--text-sm);font-weight:var(--font-weight-bold);}
+    .trend-period{display:flex;gap:var(--space-2);}
+    .period-btn{padding:4px 10px;border-radius:var(--radius-full);font-size:11px;font-weight:var(--font-weight-semibold);border:1px solid var(--color-border);background:var(--color-surface-2);color:var(--color-muted);cursor:pointer;font-family:var(--font-sans);transition:all var(--duration-base);}
+    .period-btn.active{background:var(--color-primary-light);border-color:var(--color-primary);color:var(--color-primary);}
+    .trend-bars{display:flex;align-items:flex-end;gap:6px;height:80px;margin-bottom:var(--space-2);}
+    .trend-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;}
+    .trend-bar{
+      width:100%;border-radius:var(--radius-sm) var(--radius-sm) 0 0;
+      background:linear-gradient(180deg,#9F8FFF,#7C6FFF);
+      transition:height 0.6s var(--ease-spring);
+      min-height:4px;
+    }
+    .trend-bar-label{font-size:9px;color:var(--color-muted);}
+
+    /* SETTINGS SECTION */
+    .settings-group{margin-bottom:var(--space-5);}
+    .settings-group-label{font-size:var(--text-xs);font-weight:var(--font-weight-bold);color:var(--color-muted);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:var(--space-2);padding:0 var(--space-1);}
+    .settings-card{
+      background:var(--color-surface);border:1px solid var(--color-border);
+      border-radius:var(--radius-xl);overflow:hidden;box-shadow:var(--shadow-xs);
+    }
+    .setting-row{
+      display:flex;align-items:center;gap:var(--space-4);
+      padding:var(--space-4) var(--space-4);
+      border-bottom:1px solid var(--color-border);
+      cursor:pointer;transition:background var(--duration-base);
+      min-height:56px;
+    }
+    .setting-row:last-child{border-bottom:none;}
+    .setting-row:hover{background:var(--color-surface-2);}
+    .setting-icon{width:36px;height:36px;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+    .setting-info{flex:1;}
+    .setting-name{font-size:var(--text-sm);font-weight:var(--font-weight-semibold);}
+    .setting-sub{font-size:var(--text-xs);color:var(--color-muted);margin-top:1px;}
+    .setting-right{display:flex;align-items:center;gap:var(--space-2);font-size:14px;color:var(--color-muted);}
+    /* toggle switch */
+    .toggle-sw{
+      width:44px;height:24px;border-radius:12px;
+      background:var(--color-primary);cursor:pointer;
+      position:relative;transition:background var(--duration-base);
+      flex-shrink:0;
+    }
+    .toggle-sw.off{background:#D0CDE8;}
+    .toggle-sw-knob{
+      position:absolute;top:3px;left:22px;
+      width:18px;height:18px;border-radius:50%;background:#fff;
+      box-shadow:0 1px 4px rgba(0,0,0,0.15);
+      transition:left var(--duration-base) var(--ease-spring);
+    }
+    .toggle-sw.off .toggle-sw-knob{left:4px;}
+    /* danger row */
+    .setting-row.danger{color:var(--color-error);}
+    .setting-row.danger .setting-name{color:var(--color-error);}
+
+    /* BOTTOM NAV */
+    .tabbar{height:64px;background:var(--color-surface);border-top:1px solid var(--color-border);display:flex;align-items:center;padding:0 var(--space-4);box-shadow:0 -4px 20px rgba(124,111,255,0.08);flex-shrink:0;z-index:100;}
+    .tab-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 0;cursor:pointer;font-size:10px;color:var(--color-muted);transition:color var(--duration-base);min-height:44px;}
+    .tab-item.active{color:var(--color-primary);}
+    .tab-icon{font-size:22px;line-height:1;}
+    .tab-fab{flex-shrink:0;width:56px;height:56px;border-radius:var(--radius-full);background:linear-gradient(135deg,#7C6FFF,#9F8FFF);display:flex;align-items:center;justify-content:center;font-size:28px;color:#fff;box-shadow:var(--shadow-lg);cursor:pointer;margin-top:-28px;transition:all var(--duration-base) var(--ease-spring);}
+    .tab-fab:hover{transform:scale(1.08);}
+
+    /* MODAL */
+    .modal-backdrop{position:fixed;inset:0;background:rgba(26,23,48,0.5);z-index:500;opacity:0;pointer-events:none;transition:opacity var(--duration-slow);display:flex;align-items:flex-end;justify-content:center;}
+    .modal-backdrop.open{opacity:1;pointer-events:all;}
+    .modal-sheet{width:390px;background:var(--color-surface);border-radius:var(--radius-2xl) var(--radius-2xl) 0 0;padding:var(--space-5);transform:translateY(100%);transition:transform var(--duration-slow) var(--ease-spring);}
+    .modal-backdrop.open .modal-sheet{transform:translateY(0);}
+    .modal-handle{width:36px;height:4px;background:var(--color-border);border-radius:2px;margin:0 auto var(--space-5);}
+    .modal-title{font-size:var(--text-lg);font-weight:var(--font-weight-bold);margin-bottom:var(--space-5);}
+    .modal-input{width:100%;height:48px;padding:0 var(--space-4);border:1.5px solid var(--color-border);border-radius:var(--radius-xl);font-family:var(--font-sans);font-size:var(--text-base);color:var(--color-foreground);transition:all var(--duration-base);margin-bottom:var(--space-4);}
+    .modal-input:focus{outline:none;border-color:var(--color-primary);box-shadow:0 0 0 4px var(--color-primary-light);}
+    .modal-actions{display:flex;gap:var(--space-3);}
+    .modal-btn-cancel{flex:1;height:48px;background:var(--color-surface-2);border:1px solid var(--color-border);border-radius:var(--radius-full);font-family:var(--font-sans);font-size:var(--text-sm);font-weight:var(--font-weight-bold);cursor:pointer;}
+    .modal-btn-save{flex:1;height:48px;background:var(--color-primary);color:#fff;border:none;border-radius:var(--radius-full);font-family:var(--font-sans);font-size:var(--text-sm);font-weight:var(--font-weight-bold);cursor:pointer;}
+
+    /* TOAST */
+    .toast-ct{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:2000;pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:var(--space-2);}
+    .toast{background:rgba(26,23,48,0.9);color:#fff;padding:var(--space-2) var(--space-5);border-radius:var(--radius-full);font-size:var(--text-sm);font-weight:var(--font-weight-semibold);white-space:nowrap;opacity:0;transform:translateY(8px);transition:all 0.25s var(--ease-spring);}
+    .toast.show{opacity:1;transform:translateY(0);}
+  </style>
+</head>
+<body>
+
+<!-- STATUS BAR -->
+<div class="status-bar">
+  <span class="status-time">9:41</span>
+  <span class="status-icons">📶 🛜 🔋</span>
+</div>
+
+<div class="scroll-body">
+  <!-- HERO -->
+  <div class="profile-hero">
+    <div class="hero-nav">
+      <button class="hero-back" onclick="location.href='page-01-home.html'" title="返回首页" aria-label="返回">←</button>
+      <span class="hero-title">个人中心</span>
+      <button class="hero-settings" onclick="switchTab('settings')" title="设置" aria-label="设置">⚙️</button>
+    </div>
+    <div class="avatar-row">
+      <div class="avatar">🧑‍💻</div>
+      <div class="avatar-info">
+        <div class="avatar-name">luzifeng</div>
+        <div class="avatar-bio">AI探索者 · 情绪记录中 🌱<br>「每天一点，慢慢治愈」</div>
+      </div>
+      <button class="edit-profile-btn" onclick="openModal('edit-modal')" title="编辑资料" aria-label="编辑资料">✎ 编辑</button>
+    </div>
+    <!-- STREAK MINI -->
+    <div class="streak-mini">
+      <div class="streak-mini-item">
+        <div class="streak-mini-val">12</div>
+        <div class="streak-mini-label">连续天数</div>
+      </div>
+      <div class="streak-mini-item">
+        <div class="streak-mini-val">86</div>
+        <div class="streak-mini-label">总记录</div>
+      </div>
+      <div class="streak-mini-item">
+        <div class="streak-mini-val">4.2</div>
+        <div class="streak-mini-label">平均心情</div>
+      </div>
+      <div class="streak-mini-item">
+        <div class="streak-mini-val">3月</div>
+        <div class="streak-mini-label">加入时间</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+    <!-- TABS -->
+    <div class="tabs" role="tablist">
+      <button class="tab-btn active" id="tab-data" onclick="switchTab('data')" role="tab" aria-selected="true" aria-label="数据分析">📊 数据分析</button>
+      <button class="tab-btn" id="tab-settings" onclick="switchTab('settings')" role="tab" aria-label="设置">⚙️ 设置</button>
+    </div>
+
+    <!-- DATA TAB -->
+    <div class="tab-panel active" id="panel-data">
+      <!-- RADAR -->
+      <div class="radar-wrap">
+        <div class="radar-title">情绪雷达图 · 本月分布</div>
+        <div class="radar-svg-wrap">
+          <svg width="200" height="200" viewBox="0 0 200 200" aria-label="情绪雷达图">
+            <!-- 网格 -->
+            <polygon points="100,20 180,62 180,138 100,180 20,138 20,62" fill="none" stroke="#E8E4F3" stroke-width="1"/>
+            <polygon points="100,40 164,74 164,126 100,160 36,126 36,74" fill="none" stroke="#E8E4F3" stroke-width="1"/>
+            <polygon points="100,60 148,86 148,114 100,140 52,114 52,86" fill="none" stroke="#E8E4F3" stroke-width="1"/>
+            <polygon points="100,80 132,98 132,102 100,120 68,102 68,98" fill="none" stroke="#E8E4F3" stroke-width="1"/>
+            <!-- 轴 -->
+            <line x1="100" y1="20" x2="100" y2="180" stroke="#E8E4F3" stroke-width="1"/>
+            <line x1="20" y1="62" x2="180" y2="138" stroke="#E8E4F3" stroke-width="1"/>
+            <line x1="20" y1="138" x2="180" y2="62" stroke="#E8E4F3" stroke-width="1"/>
+            <!-- 数据 -->
+            <polygon points="100,36 163,90 155,128 100,158 45,120 52,72"
+              fill="rgba(124,111,255,0.2)" stroke="#7C6FFF" stroke-width="2"/>
+            <!-- 标签 -->
+            <text x="100" y="13" text-anchor="middle" font-size="10" fill="#8E88A8" font-family="Nunito">😊快乐</text>
+            <text x="186" y="58" text-anchor="start" font-size="10" fill="#8E88A8" font-family="Nunito">😌平静</text>
+            <text x="186" y="144" text-anchor="start" font-size="10" fill="#8E88A8" font-family="Nunito">😤焦虑</text>
+            <text x="100" y="195" text-anchor="middle" font-size="10" fill="#8E88A8" font-family="Nunito">😔悲伤</text>
+            <text x="14" y="144" text-anchor="end" font-size="10" fill="#8E88A8" font-family="Nunito">😡愤怒</text>
+            <text x="14" y="58" text-anchor="end" font-size="10" fill="#8E88A8" font-family="Nunito">😴疲惫</text>
+          </svg>
+        </div>
+        <div class="radar-legend">
+          <div class="radar-legend-item"><div class="radar-dot" style="background:#FFD166;"></div>快乐 38%</div>
+          <div class="radar-legend-item"><div class="radar-dot" style="background:#74D7E8;"></div>平静 25%</div>
+          <div class="radar-legend-item"><div class="radar-dot" style="background:#C084FC;"></div>焦虑 18%</div>
+          <div class="radar-legend-item"><div class="radar-dot" style="background:#7C9CF5;"></div>悲伤 10%</div>
+          <div class="radar-legend-item"><div class="radar-dot" style="background:#94A3B8;"></div>疲惫 7%</div>
+          <div class="radar-legend-item"><div class="radar-dot" style="background:#FC8181;"></div>愤怒 2%</div>
+        </div>
+      </div>
+
+      <!-- TREND -->
+      <div class="trend-wrap">
+        <div class="trend-header">
+          <span class="trend-title">心情趋势</span>
+          <div class="trend-period">
+            <button class="period-btn active" onclick="this.parentNode.querySelectorAll('.period-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')">周</button>
+            <button class="period-btn" onclick="this.parentNode.querySelectorAll('.period-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')">月</button>
+          </div>
+        </div>
+        <div class="trend-bars" id="trend-bars"><!-- JS 渲染 --></div>
+        <div style="display:flex;justify-content:space-between;">
+          <span style="font-size:10px;color:var(--color-muted);">低 0</span>
+          <span style="font-size:10px;color:var(--color-muted);">高 10</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETTINGS TAB -->
+    <div class="tab-panel" id="panel-settings">
+      <!-- 账号 -->
+      <div class="settings-group">
+        <div class="settings-group-label">账号</div>
+        <div class="settings-card">
+          <div class="setting-row" onclick="openModal('edit-modal')">
+            <div class="setting-icon" style="background:#EEF3FF;">👤</div>
+            <div class="setting-info">
+              <div class="setting-name">编辑个人资料</div>
+              <div class="setting-sub">昵称、头像、个人简介</div>
+            </div>
+            <div class="setting-right">›</div>
+          </div>
+          <div class="setting-row" onclick="showToast('通知设置已打开')">
+            <div class="setting-icon" style="background:#FFFBEE;">🔔</div>
+            <div class="setting-info">
+              <div class="setting-name">提醒通知</div>
+              <div class="setting-sub">每日 21:00 打卡提醒</div>
+            </div>
+            <div class="setting-right">
+              <div class="toggle-sw" id="toggle-notif" onclick="event.stopPropagation();toggleSwitch('toggle-notif')" aria-label="切换通知">
+                <div class="toggle-sw-knob"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 隐私 -->
+      <div class="settings-group">
+        <div class="settings-group-label">隐私与安全</div>
+        <div class="settings-card">
+          <div class="setting-row" onclick="event.stopPropagation();toggleSwitch('toggle-biometric')">
+            <div class="setting-icon" style="background:#EDFAF4;">🔐</div>
+            <div class="setting-info">
+              <div class="setting-name">指纹 / 面容 ID 解锁</div>
+              <div class="setting-sub">保护隐私，进入 APP 需要验证</div>
+            </div>
+            <div class="setting-right">
+              <div class="toggle-sw off" id="toggle-biometric" onclick="event.stopPropagation();toggleSwitch('toggle-biometric')" aria-label="切换生物识别解锁">
+                <div class="toggle-sw-knob"></div>
+              </div>
+            </div>
+          </div>
+          <div class="setting-row" onclick="showToast('截图保护已切换')">
+            <div class="setting-icon" style="background:#FAF0FF;">🛡️</div>
+            <div class="setting-info">
+              <div class="setting-name">截图模糊保护</div>
+              <div class="setting-sub">后台切换时自动隐藏界面内容</div>
+            </div>
+            <div class="setting-right">
+              <div class="toggle-sw" id="toggle-screenshot" onclick="event.stopPropagation();toggleSwitch('toggle-screenshot')" aria-label="切换截图保护">
+                <div class="toggle-sw-knob"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 数据 -->
+      <div class="settings-group">
+        <div class="settings-group-label">数据管理</div>
+        <div class="settings-card">
+          <div class="setting-row" onclick="showToast('PDF 导出中，请稍候…')">
+            <div class="setting-icon" style="background:#EDF9FC;">📄</div>
+            <div class="setting-info">
+              <div class="setting-name">导出日记 PDF</div>
+              <div class="setting-sub">将所有记录导出为 PDF 文件</div>
+            </div>
+            <div class="setting-right">›</div>
+          </div>
+          <div class="setting-row" onclick="showToast('同步中…')">
+            <div class="setting-icon" style="background:#F0FDF4;">☁️</div>
+            <div class="setting-info">
+              <div class="setting-name">iCloud 同步</div>
+              <div class="setting-sub">最后同步：今天 09:38</div>
+            </div>
+            <div class="setting-right">
+              <div class="toggle-sw" id="toggle-cloud" onclick="event.stopPropagation();toggleSwitch('toggle-cloud')" aria-label="切换云同步">
+                <div class="toggle-sw-knob"></div>
+              </div>
+            </div>
+          </div>
+          <div class="setting-row danger" onclick="confirmClear()">
+            <div class="setting-icon" style="background:var(--color-error-bg);">🗑️</div>
+            <div class="setting-info">
+              <div class="setting-name">清除所有数据</div>
+              <div class="setting-sub">此操作不可恢复，请谨慎</div>
+            </div>
+            <div class="setting-right">›</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 关于 -->
+      <div class="settings-group">
+        <div class="settings-group-label">关于</div>
+        <div class="settings-card">
+          <div class="setting-row" onclick="showToast('MoodLab v1.0.0 · MIT License')">
+            <div class="setting-icon" style="background:#F3F0FF;">💜</div>
+            <div class="setting-info">
+              <div class="setting-name">版本信息</div>
+              <div class="setting-sub">MoodLab v1.0.0</div>
+            </div>
+            <div class="setting-right">›</div>
+          </div>
+          <div class="setting-row" onclick="showToast('感谢反馈！已记录您的建议 💌')">
+            <div class="setting-icon" style="background:#FFF8EC;">💌</div>
+            <div class="setting-info">
+              <div class="setting-name">反馈与建议</div>
+              <div class="setting-sub">告诉我们你的想法</div>
+            </div>
+            <div class="setting-right">›</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BOTTOM TAB BAR -->
+<div class="tabbar">
+  <div class="tab-item" onclick="location.href='page-01-home.html'" aria-label="首页">
+    <span class="tab-icon">🏠</span>
+    <span>首页</span>
+  </div>
+  <div class="tab-item" onclick="showToast('发现')" aria-label="发现">
+    <span class="tab-icon">🎵</span>
+    <span>发现</span>
+  </div>
+  <div class="tab-fab" onclick="location.href='page-02-emotion-select.html'" title="记录情绪" aria-label="记录情绪">+</div>
+  <div class="tab-item" onclick="showToast('社区')" aria-label="社区">
+    <span class="tab-icon">🌿</span>
+    <span>社区</span>
+  </div>
+  <div class="tab-item active" aria-label="我的">
+    <span class="tab-icon">👤</span>
+    <span>我的</span>
+  </div>
+</div>
+
+<!-- EDIT PROFILE MODAL -->
+<div class="modal-backdrop" id="edit-modal" onclick="closeModal('edit-modal')" role="dialog" aria-modal="true" aria-labelledby="edit-title">
+  <div class="modal-sheet" onclick="event.stopPropagation()">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="edit-title">编辑个人资料</div>
+    <input class="modal-input" type="text" value="luzifeng" placeholder="昵称" aria-label="昵称">
+    <input class="modal-input" type="text" value="AI探索者 · 情绪记录中 🌱" placeholder="个人简介" aria-label="个人简介">
+    <div class="modal-actions">
+      <button class="modal-btn-cancel" onclick="closeModal('edit-modal')">取消</button>
+      <button class="modal-btn-save" onclick="closeModal('edit-modal');showToast('✅ 资料已更新')">保存</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-ct" id="toast-ct"></div>
+
+<script>
+  // ── 趋势图 ──
+  const weekData = [
+    {day:'周一',val:5},{day:'周二',val:7},{day:'周三',val:4},
+    {day:'周四',val:8},{day:'周五',val:6},{day:'周六',val:9},{day:'周日',val:7}
+  ];
+  function renderTrend(){
+    const container=document.getElementById('trend-bars');
+    const maxVal=10;
+    container.innerHTML=weekData.map(d=>`
+      <div class="trend-bar-wrap">
+        <div class="trend-bar" style="height:${(d.val/maxVal*70+4)}px;" title="${d.day}: ${d.val}分"></div>
+        <span class="trend-bar-label">${d.day.slice(1)}</span>
+      </div>`).join('');
+  }
+
+  // ── 标签切换 ──
+  function switchTab(tab){
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    document.getElementById('tab-'+tab)?.classList.add('active');
+    document.getElementById('panel-'+tab)?.classList.add('active');
+  }
+
+  // ── Toggle ──
+  function toggleSwitch(id){
+    const sw=document.getElementById(id);
+    sw.classList.toggle('off');
+    const isOn=!sw.classList.contains('off');
+    showToast(isOn?'已开启':'已关闭');
+  }
+
+  // ── Modal ──
+  function openModal(id){document.getElementById(id).classList.add('open');document.body.style.overflow='hidden';}
+  function closeModal(id){document.getElementById(id).classList.remove('open');document.body.style.overflow='';}
+
+  // ── Confirm ──
+  function confirmClear(){
+    if(confirm('确定要清除所有数据吗？此操作无法恢复。')){
+      showToast('🗑️ 数据已清除');
+    }
+  }
+
+  function showToast(msg){
+    const c=document.getElementById('toast-ct');
+    const t=document.createElement('div'); t.className='toast'; t.textContent=msg; c.appendChild(t);
+    requestAnimationFrame(()=>requestAnimationFrame(()=>t.classList.add('show')));
+    setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),300);},2500);
+  }
+
+  renderTrend();
+</script>
+</body>
+</html>

@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>情绪选择 — MoodLab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-primary:#7C6FFF; --color-primary-hover:#6558F0;
+      --color-primary-light:rgba(124,111,255,0.12); --color-primary-fg:#FFFFFF;
+      --color-bg:#FAF9FF; --color-surface:#FFFFFF; --color-surface-2:#F3F0FF;
+      --color-border:#E8E4F3; --color-muted:#8E88A8; --color-foreground:#1A1730;
+      --mood-happy:#FFD166; --mood-happy-bg:#FFFBEE;
+      --mood-calm:#74D7E8; --mood-calm-bg:#EDF9FC;
+      --mood-sad:#7C9CF5; --mood-sad-bg:#EEF3FF;
+      --mood-anxious:#C084FC; --mood-anxious-bg:#FAF0FF;
+      --mood-angry:#FC8181; --mood-angry-bg:#FFF1F1;
+      --mood-tired:#94A3B8; --mood-tired-bg:#F1F5F9;
+      --font-sans:'Nunito',system-ui,sans-serif;
+      --font-weight-regular:400; --font-weight-medium:500;
+      --font-weight-semibold:600; --font-weight-bold:700; --font-weight-extrabold:800;
+      --text-xs:11px; --text-sm:13px; --text-base:15px; --text-md:16px;
+      --text-lg:18px; --text-xl:20px; --text-2xl:24px; --text-3xl:30px;
+      --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px;
+      --space-5:20px; --space-6:24px; --space-8:32px; --space-10:40px;
+      --radius-sm:8px; --radius-md:12px; --radius-lg:16px;
+      --radius-xl:22px; --radius-2xl:32px; --radius-full:9999px;
+      --shadow-xs:0 1px 3px rgba(124,111,255,0.06);
+      --shadow-sm:0 2px 8px rgba(124,111,255,0.10);
+      --shadow-md:0 4px 16px rgba(124,111,255,0.14);
+      --shadow-lg:0 8px 28px rgba(124,111,255,0.22);
+      --duration-base:200ms; --duration-slow:380ms;
+      --ease-default:cubic-bezier(0.4,0,0.2,1);
+      --ease-spring:cubic-bezier(0.34,1.56,0.64,1);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html,body{width:100%;height:100%;}
+    body{
+      font-family:var(--font-sans);
+      color:var(--color-foreground);
+      line-height:1.5;
+      -webkit-font-smoothing:antialiased;
+      width:390px; min-height:844px;
+      margin:0 auto;
+      display:flex; flex-direction:column;
+      overflow-x:hidden;
+      transition:background 0.6s var(--ease-default);
+      background:var(--color-bg);
+    }
+
+    /* ── MOOD BG THEMES ── */
+    body.mood-happy   { background:linear-gradient(160deg,#FFFBEE 0%,#FFF3CC 60%,#FFEAA0 100%); }
+    body.mood-calm    { background:linear-gradient(160deg,#EDF9FC 0%,#D6F4FA 60%,#A8EBF5 100%); }
+    body.mood-sad     { background:linear-gradient(160deg,#EEF3FF 0%,#DCE6FF 60%,#BDD0FF 100%); }
+    body.mood-anxious { background:linear-gradient(160deg,#FAF0FF 0%,#F3D9FF 60%,#E5B8FF 100%); }
+    body.mood-angry   { background:linear-gradient(160deg,#FFF1F1 0%,#FFD9D9 60%,#FFB3B3 100%); }
+    body.mood-tired   { background:linear-gradient(160deg,#F4F5F8 0%,#E8EBF0 60%,#D5DBE5 100%); }
+
+    /* STATUS BAR */
+    .status-bar{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;flex-shrink:0;}
+    .status-time{font-size:15px;font-weight:700;}
+    .status-icons{font-size:13px;}
+
+    /* NAV */
+    .page-nav{
+      padding:0 var(--space-5) var(--space-4);
+      display:flex;align-items:center;justify-content:space-between;
+      flex-shrink:0;
+    }
+    .back-btn{
+      width:40px;height:40px;border-radius:var(--radius-full);
+      background:rgba(255,255,255,0.7);backdrop-filter:blur(8px);
+      border:1px solid rgba(255,255,255,0.5);
+      display:flex;align-items:center;justify-content:center;
+      font-size:18px;cursor:pointer;transition:all var(--duration-base);
+    }
+    .back-btn:hover{background:rgba(255,255,255,0.9);}
+    .step-indicator{
+      font-size:var(--text-xs);font-weight:var(--font-weight-semibold);
+      color:var(--color-muted);
+      background:rgba(255,255,255,0.6);backdrop-filter:blur(8px);
+      padding:6px 14px;border-radius:var(--radius-full);
+      border:1px solid rgba(255,255,255,0.4);
+    }
+
+    /* HEADER */
+    .page-header{
+      padding:var(--space-4) var(--space-5) var(--space-6);
+      text-align:center;flex-shrink:0;
+    }
+    .page-header-sub{font-size:var(--text-xs);font-weight:var(--font-weight-semibold);color:var(--color-muted);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:var(--space-2);}
+    .page-header-title{font-size:var(--text-2xl);font-weight:var(--font-weight-extrabold);line-height:1.2;}
+    .page-header-hint{font-size:var(--text-sm);color:var(--color-muted);margin-top:var(--space-2);}
+
+    /* EMOTION GRID */
+    .emotion-grid{
+      flex:1;
+      padding:0 var(--space-5);
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:var(--space-4);
+      align-content:start;
+    }
+    .emotion-card{
+      aspect-ratio:1;
+      border-radius:var(--radius-2xl);
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      cursor:pointer;
+      border:2px solid transparent;
+      transition:all var(--duration-base) var(--ease-spring);
+      background:rgba(255,255,255,0.65);
+      backdrop-filter:blur(10px);
+      box-shadow:var(--shadow-xs);
+      position:relative;
+      overflow:hidden;
+    }
+    .emotion-card:hover{
+      transform:scale(1.04);
+      box-shadow:var(--shadow-sm);
+      background:rgba(255,255,255,0.85);
+    }
+    .emotion-card.selected{
+      border-color:currentColor;
+      transform:scale(1.07);
+      box-shadow:var(--shadow-md);
+      background:rgba(255,255,255,0.95);
+    }
+    .emotion-card.happy{ --card-accent:var(--mood-happy); color:var(--mood-happy); }
+    .emotion-card.calm { --card-accent:var(--mood-calm);  color:var(--mood-calm); }
+    .emotion-card.sad  { --card-accent:var(--mood-sad);   color:var(--mood-sad); }
+    .emotion-card.anxious{--card-accent:var(--mood-anxious);color:var(--mood-anxious);}
+    .emotion-card.angry { --card-accent:var(--mood-angry); color:var(--mood-angry); }
+    .emotion-card.tired { --card-accent:var(--mood-tired); color:var(--mood-tired); }
+    .emotion-card.selected::after{
+      content:'✓';
+      position:absolute;top:8px;right:10px;
+      font-size:13px;font-weight:900;
+    }
+    .emotion-emoji{font-size:44px;line-height:1;margin-bottom:var(--space-2);transition:transform 0.3s var(--ease-spring);}
+    .emotion-card.selected .emotion-emoji{transform:scale(1.15);}
+    .emotion-label{font-size:var(--text-sm);font-weight:var(--font-weight-bold);color:var(--color-foreground);}
+
+    /* INTENSITY SLIDER */
+    .intensity-wrap{
+      margin:var(--space-5) var(--space-5) 0;
+      background:rgba(255,255,255,0.75);backdrop-filter:blur(10px);
+      border:1px solid rgba(255,255,255,0.5);
+      border-radius:var(--radius-xl);
+      padding:var(--space-5);
+      opacity:0;transform:translateY(16px);
+      transition:all 0.4s var(--ease-spring);
+      pointer-events:none;
+    }
+    .intensity-wrap.visible{opacity:1;transform:translateY(0);pointer-events:all;}
+    .intensity-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-4);}
+    .intensity-label{font-size:var(--text-sm);font-weight:var(--font-weight-bold);}
+    .intensity-val{
+      font-size:var(--text-2xl);font-weight:var(--font-weight-extrabold);
+      color:var(--color-primary);
+      width:48px;height:48px;border-radius:var(--radius-full);
+      background:var(--color-primary-light);
+      display:flex;align-items:center;justify-content:center;
+      transition:all 0.2s var(--ease-spring);
+    }
+    .slider-track{position:relative;padding:var(--space-2) 0;}
+    input[type=range]{
+      -webkit-appearance:none;appearance:none;
+      width:100%;height:6px;border-radius:3px;
+      background:linear-gradient(to right, var(--slider-fill,var(--color-primary)) 0%, var(--slider-fill,var(--color-primary)) var(--pct,50%), #E0DCEA var(--pct,50%), #E0DCEA 100%);
+      outline:none;cursor:pointer;
+    }
+    input[type=range]::-webkit-slider-thumb{
+      -webkit-appearance:none;appearance:none;
+      width:24px;height:24px;border-radius:50%;
+      background:var(--color-primary);
+      box-shadow:0 2px 8px rgba(124,111,255,0.4);
+      transition:transform 0.15s var(--ease-spring);
+    }
+    input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.2);}
+    .slider-marks{display:flex;justify-content:space-between;margin-top:var(--space-2);}
+    .slider-mark{font-size:10px;color:var(--color-muted);}
+
+    /* NEXT BTN */
+    .next-wrap{
+      padding:var(--space-5);
+      flex-shrink:0;
+      opacity:0;transform:translateY(10px);
+      transition:all 0.4s var(--ease-spring) 0.1s;
+      pointer-events:none;
+    }
+    .next-wrap.visible{opacity:1;transform:translateY(0);pointer-events:all;}
+    .btn-next{
+      width:100%;height:56px;
+      background:linear-gradient(135deg,#7C6FFF,#9F8FFF);
+      color:#fff;border:none;border-radius:var(--radius-full);
+      font-family:var(--font-sans);font-size:var(--text-md);font-weight:var(--font-weight-bold);
+      cursor:pointer;box-shadow:var(--shadow-lg);
+      display:flex;align-items:center;justify-content:center;gap:var(--space-2);
+      transition:all var(--duration-base) var(--ease-spring);
+    }
+    .btn-next:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(124,111,255,0.4);}
+    .btn-next:active{transform:scale(0.97);}
+  </style>
+</head>
+<body id="page-body">
+
+<!-- STATUS BAR -->
+<div class="status-bar">
+  <span class="status-time">9:41</span>
+  <span class="status-icons">📶 🛜 🔋</span>
+</div>
+
+<!-- NAV -->
+<div class="page-nav">
+  <button class="back-btn" onclick="history.back()" title="返回" aria-label="返回">←</button>
+  <div class="step-indicator">步骤 1 / 2</div>
+  <div style="width:40px;"></div>
+</div>
+
+<!-- HEADER -->
+<div class="page-header">
+  <div class="page-header-sub">情绪记录</div>
+  <div class="page-header-title">现在感觉怎么样？</div>
+  <div class="page-header-hint">选择最接近你此刻心情的情绪</div>
+</div>
+
+<!-- EMOTION GRID -->
+<div class="emotion-grid">
+  <div class="emotion-card happy" onclick="selectMood('happy','快乐')" title="快乐" role="button" aria-label="选择快乐">
+    <div class="emotion-emoji" id="emoji-happy">😊</div>
+    <div class="emotion-label">快乐</div>
+  </div>
+  <div class="emotion-card calm" onclick="selectMood('calm','平静')" title="平静" role="button" aria-label="选择平静">
+    <div class="emotion-emoji" id="emoji-calm">😌</div>
+    <div class="emotion-label">平静</div>
+  </div>
+  <div class="emotion-card sad" onclick="selectMood('sad','悲伤')" title="悲伤" role="button" aria-label="选择悲伤">
+    <div class="emotion-emoji" id="emoji-sad">😔</div>
+    <div class="emotion-label">悲伤</div>
+  </div>
+  <div class="emotion-card anxious" onclick="selectMood('anxious','焦虑')" title="焦虑" role="button" aria-label="选择焦虑">
+    <div class="emotion-emoji" id="emoji-anxious">😤</div>
+    <div class="emotion-label">焦虑</div>
+  </div>
+  <div class="emotion-card angry" onclick="selectMood('angry','愤怒')" title="愤怒" role="button" aria-label="选择愤怒">
+    <div class="emotion-emoji" id="emoji-angry">😡</div>
+    <div class="emotion-label">愤怒</div>
+  </div>
+  <div class="emotion-card tired" onclick="selectMood('tired','疲惫')" title="疲惫" role="button" aria-label="选择疲惫">
+    <div class="emotion-emoji" id="emoji-tired">😴</div>
+    <div class="emotion-label">疲惫</div>
+  </div>
+</div>
+
+<!-- INTENSITY SLIDER -->
+<div class="intensity-wrap" id="intensity-wrap">
+  <div class="intensity-header">
+    <div>
+      <div class="intensity-label" id="intensity-label">快乐强度</div>
+      <div style="font-size:11px;color:var(--color-muted);margin-top:2px;">滑动调节感受强度</div>
+    </div>
+    <div class="intensity-val" id="intensity-val">5</div>
+  </div>
+  <div class="slider-track">
+    <input type="range" id="intensity-slider" min="1" max="10" value="5"
+      oninput="updateSlider(this.value)" aria-label="情绪强度">
+  </div>
+  <div class="slider-marks">
+    <span class="slider-mark">微弱 1</span>
+    <span class="slider-mark">适中 5</span>
+    <span class="slider-mark">强烈 10</span>
+  </div>
+</div>
+
+<!-- NEXT -->
+<div class="next-wrap" id="next-wrap">
+  <button class="btn-next" onclick="goNext()" title="下一步：写下你的想法" aria-label="进入内容输入步骤">
+    继续记录 →
+  </button>
+</div>
+
+<script>
+  const MOOD_BG   = {happy:'mood-happy',calm:'mood-calm',sad:'mood-sad',anxious:'mood-anxious',angry:'mood-angry',tired:'mood-tired'};
+  const MOOD_EMOJIS_LOW  = {happy:'🙂',calm:'😶',sad:'😕',anxious:'😬',angry:'😠',tired:'😪'};
+  const MOOD_EMOJIS_MED  = {happy:'😊',calm:'😌',sad:'😔',anxious:'😤',angry:'😡',tired:'😴'};
+  const MOOD_EMOJIS_HIGH = {happy:'😄',calm:'🥰',sad:'😭',anxious:'😰',angry:'🤬',tired:'🥴'};
+  const SLIDER_COLORS = {happy:'#FFD166',calm:'#74D7E8',sad:'#7C9CF5',anxious:'#C084FC',angry:'#FC8181',tired:'#94A3B8'};
+
+  let selectedMood = null;
+
+  function selectMood(key, label) {
+    document.querySelectorAll('.emotion-card').forEach(c=>c.classList.remove('selected'));
+    document.querySelector('.emotion-card.'+key).classList.add('selected');
+    selectedMood = {key, label};
+
+    // 背景渐变
+    document.getElementById('page-body').className = MOOD_BG[key];
+
+    // 强度标签
+    document.getElementById('intensity-label').textContent = label+'强度';
+
+    // 更新滑杆颜色
+    const slider = document.getElementById('intensity-slider');
+    const pct = ((slider.value-1)/9*100).toFixed(1)+'%';
+    slider.style.setProperty('--slider-fill', SLIDER_COLORS[key]);
+    slider.style.setProperty('--pct', pct);
+
+    // 显示强度和按钮
+    document.getElementById('intensity-wrap').classList.add('visible');
+    document.getElementById('next-wrap').classList.add('visible');
+
+    updateEmojiByIntensity(key, parseInt(slider.value));
+  }
+
+  function updateSlider(val) {
+    const v = parseInt(val);
+    document.getElementById('intensity-val').textContent = v;
+    const pct = ((v-1)/9*100).toFixed(1)+'%';
+    const slider = document.getElementById('intensity-slider');
+    if(selectedMood){
+      slider.style.setProperty('--pct', pct);
+      updateEmojiByIntensity(selectedMood.key, v);
+    }
+    // 弹性缩放强度数字
+    const valEl = document.getElementById('intensity-val');
+    valEl.style.transform = 'scale(1.2)';
+    setTimeout(()=>valEl.style.transform='', 150);
+  }
+
+  function updateEmojiByIntensity(key, v) {
+    const emojiEl = document.getElementById('emoji-'+key);
+    if(!emojiEl) return;
+    let emoji;
+    if(v <= 3) emoji = MOOD_EMOJIS_LOW[key];
+    else if(v <= 7) emoji = MOOD_EMOJIS_MED[key];
+    else emoji = MOOD_EMOJIS_HIGH[key];
+    emojiEl.textContent = emoji;
+  }
+
+  function goNext() {
+    if(!selectedMood){ return; }
+    // 存到 sessionStorage 供下页使用
+    const v = document.getElementById('intensity-slider').value;
+    sessionStorage.setItem('ml_mood', selectedMood.key);
+    sessionStorage.setItem('ml_mood_label', selectedMood.label);
+    sessionStorage.setItem('ml_intensity', v);
+    location.href = 'page-03-record-input.html';
+  }
+</script>
+</body>
+</html>
