@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KAT-Coder-Pro V2 · 亮色版</title>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  width: 100%; height: 100vh; background: #f0f4f0; overflow: hidden;
+  font-family: system-ui, -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  color: #1a2e1a;
+}
+
+/* 顶部进度条 */
+#progress {
+  position: fixed; top: 0; left: 0; height: 3px; width: 0%;
+  background: linear-gradient(90deg, #1B8A3C, #52C872);
+  transition: width 0.3s ease; z-index: 100;
+}
+
+/* 模式徽标 */
+#mode-badge {
+  position: fixed; top: 10px; right: 14px; z-index: 100;
+  background: rgba(27,138,60,0.1);
+  padding: 4px 12px; border-radius: 20px; font-size: 12px; color: #1B8A3C;
+  border: 1px solid rgba(27,138,60,0.25); letter-spacing: 0.5px;
+}
+
+/* 主演示区 */
+#stage {
+  position: fixed; top: 3px; left: 0; right: 0; bottom: 60px;
+  display: flex; align-items: center; justify-content: center;
+  background: #e8efe8;
+}
+
+/* 固定 1280×720 比例 */
+.slide-wrapper {
+  width: 1280px; height: 720px; flex-shrink: 0;
+  position: relative;
+  box-shadow: 0 4px 32px rgba(0,80,20,0.12), 0 1px 8px rgba(0,0,0,0.08);
+  transform-origin: center center;
+  border-radius: 6px; overflow: hidden;
+}
+.slide-wrapper img {
+  width: 1280px; height: 720px; border: none; display: block;
+  transition: opacity 0.2s ease;
+}
+.slide-wrapper.loading img { opacity: 0; }
+
+/* 底部控制栏 */
+#controls {
+  position: fixed; bottom: 0; left: 0; right: 0; height: 60px;
+  background: rgba(255,255,255,0.97); backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(27,138,60,0.12);
+  display: flex; align-items: center; gap: 8px; padding: 0 14px;
+  box-shadow: 0 -1px 8px rgba(0,0,0,0.06);
+}
+
+/* 导航按钮 */
+.nav-btn {
+  width: 32px; height: 32px; border-radius: 8px;
+  border: 1px solid rgba(27,138,60,0.2);
+  background: transparent; color: #1B8A3C; cursor: pointer; font-size: 18px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s, border-color 0.15s; flex-shrink: 0;
+}
+.nav-btn:hover { background: rgba(27,138,60,0.08); border-color: rgba(27,138,60,0.4); }
+.nav-btn:disabled { opacity: 0.3; cursor: default; }
+
+/* 缩略图条 */
+#thumbnails {
+  flex: 1; display: flex; gap: 6px; overflow-x: auto; padding: 4px 0;
+  scrollbar-width: thin; scrollbar-color: rgba(27,138,60,0.2) transparent;
+  align-items: center;
+}
+#thumbnails::-webkit-scrollbar { height: 3px; }
+#thumbnails::-webkit-scrollbar-thumb { background: rgba(27,138,60,0.2); border-radius: 2px; }
+
+.thumb-item {
+  width: 71px; height: 40px; border-radius: 4px; overflow: hidden;
+  border: 2px solid transparent; cursor: pointer; flex-shrink: 0;
+  transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+  background: #fff;
+}
+.thumb-item:hover { transform: scale(1.06); }
+.thumb-item.active {
+  border-color: #1B8A3C;
+  box-shadow: 0 0 8px rgba(27,138,60,0.3);
+}
+.thumb-item img {
+  width: 1280px; height: 720px;
+  transform: scale(0.0556); transform-origin: 0 0;
+  pointer-events: none;
+}
+
+/* 页码 */
+#page-num {
+  font-size: 13px; color: rgba(27,138,60,0.5); white-space: nowrap;
+  font-variant-numeric: tabular-nums; min-width: 52px; text-align: center; flex-shrink: 0;
+}
+
+/* 功能按钮 */
+.ctrl-btn {
+  width: 32px; height: 32px; border-radius: 8px;
+  border: 1px solid rgba(27,138,60,0.2);
+  background: transparent; color: #1B8A3C; cursor: pointer; font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s; flex-shrink: 0;
+}
+.ctrl-btn:hover { background: rgba(27,138,60,0.08); }
+
+/* 导出按钮 */
+#export-btn {
+  height: 32px; padding: 0 12px; border-radius: 8px;
+  border: 1px solid rgba(27,138,60,0.2);
+  background: transparent; color: #1B8A3C; cursor: pointer; font-size: 12px;
+  white-space: nowrap; transition: background 0.15s; flex-shrink: 0;
+}
+#export-btn:hover { background: rgba(27,138,60,0.08); }
+
+.export-item {
+  display: block; width: 100%; padding: 8px 12px;
+  background: transparent; border: none; color: #2a4a2a;
+  font-size: 13px; text-align: left; cursor: pointer; border-radius: 5px;
+  white-space: nowrap; transition: background 0.1s;
+}
+.export-item:hover { background: rgba(27,138,60,0.08); }
+
+/* 键盘提示 */
+#key-hint {
+  position: fixed; bottom: 68px; right: 14px;
+  font-size: 11px; color: rgba(27,138,60,0.25);
+  pointer-events: none; letter-spacing: 0.5px;
+}
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+<div id="mode-badge">🎨 创意模式 · 亮色版</div>
+<div id="key-hint">← → 切换 · F 全屏</div>
+
+<div id="stage">
+  <div class="slide-wrapper" id="slide-wrapper">
+    <img id="slide-img" src="" alt="幻灯片">
+  </div>
+</div>
+
+<div id="controls">
+  <button class="nav-btn" id="prev-btn" title="上一张 (←)">‹</button>
+
+  <div id="thumbnails"></div>
+
+  <span id="page-num">1 / 10</span>
+
+  <button class="nav-btn" id="next-btn" title="下一张 (→)">›</button>
+
+  <button class="ctrl-btn" id="fullscreen-btn" title="全屏 (F)">⛶</button>
+
+  <div style="position:relative;flex-shrink:0;">
+    <button id="export-btn">↓ 导出</button>
+    <div id="export-menu" style="display:none;position:absolute;bottom:46px;right:0;
+      background:rgba(255,255,255,0.98);backdrop-filter:blur(12px);
+      border:1px solid rgba(27,138,60,0.12);border-radius:8px;
+      padding:6px;min-width:160px;z-index:200;
+      box-shadow:0 4px 24px rgba(0,0,0,0.1);">
+      <button class="export-item" data-action="pdf-all">📄 全套 PDF</button>
+      <button class="export-item" data-action="png-zip">🗜 全套 PNG（ZIP）</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const SLIDES = [
+  'images/slide-01.jpg','images/slide-02.jpg','images/slide-03.jpg',
+  'images/slide-04.jpg','images/slide-05.jpg','images/slide-06.jpg',
+  'images/slide-07.jpg','images/slide-08.jpg','images/slide-09.jpg',
+  'images/slide-10.jpg'
+];
+const TITLES = [
+  'KAT-Coder-Pro V2 全新上线',
+  'Agentic Coding With KwaiKAT',
+  'PintBench 编码基准测试排行',
+  'Case-Eval 代码评测综合得分',
+  '实际案例 — 从创意到落地',
+  '模型应用场景 — 三大生态接入',
+  'V2 vs V1 全面升级对比',
+  '模型定价 — 灵活方案',
+  'KwaiKAT · 引领 Agentic Coding 新时代',
+  '立即体验 KAT-Coder-Pro V2'
+];
+const TOTAL = SLIDES.length;
+let current = 0;
+
+const wrapper = document.getElementById('slide-wrapper');
+const slideImg = document.getElementById('slide-img');
+const progress = document.getElementById('progress');
+const pageNum = document.getElementById('page-num');
+const prevBtn = document.getElementById('prev-btn');
+const nextBtn = document.getElementById('next-btn');
+const thumbsContainer = document.getElementById('thumbnails');
+const fullscreenBtn = document.getElementById('fullscreen-btn');
+const stage = document.getElementById('stage');
+
+function renderSlide(index) {
+  wrapper.classList.add('loading');
+  slideImg.onload = () => wrapper.classList.remove('loading');
+  slideImg.src = SLIDES[index];
+}
+
+function buildThumbs() {
+  thumbsContainer.innerHTML = '';
+  SLIDES.forEach((src, i) => {
+    const item = document.createElement('div');
+    item.className = 'thumb-item' + (i === 0 ? ' active' : '');
+    item.title = TITLES[i];
+    const img = document.createElement('img');
+    img.src = src; img.alt = TITLES[i];
+    item.appendChild(img);
+    item.addEventListener('click', () => goTo(i));
+    thumbsContainer.appendChild(item);
+  });
+}
+
+function goTo(index) {
+  if (index < 0 || index >= TOTAL) return;
+  current = index;
+  renderSlide(current);
+  progress.style.width = ((current + 1) / TOTAL * 100) + '%';
+  pageNum.textContent = (current + 1) + ' / ' + TOTAL;
+  document.querySelectorAll('.thumb-item').forEach((el, i) => {
+    el.classList.toggle('active', i === current);
+  });
+  prevBtn.disabled = current === 0;
+  nextBtn.disabled = current === TOTAL - 1;
+  const activeThumb = thumbsContainer.children[current];
+  if (activeThumb) activeThumb.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); goTo(current + 1); }
+  if (e.key === 'ArrowLeft') { e.preventDefault(); goTo(current - 1); }
+  if (e.key === 'f' || e.key === 'F') toggleFullscreen();
+  if (e.key === 'Escape' && document.fullscreenElement) document.exitFullscreen();
+});
+
+prevBtn.addEventListener('click', () => goTo(current - 1));
+nextBtn.addEventListener('click', () => goTo(current + 1));
+
+function toggleFullscreen() {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().catch(() => {});
+  } else { document.exitFullscreen(); }
+}
+fullscreenBtn.addEventListener('click', toggleFullscreen);
+
+function scaleSlide() {
+  const scale = Math.min(stage.clientWidth / 1280, stage.clientHeight / 720);
+  wrapper.style.transform = `scale(${scale})`;
+}
+scaleSlide();
+window.addEventListener('resize', scaleSlide);
+
+// 导出
+const exportBtn = document.getElementById('export-btn');
+const exportMenu = document.getElementById('export-menu');
+exportBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  exportMenu.style.display = exportMenu.style.display === 'none' ? 'block' : 'none';
+});
+document.addEventListener('click', () => { exportMenu.style.display = 'none'; });
+
+document.querySelectorAll('.export-item').forEach(item => {
+  item.addEventListener('click', async (e) => {
+    e.stopPropagation();
+    exportMenu.style.display = 'none';
+    const action = item.dataset.action;
+    const title = 'KAT-Coder-Pro-V2-Light';
+    const date = new Date().toISOString().slice(0,10);
+
+    if (action === 'pdf-all') {
+      exportBtn.textContent = '导出中 0/10...';
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ orientation: 'landscape', unit: 'px', format: [1280, 720] });
+      for (let i = 0; i < TOTAL; i++) {
+        exportBtn.textContent = `导出中 ${i+1}/${TOTAL}...`;
+        await new Promise(r => {
+          const img = new Image();
+          img.crossOrigin = 'anonymous';
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = 1280; canvas.height = 720;
+            canvas.getContext('2d').drawImage(img, 0, 0, 1280, 720);
+            if (i > 0) pdf.addPage([1280, 720], 'landscape');
+            pdf.addImage(canvas.toDataURL('image/jpeg', 0.92), 'JPEG', 0, 0, 1280, 720);
+            r();
+          };
+          img.src = SLIDES[i] + '?t=' + Date.now();
+        });
+      }
+      pdf.save(`${title}-${date}.pdf`);
+      exportBtn.textContent = '↓ 导出';
+    } else if (action === 'png-zip') {
+      exportBtn.textContent = '打包中 0/10...';
+      const zip = new JSZip();
+      for (let i = 0; i < TOTAL; i++) {
+        exportBtn.textContent = `打包中 ${i+1}/${TOTAL}...`;
+        await new Promise(r => {
+          const img = new Image();
+          img.crossOrigin = 'anonymous';
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = 1280; canvas.height = 720;
+            canvas.getContext('2d').drawImage(img, 0, 0, 1280, 720);
+            canvas.toBlob(blob => {
+              zip.file(`slide-${String(i+1).padStart(2,'0')}.png`, blob);
+              r();
+            }, 'image/png');
+          };
+          img.src = SLIDES[i] + '?t=' + Date.now();
+        });
+      }
+      const content = await zip.generateAsync({ type: 'blob' });
+      const a = document.createElement('a');
+      a.download = `${title}-slides.zip`;
+      a.href = URL.createObjectURL(content);
+      a.click();
+      exportBtn.textContent = '↓ 导出';
+    }
+  });
+});
+
+buildThumbs();
+goTo(0);
+</script>
+</body>
+</html>
