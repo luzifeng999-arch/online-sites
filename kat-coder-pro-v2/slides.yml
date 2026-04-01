@@ -1,0 +1,129 @@
+presentation:
+  title: "KAT-Coder-Pro V2 全新上线"
+  mode: "creative"
+  total_slides: 10
+  style_theme:
+    palette: "E"
+    tone: "绿色科技/AI编程/产品发布"
+    creative_style: "gradient-fluid"
+    rationale: "KAT-Coder-Pro V2 为编程AI产品，品牌色为绿色，选择gradient-fluid风格突出科技与创新感，流体渐变呼应AI能力的流动性与智能性"
+
+slides:
+  - index: 1
+    type: "cover"
+    layout: "Cover-A"
+    composition: "rule-of-thirds-right"
+    title: "KAT-Coder-Pro V2 全新上线"
+    subtitle: "数千种研发工具集成，升级 KwaiSpot Coding 服务矩阵"
+    key_facts:
+      - "KAT-Coder-Pro V2 全新上线"
+      - "数千种研发工具集成"
+      - "20+ 种主流编程语言支持"
+    visual_text: "KAT-Coder-Pro V2"
+
+  - index: 2
+    type: "content"
+    layout: "Content-B"
+    composition: "rule-of-thirds-left"
+    title: "Agentic Coding With KwaiKAT"
+    key_facts:
+      - "数千种研发工具集成支持"
+      - "支持 Bash, SQL, Search, Map, Text 等各类工具"
+      - "20+ 种主生流编程环境：C, Java, Python, Go, JavaScript, TypeScript, Rust"
+      - "支持 Claude Code、CodeFlicker 等主流 Agent"
+    visual_text: "Agentic Coding · 数千种工具 · 20+ 语言"
+
+  - index: 3
+    type: "data"
+    layout: "Data-A"
+    composition: "center"
+    title: "编码能力基准测试 — PintBench"
+    key_facts:
+      - "KwaiKAT PintBench 得分：81.9（业内领先）"
+      - "KAT-Coder-Pro V2：80.3"
+      - "Minimax：81.8"
+      - "OpenAI GPT-4o：81.6"
+      - "Google Gemini：75.9"
+    visual_text: "PintBench 81.9 · 业内领先"
+
+  - index: 4
+    type: "data"
+    layout: "Data-B"
+    composition: "diagonal"
+    title: "编码能力基准测试 — Case-Eval"
+    key_facts:
+      - "KwaiKAT Case-Eval 得分：73.4"
+      - "KAT-Coder-Pro V2：73.0"
+      - "Minimax：70.7"
+      - "OpenAI GPT-4o：80.6"
+      - "Google Gemini：74.2"
+    visual_text: "Case-Eval 73.4 · KwaiKAT Top"
+
+  - index: 5
+    type: "content"
+    layout: "Content-A"
+    composition: "rule-of-thirds-right"
+    title: "实际案例 — 从创意到落地，一步到位"
+    key_facts:
+      - "网页设计：自动生成完整的响应式网页"
+      - "PPT设计：智能生成专业演示文稿"
+      - "数据图表：数据可视化一键生成"
+    visual_text: "网页设计 · PPT设计 · 数据图表"
+
+  - index: 6
+    type: "content"
+    layout: "Content-C"
+    composition: "foreground-frame"
+    title: "模型应用场景 — 三大生态接入"
+    key_facts:
+      - "智能智能开发环境 CodeFlicker：深度集成AI编程助手"
+      - "支持 Open Claw 配套使用：与主流AI工具无缝协作"
+      - "支持开放接口的API调用：开发者可直接集成到自有产品"
+    visual_text: "CodeFlicker · Open Claw · API 开放接口"
+
+  - index: 7
+    type: "comparison"
+    layout: "Comparison-A"
+    composition: "center"
+    title: "模型概览 — V2 vs V1 全面升级"
+    key_facts:
+      - "上下文长度：V2 支持 256K，V1 仅 128K"
+      - "输入价格：V2 更具竞争力"
+      - "Agentic Coding：V2 五星，V1 三星"
+      - "代码支持：V2 支持 C, C++, Java, C#, Python（V1 仅部分）"
+      - "Function Call：V2 支持，V1 不支持"
+      - "SWE-bench：V2 达到 70.4%，V1 仅 60%"
+    visual_text: "V2 vs V1 · 256K上下文 · SWE-bench 70.4%"
+
+  - index: 8
+    type: "data"
+    layout: "Data-C"
+    composition: "diagonal"
+    title: "模型定价 — 灵活方案，按需选择"
+    key_facts:
+      - "专业版：¥1,449 / 百万 Token"
+      - "旗舰版：¥5,796 / 百万 Token"
+      - "免费版：0 元"
+      - "轻量版：¥0.287 / 百万 Token"
+      - "首充优惠：2026年1月16日 - 2026年2月26日"
+    visual_text: "¥1,449 · ¥5,796 · 免费版 · ¥0.287"
+
+  - index: 9
+    type: "section"
+    layout: "Section-B"
+    composition: "full-bleed"
+    title: "KwaiKAT · 引领 Agentic Coding 新时代"
+    key_facts:
+      - "多工具协同 × 多语言支持 × 多生态接入"
+      - "全球领先 AI 编程助手"
+    visual_text: "Agentic Coding · 全球领先"
+
+  - index: 10
+    type: "closing"
+    layout: "Closing-B"
+    composition: "center"
+    title: "立即体验 KAT-Coder-Pro V2"
+    key_facts:
+      - "快手 StreamLake 出品"
+      - "免费版立即可用，旗舰版按需升级"
+    visual_text: "立即体验 · stream.kuaishou.com"

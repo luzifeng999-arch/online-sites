@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KAT-Coder-Pro V2 全新上线</title>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/libs/pptxgen.bundle.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  width: 100%; height: 100vh; background: #050d0a; overflow: hidden;
+  font-family: system-ui, -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  color: #fff;
+}
+
+/* 顶部进度条 */
+#progress {
+  position: fixed; top: 0; left: 0; height: 2px; width: 0%;
+  background: linear-gradient(90deg, #00C851, #69F0AE);
+  transition: width 0.3s ease; z-index: 100;
+}
+
+/* 模式徽标 */
+#mode-badge {
+  position: fixed; top: 12px; right: 16px; z-index: 100;
+  background: rgba(0,200,81,0.15); backdrop-filter: blur(8px);
+  padding: 4px 12px; border-radius: 20px; font-size: 12px; color: #69F0AE;
+  border: 1px solid rgba(0,200,81,0.3);
+}
+
+/* 主演示区 */
+#stage {
+  position: fixed; top: 2px; left: 0; right: 0; bottom: 58px;
+  display: flex; align-items: center; justify-content: center;
+  background: #050d0a; overflow: hidden;
+}
+
+/* 固定 1280×720 比例，transform:scale 适配 */
+.slide-wrapper {
+  width: 1280px; height: 720px; flex-shrink: 0;
+  position: relative;
+  box-shadow: 0 8px 64px rgba(0,200,81,0.15), 0 2px 16px rgba(0,0,0,0.8);
+  transform-origin: center center;
+  border-radius: 4px; overflow: hidden;
+}
+.slide-wrapper img {
+  width: 1280px; height: 720px; border: none; display: block;
+  transition: opacity 0.25s ease;
+}
+.slide-wrapper.loading img { opacity: 0; }
+
+/* 底部控制栏 */
+#controls {
+  position: fixed; bottom: 0; left: 0; right: 0; height: 58px;
+  background: rgba(5,13,10,0.97); backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(0,200,81,0.12);
+  display: flex; align-items: center; gap: 10px; padding: 0 14px;
+}
+
+/* 导航按钮 */
+.nav-btn {
+  width: 32px; height: 32px; border-radius: 6px;
+  border: 1px solid rgba(0,200,81,0.2);
+  background: transparent; color: #69F0AE; cursor: pointer; font-size: 16px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s, border-color 0.15s; flex-shrink: 0;
+}
+.nav-btn:hover { background: rgba(0,200,81,0.1); border-color: rgba(0,200,81,0.4); }
+.nav-btn:disabled { opacity: 0.3; cursor: default; }
+
+/* 背景色切换器 */
+#bg-switcher {
+  display: flex; gap: 5px; align-items: center; flex-shrink: 0;
+}
+.bg-dot {
+  width: 16px; height: 16px; border-radius: 50%; cursor: pointer; flex-shrink: 0;
+  border: 2px solid transparent; transition: border-color 0.15s, transform 0.15s;
+}
+.bg-dot:hover { transform: scale(1.25); }
+.bg-dot.active { border-color: rgba(0,200,81,0.85); }
+.bg-dot.checker {
+  background-image:
+    linear-gradient(45deg, #888 25%, transparent 25%),
+    linear-gradient(-45deg, #888 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #888 75%),
+    linear-gradient(-45deg, transparent 75%, #888 75%);
+  background-size: 6px 6px;
+  background-position: 0 0, 0 3px, 3px -3px, -3px 0px;
+  background-color: #fff;
+}
+
+/* 缩略图条 */
+#thumbnails {
+  flex: 1; display: flex; gap: 6px; overflow-x: auto; padding: 4px 0;
+  scrollbar-width: thin; scrollbar-color: rgba(0,200,81,0.3) transparent;
+  align-items: center;
+}
+#thumbnails::-webkit-scrollbar { height: 3px; }
+#thumbnails::-webkit-scrollbar-thumb { background: rgba(0,200,81,0.3); border-radius: 2px; }
+
+.thumb-item {
+  width: 71px; height: 40px; border-radius: 4px; overflow: hidden;
+  border: 2px solid transparent; cursor: pointer; flex-shrink: 0;
+  transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+  background: #0d1f18;
+}
+.thumb-item:hover { transform: scale(1.06); }
+.thumb-item.active {
+  border-color: #00C851;
+  box-shadow: 0 0 8px rgba(0,200,81,0.4);
+}
+.thumb-item img {
+  width: 1280px; height: 720px;
+  transform: scale(0.0556); transform-origin: 0 0;
+  pointer-events: none;
+}
+
+/* 页码 */
+#page-num {
+  font-size: 13px; color: rgba(105,240,174,0.6); white-space: nowrap;
+  font-variant-numeric: tabular-nums; min-width: 56px; text-align: center; flex-shrink: 0;
+}
+
+/* 功能按钮 */
+.ctrl-btn {
+  width: 32px; height: 32px; border-radius: 6px;
+  border: 1px solid rgba(0,200,81,0.2);
+  background: transparent; color: #69F0AE; cursor: pointer; font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s; flex-shrink: 0;
+}
+.ctrl-btn:hover { background: rgba(0,200,81,0.1); }
+
+/* 导出按钮 */
+#export-btn {
+  height: 32px; padding: 0 12px; border-radius: 6px;
+  border: 1px solid rgba(0,200,81,0.2);
+  background: transparent; color: #69F0AE; cursor: pointer; font-size: 12px;
+  white-space: nowrap; transition: background 0.15s; flex-shrink: 0;
+}
+#export-btn:hover { background: rgba(0,200,81,0.1); }
+
+.export-item {
+  display: block; width: 100%; padding: 8px 12px;
+  background: transparent; border: none; color: rgba(200,240,220,0.85);
+  font-size: 13px; text-align: left; cursor: pointer; border-radius: 5px;
+  white-space: nowrap; transition: background 0.1s;
+}
+.export-item:hover { background: rgba(0,200,81,0.12); }
+
+/* 键盘提示 */
+#key-hint {
+  position: fixed; bottom: 68px; right: 14px;
+  font-size: 11px; color: rgba(105,240,174,0.3);
+  pointer-events: none;
+}
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+<div id="mode-badge">🎨 创意模式</div>
+<div id="key-hint">← → 切换 · F 全屏</div>
+
+<div id="stage">
+  <div class="slide-wrapper" id="slide-wrapper">
+    <img id="slide-img" src="" alt="幻灯片">
+  </div>
+</div>
+
+<div id="controls">
+  <button class="nav-btn" id="prev-btn" title="上一张 (←)">‹</button>
+
+  <div id="thumbnails"></div>
+
+  <span id="page-num">1 / 10</span>
+
+  <button class="nav-btn" id="next-btn" title="下一张 (→)">›</button>
+
+  <!-- 背景色切换器 -->
+  <div id="bg-switcher" title="切换背景色">
+    <div class="bg-dot active" style="background:#050d0a" data-bg="#050d0a" title="深黑绿"></div>
+    <div class="bg-dot" style="background:#0a0a0a" data-bg="#0a0a0a" title="深黑"></div>
+    <div class="bg-dot" style="background:#d0d0d0" data-bg="#d0d0d0" title="浅灰"></div>
+    <div class="bg-dot" style="background:#f0f0f0" data-bg="#f0f0f0" title="白色"></div>
+    <div class="bg-dot checker" data-bg="checker" title="棋盘格"></div>
+  </div>
+
+  <button class="ctrl-btn" id="fullscreen-btn" title="全屏 (F)">⛶</button>
+
+  <!-- 导出 -->
+  <div style="position:relative;flex-shrink:0;">
+    <button id="export-btn" title="导出演示文稿">↓ 导出</button>
+    <div id="export-menu" style="display:none;position:absolute;bottom:46px;right:0;
+      background:rgba(8,20,14,0.97);backdrop-filter:blur(12px);
+      border:1px solid rgba(0,200,81,0.15);border-radius:8px;
+      padding:6px;min-width:172px;z-index:200;">
+      <button class="export-item" data-action="pdf-all">📄 全套 PDF</button>
+      <button class="export-item" data-action="png-zip">🗜 全套 PNG（ZIP）</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const SLIDES = [
+  'images/slide-01.jpg','images/slide-02.jpg','images/slide-03.jpg',
+  'images/slide-04.jpg','images/slide-05.jpg','images/slide-06.jpg',
+  'images/slide-07.jpg','images/slide-08.jpg','images/slide-09.jpg',
+  'images/slide-10.jpg'
+];
+const TITLES = [
+  'KAT-Coder-Pro V2 全新上线',
+  'Agentic Coding With KwaiKAT',
+  '编码能力基准测试 — PintBench',
+  '编码能力基准测试 — Case-Eval',
+  '实际案例 — 从创意到落地',
+  '模型应用场景 — 三大生态接入',
+  '模型概览 — V2 vs V1 全面升级',
+  '模型定价 — 灵活方案',
+  'KwaiKAT · 引领 Agentic Coding 新时代',
+  '立即体验 KAT-Coder-Pro V2'
+];
+const TOTAL = SLIDES.length;
+let current = 0;
+
+const wrapper = document.getElementById('slide-wrapper');
+const slideImg = document.getElementById('slide-img');
+const progress = document.getElementById('progress');
+const pageNum = document.getElementById('page-num');
+const prevBtn = document.getElementById('prev-btn');
+const nextBtn = document.getElementById('next-btn');
+const thumbsContainer = document.getElementById('thumbnails');
+const fullscreenBtn = document.getElementById('fullscreen-btn');
+const stage = document.getElementById('stage');
+
+function renderSlide(index) {
+  wrapper.classList.add('loading');
+  slideImg.onload = () => wrapper.classList.remove('loading');
+  slideImg.src = SLIDES[index];
+}
+
+function buildThumbs() {
+  thumbsContainer.innerHTML = '';
+  SLIDES.forEach((src, i) => {
+    const item = document.createElement('div');
+    item.className = 'thumb-item' + (i === 0 ? ' active' : '');
+    item.title = TITLES[i];
+    const img = document.createElement('img');
+    img.src = src; img.alt = TITLES[i];
+    item.appendChild(img);
+    item.addEventListener('click', () => goTo(i));
+    thumbsContainer.appendChild(item);
+  });
+}
+
+function goTo(index) {
+  if (index < 0 || index >= TOTAL) return;
+  current = index;
+  renderSlide(current);
+  progress.style.width = ((current + 1) / TOTAL * 100) + '%';
+  pageNum.textContent = (current + 1) + ' / ' + TOTAL;
+  document.querySelectorAll('.thumb-item').forEach((el, i) => {
+    el.classList.toggle('active', i === current);
+  });
+  prevBtn.disabled = current === 0;
+  nextBtn.disabled = current === TOTAL - 1;
+  const activeThumb = thumbsContainer.children[current];
+  if (activeThumb) activeThumb.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); goTo(current + 1); }
+  if (e.key === 'ArrowLeft') { e.preventDefault(); goTo(current - 1); }
+  if (e.key === 'f' || e.key === 'F') toggleFullscreen();
+  if (e.key === 'Escape' && document.fullscreenElement) document.exitFullscreen();
+});
+
+prevBtn.addEventListener('click', () => goTo(current - 1));
+nextBtn.addEventListener('click', () => goTo(current + 1));
+
+function toggleFullscreen() {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().catch(() => {});
+  } else {
+    document.exitFullscreen();
+  }
+}
+fullscreenBtn.addEventListener('click', toggleFullscreen);
+
+// 双缓冲缩放
+function scaleSlide() {
+  const stageH = stage.clientHeight;
+  const stageW = stage.clientWidth;
+  const scale = Math.min(stageW / 1280, stageH / 720);
+  wrapper.style.transform = `scale(${scale})`;
+}
+scaleSlide();
+window.addEventListener('resize', scaleSlide);
+
+// 背景色切换
+const CHECKER_CSS = 'repeating-conic-gradient(#bbb 0% 25%, #eee 0% 50%) 0 0 / 16px 16px';
+document.querySelectorAll('.bg-dot').forEach(dot => {
+  dot.addEventListener('click', () => {
+    const bg = dot.dataset.bg;
+    if (bg === 'checker') {
+      document.body.style.background = CHECKER_CSS;
+      stage.style.background = CHECKER_CSS;
+    } else {
+      document.body.style.background = bg;
+      stage.style.background = bg;
+      const isLight = bg === '#d0d0d0' || bg === '#f0f0f0';
+      document.getElementById('controls').style.background =
+        isLight ? 'rgba(230,230,230,0.97)' : 'rgba(5,13,10,0.97)';
+      const ctrlColor = isLight ? '#1B5E20' : '#69F0AE';
+      document.querySelectorAll('.nav-btn, .ctrl-btn, #export-btn').forEach(b => {
+        b.style.color = ctrlColor;
+      });
+      pageNum.style.color = isLight ? 'rgba(27,94,32,0.6)' : 'rgba(105,240,174,0.6)';
+    }
+    const isLight2 = bg === '#d0d0d0' || bg === '#f0f0f0' || bg === 'checker';
+    wrapper.style.boxShadow = isLight2
+      ? '0 4px 32px rgba(0,0,0,0.25), 0 0 0 1px rgba(0,0,0,0.1)'
+      : '0 8px 64px rgba(0,200,81,0.15), 0 2px 16px rgba(0,0,0,0.8)';
+    document.querySelectorAll('.bg-dot').forEach(d => d.classList.remove('active'));
+    dot.classList.add('active');
+  });
+});
+
+// 导出
+const exportBtn = document.getElementById('export-btn');
+const exportMenu = document.getElementById('export-menu');
+exportBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  exportMenu.style.display = exportMenu.style.display === 'none' ? 'block' : 'none';
+});
+document.addEventListener('click', () => { exportMenu.style.display = 'none'; });
+
+document.querySelectorAll('.export-item').forEach(item => {
+  item.addEventListener('click', async (e) => {
+    e.stopPropagation();
+    exportMenu.style.display = 'none';
+    const action = item.dataset.action;
+    const title = 'KAT-Coder-Pro-V2';
+    const date = new Date().toISOString().slice(0,10);
+
+    if (action === 'pdf-all') {
+      exportBtn.textContent = '导出中 0/10...';
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ orientation: 'landscape', unit: 'px', format: [1280, 720] });
+      for (let i = 0; i < TOTAL; i++) {
+        exportBtn.textContent = `导出中 ${i+1}/${TOTAL}...`;
+        await new Promise(r => {
+          const img = new Image();
+          img.crossOrigin = 'anonymous';
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = 1280; canvas.height = 720;
+            canvas.getContext('2d').drawImage(img, 0, 0, 1280, 720);
+            if (i > 0) pdf.addPage([1280, 720], 'landscape');
+            pdf.addImage(canvas.toDataURL('image/jpeg', 0.92), 'JPEG', 0, 0, 1280, 720);
+            r();
+          };
+          img.src = SLIDES[i] + '?t=' + Date.now();
+        });
+      }
+      pdf.save(`${title}-${date}.pdf`);
+      exportBtn.textContent = '↓ 导出';
+
+    } else if (action === 'png-zip') {
+      exportBtn.textContent = '打包中 0/10...';
+      const zip = new JSZip();
+      for (let i = 0; i < TOTAL; i++) {
+        exportBtn.textContent = `打包中 ${i+1}/${TOTAL}...`;
+        await new Promise(r => {
+          const img = new Image();
+          img.crossOrigin = 'anonymous';
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = 1280; canvas.height = 720;
+            canvas.getContext('2d').drawImage(img, 0, 0, 1280, 720);
+            canvas.toBlob(blob => {
+              zip.file(`slide-${String(i+1).padStart(2,'0')}.png`, blob);
+              r();
+            }, 'image/png');
+          };
+          img.src = SLIDES[i] + '?t=' + Date.now();
+        });
+      }
+      const content = await zip.generateAsync({ type: 'blob' });
+      const a = document.createElement('a');
+      a.download = `${title}-slides.zip`;
+      a.href = URL.createObjectURL(content);
+      a.click();
+      exportBtn.textContent = '↓ 导出';
+    }
+  });
+});
+
+// 初始化
+buildThumbs();
+goTo(0);
+</script>
+</body>
+</html>
