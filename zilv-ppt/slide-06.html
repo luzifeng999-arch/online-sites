@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>如何培养自律？</title>
+<style>
+:root {
+  --bg: #F2F7F4; --container: #FFFFFF; --container-2: #E8F0EC;
+  --accent: #5B8C5A; --accent-soft: rgba(91,140,90,0.10);
+  --text-primary: #2D4A2C; --text-secondary: #5B8C5A; --text-muted: #8FAF8E;
+  --border: rgba(91,140,90,0.18); --shadow: 0 4px 16px rgba(45,74,44,0.08);
+  --radius: 12px; --font: 'Inter','PingFang SC',sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  width: 1280px; height: 720px; overflow: hidden;
+  background: var(--bg); font-family: var(--font); color: var(--text-primary);
+}
+[contenteditable]:hover { outline: 1px dashed var(--accent); border-radius: 3px; }
+[contenteditable]:focus { outline: 2px solid var(--accent); border-radius: 3px; background: var(--accent-soft); }
+[contenteditable] { outline: none; cursor: text; }
+.slide-number { position: absolute; bottom: 16px; right: 24px; font-size: 12px; color: var(--text-muted); }
+
+body {
+  background-image:
+    linear-gradient(rgba(242,247,244,0.94), rgba(242,247,244,0.94)),
+    url('images/slide-06-bg.jpg');
+  background-size: cover;
+}
+
+.page-header {
+  position: absolute; top: 36px; left: 52px; right: 52px; height: 72px;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.ph-eyebrow { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+.ph-title { font-size: 28px; font-weight: 700; color: var(--text-primary); margin: 0; line-height: 1.2; }
+.ph-line { width: 48px; height: 2px; background: var(--accent); border-radius: 1px; margin-top: 6px; }
+
+/* C4 Numbered Steps — 5步横向流程 */
+.steps-wrap {
+  position: absolute; top: 124px; left: 52px; right: 52px; bottom: 60px;
+  display: flex; gap: 0; align-items: stretch;
+}
+.step-node {
+  flex: 1; position: relative;
+  background: var(--container); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 22px 18px;
+  display: flex; flex-direction: column; gap: 10px;
+  box-shadow: var(--shadow);
+}
+.step-node:nth-child(odd) { border-top: 3px solid var(--accent); }
+.step-node:nth-child(even) {
+  border-top: 3px solid rgba(91,140,90,0.35);
+  background: var(--container-2);
+  margin-top: 32px; align-self: flex-start; flex: 1;
+}
+/* 连接箭头 */
+.step-node::after {
+  content: '→';
+  position: absolute; right: -14px; top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px; color: var(--border);
+  z-index: 1; background: var(--bg);
+  padding: 2px 1px; font-weight: 700;
+  color: var(--accent); opacity: 0.5;
+}
+.step-node:last-child::after { display: none; }
+
+.step-num {
+  font-size: 48px; font-weight: 900; line-height: 1;
+  color: var(--accent); opacity: 0.16;
+}
+.step-icon { font-size: 24px; margin-top: -8px; }
+.step-title { font-size: 15px; font-weight: 700; color: var(--text-primary); line-height: 1.3; }
+.step-desc { font-size: 12.5px; color: var(--text-secondary); line-height: 1.65; flex: 1; }
+.step-tip {
+  font-size: 11px; color: var(--accent); font-weight: 600;
+  background: var(--accent-soft); border-radius: 6px; padding: 4px 8px; width: fit-content;
+}
+
+/* 底部进度提示 */
+.insight-bar {
+  position: absolute; bottom: 14px; left: 52px; right: 52px;
+  background: rgba(91,140,90,0.08); border: 1px solid rgba(91,140,90,0.22);
+  border-radius: 10px; padding: 9px 20px; font-size: 13px; color: var(--text-secondary);
+}
+.insight-bar span { color: var(--accent); font-weight: 700; }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <span class="ph-eyebrow" contenteditable="true">HOW TO · 培养方法</span>
+  <h2 class="ph-title" contenteditable="true">五步实操法：循序渐进建立自律系统</h2>
+  <div class="ph-line"></div>
+</div>
+
+<div class="steps-wrap">
+  <div class="step-node">
+    <div class="step-num">01</div>
+    <span class="step-icon">🌱</span>
+    <div class="step-title" contenteditable="true">从小事做起</div>
+    <div class="step-desc" contenteditable="true">每天完成一件承诺自己的小事，用微小行动激活自律的内在开关。</div>
+    <span class="step-tip" contenteditable="true">✦ 微习惯法则</span>
+  </div>
+  <div class="step-node">
+    <div class="step-num">02</div>
+    <span class="step-icon">📋</span>
+    <div class="step-title" contenteditable="true">制定清晰计划</div>
+    <div class="step-desc" contenteditable="true">将大目标拆解为可执行的小步骤，把模糊愿望变成具体行动清单。</div>
+    <span class="step-tip" contenteditable="true">✦ OKR 目标分解</span>
+  </div>
+  <div class="step-node">
+    <div class="step-num">03</div>
+    <span class="step-icon">🎧</span>
+    <div class="step-title" contenteditable="true">减少外界干扰</div>
+    <div class="step-desc" contenteditable="true">主动创造专注的环境，用环境设计替代纯粹依靠意志力抵抗诱惑。</div>
+    <span class="step-tip" contenteditable="true">✦ 环境设计原则</span>
+  </div>
+  <div class="step-node">
+    <div class="step-num">04</div>
+    <span class="step-icon">🔁</span>
+    <div class="step-title" contenteditable="true">养成固定习惯</div>
+    <div class="step-desc" contenteditable="true">用习惯替代意志力的消耗，让行动变成自动化程序，降低执行成本。</div>
+    <span class="step-tip" contenteditable="true">✦ 21天习惯养成</span>
+  </div>
+  <div class="step-node">
+    <div class="step-num">05</div>
+    <span class="step-icon">🔄</span>
+    <div class="step-title" contenteditable="true">允许慢慢进步</div>
+    <div class="step-desc" contenteditable="true">接受不完美，偶尔的失败不是终止，而是调整的信号，保持向前。</div>
+    <span class="step-tip" contenteditable="true">✦ 成长型思维</span>
+  </div>
+</div>
+
+<div class="insight-bar" contenteditable="true">
+  关键原则：<span>不要追求完美开始</span>，先行动起来，再在过程中调整优化——每一步都是进步。
+</div>
+
+<div class="slide-number" contenteditable="false">6 / 8</div>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>自律：决定一个人成长高度的关键</title>
+<style>
+/* ===== Palette O — 鼠尾草康养 ===== */
+:root {
+  --bg: #F2F7F4; --container: #FFFFFF; --container-2: #E8F0EC;
+  --accent: #5B8C5A; --accent-soft: rgba(91,140,90,0.10);
+  --text-primary: #2D4A2C; --text-secondary: #5B8C5A; --text-muted: #8FAF8E;
+  --border: rgba(91,140,90,0.18); --shadow: 0 4px 16px rgba(45,74,44,0.08);
+  --radius: 12px; --font: 'Inter','PingFang SC',sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  width: 1280px; height: 720px; overflow: hidden;
+  background: var(--bg); font-family: var(--font); color: var(--text-primary);
+}
+[contenteditable] { outline: none; cursor: text; transition: outline 0.15s; }
+[contenteditable]:hover { outline: 1px dashed var(--accent); border-radius: 3px; }
+[contenteditable]:focus { outline: 2px solid var(--accent); border-radius: 3px; background: var(--accent-soft); }
+.slide-number {
+  position: absolute; bottom: 16px; right: 24px;
+  font-size: 12px; color: var(--text-muted); font-variant-numeric: tabular-nums;
+}
+
+/* ===== 封面布局 Cover-D ===== */
+body {
+  background-image:
+    linear-gradient(to right, rgba(242,247,244,0.82) 0%, rgba(242,247,244,0.60) 50%, rgba(242,247,244,0.10) 100%),
+    url('images/slide-01-bg.jpg');
+  background-size: cover; background-position: center right;
+}
+.cover-wrap {
+  position: absolute; inset: 0;
+  display: flex; align-items: center;
+  padding: 0 80px; gap: 48px;
+}
+/* 左侧文字区 55% */
+.cover-left {
+  flex: 3; display: flex; flex-direction: column; gap: 20px;
+}
+/* 右侧大配图区 45% */
+.cover-right {
+  flex: 2; height: 580px; border-radius: 20px; overflow: hidden;
+  background-image: url('images/slide-01-content.jpg');
+  background-size: cover; background-position: center;
+  box-shadow: 0 16px 64px rgba(45,74,44,0.18);
+  flex-shrink: 0;
+}
+
+.eyebrow {
+  font-size: 12px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--accent); font-weight: 600;
+}
+.cover-main-title {
+  font-size: 72px; font-weight: 900; line-height: 1.05;
+  color: var(--text-primary); letter-spacing: -1px;
+}
+.cover-subtitle {
+  font-size: 22px; color: var(--text-secondary); line-height: 1.5;
+  font-weight: 500; max-width: 480px;
+}
+.accent-line {
+  width: 56px; height: 3px; background: var(--accent);
+  border-radius: 2px; margin-top: 4px;
+}
+.cover-meta {
+  font-size: 13px; color: var(--text-muted); margin-top: 8px;
+}
+
+/* 左上角装饰 */
+.deco-dot-grid {
+  position: absolute; top: 40px; left: 48px;
+  width: 80px; height: 80px; opacity: 0.12;
+  background-image: radial-gradient(circle, var(--accent) 1.5px, transparent 1.5px);
+  background-size: 14px 14px;
+  pointer-events: none;
+}
+/* 右上角光晕 */
+.deco-glow {
+  position: absolute; top: -60px; right: 120px;
+  width: 360px; height: 360px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(91,140,90,0.18) 0%, transparent 70%);
+  pointer-events: none;
+}
+</style>
+</head>
+<body>
+
+<div class="deco-dot-grid"></div>
+<div class="deco-glow"></div>
+
+<div class="cover-wrap">
+  <div class="cover-left">
+    <span class="eyebrow" contenteditable="true">个人成长 · 自我管理</span>
+    <h1 class="cover-main-title" contenteditable="true">自律</h1>
+    <p class="cover-subtitle" contenteditable="true">决定一个人<br>成长高度的关键</p>
+    <div class="accent-line"></div>
+    <span class="cover-meta" contenteditable="true">自律 · 习惯 · 成长 | 个人发展专题</span>
+  </div>
+  <div class="cover-right"></div>
+</div>
+
+<div class="slide-number" contenteditable="false">1 / 8</div>
+</body>
+</html>

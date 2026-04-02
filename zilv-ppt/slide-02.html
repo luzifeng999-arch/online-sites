@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>什么是自律？</title>
+<style>
+:root {
+  --bg: #F2F7F4; --container: #FFFFFF; --container-2: #E8F0EC;
+  --accent: #5B8C5A; --accent-soft: rgba(91,140,90,0.10);
+  --text-primary: #2D4A2C; --text-secondary: #5B8C5A; --text-muted: #8FAF8E;
+  --border: rgba(91,140,90,0.18); --shadow: 0 4px 16px rgba(45,74,44,0.08);
+  --radius: 12px; --font: 'Inter','PingFang SC',sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  width: 1280px; height: 720px; overflow: hidden;
+  background: var(--bg); font-family: var(--font); color: var(--text-primary);
+}
+[contenteditable]:hover { outline: 1px dashed var(--accent); border-radius: 3px; }
+[contenteditable]:focus { outline: 2px solid var(--accent); border-radius: 3px; background: var(--accent-soft); }
+[contenteditable] { outline: none; cursor: text; }
+.slide-number { position: absolute; bottom: 16px; right: 24px; font-size: 12px; color: var(--text-muted); }
+
+body {
+  background-image:
+    linear-gradient(rgba(242,247,244,0.92), rgba(242,247,244,0.92)),
+    url('images/slide-02-bg.jpg');
+  background-size: cover;
+}
+
+/* 页头 */
+.page-header {
+  position: absolute; top: 36px; left: 52px; right: 52px; height: 72px;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.ph-eyebrow {
+  font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--accent); font-weight: 600;
+}
+.ph-title { font-size: 28px; font-weight: 700; color: var(--text-primary); margin: 0; line-height: 1.2; }
+.ph-line { width: 48px; height: 2px; background: var(--accent); border-radius: 1px; margin-top: 6px; }
+
+/* Content-B 左文右图布局 */
+.content-wrap {
+  position: absolute; top: 124px; left: 52px; right: 52px; bottom: 44px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 40px;
+}
+.text-col {
+  display: flex; flex-direction: column; justify-content: center; gap: 0;
+}
+.definition-intro {
+  font-size: 15px; color: var(--text-secondary); line-height: 1.6;
+  padding: 16px 20px; background: var(--container);
+  border-radius: var(--radius); border: 1px solid var(--border);
+  margin-bottom: 16px; font-weight: 500;
+}
+.point-list {
+  display: flex; flex-direction: column; gap: 10px;
+}
+.point-item {
+  display: flex; gap: 12px; align-items: flex-start;
+  padding: 12px 16px; background: var(--container);
+  border-radius: var(--radius); border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+.point-icon {
+  font-size: 18px; flex-shrink: 0; margin-top: 1px;
+}
+.point-text { font-size: 14px; color: var(--text-primary); line-height: 1.5; flex: 1; }
+.point-text strong { color: var(--accent); }
+
+/* 右侧配图 */
+.img-col {
+  border-radius: 20px; overflow: hidden;
+  background-image:
+    linear-gradient(to left, rgba(242,247,244,0) 60%, rgba(242,247,244,0.3) 100%),
+    url('images/slide-02-content.jpg');
+  background-size: cover; background-position: center;
+  box-shadow: var(--shadow);
+}
+
+/* 关键词标签组 */
+.tags-row {
+  display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px;
+}
+.tag {
+  font-size: 12px; padding: 4px 12px; border-radius: 20px;
+  background: var(--accent-soft); color: var(--accent);
+  border: 1px solid var(--border); font-weight: 500;
+}
+
+/* 装饰 */
+.deco-line-left {
+  position: absolute; left: 38px; top: 60px; bottom: 60px; width: 2px;
+  background: linear-gradient(to bottom, transparent, var(--accent), transparent);
+  opacity: 0.15; pointer-events: none;
+}
+</style>
+</head>
+<body>
+<div class="deco-line-left"></div>
+
+<div class="page-header">
+  <span class="ph-eyebrow" contenteditable="true">DEFINITION · 什么是自律</span>
+  <h2 class="ph-title" contenteditable="true">主动管理自我，坚持正确的事</h2>
+  <div class="ph-line"></div>
+</div>
+
+<div class="content-wrap">
+  <div class="text-col">
+    <p class="definition-intro" contenteditable="true">
+      自律，是一种<strong>主动管理行为、情绪和时间</strong>的能力——在无人监督下依然能坚持做正确的事。
+    </p>
+    <div class="point-list">
+      <div class="point-item">
+        <span class="point-icon">🎯</span>
+        <p class="point-text" contenteditable="true">不是短期冲动，而是<strong>长期稳定的习惯</strong>，经过积累后形成的内在秩序。</p>
+      </div>
+      <div class="point-item">
+        <span class="point-icon">⚡</span>
+        <p class="point-text" contenteditable="true"><strong>主动性</strong>：不等外力驱动，自我启动行动，把意图转化为实际执行。</p>
+      </div>
+      <div class="point-item">
+        <span class="point-icon">🔄</span>
+        <p class="point-text" contenteditable="true"><strong>坚持性</strong>：面对枯燥、挫折和诱惑，依然能保持方向不偏移。</p>
+      </div>
+    </div>
+    <div class="tags-row">
+      <span class="tag" contenteditable="true">主动性</span>
+      <span class="tag" contenteditable="true">坚持性</span>
+      <span class="tag" contenteditable="true">目标感</span>
+      <span class="tag" contenteditable="true">自我控制</span>
+    </div>
+  </div>
+  <div class="img-col"></div>
+</div>
+
+<div class="slide-number" contenteditable="false">2 / 8</div>
+</body>
+</html>

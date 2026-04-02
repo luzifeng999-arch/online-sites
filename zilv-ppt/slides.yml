@@ -1,0 +1,205 @@
+presentation:
+  title: "自律：决定一个人成长高度的关键"
+  mode: "professional"
+  total_slides: 8
+  style_theme:
+    palette: "O"
+    tone: "人文/教育/个人成长/励志"
+    rationale: "Palette O鼠尾草康养，舒缓疗愈绿色调，适合心理健康与个人成长主题的自律内容"
+    layout_rules:
+      title_placement: "top-left-large"
+      title_repeat_rule: "NEVER"
+      max_text_columns: 2
+      slide_number_format: "X / N"
+      brand_logo_rule: "FORBIDDEN"
+      header_zone:
+        top_padding: 36
+        eyebrow_style: "font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--accent)"
+        h2_style: "font-size:26px;font-weight:700;color:var(--text-primary);margin-top:4px"
+        header_height: 72
+
+  slides:
+    - index: 1
+      type: "cover"
+      title: "自律"
+      subtitle: "决定一个人成长高度的关键"
+      layout: "Cover-D"
+      text_side: "left"
+      key_points: []
+      chart_slide: false
+      visual_note: "封面：左侧深绿文字区，右侧大配图，自然光感，舒缓绿色系"
+      images:
+        - role: "bg"
+          position: "full"
+          mask_alpha: 0.30
+          prompt: "serene morning light through forest leaves, soft green bokeh, calm natural atmosphere, gentle sunlight, organic textures, lush greenery, peaceful nature scene, no text no numbers, ultra detailed 8K cinematic, main subject on right third, left side fades to soft light"
+          output: "images/slide-01-bg.jpg"
+          aspect: "16:9"
+        - role: "content"
+          position: "right"
+          prompt: "person meditating in peaceful garden, morning light, green nature surroundings, focused calm expression, personal growth concept, no text no numbers, ultra detailed 8K, 3:4 vertical composition"
+          output: "images/slide-01-content.jpg"
+          aspect: "3:4"
+
+    - index: 2
+      type: "content"
+      title: "什么是自律？"
+      subtitle: ""
+      layout: "Content-B"
+      zone: "split-40-60"
+      text_density: "medium"
+      key_points:
+        - "主动管理行为、情绪和时间的能力"
+        - "在无人监督下坚持做正确的事"
+        - "不是短期冲动，而是长期稳定的习惯"
+        - "核心关键词：主动性、坚持性、目标感、自我控制"
+      chart_slide: false
+      visual_note: "左侧文字要点，右侧配图——一棵正在生长的树，象征自律带来的成长"
+      images:
+        - role: "bg"
+          position: "full"
+          mask_alpha: 0.08
+          prompt: "clean minimal sage green background, soft light texture, gentle gradient, organic feel, no text no numbers, ultra detailed"
+          output: "images/slide-02-bg.jpg"
+          aspect: "16:9"
+        - role: "content"
+          position: "right"
+          prompt: "young oak tree growing in morning light, clean white background, strong roots visible, upward growth metaphor, soft natural photography, no text, ultra detailed 8K, 3:4 vertical"
+          output: "images/slide-02-content.jpg"
+          aspect: "3:4"
+
+    - index: 3
+      type: "data"
+      title: "自律为何重要？"
+      subtitle: "四大核心价值"
+      layout: "Data-A"
+      zone: "grid-2x2"
+      text_density: "medium"
+      key_points:
+        - "提升效率：合理规划时间，减少内耗"
+        - "实现目标：靠长期坚持而非一时热情"
+        - "增强自信：控制自我带来的成就感"
+        - "决定差距：长期坚持拉开人与人的距离"
+      chart_slide: false
+      visual_note: "2×2 KPI 网格，每格展示一个自律价值点，配图标和短文"
+      images:
+        - role: "bg"
+          position: "full"
+          mask_alpha: 0.06
+          prompt: "light sage green minimal texture background, soft paper grain, gentle white light, peaceful atmosphere, no text, ultra detailed"
+          output: "images/slide-03-bg.jpg"
+          aspect: "16:9"
+
+    - index: 4
+      type: "content"
+      title: "不自律的代价"
+      subtitle: "五种典型表现与长期影响"
+      layout: "C1-Card-Waterfall"
+      zone: "equal-5-col"
+      text_density: "medium"
+      key_points:
+        - "拖延症：明日复明日，事情越积越多"
+        - "三分钟热度：激情燃尽后万事皆空"
+        - "沉迷娱乐：短暂快感蚕食宝贵时光"
+        - "缺乏规划：随波逐流，方向感全无"
+        - "容易放弃：面对困难第一反应是逃"
+      chart_slide: false
+      visual_note: "错落卡片布局展示5种不自律表现，每卡有图标+标题+说明"
+      images:
+        - role: "bg"
+          position: "full"
+          mask_alpha: 0.06
+          prompt: "very soft sage green gradient background, clean minimal texture, subtle organic grain, no focal point, peaceful, no text no numbers, ultra detailed"
+          output: "images/slide-04-bg.jpg"
+          aspect: "16:9"
+
+    - index: 5
+      type: "content"
+      title: "自律者的五大特质"
+      subtitle: ""
+      layout: "Content-B"
+      zone: "split-40-60"
+      text_density: "medium"
+      key_points:
+        - "有明确目标：清楚知道自己要去哪里"
+        - "善于管理时间：把时间用在最重要的事上"
+        - "能控制情绪：不让情绪左右决策"
+        - "长期坚持：把好习惯刻进日常节奏里"
+        - "善于反思调整：定期复盘，持续优化自己"
+      chart_slide: false
+      visual_note: "左侧5大特质列表，右侧配图——自信专注的人物，象征自律者的状态"
+      images:
+        - role: "bg"
+          position: "full"
+          mask_alpha: 0.08
+          prompt: "warm sage green light texture, soft morning atmosphere, clean minimal background, organic feel, no text no numbers"
+          output: "images/slide-05-bg.jpg"
+          aspect: "16:9"
+        - role: "content"
+          position: "right"
+          prompt: "confident focused young person writing in journal, morning light, clean desk, plants in background, calm productive atmosphere, personal growth, no text no numbers, ultra detailed 8K, 3:4 vertical"
+          output: "images/slide-05-content.jpg"
+          aspect: "3:4"
+
+    - index: 6
+      type: "content"
+      title: "如何培养自律？"
+      subtitle: "五步实操方法"
+      layout: "D2-Timeline-Rail"
+      zone: "full"
+      text_density: "medium"
+      key_points:
+        - "从小事做起：每天完成一件承诺的小事"
+        - "制定清晰计划：将大目标拆成可执行步骤"
+        - "减少外界干扰：主动创造专注的环境"
+        - "养成固定习惯：用习惯替代意志力消耗"
+        - "允许慢慢进步：接受不完美，保持前进"
+      chart_slide: false
+      visual_note: "竖向时间轴展示5步培养方法，循序渐进感"
+      images:
+        - role: "bg"
+          position: "full"
+          mask_alpha: 0.06
+          prompt: "soft sage green gradient, subtle upward diagonal light, growth energy, clean minimal atmosphere, no text no numbers, ultra detailed"
+          output: "images/slide-06-bg.jpg"
+          aspect: "16:9"
+
+    - index: 7
+      type: "section"
+      title: "自律与自由"
+      subtitle: "约束与解放的辩证关系"
+      layout: "Section-B"
+      zone: "full"
+      text_density: "low"
+      key_points:
+        - "短期放纵看似轻松，实则是对未来的透支"
+        - "长期自律换来的，是真正属于你的自由"
+      chart_slide: false
+      visual_note: "引用金句页：大字居中，沉浸氛围，绿色系深底版"
+      images:
+        - role: "bg"
+          position: "full"
+          mask_alpha: 0.35
+          prompt: "open road through green forest leading to bright horizon, freedom and path metaphor, sunlight breaking through trees, journey concept, inspiring natural scene, no text no numbers, ultra detailed 8K cinematic, centered full bleed composition"
+          output: "images/slide-07-bg.jpg"
+          aspect: "16:9"
+
+    - index: 8
+      type: "closing"
+      title: "结语"
+      subtitle: "遇见更好的自己"
+      layout: "E2-CTA-Center"
+      zone: "full"
+      text_density: "low"
+      key_points:
+        - "自律不是束缚，而是为了遇见更好的自己"
+        - "每一天的坚持，都是在为未来的自己播种"
+      chart_slide: false
+      visual_note: "结尾致谢页，大字金句居中，温暖绿色系"
+      images:
+        - role: "bg"
+          position: "full"
+          mask_alpha: 0.25
+          prompt: "sunrise over peaceful meadow, soft warm golden light on green grass, new day beginning, hope and growth, beautiful natural scenery, no text no numbers, ultra detailed 8K cinematic, centered composition with golden hour light"
+          output: "images/slide-08-bg.jpg"
+          aspect: "16:9"

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>自律为何重要？</title>
+<style>
+:root {
+  --bg: #F2F7F4; --container: #FFFFFF; --container-2: #E8F0EC;
+  --accent: #5B8C5A; --accent-soft: rgba(91,140,90,0.10);
+  --text-primary: #2D4A2C; --text-secondary: #5B8C5A; --text-muted: #8FAF8E;
+  --border: rgba(91,140,90,0.18); --shadow: 0 4px 16px rgba(45,74,44,0.08);
+  --radius: 12px; --font: 'Inter','PingFang SC',sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  width: 1280px; height: 720px; overflow: hidden;
+  background: var(--bg); font-family: var(--font); color: var(--text-primary);
+}
+[contenteditable]:hover { outline: 1px dashed var(--accent); border-radius: 3px; }
+[contenteditable]:focus { outline: 2px solid var(--accent); border-radius: 3px; background: var(--accent-soft); }
+[contenteditable] { outline: none; cursor: text; }
+.slide-number { position: absolute; bottom: 16px; right: 24px; font-size: 12px; color: var(--text-muted); }
+
+body {
+  background-image:
+    linear-gradient(rgba(242,247,244,0.94), rgba(242,247,244,0.94)),
+    url('images/slide-03-bg.jpg');
+  background-size: cover;
+}
+
+.page-header {
+  position: absolute; top: 36px; left: 52px; right: 52px; height: 72px;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.ph-eyebrow { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+.ph-title { font-size: 28px; font-weight: 700; color: var(--text-primary); margin: 0; line-height: 1.2; }
+.ph-line { width: 48px; height: 2px; background: var(--accent); border-radius: 1px; margin-top: 6px; }
+
+/* Data-A 2×2 KPI 网格 */
+.grid-wrap {
+  position: absolute; top: 124px; left: 52px; right: 52px; bottom: 54px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 16px;
+}
+.kpi-card {
+  background: var(--container);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px 32px;
+  display: flex; flex-direction: column; gap: 12px;
+  box-shadow: var(--shadow);
+  position: relative; overflow: hidden;
+  border-top: 3px solid var(--accent);
+}
+.kpi-card::before {
+  content: '';
+  position: absolute; top: 0; right: 0; width: 120px; height: 120px;
+  background: radial-gradient(circle, rgba(91,140,90,0.07) 0%, transparent 70%);
+  pointer-events: none;
+}
+.kpi-icon { font-size: 32px; }
+.kpi-label { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
+.kpi-title { font-size: 20px; font-weight: 800; color: var(--text-primary); line-height: 1.2; }
+.kpi-desc { font-size: 13.5px; color: var(--text-secondary); line-height: 1.6; flex: 1; }
+.kpi-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; color: var(--accent); font-weight: 600;
+}
+.kpi-tag::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+
+/* 洞察条 */
+.insight-bar {
+  position: absolute; bottom: 14px; left: 52px; right: 52px;
+  background: rgba(91,140,90,0.08); backdrop-filter: blur(8px);
+  border: 1px solid rgba(91,140,90,0.22); border-radius: 10px;
+  padding: 9px 20px; font-size: 13px; color: var(--text-secondary);
+  display: flex; align-items: center; gap: 8px;
+}
+.insight-bar span { color: var(--accent); font-weight: 700; }
+
+/* 右上光晕装饰 */
+.deco-glow-top {
+  position: absolute; top: -40px; right: -40px;
+  width: 280px; height: 280px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(91,140,90,0.12) 0%, transparent 65%);
+  pointer-events: none;
+}
+</style>
+</head>
+<body>
+<div class="deco-glow-top"></div>
+
+<div class="page-header">
+  <span class="ph-eyebrow" contenteditable="true">WHY IT MATTERS · 自律的价值</span>
+  <h2 class="ph-title" contenteditable="true">自律为何重要？四大核心价值</h2>
+  <div class="ph-line"></div>
+</div>
+
+<div class="grid-wrap">
+  <div class="kpi-card">
+    <span class="kpi-icon">⚡</span>
+    <div class="kpi-label" contenteditable="true">EFFICIENCY · 效率</div>
+    <div class="kpi-title" contenteditable="true">提升效率，减少内耗</div>
+    <div class="kpi-desc" contenteditable="true">合理规划时间，避免拖延造成的精力浪费，把有限的时间用在最重要的事情上。</div>
+    <span class="kpi-tag" contenteditable="true">时间规划 · 专注力</span>
+  </div>
+  <div class="kpi-card">
+    <span class="kpi-icon">🏆</span>
+    <div class="kpi-label" contenteditable="true">ACHIEVEMENT · 目标</div>
+    <div class="kpi-title" contenteditable="true">实现目标，靠坚持不靠热情</div>
+    <div class="kpi-desc" contenteditable="true">短暂的热情会消退，而长期坚持的能力才是实现大目标的核心引擎。</div>
+    <span class="kpi-tag" contenteditable="true">长期主义 · 目标达成</span>
+  </div>
+  <div class="kpi-card">
+    <span class="kpi-icon">💪</span>
+    <div class="kpi-label" contenteditable="true">CONFIDENCE · 自信</div>
+    <div class="kpi-title" contenteditable="true">增强自信，掌控感带来力量</div>
+    <div class="kpi-desc" contenteditable="true">每一次控制住自我的小胜利，都在积累内心的掌控感，形成良性循环。</div>
+    <span class="kpi-tag" contenteditable="true">自我效能 · 内在力量</span>
+  </div>
+  <div class="kpi-card">
+    <span class="kpi-icon">📈</span>
+    <div class="kpi-label" contenteditable="true">GROWTH GAP · 差距</div>
+    <div class="kpi-title" contenteditable="true">决定差距，复利效应积累优势</div>
+    <div class="kpi-desc" contenteditable="true">每天微小的自律行为，以复利速度积累，数年后拉开与他人难以逾越的距离。</div>
+    <span class="kpi-tag" contenteditable="true">复利增长 · 长期优势</span>
+  </div>
+</div>
+
+<div class="insight-bar" contenteditable="true">
+  核心洞察：自律不是天赋，而是<span>可以训练的能力</span>——每天1%的改进，一年后提升 <span>37倍</span>
+</div>
+
+<div class="slide-number" contenteditable="false">3 / 8</div>
+</body>
+</html>

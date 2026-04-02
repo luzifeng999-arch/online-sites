@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>结语 — 遇见更好的自己</title>
+<style>
+:root {
+  --bg: #F2F7F4; --container: #FFFFFF; --container-2: #E8F0EC;
+  --accent: #5B8C5A; --accent-soft: rgba(91,140,90,0.12);
+  --text-primary: #2D4A2C; --text-secondary: #5B8C5A; --text-muted: #8FAF8E;
+  --border: rgba(91,140,90,0.18); --shadow: 0 4px 16px rgba(45,74,44,0.08);
+  --radius: 12px; --font: 'Inter','PingFang SC',sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  width: 1280px; height: 720px; overflow: hidden;
+  background: var(--bg); font-family: var(--font); color: var(--text-primary);
+}
+[contenteditable]:hover { outline: 1px dashed rgba(91,140,90,0.5); border-radius: 3px; }
+[contenteditable]:focus { outline: 2px solid var(--accent); border-radius: 3px; background: rgba(255,255,255,0.15); }
+[contenteditable] { outline: none; cursor: text; }
+.slide-number { position: absolute; bottom: 16px; right: 24px; font-size: 12px; color: rgba(45,74,44,0.3); }
+
+/* 晨光背景 */
+body {
+  background-image:
+    linear-gradient(rgba(242,247,244,0.30), rgba(242,247,244,0.40)),
+    url('images/slide-08-bg.jpg');
+  background-size: cover; background-position: center;
+}
+
+/* 居中 CTA 布局 */
+.closing-wrap {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 20px; padding: 40px 80px; text-align: center;
+}
+
+.closing-eyebrow {
+  font-size: 11px; letter-spacing: 4px; text-transform: uppercase;
+  color: var(--accent); font-weight: 600;
+  background: rgba(255,255,255,0.7); padding: 5px 16px; border-radius: 20px;
+  backdrop-filter: blur(8px);
+}
+.closing-title {
+  font-size: 68px; font-weight: 900; line-height: 1.1;
+  color: var(--text-primary);
+  text-shadow: 0 2px 24px rgba(255,255,255,0.8);
+}
+.closing-sub {
+  font-size: 22px; color: var(--text-secondary); font-weight: 500; line-height: 1.5;
+  background: rgba(255,255,255,0.65); padding: 12px 32px; border-radius: 40px;
+  backdrop-filter: blur(8px); max-width: 580px;
+}
+
+/* 三个支柱卡片 */
+.pillars-row {
+  display: flex; gap: 16px; margin-top: 8px;
+}
+.pillar-card {
+  background: rgba(255,255,255,0.75); backdrop-filter: blur(12px);
+  border: 1px solid rgba(91,140,90,0.25); border-radius: 14px;
+  padding: 16px 20px; width: 220px;
+  display: flex; flex-direction: column; gap: 6px; align-items: center;
+  box-shadow: 0 4px 20px rgba(45,74,44,0.08);
+}
+.pillar-icon { font-size: 24px; }
+.pillar-text { font-size: 13px; color: var(--text-primary); font-weight: 600; text-align: center; line-height: 1.4; }
+.pillar-sub { font-size: 11px; color: var(--text-muted); text-align: center; }
+
+/* 底部装饰 */
+.bottom-deco {
+  position: absolute; bottom: 0; left: 0; right: 0; height: 5px;
+  background: linear-gradient(to right, transparent 5%, var(--accent) 40%, rgba(91,140,90,0.4) 70%, transparent 95%);
+  opacity: 0.5;
+}
+</style>
+</head>
+<body>
+
+<div class="bottom-deco"></div>
+
+<div class="closing-wrap">
+  <span class="closing-eyebrow" contenteditable="true">CLOSING · 结语</span>
+  <h1 class="closing-title" contenteditable="true">遇见更好的自己</h1>
+  <p class="closing-sub" contenteditable="true">自律是一粒种子——<br>每天的坚持，都是在为未来的你浇水</p>
+  <div class="pillars-row">
+    <div class="pillar-card">
+      <span class="pillar-icon">🌱</span>
+      <div class="pillar-text" contenteditable="true">从今天开始<br>一件小事</div>
+      <div class="pillar-sub" contenteditable="true">积累复利效应</div>
+    </div>
+    <div class="pillar-card">
+      <span class="pillar-icon">📍</span>
+      <div class="pillar-text" contenteditable="true">保持方向<br>不被诱惑</div>
+      <div class="pillar-sub" contenteditable="true">守住长期目标</div>
+    </div>
+    <div class="pillar-card">
+      <span class="pillar-icon">✨</span>
+      <div class="pillar-text" contenteditable="true">相信过程<br>享受成长</div>
+      <div class="pillar-sub" contenteditable="true">成为更好的自己</div>
+    </div>
+  </div>
+</div>
+
+<div class="slide-number" contenteditable="false">8 / 8</div>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>自律者的五大特质</title>
+<style>
+:root {
+  --bg: #F2F7F4; --container: #FFFFFF; --container-2: #E8F0EC;
+  --accent: #5B8C5A; --accent-soft: rgba(91,140,90,0.10);
+  --text-primary: #2D4A2C; --text-secondary: #5B8C5A; --text-muted: #8FAF8E;
+  --border: rgba(91,140,90,0.18); --shadow: 0 4px 16px rgba(45,74,44,0.08);
+  --radius: 12px; --font: 'Inter','PingFang SC',sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  width: 1280px; height: 720px; overflow: hidden;
+  background: var(--bg); font-family: var(--font); color: var(--text-primary);
+}
+[contenteditable]:hover { outline: 1px dashed var(--accent); border-radius: 3px; }
+[contenteditable]:focus { outline: 2px solid var(--accent); border-radius: 3px; background: var(--accent-soft); }
+[contenteditable] { outline: none; cursor: text; }
+.slide-number { position: absolute; bottom: 16px; right: 24px; font-size: 12px; color: var(--text-muted); }
+
+body {
+  background-image:
+    linear-gradient(rgba(242,247,244,0.92), rgba(242,247,244,0.92)),
+    url('images/slide-05-bg.jpg');
+  background-size: cover;
+}
+
+.page-header {
+  position: absolute; top: 36px; left: 52px; right: 52px; height: 72px;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.ph-eyebrow { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+.ph-title { font-size: 28px; font-weight: 700; color: var(--text-primary); margin: 0; line-height: 1.2; }
+.ph-line { width: 48px; height: 2px; background: var(--accent); border-radius: 1px; margin-top: 6px; }
+
+/* Content-B 左文右图 */
+.content-wrap {
+  position: absolute; top: 124px; left: 52px; right: 52px; bottom: 44px;
+  display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 40px;
+}
+.text-col { display: flex; flex-direction: column; gap: 10px; justify-content: center; }
+
+/* C2 Feature List */
+.feature-list { display: flex; flex-direction: column; gap: 0; }
+.feature-item {
+  flex: 1; display: flex; gap: 14px; align-items: center;
+  border-bottom: 1px solid var(--border); padding: 11px 0;
+}
+.feature-item:last-child { border-bottom: none; }
+.feature-num {
+  font-size: 36px; font-weight: 900; color: var(--accent);
+  opacity: 0.22; flex-shrink: 0; width: 44px; line-height: 1; font-variant-numeric: tabular-nums;
+}
+.feature-content { flex: 1; }
+.feature-title { font-size: 14.5px; font-weight: 700; color: var(--text-primary); margin-bottom: 2px; }
+.feature-desc { font-size: 12.5px; color: var(--text-secondary); line-height: 1.5; }
+
+/* 右侧配图 */
+.img-col {
+  border-radius: 20px; overflow: hidden;
+  background-image:
+    linear-gradient(to left, rgba(242,247,244,0) 55%, rgba(242,247,244,0.2) 100%),
+    url('images/slide-05-content.jpg');
+  background-size: cover; background-position: center top;
+  box-shadow: var(--shadow);
+}
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <span class="ph-eyebrow" contenteditable="true">TRAITS · 自律者的特质</span>
+  <h2 class="ph-title" contenteditable="true">自律者拥有的五大核心特质</h2>
+  <div class="ph-line"></div>
+</div>
+
+<div class="content-wrap">
+  <div class="text-col">
+    <div class="feature-list">
+      <div class="feature-item">
+        <span class="feature-num">01</span>
+        <div class="feature-content">
+          <div class="feature-title" contenteditable="true">有明确目标</div>
+          <p class="feature-desc" contenteditable="true">清楚知道自己要去哪里，目标是行动的灯塔，也是坚持的动力。</p>
+        </div>
+      </div>
+      <div class="feature-item">
+        <span class="feature-num">02</span>
+        <div class="feature-content">
+          <div class="feature-title" contenteditable="true">善于管理时间</div>
+          <p class="feature-desc" contenteditable="true">把有限的时间分配给最重要的事，而不是最紧急或最轻松的事。</p>
+        </div>
+      </div>
+      <div class="feature-item">
+        <span class="feature-num">03</span>
+        <div class="feature-content">
+          <div class="feature-title" contenteditable="true">能控制情绪</div>
+          <p class="feature-desc" contenteditable="true">不让情绪左右决策，在冲动与冷静之间选择理性行动。</p>
+        </div>
+      </div>
+      <div class="feature-item">
+        <span class="feature-num">04</span>
+        <div class="feature-content">
+          <div class="feature-title" contenteditable="true">长期坚持</div>
+          <p class="feature-desc" contenteditable="true">把好习惯刻进日常节奏里，依靠系统而非每天消耗意志力。</p>
+        </div>
+      </div>
+      <div class="feature-item">
+        <span class="feature-num">05</span>
+        <div class="feature-content">
+          <div class="feature-title" contenteditable="true">善于反思调整</div>
+          <p class="feature-desc" contenteditable="true">定期复盘，不断优化自己的策略，在变化中保持方向正确。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="img-col"></div>
+</div>
+
+<div class="slide-number" contenteditable="false">5 / 8</div>
+</body>
+</html>
