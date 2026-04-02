@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Bloom · 原型预览</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow:hidden;}
+button{cursor:pointer;font-family:inherit;border:none;background:none;}
+:root{
+  --ui:#0f0f13;--ui2:#17171e;--ui3:#1e1e28;--ui4:#252532;
+  --bd:#2c2c3a;--bd2:#383848;
+  --t1:#e8e8f0;--t2:#9898b8;--t3:#505068;--t4:#303048;
+  --acc:#14B8A6;--acc2:#2DD4BF;
+  --fn:'Inter',system-ui,sans-serif;
+}
+body{font-family:var(--fn);background:var(--ui);color:var(--t1);display:flex;flex-direction:column;height:100vh;}
+.v-header{height:44px;background:var(--ui2);border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:0;flex-shrink:0;padding:0 14px;z-index:100;}
+.v-logo{display:flex;align-items:center;gap:8px;padding-right:16px;border-right:1px solid var(--bd);margin-right:16px;}
+.v-logo-mark{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--acc),var(--acc2));display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.v-logo-name{font-size:14px;font-weight:700;background:linear-gradient(135deg,var(--acc),var(--acc2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap;}
+.v-header-subtitle{font-size:12px;color:var(--t3);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.v-devlabel-badge{display:flex;align-items:center;gap:6px;padding:5px 12px;font-size:11px;color:var(--acc);background:color-mix(in srgb,var(--acc) 12%,var(--ui3));border:1px solid color-mix(in srgb,var(--acc) 30%,var(--bd));border-radius:8px;flex-shrink:0;margin-left:10px;white-space:nowrap;}
+.v-bgbtns{display:flex;gap:5px;margin-left:10px;flex-shrink:0;}
+.v-bgbtn{width:18px;height:18px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:all .15s;flex-shrink:0;}
+.v-bgbtn:hover{transform:scale(1.2);}
+.v-bgbtn.on{border-color:var(--t1);transform:scale(1.15);}
+.v-acts{display:flex;gap:6px;margin-left:12px;flex-shrink:0;}
+.v-act{padding:5px 11px;border-radius:7px;font-size:11px;color:var(--t3);background:var(--ui3);border:1px solid var(--bd);transition:all .15s;display:flex;align-items:center;gap:4px;}
+.v-act:hover{color:var(--t1);border-color:var(--bd2);}
+.v-body{flex:1;display:flex;overflow:hidden;min-height:0;}
+.v-side{width:224px;flex-shrink:0;background:var(--ui2);border-right:1px solid var(--bd);display:flex;flex-direction:column;overflow:hidden;}
+.v-side-section{flex-shrink:0;}
+.v-side-section+.v-side-section{border-top:1px solid var(--bd);}
+.v-side-head{padding:10px 14px 6px;font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--t3);text-transform:uppercase;}
+.v-nav{padding:4px 6px 8px;overflow-y:auto;flex:1;}
+.v-nav::-webkit-scrollbar{width:3px;}
+.v-nav::-webkit-scrollbar-thumb{background:var(--bd);border-radius:2px;}
+.v-nitem{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:8px;cursor:pointer;transition:all .15s;user-select:none;position:relative;}
+.v-nitem:hover{background:var(--ui4);}
+.v-nitem.on{background:color-mix(in srgb,var(--acc) 12%,var(--ui3));}
+.v-nitem.on::before{content:'';position:absolute;left:0;top:20%;bottom:20%;width:3px;background:linear-gradient(to bottom,var(--acc),var(--acc2));border-radius:0 2px 2px 0;}
+.v-nnum{width:22px;height:18px;background:var(--ui4);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--t3);flex-shrink:0;font-weight:600;}
+.v-nitem.on .v-nnum{background:color-mix(in srgb,var(--acc) 25%,var(--ui3));color:var(--acc);}
+.v-nicon{font-size:14px;flex-shrink:0;}
+.v-nname{flex:1;font-size:13px;color:var(--t2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.v-nitem.on .v-nname{color:var(--t1);font-weight:600;}
+.v-meta-body{padding:6px 14px 12px;display:flex;flex-direction:column;gap:7px;}
+.v-meta-row{display:flex;align-items:baseline;gap:8px;font-size:12px;}
+.v-meta-key{color:var(--t3);white-space:nowrap;flex-shrink:0;}
+.v-meta-val{color:var(--t2);font-weight:600;text-overflow:ellipsis;overflow:hidden;white-space:nowrap;}
+.v-meta-val.acc{background:linear-gradient(135deg,var(--acc),var(--acc2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.v-flow{padding:6px 14px 12px;display:flex;flex-direction:column;gap:4px;}
+.v-flow-step{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--t3);cursor:pointer;padding:4px 6px;border-radius:6px;transition:all .15s;}
+.v-flow-step:hover{background:var(--ui4);color:var(--t2);}
+.v-flow-step.on{color:var(--t1);}
+.v-flow-dot{width:7px;height:7px;border-radius:50%;background:var(--t4);flex-shrink:0;transition:background .15s;}
+.v-flow-step.on .v-flow-dot{background:linear-gradient(135deg,var(--acc),var(--acc2));box-shadow:0 0 8px color-mix(in srgb,var(--acc) 60%,transparent);}
+.v-flow-line{width:1px;height:14px;background:var(--bd);margin-left:16px;flex-shrink:0;}
+.v-side-footer{padding:10px 14px;border-top:1px solid var(--bd);font-size:11px;color:var(--t4);display:flex;align-items:center;gap:8px;}
+kbd{background:var(--ui4);border:1px solid var(--bd);border-radius:4px;padding:1px 5px;font-size:10px;color:var(--t3);font-family:var(--fn);}
+.v-canvas{flex:1;overflow:auto;display:flex;align-items:center;justify-content:center;padding:40px;transition:background .35s;min-width:0;position:relative;}
+.v-canvas::-webkit-scrollbar{width:6px;height:6px;}
+.v-canvas::-webkit-scrollbar-thumb{background:var(--bd);border-radius:3px;}
+.v-canvas.bg-dark{background:radial-gradient(ellipse at 50% 0%,#1a1025 0%,#0a0a10 60%);}
+.v-canvas.bg-dim{background:radial-gradient(ellipse at 50% 0%,#111820 0%,#08080f 60%);}
+.v-canvas.bg-warm{background:radial-gradient(ellipse at 50% 0%,#180f0a 0%,#0c080a 60%);}
+.v-canvas.bg-sky{background:radial-gradient(ellipse at 50% 0%,#0a1020 0%,#060c18 60%);}
+.v-canvas.bg-light{background:#f0eff5;}
+/* ⚠️ BUG-13: phone-body 不设 padding，用 outline+box-shadow 做外壳 */
+.v-phone{flex-shrink:0;position:relative;align-self:center;}
+.v-phone-body{width:390px;height:860px;background:#000;border-radius:50px;outline:9px solid #1e1e28;outline-offset:0;box-shadow:0 0 0 10px #2c2c3a,0 40px 100px rgba(0,0,0,.85),0 10px 30px rgba(0,0,0,.5);position:relative;overflow:hidden;}
+.v-phone-bezel{width:100%;height:100%;background:#000;border-radius:50px;overflow:hidden;position:relative;}
+.v-phone-bezel::after{content:'';position:absolute;inset:0;border-radius:50px;background:linear-gradient(135deg,rgba(255,255,255,.04) 0%,transparent 60%);pointer-events:none;z-index:10;}
+.v-phone-iframe{width:390px;height:844px;border:none;display:block;}
+.v-phone-body::before{content:'';position:absolute;top:10px;left:20px;right:20px;height:1px;background:linear-gradient(to right,transparent 0%,rgba(255,255,255,.15) 40%,rgba(255,255,255,.15) 60%,transparent 100%);border-radius:99px;z-index:1;}
+.v-btn-side{position:absolute;background:linear-gradient(to right,#2a2a38,#1e1e28);border-radius:2px 0 0 2px;}
+.v-btn-vol1{left:-3.5px;top:140px;width:3.5px;height:34px;}
+.v-btn-vol2{left:-3.5px;top:185px;width:3.5px;height:34px;}
+.v-btn-power{right:-3.5px;top:165px;width:3.5px;height:56px;border-radius:0 2px 2px 0;}
+.v-btn-silent{left:-3.5px;top:100px;width:3.5px;height:26px;}
+.v-status{height:28px;background:var(--ui2);border-top:1px solid var(--bd);display:flex;align-items:center;padding:0 16px;gap:14px;font-size:11px;color:var(--t4);flex-shrink:0;}
+.v-status-sep{width:1px;height:12px;background:var(--bd);}
+.v-status-item{display:flex;align-items:center;gap:5px;}
+.v-status-dot{width:6px;height:6px;border-radius:50%;background:color-mix(in srgb,var(--acc) 70%,transparent);box-shadow:0 0 6px var(--acc);animation:blink 2s ease-in-out infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
+.v-status-light{color:var(--t3);}
+.v-status-strong{color:var(--t2);font-weight:600;}
+.v-status-acc{background:linear-gradient(135deg,var(--acc),var(--acc2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700;}
+.v-spacer{flex:1;}
+.v-toast{position:fixed;top:60px;left:50%;transform:translateX(-50%);background:var(--ui4);border:1px solid var(--bd2);border-radius:10px;padding:10px 18px;font-size:13px;color:var(--t1);box-shadow:0 8px 24px rgba(0,0,0,.5);z-index:9999;pointer-events:none;opacity:0;transition:opacity .25s;white-space:nowrap;}
+.v-toast.show{opacity:1;}
+.v-kbdover{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(6px);z-index:9999;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;}
+.v-kbdover.show{opacity:1;pointer-events:all;}
+.v-kbdpanel{background:var(--ui3);border:1px solid var(--bd2);border-radius:16px;padding:24px 28px;min-width:300px;box-shadow:0 20px 60px rgba(0,0,0,.6);}
+.v-kbdpanel h3{font-size:14px;font-weight:700;color:var(--t1);margin-bottom:16px;}
+.v-kbdrow{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--bd);font-size:13px;}
+.v-kbdrow:last-child{border-bottom:none;}
+.v-kbdrow span{color:var(--t2);}
+.v-kbdkeys{display:flex;gap:4px;}
+.v-flow-diagram-wrap{position:fixed;inset:0;z-index:1200;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.72);backdrop-filter:blur(6px);}
+.v-flow-diagram-wrap.show{display:flex;}
+.v-flow-diagram-panel{background:var(--ui2);border:1px solid var(--bd2);border-radius:16px;padding:24px;max-width:90vw;max-height:80vh;overflow:auto;box-shadow:0 24px 80px rgba(0,0,0,.6);position:relative;}
+.v-flow-diagram-panel h3{color:var(--t1);font-size:15px;font-weight:700;margin-bottom:20px;}
+.v-flow-diagram-close{position:absolute;top:16px;right:16px;width:28px;height:28px;border-radius:50%;background:var(--ui4);color:var(--t2);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+#v-flow-svg{display:block;min-width:280px;}
+.v-pin-dot{position:absolute;width:26px;height:26px;border-radius:50%;background:var(--acc);border:2px solid #fff;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer;transform:translate(-50%,-50%);box-shadow:0 2px 8px rgba(0,0,0,.4);z-index:300;transition:transform .15s;user-select:none;}
+.v-pin-dot:hover{transform:translate(-50%,-50%) scale(1.2);}
+.v-pin-popup{position:absolute;min-width:200px;max-width:280px;background:var(--ui2);border:1px solid var(--bd2);border-radius:10px;padding:12px;box-shadow:0 8px 24px rgba(0,0,0,.5);z-index:400;display:none;transform:translateX(-50%) translateY(-108%);}
+.v-pin-popup.show{display:block;}
+.v-pin-popup-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.v-pin-popup-idx{font-size:11px;font-weight:700;color:var(--acc);background:color-mix(in srgb,var(--acc) 12%,var(--ui3));padding:2px 8px;border-radius:4px;}
+.v-pin-popup-del{background:none;border:none;color:var(--t3);cursor:pointer;font-size:13px;padding:2px 6px;border-radius:4px;}
+.v-pin-popup textarea{width:100%;min-height:60px;background:var(--ui3);border:1px solid var(--bd);border-radius:7px;color:var(--t1);font-size:12px;padding:8px;resize:vertical;font-family:inherit;}
+.v-pin-popup textarea:focus{outline:none;border-color:var(--acc);}
+.v-pin-counter{position:absolute;top:-6px;right:-6px;min-width:16px;height:16px;background:var(--acc2);border-radius:8px;font-size:10px;font-weight:700;color:#fff;display:none;align-items:center;justify-content:center;padding:0 4px;}
+.v-pin-counter.show{display:flex;}
+.v-canvas.pin-mode{cursor:crosshair!important;}
+.v-canvas.pin-mode .v-phone{pointer-events:none;}
+</style>
+</head>
+<body>
+<header class="v-header">
+  <div class="v-logo">
+    <div class="v-logo-mark">🌿</div>
+    <span class="v-logo-name">Bloom</span>
+  </div>
+  <span class="v-header-subtitle" id="v-page-title">冥想专注 App 移动端原型</span>
+  <div class="v-devlabel-badge" id="v-devbadge"></div>
+  <div class="v-bgbtns">
+    <div class="v-bgbtn on" style="background:radial-gradient(#1a1025,#0a0a10)" onclick="setBg('dark',this)" title="深邃紫"></div>
+    <div class="v-bgbtn" style="background:radial-gradient(#111820,#08080f)" onclick="setBg('dim',this)" title="幽蓝夜"></div>
+    <div class="v-bgbtn" style="background:radial-gradient(#180f0a,#0c080a)" onclick="setBg('warm',this)" title="暖炭黑"></div>
+    <div class="v-bgbtn" style="background:radial-gradient(#0a1020,#060c18)" onclick="setBg('sky',this)" title="星空蓝"></div>
+    <div class="v-bgbtn" style="background:#f0eff5;border:1.5px solid #d0d0e0;" onclick="setBg('light',this)" title="浅色模式"></div>
+  </div>
+  <div class="v-acts">
+    <button class="v-act" onclick="openNew()">↗ 新标签</button>
+    <button class="v-act" onclick="reload()">↺ 刷新</button>
+    <button class="v-act" onclick="showKbd()">⌨ 快捷键</button>
+    <button class="v-act" onclick="showFlowDiagram()">🗺 流程图</button>
+    <button class="v-act" id="v-pin-btn" onclick="togglePinMode()">📍 标注<span class="v-pin-counter" id="v-pin-counter">0</span></button>
+  </div>
+</header>
+<div class="v-body">
+  <aside class="v-side">
+    <div class="v-side-section" style="flex:1;overflow:hidden;display:flex;flex-direction:column;">
+      <div class="v-side-head">页面列表</div>
+      <div class="v-nav" id="v-nav"></div>
+    </div>
+    <div class="v-side-section">
+      <div class="v-side-head">设计规范</div>
+      <div class="v-meta-body">
+        <div class="v-meta-row"><span class="v-meta-key">主色</span><span class="v-meta-val acc">Teal Clean</span></div>
+        <div class="v-meta-row"><span class="v-meta-key">字体</span><span class="v-meta-val">Nunito</span></div>
+        <div class="v-meta-row"><span class="v-meta-key">设备</span><span class="v-meta-val" id="v-devlabel">Mobile 390px</span></div>
+        <div class="v-meta-row"><span class="v-meta-key">页面数</span><span class="v-meta-val">5 页</span></div>
+      </div>
+    </div>
+    <div class="v-side-section">
+      <div class="v-side-head">用户流程</div>
+      <div class="v-flow" id="v-flow"></div>
+    </div>
+    <div class="v-side-footer"><kbd>←</kbd><kbd>→</kbd> 切换 &nbsp; <kbd>R</kbd> 刷新 &nbsp; <kbd>?</kbd> 帮助</div>
+  </aside>
+  <main class="v-canvas bg-dark" id="v-canvas">
+    <div class="v-phone" id="v-phone">
+      <div class="v-btn-side v-btn-silent"></div>
+      <div class="v-btn-side v-btn-vol1"></div>
+      <div class="v-btn-side v-btn-vol2"></div>
+      <div class="v-btn-side v-btn-power"></div>
+      <div class="v-phone-body">
+        <div class="v-phone-bezel">
+          <iframe class="v-phone-iframe" id="v-iframe" src="" title="原型预览"></iframe>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<div class="v-flow-diagram-wrap" id="v-flow-diagram-wrap" onclick="hideFlowDiagram()">
+  <div class="v-flow-diagram-panel" onclick="event.stopPropagation()">
+    <h3>🗺 页面跳转流程图</h3>
+    <button class="v-flow-diagram-close" onclick="hideFlowDiagram()">✕</button>
+    <svg id="v-flow-svg" xmlns="http://www.w3.org/2000/svg"></svg>
+  </div>
+</div>
+<footer class="v-status">
+  <div class="v-status-item"><div class="v-status-dot"></div><span class="v-status-acc">Bloom</span></div>
+  <div class="v-status-sep"></div>
+  <span class="v-status-light">页面</span>
+  <span class="v-status-strong" id="v-pageno">1</span>
+  <span class="v-status-light">/ <span id="v-pagetotal">5</span></span>
+  <div class="v-status-sep"></div>
+  <span class="v-status-strong" id="v-status-name">—</span>
+  <div class="v-spacer"></div>
+  <span class="v-status-light" id="v-status-dev">📱 Mobile 390 × 844</span>
+</footer>
+<div class="v-toast" id="v-toast"></div>
+<div class="v-kbdover" id="v-kbdover" onclick="hideKbd()">
+  <div class="v-kbdpanel" onclick="event.stopPropagation()">
+    <h3>⌨ 快捷键</h3>
+    <div class="v-kbdrow"><span>下一页</span><div class="v-kbdkeys"><kbd>→</kbd><kbd>J</kbd></div></div>
+    <div class="v-kbdrow"><span>上一页</span><div class="v-kbdkeys"><kbd>←</kbd><kbd>K</kbd></div></div>
+    <div class="v-kbdrow"><span>刷新当前页</span><kbd>R</kbd></div>
+    <div class="v-kbdrow"><span>新标签打开</span><kbd>O</kbd></div>
+    <div class="v-kbdrow"><span>切换标注模式</span><kbd>A</kbd></div>
+    <div class="v-kbdrow"><span>显示流程图</span><kbd>F</kbd></div>
+    <div class="v-kbdrow"><span>关闭此面板</span><kbd>Esc</kbd></div>
+  </div>
+</div>
+<script>
+const PAGES=[
+  {num:'01',name:'Home',icon:'🏠',file:'page-01-home.html',flow:'发现 / 今日任务'},
+  {num:'02',name:'Session',icon:'🧘',file:'page-02-session.html',flow:'冥想进行中'},
+  {num:'03',name:'Explore',icon:'🔍',file:'page-03-explore.html',flow:'探索课程'},
+  {num:'04',name:'Progress',icon:'📊',file:'page-04-progress.html',flow:'统计成就'},
+  {num:'05',name:'Profile',icon:'👤',file:'page-05-profile.html',flow:'设置偏好'}
+];
+let cur=0;
+function buildSidebar(){
+  const nav=document.getElementById('v-nav');const flow=document.getElementById('v-flow');
+  nav.innerHTML='';flow.innerHTML='';
+  PAGES.forEach((p,i)=>{
+    const el=document.createElement('div');el.className='v-nitem'+(i===0?' on':'');el.title=p.file;
+    el.innerHTML=`<span class="v-nnum">${p.num}</span><span class="v-nicon">${p.icon||'📄'}</span><span class="v-nname">${p.name}</span>`;
+    el.addEventListener('click',()=>loadPage(i));nav.appendChild(el);
+    if(i>0){const ln=document.createElement('div');ln.className='v-flow-line';flow.appendChild(ln);}
+    const st=document.createElement('div');st.className='v-flow-step'+(i===0?' on':'');
+    st.innerHTML=`<div class="v-flow-dot"></div><span>${p.num}. ${p.flow||p.name}</span>`;
+    st.addEventListener('click',()=>loadPage(i));flow.appendChild(st);
+  });
+}
+function loadPage(i){
+  if(i<0||i>=PAGES.length)return;cur=i;const p=PAGES[i];
+  document.getElementById('v-iframe').src=p.file;
+  document.getElementById('v-page-title').textContent=`${p.num}. ${p.name}`;
+  document.getElementById('v-pageno').textContent=i+1;
+  document.getElementById('v-status-name').textContent=p.name;
+  document.querySelectorAll('.v-nitem').forEach((el,j)=>el.classList.toggle('on',j===i));
+  document.querySelectorAll('.v-flow-step').forEach((el,j)=>el.classList.toggle('on',j===i));
+  openPinPopup=null;setTimeout(renderPins,50);
+}
+function initDevice(){
+  const badge=document.getElementById('v-devbadge');
+  badge.innerHTML='<svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor"><rect x="1" y="0" width="8" height="13" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="3.5" y="11" width="3" height="1" rx=".5"/></svg> Mobile 390';
+}
+function setBg(cls,btn){
+  document.getElementById('v-canvas').className='v-canvas bg-'+cls;
+  document.querySelectorAll('.v-bgbtn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');
+}
+function openNew(){window.open(PAGES[cur].file,'_blank');}
+function reload(){const f=document.getElementById('v-iframe');f.src=f.src;toast('已刷新');}
+function showKbd(){document.getElementById('v-kbdover').classList.add('show');}
+function hideKbd(){document.getElementById('v-kbdover').classList.remove('show');}
+let _tt;
+function toast(msg){const el=document.getElementById('v-toast');el.textContent=msg;el.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>el.classList.remove('show'),1800);}
+document.addEventListener('keydown',e=>{
+  const kbdOpen=document.getElementById('v-kbdover').classList.contains('show');
+  const fdOpen=document.getElementById('v-flow-diagram-wrap').classList.contains('show');
+  if(fdOpen){if(e.key==='Escape')hideFlowDiagram();return;}
+  if(kbdOpen){if(e.key==='Escape')hideKbd();return;}
+  switch(e.key){
+    case'ArrowRight':case'j':case'J':loadPage(Math.min(cur+1,PAGES.length-1));break;
+    case'ArrowLeft':case'k':case'K':loadPage(Math.max(cur-1,0));break;
+    case'Home':loadPage(0);break;case'End':loadPage(PAGES.length-1);break;
+    case'r':case'R':reload();break;case'o':case'O':openNew();break;
+    case'a':case'A':togglePinMode();break;case'f':case'F':showFlowDiagram();break;
+    case'?':case'/':showKbd();break;
+  }
+});
+buildSidebar();initDevice();if(PAGES.length>0)loadPage(0);
+function showFlowDiagram(){document.getElementById('v-flow-diagram-wrap').classList.add('show');buildFlowSVG();}
+function hideFlowDiagram(){document.getElementById('v-flow-diagram-wrap').classList.remove('show');}
+function buildFlowSVG(){
+  const svg=document.getElementById('v-flow-svg');const N=PAGES.length;if(!N)return;
+  const W=120,H=48,GAP_X=60,GAP_Y=80;const cols=Math.min(N,4);const rows=Math.ceil(N/cols);
+  const svgW=cols*W+(cols-1)*GAP_X+40;const svgH=rows*H+(rows-1)*GAP_Y+40;
+  svg.setAttribute('width',svgW);svg.setAttribute('height',svgH);svg.setAttribute('viewBox',`0 0 ${svgW} ${svgH}`);svg.innerHTML='';
+  const defs=document.createElementNS('http://www.w3.org/2000/svg','defs');
+  const marker=document.createElementNS('http://www.w3.org/2000/svg','marker');
+  marker.setAttribute('id','arr');marker.setAttribute('markerWidth','8');marker.setAttribute('markerHeight','8');marker.setAttribute('refX','6');marker.setAttribute('refY','3');marker.setAttribute('orient','auto');
+  const poly=document.createElementNS('http://www.w3.org/2000/svg','polygon');poly.setAttribute('points','0 0, 8 3, 0 6');poly.setAttribute('fill','#14B8A6');
+  marker.appendChild(poly);defs.appendChild(marker);svg.appendChild(defs);
+  PAGES.forEach((p,i)=>{
+    const col=i%cols,row=Math.floor(i/cols);const x=20+col*(W+GAP_X);const y=20+row*(H+GAP_Y);
+    if(i<N-1){const nextCol=(i+1)%cols,nextRow=Math.floor((i+1)/cols);const nx=20+nextCol*(W+GAP_X),ny=20+nextRow*(H+GAP_Y);const line=document.createElementNS('http://www.w3.org/2000/svg','line');if(row===nextRow){line.setAttribute('x1',x+W);line.setAttribute('y1',y+H/2);line.setAttribute('x2',nx+8);line.setAttribute('y2',ny+H/2);}else{line.setAttribute('x1',x+W/2);line.setAttribute('y1',y+H);line.setAttribute('x2',nx+W/2);line.setAttribute('y2',ny-2);}line.setAttribute('stroke','#14B8A6');line.setAttribute('stroke-width','1.5');line.setAttribute('marker-end','url(#arr)');svg.appendChild(line);}
+    const rect=document.createElementNS('http://www.w3.org/2000/svg','rect');rect.setAttribute('x',x);rect.setAttribute('y',y);rect.setAttribute('width',W);rect.setAttribute('height',H);rect.setAttribute('rx','8');rect.setAttribute('fill',i===cur?'rgba(20,184,166,.25)':'rgba(255,255,255,.06)');rect.setAttribute('stroke',i===cur?'#14B8A6':'rgba(255,255,255,.15)');rect.setAttribute('stroke-width',i===cur?'2':'1');rect.style.cursor='pointer';rect.addEventListener('click',()=>{hideFlowDiagram();loadPage(i);});svg.appendChild(rect);
+    const icon=document.createElementNS('http://www.w3.org/2000/svg','text');icon.setAttribute('x',x+12);icon.setAttribute('y',y+20);icon.setAttribute('font-size','14');icon.textContent=p.icon||'📄';svg.appendChild(icon);
+    const label=document.createElementNS('http://www.w3.org/2000/svg','text');label.setAttribute('x',x+30);label.setAttribute('y',y+20);label.setAttribute('fill','#e0e0f0');label.setAttribute('font-size','11');label.setAttribute('font-weight','600');label.setAttribute('font-family','system-ui,sans-serif');label.textContent=(p.num+' '+p.name).slice(0,14);svg.appendChild(label);
+    const sub=document.createElementNS('http://www.w3.org/2000/svg','text');sub.setAttribute('x',x+8);sub.setAttribute('y',y+H-10);sub.setAttribute('fill','rgba(180,180,220,.6)');sub.setAttribute('font-size','9');sub.setAttribute('font-family','system-ui,sans-serif');sub.textContent=(p.flow||p.name).slice(0,18);svg.appendChild(sub);
+  });
+}
+let pinMode=false;let pins={};let openPinPopup=null;
+function getPinKey(){return PAGES[cur]?.file||'page-'+cur;}
+function loadPins(){try{pins=JSON.parse(localStorage.getItem('v_pins_bl')||'{}');}catch(e){pins={};}}
+function savePins(){localStorage.setItem('v_pins_bl',JSON.stringify(pins));}
+function togglePinMode(){pinMode=!pinMode;const canvas=document.getElementById('v-canvas');const btn=document.getElementById('v-pin-btn');canvas.classList.toggle('pin-mode',pinMode);btn.classList.toggle('active',pinMode);if(pinMode)toast('标注模式：点击画布添加 Pin');else toast('标注模式已关闭');}
+function renderPins(){document.querySelectorAll('.v-pin-dot,.v-pin-popup').forEach(el=>el.remove());const key=getPinKey();const list=pins[key]||[];const canvas=document.getElementById('v-canvas');list.forEach((pin,i)=>{const dot=document.createElement('div');dot.className='v-pin-dot';dot.style.left=pin.x+'px';dot.style.top=pin.y+'px';dot.textContent=pin.idx;const pop=document.createElement('div');pop.className='v-pin-popup';pop.innerHTML=`<div class="v-pin-popup-header"><span class="v-pin-popup-idx">#${pin.idx}</span><button class="v-pin-popup-del" onclick="deletePin(${i})">删除</button></div><textarea placeholder="添加注释..." oninput="updatePinNote(${i},this.value)">${pin.note||''}</textarea>`;pop.style.left=pin.x+'px';pop.style.top=pin.y+'px';dot.addEventListener('click',e=>{e.stopPropagation();document.querySelectorAll('.v-pin-popup').forEach(p=>p.classList.remove('show'));if(openPinPopup===pop){openPinPopup=null;return;}pop.classList.add('show');openPinPopup=pop;});canvas.appendChild(dot);canvas.appendChild(pop);});updatePinCounter();}
+function updatePinCounter(){const total=Object.values(pins).reduce((s,v)=>s+v.length,0);const ctr=document.getElementById('v-pin-counter');ctr.textContent=total;ctr.classList.toggle('show',total>0);}
+function updatePinNote(i,note){const key=getPinKey();if(pins[key]&&pins[key][i]){pins[key][i].note=note;savePins();}}
+function deletePin(i){const key=getPinKey();if(pins[key]){pins[key].splice(i,1);savePins();renderPins();openPinPopup=null;}}
+document.getElementById('v-canvas').addEventListener('click',e=>{if(!pinMode)return;const canvas=document.getElementById('v-canvas');const rect=canvas.getBoundingClientRect();const x=e.clientX-rect.left;const y=e.clientY-rect.top;const key=getPinKey();if(!pins[key])pins[key]=[];const idx=pins[key].length+1;pins[key].push({x,y,note:'',idx});savePins();renderPins();toast(`Pin #${idx} 已添加`);});
+document.addEventListener('click',e=>{if(openPinPopup&&!openPinPopup.contains(e.target)&&!e.target.closest('.v-pin-dot')){openPinPopup.classList.remove('show');openPinPopup=null;}});
+loadPins();if(PAGES.length>0){setTimeout(renderPins,100);}
+</script>
+</body>
+</html>

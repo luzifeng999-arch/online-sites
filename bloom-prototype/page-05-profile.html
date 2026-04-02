@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>我的 — Bloom</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --color-primary:#14B8A6;--color-primary-hover:#0D9488;
+  --color-primary-light:rgba(20,184,166,.12);
+  --color-bg:#fff;--color-surface:#F0FDFA;--color-surface-2:#CCFBF1;
+  --color-border:#99F6E4;--color-muted:#6B7280;--color-foreground:#134E4A;
+  --font-sans:'Nunito',system-ui,sans-serif;
+  --fw-r:400;--fw-m:500;--fw-sb:600;--fw-b:700;--fw-eb:800;
+  --text-xs:11px;--text-sm:13px;--text-base:16px;--text-lg:20px;--text-xl:25px;
+  --sp1:4px;--sp2:8px;--sp3:12px;--sp4:16px;--sp5:20px;--sp6:24px;
+  --radius-card:16px;--radius-btn:9999px;--radius-full:9999px;
+  --dur:180ms;--ease:cubic-bezier(.4,0,.2,1);--ease-spring:cubic-bezier(.34,1.56,.64,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+/* ⚠️ BUG-11 */
+body{width:390px;height:844px;overflow:hidden;background:var(--color-bg);color:var(--color-foreground);font-family:var(--font-sans);-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;}
+a{color:inherit;text-decoration:none;}
+button{cursor:pointer;font-family:inherit;border:none;background:none;}
+/* ⚠️ BUG-12 */
+.page-scroll{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;}
+
+.status-bar{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 var(--sp5);flex-shrink:0;}
+.status-time{font-size:15px;font-weight:var(--fw-b);color:var(--color-foreground);}
+.status-icons{font-size:12px;color:var(--color-foreground);}
+
+/* PROFILE HERO */
+.profile-hero{background:linear-gradient(165deg,#F0FDFA 0%,#CCFBF1 100%);padding:var(--sp4) var(--sp5) var(--sp6);margin-bottom:var(--sp5);}
+.profile-toprow{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--sp5);}
+.page-title{font-size:20px;font-weight:var(--fw-eb);}
+.edit-btn{width:40px;height:40px;border-radius:var(--radius-full);background:rgba(20,184,166,.15);display:flex;align-items:center;justify-content:center;font-size:18px;}
+.profile-center{display:flex;flex-direction:column;align-items:center;text-align:center;}
+.avatar-wrap{position:relative;margin-bottom:var(--sp4);}
+.avatar{width:80px;height:80px;border-radius:var(--radius-full);background:linear-gradient(135deg,#14B8A6,#0D9488);display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:var(--fw-eb);color:#fff;border:3px solid #fff;box-shadow:0 4px 16px rgba(20,184,166,.3);}
+.avatar-edit{position:absolute;bottom:0;right:0;width:26px;height:26px;border-radius:var(--radius-full);background:var(--color-primary);display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;border:2px solid #fff;}
+.profile-name{font-size:22px;font-weight:var(--fw-eb);}
+.profile-since{font-size:var(--text-sm);color:var(--color-muted);margin-top:2px;}
+.profile-plan{display:inline-flex;align-items:center;gap:4px;padding:4px 14px;background:linear-gradient(135deg,var(--color-primary),#2DD4BF);color:#fff;border-radius:var(--radius-full);font-size:var(--text-xs);font-weight:var(--fw-sb);margin-top:var(--sp3);}
+
+/* QUICK STATS */
+.quick-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--color-border);border:1px solid var(--color-border);border-radius:var(--radius-card);margin:0 var(--sp5) var(--sp5);overflow:hidden;}
+.qs-item{background:#fff;padding:var(--sp4) var(--sp2);text-align:center;}
+.qs-val{font-size:20px;font-weight:var(--fw-eb);color:var(--color-primary);}
+.qs-label{font-size:10px;color:var(--color-muted);margin-top:2px;}
+
+/* SETTINGS LIST */
+.settings-group{margin:0 var(--sp5) var(--sp5);}
+.settings-group-title{font-size:var(--text-xs);font-weight:var(--fw-sb);color:var(--color-muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:var(--sp2);}
+.settings-list{background:var(--color-surface);border:1.5px solid var(--color-border);border-radius:var(--radius-card);overflow:hidden;}
+.setting-item{display:flex;align-items:center;gap:var(--sp3);padding:var(--sp4) var(--sp5);cursor:pointer;transition:background var(--dur);border-bottom:1px solid var(--color-border);}
+.setting-item:last-child{border-bottom:none;}
+.setting-item:active{background:var(--color-surface-2);}
+.setting-icon-wrap{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.setting-info{flex:1;}
+.setting-name{font-size:var(--text-sm);font-weight:var(--fw-sb);}
+.setting-desc{font-size:var(--text-xs);color:var(--color-muted);margin-top:2px;}
+.setting-arrow{font-size:18px;color:var(--color-muted);}
+.setting-badge{padding:2px 8px;background:var(--color-primary-light);color:var(--color-primary);border-radius:var(--radius-full);font-size:10px;font-weight:var(--fw-sb);}
+
+/* TOGGLE */
+.toggle{width:44px;height:24px;border-radius:var(--radius-full);background:var(--color-border);cursor:pointer;transition:background var(--dur);position:relative;flex-shrink:0;}
+.toggle::after{content:'';width:18px;height:18px;border-radius:50%;background:#fff;position:absolute;top:3px;left:3px;transition:left var(--dur) var(--ease-spring);box-shadow:0 1px 3px rgba(0,0,0,.2);}
+.toggle.on{background:var(--color-primary);}
+.toggle.on::after{left:23px;}
+
+/* UPGRADE CARD */
+.upgrade-card{margin:0 var(--sp5) var(--sp6);padding:var(--sp5);background:linear-gradient(135deg,#0D9488,#14B8A6);border-radius:var(--radius-card);color:#fff;display:flex;align-items:center;gap:var(--sp4);cursor:pointer;}
+.upgrade-icon{font-size:36px;flex-shrink:0;}
+.upgrade-title{font-size:var(--text-base);font-weight:var(--fw-eb);}
+.upgrade-desc{font-size:var(--text-xs);opacity:.8;margin-top:2px;}
+.upgrade-arrow{font-size:24px;flex-shrink:0;}
+
+/* TABBAR */
+.tabbar{height:64px;background:var(--color-bg);border-top:1.5px solid var(--color-border);display:flex;align-items:center;justify-content:space-around;padding-bottom:env(safe-area-inset-bottom);flex-shrink:0;}
+.tab-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:var(--sp2) 0;font-size:10px;color:var(--color-muted);transition:color var(--dur);min-height:44px;justify-content:center;cursor:pointer;}
+.tab-item.active{color:var(--color-primary);}
+.tab-icon{font-size:22px;line-height:1;}
+/* TOAST */
+.toast-wrap{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:9999;pointer-events:none;}
+.toast{background:#134E4A;color:#fff;padding:10px 18px;border-radius:var(--radius-full);font-size:var(--text-sm);font-weight:var(--fw-sb);opacity:0;transition:opacity var(--dur) var(--ease-spring);white-space:nowrap;}
+.toast.show{opacity:1;}
+</style>
+</head>
+<body>
+<div class="page-scroll">
+  <div class="status-bar">
+    <span class="status-time">9:41</span>
+    <span class="status-icons">●●● WiFi 100%🔋</span>
+  </div>
+
+  <!-- Profile Hero -->
+  <div class="profile-hero">
+    <div class="profile-toprow">
+      <span class="page-title">Profile</span>
+      <div class="edit-btn">✏️</div>
+    </div>
+    <div class="profile-center">
+      <div class="avatar-wrap">
+        <div class="avatar">MJ</div>
+        <div class="avatar-edit">📷</div>
+      </div>
+      <div class="profile-name">Mia Johnson</div>
+      <div class="profile-since">Member since Jan 2026 · 78 sessions</div>
+      <div class="profile-plan">✨ Bloom Pro</div>
+    </div>
+  </div>
+
+  <!-- Quick Stats -->
+  <div class="quick-stats">
+    <div class="qs-item"><div class="qs-val">312</div><div class="qs-label">Minutes</div></div>
+    <div class="qs-item"><div class="qs-val">14</div><div class="qs-label">Day Streak</div></div>
+    <div class="qs-item"><div class="qs-val">8</div><div class="qs-label">Badges</div></div>
+  </div>
+
+  <!-- Personal -->
+  <div class="settings-group">
+    <div class="settings-group-title">Personal</div>
+    <div class="settings-list">
+      <div class="setting-item" onclick="showToast('打开个人信息')">
+        <div class="setting-icon-wrap" style="background:#F0FDFA;">👤</div>
+        <div class="setting-info"><div class="setting-name">Personal Info</div><div class="setting-desc">Name, email, photo</div></div>
+        <div class="setting-arrow">›</div>
+      </div>
+      <div class="setting-item" onclick="showToast('打开提醒设置')">
+        <div class="setting-icon-wrap" style="background:#FFF7ED;">🔔</div>
+        <div class="setting-info"><div class="setting-name">Reminders</div><div class="setting-desc">Daily at 7:30 AM</div></div>
+        <div class="setting-arrow">›</div>
+      </div>
+      <div class="setting-item">
+        <div class="setting-icon-wrap" style="background:#F0FFF4;">🌙</div>
+        <div class="setting-info"><div class="setting-name">Dark Mode</div><div class="setting-desc">System default</div></div>
+        <button class="toggle on" onclick="this.classList.toggle('on')"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Preferences -->
+  <div class="settings-group">
+    <div class="settings-group-title">Preferences</div>
+    <div class="settings-list">
+      <div class="setting-item" onclick="showToast('打开冥想设置')">
+        <div class="setting-icon-wrap" style="background:#F5F3FF;">🧘</div>
+        <div class="setting-info"><div class="setting-name">Meditation Style</div><div class="setting-desc">Guided, timed, ambient</div></div>
+        <div class="setting-arrow">›</div>
+      </div>
+      <div class="setting-item">
+        <div class="setting-icon-wrap" style="background:#FFF0F5;">🔊</div>
+        <div class="setting-info"><div class="setting-name">Background Sounds</div><div class="setting-desc">Ocean waves selected</div></div>
+        <div class="setting-badge">Ocean</div>
+      </div>
+      <div class="setting-item" onclick="showToast('打开语言设置')">
+        <div class="setting-icon-wrap" style="background:#F0FDFA;">🌍</div>
+        <div class="setting-info"><div class="setting-name">Language</div><div class="setting-desc">English (US)</div></div>
+        <div class="setting-arrow">›</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Upgrade Card -->
+  <div class="upgrade-card">
+    <div class="upgrade-icon">✨</div>
+    <div style="flex:1;">
+      <div class="upgrade-title">Bloom Pro — Active</div>
+      <div class="upgrade-desc">Renews May 2, 2026 · Manage subscription</div>
+    </div>
+    <div class="upgrade-arrow">›</div>
+  </div>
+
+  <!-- Support -->
+  <div class="settings-group">
+    <div class="settings-group-title">Support</div>
+    <div class="settings-list">
+      <div class="setting-item" onclick="showToast('打开帮助中心')">
+        <div class="setting-icon-wrap" style="background:#F0FDFA;">❓</div>
+        <div class="setting-info"><div class="setting-name">Help Center</div></div>
+        <div class="setting-arrow">›</div>
+      </div>
+      <div class="setting-item" onclick="showToast('发送反馈')">
+        <div class="setting-icon-wrap" style="background:#FFF7ED;">💬</div>
+        <div class="setting-info"><div class="setting-name">Send Feedback</div></div>
+        <div class="setting-arrow">›</div>
+      </div>
+      <div class="setting-item" onclick="showToast('已退出')">
+        <div class="setting-icon-wrap" style="background:#FEF2F2;">🚪</div>
+        <div class="setting-info"><div class="setting-name" style="color:#EF4444;">Sign Out</div></div>
+      </div>
+    </div>
+  </div>
+  <div style="height:var(--sp6);"></div>
+</div><!-- /page-scroll -->
+
+<nav class="tabbar">
+  <a href="page-01-home.html" class="tab-item" title="首页"><div class="tab-icon">🏠</div>Home</a>
+  <a href="page-03-explore.html" class="tab-item" title="探索"><div class="tab-icon">🔍</div>Explore</a>
+  <a href="page-02-session.html" class="tab-item" title="冥想"><div class="tab-icon" style="font-size:28px;">🌿</div></a>
+  <a href="page-04-progress.html" class="tab-item" title="进度"><div class="tab-icon">📊</div>Progress</a>
+  <a href="page-05-profile.html" class="tab-item active" title="我的"><div class="tab-icon">👤</div>Profile</a>
+</nav>
+<div class="toast-wrap"><div class="toast" id="toast"></div></div>
+<script>
+let _tt;function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>t.classList.remove('show'),1800);}
+</script>
+</body>
+</html>

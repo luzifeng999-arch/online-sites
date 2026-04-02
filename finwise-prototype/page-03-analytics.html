@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Analytics — Finwise</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+<style>
+:root{--color-primary:#6366F1;--color-primary-hover:#4F46E5;--color-primary-light:rgba(99,102,241,.10);--color-primary-fg:#fff;--color-bg:#fff;--color-surface:#F8FAFC;--color-surface-2:#F1F5F9;--color-border:#E2E8F0;--color-border-light:#CBD5E1;--color-muted:#64748B;--color-foreground:#0F172A;--color-success:#10B981;--color-success-bg:#ECFDF5;--color-warning:#F59E0B;--color-error:#EF4444;--color-info:#3B82F6;--font-sans:'Inter',system-ui,sans-serif;--font-display:'Plus Jakarta Sans',sans-serif;--fw-r:400;--fw-m:500;--fw-sb:600;--fw-b:700;--text-xs:11px;--text-sm:13px;--text-base:16px;--text-lg:20px;--text-xl:25px;--text-2xl:31px;--sp1:4px;--sp2:8px;--sp3:12px;--sp4:16px;--sp5:20px;--sp6:24px;--sp8:32px;--radius-card:10px;--radius-btn:8px;--radius-sm:6px;--radius-md:10px;--radius-full:9999px;--shadow-sm:0 1px 4px rgba(0,0,0,.08);--shadow-md:0 4px 12px rgba(0,0,0,.08);--dur:180ms;--ease:cubic-bezier(.4,0,.2,1);--nav-h:60px;--sidebar-w:240px;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font-sans);background:var(--color-bg);color:var(--color-foreground);-webkit-font-smoothing:antialiased;}
+a{color:inherit;text-decoration:none;}button{cursor:pointer;font-family:inherit;border:none;background:none;}
+.app{display:flex;min-height:100vh;}
+.sidebar{width:var(--sidebar-w);flex-shrink:0;background:#1E1B4B;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;}
+.sidebar-logo{display:flex;align-items:center;gap:var(--sp3);padding:var(--sp5);border-bottom:1px solid rgba(255,255,255,.08);}
+.logo-mark{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#818CF8,#6366F1);display:flex;align-items:center;justify-content:center;font-size:18px;}
+.logo-name{font-family:var(--font-display);font-size:var(--text-lg);font-weight:var(--fw-b);color:#fff;}
+.sidebar-section{padding:var(--sp4) var(--sp3);}
+.sidebar-section-title{font-size:10px;font-weight:var(--fw-sb);color:rgba(255,255,255,.35);letter-spacing:.08em;text-transform:uppercase;padding:0 var(--sp3) var(--sp2);}
+.sidebar-item{display:flex;align-items:center;gap:var(--sp3);padding:var(--sp2) var(--sp3);border-radius:var(--radius-sm);font-size:var(--text-sm);color:rgba(255,255,255,.6);transition:all var(--dur) var(--ease);cursor:pointer;}
+.sidebar-item:hover{background:rgba(255,255,255,.08);color:#fff;}
+.sidebar-item.active{background:rgba(99,102,241,.25);color:#fff;}
+.sideicon{font-size:16px;width:20px;text-align:center;}
+.sidebar-badge{margin-left:auto;background:var(--color-primary);color:#fff;font-size:10px;font-weight:var(--fw-sb);padding:1px 7px;border-radius:var(--radius-full);}
+.sidebar-footer{margin-top:auto;padding:var(--sp4);border-top:1px solid rgba(255,255,255,.08);}
+.sidebar-user{display:flex;align-items:center;gap:var(--sp3);padding:var(--sp2);border-radius:var(--radius-sm);cursor:pointer;}
+.avatar{width:34px;height:34px;border-radius:var(--radius-full);background:linear-gradient(135deg,#818CF8,#6366F1);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:var(--fw-b);color:#fff;}
+.user-name{font-size:var(--text-sm);font-weight:var(--fw-m);color:#fff;}
+.user-role{font-size:11px;color:rgba(255,255,255,.4);}
+.main{flex:1;overflow:auto;}
+.topnav{height:var(--nav-h);background:var(--color-bg);border-bottom:1px solid var(--color-border);display:flex;align-items:center;padding:0 var(--sp8);gap:var(--sp4);position:sticky;top:0;z-index:50;}
+.topnav-title{font-family:var(--font-display);font-size:var(--text-lg);font-weight:var(--fw-b);flex:1;}
+.icon-btn{width:36px;height:36px;border-radius:var(--radius-full);display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--color-muted);background:var(--color-surface);border:1px solid var(--color-border);transition:all var(--dur);}
+.icon-btn:hover{background:var(--color-surface-2);}
+.topnav-avatar{width:36px;height:36px;border-radius:var(--radius-full);background:linear-gradient(135deg,#818CF8,#6366F1);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:var(--fw-b);color:#fff;cursor:pointer;}
+.content{padding:var(--sp8);max-width:1200px;width:100%;}
+.page-header{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--sp5);margin-bottom:var(--sp6);}
+.page-title{font-family:var(--font-display);font-size:26px;font-weight:var(--fw-b);}
+.page-desc{font-size:var(--text-sm);color:var(--color-muted);margin-top:var(--sp1);}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:var(--sp2);padding:var(--sp2) var(--sp5);border-radius:var(--radius-btn);font-size:var(--text-sm);font-weight:var(--fw-m);cursor:pointer;border:none;transition:all var(--dur) var(--ease);}
+.btn:active{transform:scale(.97);}
+.btn-primary{background:var(--color-primary);color:#fff;}
+.btn-primary:hover{background:var(--color-primary-hover);}
+.btn-secondary{background:var(--color-surface);color:var(--color-foreground);border:1px solid var(--color-border);}
+.btn-secondary:hover{background:var(--color-surface-2);}
+.btn-sm{padding:var(--sp1) var(--sp3);font-size:var(--text-xs);}
+.card{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-card);overflow:hidden;}
+.card-header{display:flex;align-items:center;justify-content:space-between;padding:var(--sp5) var(--sp6);border-bottom:1px solid var(--color-border);}
+.card-title{font-weight:var(--fw-sb);}
+.card-subtitle{font-size:var(--text-sm);color:var(--color-muted);}
+.card-body{padding:var(--sp5) var(--sp6);}
+
+/* AI INSIGHTS BANNER */
+.ai-banner{background:linear-gradient(135deg,rgba(99,102,241,.08),rgba(129,140,248,.05));border:1px solid rgba(99,102,241,.2);border-radius:var(--radius-card);padding:var(--sp5) var(--sp6);margin-bottom:var(--sp6);display:flex;align-items:flex-start;gap:var(--sp4);}
+.ai-icon{width:44px;height:44px;border-radius:var(--radius-md);background:linear-gradient(135deg,var(--color-primary),#818CF8);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.ai-content{flex:1;}
+.ai-title{font-weight:var(--fw-sb);font-size:var(--text-base);margin-bottom:var(--sp1);}
+.ai-desc{font-size:var(--text-sm);color:var(--color-muted);line-height:1.6;}
+.ai-tags{display:flex;gap:var(--sp2);margin-top:var(--sp3);flex-wrap:wrap;}
+.ai-tag{padding:3px var(--sp3);border-radius:var(--radius-full);font-size:var(--text-xs);font-weight:var(--fw-m);background:var(--color-primary-light);color:var(--color-primary);}
+
+/* INSIGHTS GRID */
+.insights-kpi{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--sp4);margin-bottom:var(--sp6);}
+.ins-card{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-card);padding:var(--sp5);transition:all var(--dur);}
+.ins-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);}
+.ins-label{font-size:var(--text-sm);color:var(--color-muted);font-weight:var(--fw-m);margin-bottom:var(--sp2);}
+.ins-val{font-size:var(--text-2xl);font-weight:var(--fw-b);font-family:var(--font-display);font-feature-settings:'tnum';}
+.ins-change{font-size:var(--text-xs);margin-top:var(--sp1);}
+
+/* CHARTS GRID */
+.charts-3{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:var(--sp4);margin-bottom:var(--sp4);}
+.charts-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--sp4);}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">💎</div>
+      <span class="logo-name">Finwise</span>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">Overview</div>
+      <a href="page-01-dashboard.html" class="sidebar-item"><span class="sideicon">📊</span>Dashboard</a>
+      <a href="page-02-transactions.html" class="sidebar-item"><span class="sideicon">💳</span>Transactions<span class="sidebar-badge">12</span></a>
+      <a href="page-03-analytics.html" class="sidebar-item active"><span class="sideicon">📈</span>Analytics</a>
+      <a href="page-04-budget.html" class="sidebar-item"><span class="sideicon">🎯</span>Budget & Goals</a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">Settings</div>
+      <a href="page-05-settings.html" class="sidebar-item"><span class="sideicon">⚙️</span>Settings</a>
+    </div>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="avatar">AJ</div>
+        <div><div class="user-name">Alex Johnson</div><div class="user-role">Free Plan</div></div>
+      </div>
+    </div>
+  </aside>
+  <div class="main">
+    <nav class="topnav">
+      <span class="topnav-title">Analytics</span>
+      <div style="display:flex;gap:var(--sp2);">
+        <button class="icon-btn">🔔</button>
+        <div class="topnav-avatar">AJ</div>
+      </div>
+    </nav>
+    <div class="content">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Financial Analytics</h1>
+          <p class="page-desc">Deep dive into your spending patterns and financial health</p>
+        </div>
+        <div style="display:flex;gap:var(--sp2);">
+          <button class="btn btn-secondary btn-sm">Last 3 Months ▾</button>
+          <button class="btn btn-secondary">📥 Export PDF</button>
+        </div>
+      </div>
+
+      <!-- AI Insights Banner -->
+      <div class="ai-banner">
+        <div class="ai-icon">🤖</div>
+        <div class="ai-content">
+          <div class="ai-title">✨ AI Insights — April 2026</div>
+          <div class="ai-desc">Your dining expenses increased 23% this month compared to your 3-month average. You're on track to hit your Summer Vacation goal 2 weeks ahead of schedule. Consider reducing subscription services to boost savings by an estimated $47/month.</div>
+          <div class="ai-tags">
+            <span class="ai-tag">💡 Dining Alert</span>
+            <span class="ai-tag">🏖️ Goal Ahead</span>
+            <span class="ai-tag">💰 Save $47/mo</span>
+          </div>
+        </div>
+        <button class="btn btn-secondary btn-sm" style="flex-shrink:0;">View All</button>
+      </div>
+
+      <!-- KPI Row -->
+      <div class="insights-kpi">
+        <div class="ins-card">
+          <div class="ins-label">Avg Monthly Spend</div>
+          <div class="ins-val">$3,040</div>
+          <div class="ins-change" style="color:var(--color-success);">↓ 4.6% vs prev quarter</div>
+        </div>
+        <div class="ins-card">
+          <div class="ins-label">Largest Category</div>
+          <div class="ins-val" style="font-size:var(--text-xl);">Housing</div>
+          <div class="ins-change" style="color:var(--color-muted);">37% of total spend</div>
+        </div>
+        <div class="ins-card">
+          <div class="ins-label">Savings Rate (Q1)</div>
+          <div class="ins-val" style="color:var(--color-success);">58.4%</div>
+          <div class="ins-change" style="color:var(--color-success);">↑ 3.2% vs prev quarter</div>
+        </div>
+        <div class="ins-card">
+          <div class="ins-label">Subscriptions / Month</div>
+          <div class="ins-val">$187</div>
+          <div class="ins-change" style="color:var(--color-warning);">↑ 12% vs last year</div>
+        </div>
+      </div>
+
+      <!-- Charts Row 1 -->
+      <div class="charts-3" style="margin-bottom:var(--sp4);">
+        <div class="card">
+          <div class="card-header">
+            <div><div class="card-title">Monthly Spending Trend</div><div class="card-subtitle">Jan – Apr 2026</div></div>
+            <button class="btn btn-secondary btn-sm">By Category ▾</button>
+          </div>
+          <div class="card-body">
+            <div id="chart-trend" style="height:220px;"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div><div class="card-title">Category Breakdown</div><div class="card-subtitle">April 2026</div></div>
+          </div>
+          <div class="card-body">
+            <div id="chart-pie" style="height:220px;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts Row 2 -->
+      <div class="charts-2">
+        <div class="card">
+          <div class="card-header">
+            <div><div class="card-title">Day-of-Week Spending</div><div class="card-subtitle">Average per day</div></div>
+          </div>
+          <div class="card-body">
+            <div id="chart-weekday" style="height:180px;"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div><div class="card-title">Income Sources</div><div class="card-subtitle">YTD 2026</div></div>
+          </div>
+          <div class="card-body">
+            <div id="chart-income" style="height:180px;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+const primary='#6366F1',muted='#94A3B8',border='#E2E8F0';
+// Trend Line Chart
+const trend=echarts.init(document.getElementById('chart-trend'));
+trend.setOption({grid:{top:20,right:20,bottom:30,left:50},tooltip:{trigger:'axis'},xAxis:{type:'category',data:['Jan','Feb','Mar','Apr'],axisLine:{lineStyle:{color:border}},axisLabel:{color:muted,fontSize:11}},yAxis:{type:'value',splitLine:{lineStyle:{color:border}},axisLabel:{color:muted,fontSize:11,formatter:v=>'$'+(v/1000).toFixed(1)+'k'}},series:[{name:'Expenses',type:'line',smooth:true,data:[2980,3120,2850,3182],itemStyle:{color:primary},areaStyle:{color:{type:'linear',x:0,y:0,x2:0,y2:1,colorStops:[{offset:0,color:'rgba(99,102,241,.25)'},{offset:1,color:'rgba(99,102,241,.02)'}]}},lineStyle:{width:2.5}},{name:'Income',type:'line',smooth:true,data:[7800,8200,7600,8400],itemStyle:{color:'#10B981'},lineStyle:{width:2.5,type:'dashed'}}]});
+// Pie
+const pie=echarts.init(document.getElementById('chart-pie'));
+pie.setOption({tooltip:{trigger:'item',formatter:'{b}: {d}%'},legend:{orient:'vertical',right:0,top:'middle',textStyle:{color:muted,fontSize:11}},series:[{type:'pie',radius:['50%','75%'],center:['40%','50%'],data:[{value:1176,name:'Housing',itemStyle:{color:primary}},{value:764,name:'Food',itemStyle:{color:'#818CF8'}},{value:477,name:'Transport',itemStyle:{color:'#10B981'}},{value:382,name:'Subs',itemStyle:{color:'#F59E0B'}},{value:383,name:'Other',itemStyle:{color:'#E2E8F0'}}],label:{show:false},emphasis:{scale:true}}]});
+// Weekday Bar
+const wk=echarts.init(document.getElementById('chart-weekday'));
+wk.setOption({grid:{top:10,right:10,bottom:30,left:50},tooltip:{trigger:'axis'},xAxis:{type:'category',data:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],axisLabel:{color:muted,fontSize:11},axisLine:{lineStyle:{color:border}}},yAxis:{type:'value',axisLabel:{color:muted,fontSize:11,formatter:v=>'$'+v},splitLine:{lineStyle:{color:border}}},series:[{type:'bar',data:[45,120,80,95,310,280,140],itemStyle:{color:primary,borderRadius:[3,3,0,0]},barMaxWidth:32}]});
+// Income Sources Horizontal Bar
+const inc=echarts.init(document.getElementById('chart-income'));
+inc.setOption({grid:{top:5,right:60,bottom:5,left:120},tooltip:{trigger:'axis',axisPointer:{type:'shadow'}},xAxis:{type:'value',show:false},yAxis:{type:'category',data:['Salary','Freelance','Investments','Dividends'],axisLabel:{color:muted,fontSize:11},axisLine:{show:false},axisTick:{show:false}},series:[{type:'bar',data:[24000,8600,3200,1400],itemStyle:{color:primary,borderRadius:[0,3,3,0]},barMaxWidth:18,label:{show:true,position:'right',color:muted,fontSize:11,formatter:v=>'$'+(v/1000).toFixed(1)+'k'}}]});
+window.addEventListener('resize',()=>{trend.resize();pie.resize();wk.resize();inc.resize();});
+</script>
+</body>
+</html>

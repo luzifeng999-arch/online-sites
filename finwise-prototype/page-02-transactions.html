@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Transactions — Finwise</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --color-primary:#6366F1; --color-primary-hover:#4F46E5;
+  --color-primary-light:rgba(99,102,241,.10); --color-primary-fg:#fff;
+  --color-bg:#fff; --color-surface:#F8FAFC; --color-surface-2:#F1F5F9;
+  --color-border:#E2E8F0; --color-border-light:#CBD5E1;
+  --color-muted:#64748B; --color-foreground:#0F172A; --color-foreground-inv:#fff;
+  --color-success:#10B981; --color-success-bg:#ECFDF5;
+  --color-warning:#F59E0B; --color-warning-bg:#FFFBEB;
+  --color-error:#EF4444; --color-error-bg:#FEF2F2;
+  --color-info:#3B82F6; --color-info-bg:#EFF6FF;
+  --font-sans:'Inter',system-ui,sans-serif;
+  --font-display:'Plus Jakarta Sans',sans-serif;
+  --fw-r:400; --fw-m:500; --fw-sb:600; --fw-b:700;
+  --text-xs:11px; --text-sm:13px; --text-base:16px; --text-lg:20px; --text-xl:25px;
+  --sp1:4px; --sp2:8px; --sp3:12px; --sp4:16px; --sp5:20px; --sp6:24px; --sp8:32px;
+  --radius-card:10px; --radius-btn:8px; --radius-input:6px; --radius-full:9999px;
+  --radius-sm:6px; --radius-md:10px;
+  --shadow-sm:0 1px 4px rgba(0,0,0,.08); --shadow-md:0 4px 12px rgba(0,0,0,.08);
+  --dur:180ms; --ease:cubic-bezier(.4,0,.2,1);
+  --nav-h:60px; --sidebar-w:240px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font-sans);background:var(--color-bg);color:var(--color-foreground);-webkit-font-smoothing:antialiased;}
+a{color:inherit;text-decoration:none;}
+button{cursor:pointer;font-family:inherit;border:none;background:none;}
+.app{display:flex;min-height:100vh;}
+.sidebar{width:var(--sidebar-w);flex-shrink:0;background:#1E1B4B;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;}
+.sidebar-logo{display:flex;align-items:center;gap:var(--sp3);padding:var(--sp5);border-bottom:1px solid rgba(255,255,255,.08);}
+.logo-mark{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#818CF8,#6366F1);display:flex;align-items:center;justify-content:center;font-size:18px;}
+.logo-name{font-family:var(--font-display);font-size:var(--text-lg);font-weight:var(--fw-b);color:#fff;}
+.sidebar-section{padding:var(--sp4) var(--sp3);}
+.sidebar-section-title{font-size:10px;font-weight:var(--fw-sb);color:rgba(255,255,255,.35);letter-spacing:.08em;text-transform:uppercase;padding:0 var(--sp3) var(--sp2);}
+.sidebar-item{display:flex;align-items:center;gap:var(--sp3);padding:var(--sp2) var(--sp3);border-radius:var(--radius-sm);font-size:var(--text-sm);color:rgba(255,255,255,.6);transition:all var(--dur) var(--ease);cursor:pointer;}
+.sidebar-item:hover{background:rgba(255,255,255,.08);color:#fff;}
+.sidebar-item.active{background:rgba(99,102,241,.25);color:#fff;}
+.sideicon{font-size:16px;width:20px;text-align:center;}
+.sidebar-badge{margin-left:auto;background:var(--color-primary);color:#fff;font-size:10px;font-weight:var(--fw-sb);padding:1px 7px;border-radius:var(--radius-full);}
+.sidebar-footer{margin-top:auto;padding:var(--sp4);border-top:1px solid rgba(255,255,255,.08);}
+.sidebar-user{display:flex;align-items:center;gap:var(--sp3);padding:var(--sp2);border-radius:var(--radius-sm);cursor:pointer;transition:background var(--dur);}
+.sidebar-user:hover{background:rgba(255,255,255,.08);}
+.avatar{width:34px;height:34px;border-radius:var(--radius-full);background:linear-gradient(135deg,#818CF8,#6366F1);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:var(--fw-b);color:#fff;}
+.user-name{font-size:var(--text-sm);font-weight:var(--fw-m);color:#fff;}
+.user-role{font-size:11px;color:rgba(255,255,255,.4);}
+.main{flex:1;background:var(--color-bg);overflow:auto;}
+.topnav{height:var(--nav-h);background:var(--color-bg);border-bottom:1px solid var(--color-border);display:flex;align-items:center;padding:0 var(--sp8);gap:var(--sp4);position:sticky;top:0;z-index:50;}
+.topnav-title{font-family:var(--font-display);font-size:var(--text-lg);font-weight:var(--fw-b);flex:1;}
+.icon-btn{width:36px;height:36px;border-radius:var(--radius-full);display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--color-muted);background:var(--color-surface);border:1px solid var(--color-border);transition:all var(--dur);}
+.icon-btn:hover{background:var(--color-surface-2);color:var(--color-foreground);}
+.topnav-avatar{width:36px;height:36px;border-radius:var(--radius-full);background:linear-gradient(135deg,#818CF8,#6366F1);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:var(--fw-b);color:#fff;cursor:pointer;}
+.content{padding:var(--sp8);max-width:1200px;width:100%;}
+.page-header{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--sp5);margin-bottom:var(--sp6);}
+.page-title{font-family:var(--font-display);font-size:26px;font-weight:var(--fw-b);}
+.page-desc{font-size:var(--text-sm);color:var(--color-muted);margin-top:var(--sp1);}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:var(--sp2);padding:var(--sp2) var(--sp5);border-radius:var(--radius-btn);font-size:var(--text-sm);font-weight:var(--fw-m);cursor:pointer;border:none;transition:all var(--dur) var(--ease);}
+.btn:active{transform:scale(.97);}
+.btn-primary{background:var(--color-primary);color:#fff;}
+.btn-primary:hover{background:var(--color-primary-hover);}
+.btn-secondary{background:var(--color-surface);color:var(--color-foreground);border:1px solid var(--color-border);}
+.btn-secondary:hover{background:var(--color-surface-2);}
+.btn-sm{padding:var(--sp1) var(--sp3);font-size:var(--text-xs);}
+
+/* FILTERS BAR */
+.filters-bar{display:flex;align-items:center;gap:var(--sp3);margin-bottom:var(--sp5);flex-wrap:wrap;}
+.search-input{display:flex;align-items:center;gap:var(--sp2);padding:0 var(--sp4);height:38px;background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-full);min-width:220px;transition:border-color var(--dur);}
+.search-input:focus-within{border-color:var(--color-primary);}
+.search-input input{border:none;background:transparent;font-size:var(--text-sm);color:var(--color-foreground);font-family:var(--font-sans);outline:none;width:100%;}
+.search-input input::placeholder{color:var(--color-muted);}
+.filter-select{height:38px;padding:0 var(--sp4);background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-btn);font-size:var(--text-sm);color:var(--color-foreground);font-family:var(--font-sans);cursor:pointer;transition:border-color var(--dur);}
+.filter-select:focus{outline:none;border-color:var(--color-primary);}
+.filter-select:hover{border-color:var(--color-border-light);}
+.filters-right{margin-left:auto;display:flex;gap:var(--sp2);}
+
+/* SUMMARY CHIPS */
+.summary-chips{display:flex;gap:var(--sp3);margin-bottom:var(--sp6);flex-wrap:wrap;}
+.chip{padding:var(--sp2) var(--sp4);border-radius:var(--radius-card);border:1px solid var(--color-border);background:var(--color-surface);font-size:var(--text-sm);}
+.chip-label{color:var(--color-muted);}
+.chip-val{font-weight:var(--fw-sb);margin-left:var(--sp2);}
+.chip-val.pos{color:var(--color-success);}
+.chip-val.neg{color:var(--color-error);}
+.chip-val.neu{color:var(--color-foreground);}
+
+/* TABLE */
+.card{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-card);overflow:hidden;}
+.card-header{display:flex;align-items:center;justify-content:space-between;padding:var(--sp4) var(--sp6);border-bottom:1px solid var(--color-border);}
+.card-title{font-weight:var(--fw-sb);}
+.table-wrap{overflow:auto;}
+table{width:100%;border-collapse:collapse;}
+th{font-size:var(--text-xs);font-weight:var(--fw-sb);color:var(--color-muted);text-transform:uppercase;letter-spacing:.06em;padding:var(--sp3) var(--sp5);text-align:left;border-bottom:1px solid var(--color-border);white-space:nowrap;cursor:pointer;user-select:none;}
+th:hover{color:var(--color-foreground);}
+th.sort-asc::after{content:' ↑';color:var(--color-primary);}
+th.sort-desc::after{content:' ↓';color:var(--color-primary);}
+td{padding:var(--sp3) var(--sp5);font-size:var(--text-sm);border-bottom:1px solid var(--color-border);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:var(--color-surface-2);cursor:pointer;}
+.tx-merchant{display:flex;align-items:center;gap:var(--sp3);}
+.tx-icon{width:36px;height:36px;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.tx-name{font-weight:var(--fw-m);}
+.tx-cat{font-size:var(--text-xs);color:var(--color-muted);}
+.badge{display:inline-flex;align-items:center;padding:2px var(--sp3);border-radius:var(--radius-full);font-size:var(--text-xs);font-weight:var(--fw-m);}
+.badge-success{background:var(--color-success-bg);color:var(--color-success);}
+.badge-warning{background:var(--color-warning-bg);color:var(--color-warning);}
+.badge-error{background:var(--color-error-bg);color:var(--color-error);}
+.badge-neutral{background:var(--color-surface-2);color:var(--color-muted);border:1px solid var(--color-border);}
+.amount-pos{color:var(--color-success);font-weight:var(--fw-sb);font-feature-settings:'tnum';}
+.amount-neg{color:var(--color-foreground);font-weight:var(--fw-m);font-feature-settings:'tnum';}
+.row-actions{display:flex;gap:var(--sp1);opacity:0;transition:opacity var(--dur);}
+tr:hover .row-actions{opacity:1;}
+.row-act-btn{width:28px;height:28px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--color-muted);background:var(--color-surface);border:1px solid var(--color-border);transition:all var(--dur);}
+.row-act-btn:hover{background:var(--color-primary-light);color:var(--color-primary);border-color:var(--color-primary);}
+.pagination{display:flex;align-items:center;justify-content:space-between;padding:var(--sp4) var(--sp6);border-top:1px solid var(--color-border);}
+.page-info{font-size:var(--text-sm);color:var(--color-muted);}
+.page-btns{display:flex;gap:var(--sp1);}
+.page-btn{min-width:32px;height:32px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:var(--text-sm);color:var(--color-muted);background:var(--color-surface);border:1px solid var(--color-border);cursor:pointer;transition:all var(--dur);padding:0 var(--sp2);}
+.page-btn:hover{background:var(--color-surface-2);color:var(--color-foreground);}
+.page-btn.active{background:var(--color-primary);color:#fff;border-color:var(--color-primary);}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">💎</div>
+      <span class="logo-name">Finwise</span>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">Overview</div>
+      <a href="page-01-dashboard.html" class="sidebar-item"><span class="sideicon">📊</span>Dashboard</a>
+      <a href="page-02-transactions.html" class="sidebar-item active"><span class="sideicon">💳</span>Transactions<span class="sidebar-badge">12</span></a>
+      <a href="page-03-analytics.html" class="sidebar-item"><span class="sideicon">📈</span>Analytics</a>
+      <a href="page-04-budget.html" class="sidebar-item"><span class="sideicon">🎯</span>Budget & Goals</a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">Settings</div>
+      <a href="page-05-settings.html" class="sidebar-item"><span class="sideicon">⚙️</span>Settings</a>
+    </div>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="avatar">AJ</div>
+        <div><div class="user-name">Alex Johnson</div><div class="user-role">Free Plan</div></div>
+      </div>
+    </div>
+  </aside>
+  <div class="main">
+    <nav class="topnav">
+      <span class="topnav-title">Transactions</span>
+      <div class="topnav-actions" style="display:flex;gap:var(--sp2);">
+        <button class="icon-btn" aria-label="通知">🔔</button>
+        <div class="topnav-avatar">AJ</div>
+      </div>
+    </nav>
+    <div class="content">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">All Transactions</h1>
+          <p class="page-desc">12 transactions this month · Last synced 2 min ago</p>
+        </div>
+        <div style="display:flex;gap:var(--sp2);">
+          <button class="btn btn-secondary">📥 Export CSV</button>
+          <button class="btn btn-primary">+ Add Manual</button>
+        </div>
+      </div>
+
+      <!-- Summary Chips -->
+      <div class="summary-chips">
+        <div class="chip"><span class="chip-label">Total In</span><span class="chip-val pos">+$8,400.00</span></div>
+        <div class="chip"><span class="chip-label">Total Out</span><span class="chip-val neg">-$3,182.40</span></div>
+        <div class="chip"><span class="chip-label">Net Flow</span><span class="chip-val pos">+$5,217.60</span></div>
+        <div class="chip"><span class="chip-label">Transactions</span><span class="chip-val neu">12</span></div>
+        <div class="chip"><span class="chip-label">Pending</span><span class="chip-val" style="color:var(--color-warning);">2</span></div>
+      </div>
+
+      <!-- Filters -->
+      <div class="filters-bar">
+        <div class="search-input">
+          <span>🔍</span>
+          <input type="text" placeholder="Search by merchant, category..." id="search-input">
+        </div>
+        <select class="filter-select">
+          <option>All Categories</option>
+          <option>Food & Dining</option>
+          <option>Housing</option>
+          <option>Transport</option>
+          <option>Entertainment</option>
+          <option>Income</option>
+          <option>Subscriptions</option>
+        </select>
+        <select class="filter-select">
+          <option>All Status</option>
+          <option>Cleared</option>
+          <option>Pending</option>
+          <option>Failed</option>
+        </select>
+        <select class="filter-select">
+          <option>April 2026</option>
+          <option>March 2026</option>
+          <option>February 2026</option>
+        </select>
+        <div class="filters-right">
+          <button class="btn btn-secondary btn-sm">⚙ Columns</button>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">12 transactions</span>
+          <div style="display:flex;gap:var(--sp2);">
+            <button class="btn btn-secondary btn-sm" id="bulk-btn" disabled style="opacity:.4;">Bulk Actions</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:40px;"><input type="checkbox" id="chk-all" style="cursor:pointer;"></th>
+                <th class="sort-asc" onclick="sortTable(this)">Merchant</th>
+                <th onclick="sortTable(this)">Date</th>
+                <th onclick="sortTable(this)">Category</th>
+                <th onclick="sortTable(this)">Account</th>
+                <th onclick="sortTable(this)">Status</th>
+                <th onclick="sortTable(this)" style="text-align:right;">Amount</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="tx-tbody">
+              <tr>
+                <td><input type="checkbox" class="row-chk" style="cursor:pointer;"></td>
+                <td><div class="tx-merchant"><div class="tx-icon" style="background:#EFF6FF;">🛒</div><div><div class="tx-name">Whole Foods Market</div><div class="tx-cat">Groceries · #4521</div></div></div></td>
+                <td style="color:var(--color-muted);white-space:nowrap;">Apr 2, 2026</td>
+                <td><span class="badge badge-neutral">Food</span></td>
+                <td style="font-size:var(--text-xs);color:var(--color-muted);">Chase ···4821</td>
+                <td><span class="badge badge-success">Cleared</span></td>
+                <td style="text-align:right;" class="amount-neg">-$87.40</td>
+                <td><div class="row-actions"><button class="row-act-btn" title="编辑">✏</button><button class="row-act-btn" title="删除">🗑</button></div></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="row-chk" style="cursor:pointer;"></td>
+                <td><div class="tx-merchant"><div class="tx-icon" style="background:#ECFDF5;">💼</div><div><div class="tx-name">Stripe Payout</div><div class="tx-cat">Freelance · #4520</div></div></div></td>
+                <td style="color:var(--color-muted);white-space:nowrap;">Apr 1, 2026</td>
+                <td><span class="badge" style="background:#ECFDF5;color:var(--color-success);">Income</span></td>
+                <td style="font-size:var(--text-xs);color:var(--color-muted);">Wells Fargo ···2291</td>
+                <td><span class="badge badge-success">Cleared</span></td>
+                <td style="text-align:right;" class="amount-pos">+$2,400.00</td>
+                <td><div class="row-actions"><button class="row-act-btn" title="编辑">✏</button><button class="row-act-btn" title="删除">🗑</button></div></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="row-chk" style="cursor:pointer;"></td>
+                <td><div class="tx-merchant"><div class="tx-icon" style="background:#FEF2F2;">🏠</div><div><div class="tx-name">Apartment Rent</div><div class="tx-cat">Housing · #4519</div></div></div></td>
+                <td style="color:var(--color-muted);white-space:nowrap;">Apr 1, 2026</td>
+                <td><span class="badge badge-neutral">Housing</span></td>
+                <td style="font-size:var(--text-xs);color:var(--color-muted);">Chase ···4821</td>
+                <td><span class="badge badge-success">Cleared</span></td>
+                <td style="text-align:right;" class="amount-neg">-$1,500.00</td>
+                <td><div class="row-actions"><button class="row-act-btn" title="编辑">✏</button><button class="row-act-btn" title="删除">🗑</button></div></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="row-chk" style="cursor:pointer;"></td>
+                <td><div class="tx-merchant"><div class="tx-icon" style="background:#F5F3FF;">☕</div><div><div class="tx-name">Blue Bottle Coffee</div><div class="tx-cat">Dining · #4518</div></div></div></td>
+                <td style="color:var(--color-muted);white-space:nowrap;">Mar 31, 2026</td>
+                <td><span class="badge badge-neutral">Dining</span></td>
+                <td style="font-size:var(--text-xs);color:var(--color-muted);">Chase ···4821</td>
+                <td><span class="badge badge-warning">Pending</span></td>
+                <td style="text-align:right;" class="amount-neg">-$14.50</td>
+                <td><div class="row-actions"><button class="row-act-btn" title="编辑">✏</button><button class="row-act-btn" title="删除">🗑</button></div></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="row-chk" style="cursor:pointer;"></td>
+                <td><div class="tx-merchant"><div class="tx-icon" style="background:#FFF7ED;">🎬</div><div><div class="tx-name">Netflix</div><div class="tx-cat">Subscription · #4517</div></div></div></td>
+                <td style="color:var(--color-muted);white-space:nowrap;">Mar 30, 2026</td>
+                <td><span class="badge badge-neutral">Entertainment</span></td>
+                <td style="font-size:var(--text-xs);color:var(--color-muted);">Chase ···4821</td>
+                <td><span class="badge badge-success">Cleared</span></td>
+                <td style="text-align:right;" class="amount-neg">-$15.99</td>
+                <td><div class="row-actions"><button class="row-act-btn" title="编辑">✏</button><button class="row-act-btn" title="删除">🗑</button></div></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="row-chk" style="cursor:pointer;"></td>
+                <td><div class="tx-merchant"><div class="tx-icon" style="background:#F0FDF4;">🚗</div><div><div class="tx-name">Uber</div><div class="tx-cat">Transport · #4516</div></div></div></td>
+                <td style="color:var(--color-muted);white-space:nowrap;">Mar 29, 2026</td>
+                <td><span class="badge badge-neutral">Transport</span></td>
+                <td style="font-size:var(--text-xs);color:var(--color-muted);">Chase ···4821</td>
+                <td><span class="badge badge-success">Cleared</span></td>
+                <td style="text-align:right;" class="amount-neg">-$23.80</td>
+                <td><div class="row-actions"><button class="row-act-btn" title="编辑">✏</button><button class="row-act-btn" title="删除">🗑</button></div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="pagination">
+          <span class="page-info">Showing 1–6 of 12 transactions</span>
+          <div class="page-btns">
+            <button class="page-btn" disabled style="opacity:.4;">← Prev</button>
+            <button class="page-btn active">1</button>
+            <button class="page-btn">2</button>
+            <button class="page-btn">Next →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+const chkAll=document.getElementById('chk-all');
+const bulkBtn=document.getElementById('bulk-btn');
+function updateBulk(){
+  const checked=document.querySelectorAll('.row-chk:checked').length;
+  bulkBtn.disabled=checked===0;bulkBtn.style.opacity=checked?'1':'.4';
+}
+chkAll.addEventListener('change',function(){
+  document.querySelectorAll('.row-chk').forEach(c=>c.checked=this.checked);
+  updateBulk();
+});
+document.querySelectorAll('.row-chk').forEach(c=>c.addEventListener('change',updateBulk));
+function sortTable(th){
+  const was=th.classList.contains('sort-asc');
+  document.querySelectorAll('th').forEach(h=>h.classList.remove('sort-asc','sort-desc'));
+  th.classList.add(was?'sort-desc':'sort-asc');
+}
+document.getElementById('search-input').addEventListener('input',function(){
+  const q=this.value.toLowerCase();
+  document.querySelectorAll('#tx-tbody tr').forEach(tr=>{
+    tr.style.display=tr.textContent.toLowerCase().includes(q)?'':'none';
+  });
+});
+</script>
+</body>
+</html>

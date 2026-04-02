@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>探索 — Bloom</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --color-primary:#14B8A6;--color-primary-light:rgba(20,184,166,.12);
+  --color-bg:#fff;--color-surface:#F0FDFA;--color-surface-2:#CCFBF1;
+  --color-border:#99F6E4;--color-muted:#6B7280;--color-foreground:#134E4A;
+  --font-sans:'Nunito',system-ui,sans-serif;
+  --fw-r:400;--fw-m:500;--fw-sb:600;--fw-b:700;--fw-eb:800;
+  --text-xs:11px;--text-sm:13px;--text-base:16px;--text-lg:20px;
+  --sp1:4px;--sp2:8px;--sp3:12px;--sp4:16px;--sp5:20px;--sp6:24px;
+  --radius-card:16px;--radius-btn:9999px;--radius-full:9999px;
+  --dur:180ms;--ease:cubic-bezier(.4,0,.2,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+/* ⚠️ BUG-11 */
+body{width:390px;height:844px;overflow:hidden;background:var(--color-bg);color:var(--color-foreground);font-family:var(--font-sans);-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;}
+a{color:inherit;text-decoration:none;}
+button{cursor:pointer;font-family:inherit;border:none;background:none;}
+/* ⚠️ BUG-12 */
+.page-scroll{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;}
+
+.status-bar{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 var(--sp5);flex-shrink:0;}
+.status-time{font-size:15px;font-weight:var(--fw-b);color:var(--color-foreground);}
+.status-icons{font-size:12px;color:var(--color-foreground);}
+
+.page-header{padding:0 var(--sp5) var(--sp4);}
+.page-title{font-size:26px;font-weight:var(--fw-eb);}
+.page-sub{font-size:var(--text-sm);color:var(--color-muted);margin-top:2px;}
+
+/* SEARCH */
+.search-wrap{position:relative;margin:0 var(--sp5) var(--sp5);}
+.search-icon{position:absolute;left:var(--sp4);top:50%;transform:translateY(-50%);font-size:16px;pointer-events:none;}
+.search-input{width:100%;height:44px;background:var(--color-surface);border:1.5px solid var(--color-border);border-radius:var(--radius-full);font-family:var(--font-sans);font-size:var(--text-sm);color:var(--color-foreground);padding:0 var(--sp4) 0 44px;outline:none;transition:border-color var(--dur);}
+.search-input:focus{border-color:var(--color-primary);box-shadow:0 0 0 3px var(--color-primary-light);}
+
+/* CATEGORY CHIPS */
+.cats-scroll{display:flex;gap:var(--sp2);padding:0 var(--sp5);overflow-x:auto;-webkit-overflow-scrolling:touch;margin-bottom:var(--sp5);}
+.cats-scroll::-webkit-scrollbar{display:none;}
+.cat-chip{flex-shrink:0;padding:8px var(--sp4);border-radius:var(--radius-full);font-size:var(--text-sm);font-weight:var(--fw-sb);border:1.5px solid var(--color-border);background:var(--color-bg);color:var(--color-muted);transition:all var(--dur);cursor:pointer;}
+.cat-chip:active{transform:scale(.94);}
+.cat-chip.active{background:var(--color-primary);border-color:var(--color-primary);color:#fff;}
+
+/* FEATURED */
+.section-title{font-size:var(--text-sm);font-weight:var(--fw-b);color:var(--color-muted);letter-spacing:.04em;text-transform:uppercase;padding:0 var(--sp5);margin-bottom:var(--sp3);}
+.featured-card{margin:0 var(--sp5) var(--sp5);border-radius:var(--radius-card);overflow:hidden;position:relative;height:160px;cursor:pointer;}
+.featured-bg{position:absolute;inset:0;background:linear-gradient(135deg,#0D9488,#14B8A6,#2DD4BF);}
+.featured-bg::after{content:'🌊';position:absolute;right:-10px;bottom:-20px;font-size:100px;opacity:.15;}
+.featured-content{position:relative;z-index:1;padding:var(--sp5);height:100%;display:flex;flex-direction:column;justify-content:flex-end;color:#fff;}
+.featured-tag{display:inline-flex;align-items:center;gap:4px;padding:2px 10px;background:rgba(255,255,255,.2);border-radius:var(--radius-full);font-size:10px;font-weight:var(--fw-sb);margin-bottom:var(--sp2);}
+.featured-name{font-size:22px;font-weight:var(--fw-eb);margin-bottom:4px;}
+.featured-meta{font-size:var(--text-xs);opacity:.8;}
+.featured-play{position:absolute;top:var(--sp4);right:var(--sp4);width:44px;height:44px;border-radius:var(--radius-full);background:rgba(255,255,255,.2);border:1.5px solid rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;transition:all var(--dur);}
+.featured-play:active{transform:scale(.92);}
+
+/* SESSION GRID */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp3);padding:0 var(--sp5);margin-bottom:var(--sp6);}
+.grid-card{border-radius:var(--radius-card);overflow:hidden;padding:var(--sp4);cursor:pointer;transition:all var(--dur);border:1.5px solid var(--color-border);}
+.grid-card:active{transform:scale(.96);}
+.grid-card-bg{margin-bottom:var(--sp3);}
+.grid-icon{font-size:32px;}
+.grid-name{font-size:var(--text-sm);font-weight:var(--fw-b);margin-bottom:2px;}
+.grid-meta{font-size:var(--text-xs);color:var(--color-muted);}
+.grid-badge{display:inline-flex;padding:2px 8px;border-radius:var(--radius-full);font-size:10px;font-weight:var(--fw-sb);margin-top:var(--sp2);}
+
+/* LONG LIST */
+.prog-list{padding:0 var(--sp5);margin-bottom:var(--sp6);}
+.prog-item{display:flex;align-items:center;gap:var(--sp3);padding:var(--sp3) 0;border-bottom:1px solid var(--color-border);}
+.prog-item:last-child{border-bottom:none;}
+.prog-icon{width:46px;height:46px;border-radius:var(--radius-card);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.prog-info{flex:1;min-width:0;}
+.prog-name{font-size:var(--text-sm);font-weight:var(--fw-sb);}
+.prog-meta{font-size:var(--text-xs);color:var(--color-muted);margin-top:2px;}
+.prog-dur{font-size:var(--text-sm);font-weight:var(--fw-b);color:var(--color-primary);flex-shrink:0;}
+.prog-arrow{font-size:18px;color:var(--color-muted);flex-shrink:0;}
+
+/* TABBAR */
+.tabbar{height:64px;background:var(--color-bg);border-top:1.5px solid var(--color-border);display:flex;align-items:center;justify-content:space-around;padding-bottom:env(safe-area-inset-bottom);flex-shrink:0;}
+.tab-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:var(--sp2) 0;font-size:10px;color:var(--color-muted);transition:color var(--dur);min-height:44px;justify-content:center;cursor:pointer;}
+.tab-item.active{color:var(--color-primary);}
+.tab-icon{font-size:22px;line-height:1;}
+</style>
+</head>
+<body>
+<div class="page-scroll">
+  <div class="status-bar">
+    <span class="status-time">9:41</span>
+    <span class="status-icons">●●● WiFi 100%🔋</span>
+  </div>
+
+  <div class="page-header">
+    <div class="page-title">Explore</div>
+    <div class="page-sub">Discover your perfect session</div>
+  </div>
+
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input class="search-input" placeholder="Search sessions, teachers...">
+  </div>
+
+  <div class="cats-scroll">
+    <div class="cat-chip active" onclick="selCat(this)">All</div>
+    <div class="cat-chip" onclick="selCat(this)">🌊 Calm</div>
+    <div class="cat-chip" onclick="selCat(this)">💨 Breathwork</div>
+    <div class="cat-chip" onclick="selCat(this)">🎯 Focus</div>
+    <div class="cat-chip" onclick="selCat(this)">🌙 Sleep</div>
+    <div class="cat-chip" onclick="selCat(this)">🧘 Yoga</div>
+    <div class="cat-chip" onclick="selCat(this)">🌿 Nature</div>
+  </div>
+
+  <!-- Featured -->
+  <div class="section-title">Featured</div>
+  <a href="page-02-session.html" class="featured-card" title="开始这个冥想">
+    <div class="featured-bg"></div>
+    <button class="featured-play" onclick="event.stopPropagation()">▶</button>
+    <div class="featured-content">
+      <div class="featured-tag">🌊 CALM · BEGINNER</div>
+      <div class="featured-name">Ocean Soundscape</div>
+      <div class="featured-meta">15 min · 12.4k sessions completed</div>
+    </div>
+  </a>
+
+  <!-- Grid -->
+  <div class="section-title">Quick Sessions</div>
+  <div class="grid-2">
+    <a href="page-02-session.html" class="grid-card" style="background:#F0FDFA;" title="呼吸练习">
+      <div class="grid-icon">💨</div>
+      <div class="grid-name">Box Breathing</div>
+      <div class="grid-meta">4-4-4-4 pattern</div>
+      <div class="grid-badge" style="background:var(--color-primary-light);color:var(--color-primary);">5 min</div>
+    </a>
+    <a href="page-02-session.html" class="grid-card" style="background:#FFF7ED;" title="早晨冥想">
+      <div class="grid-icon">☀️</div>
+      <div class="grid-name">Morning Rise</div>
+      <div class="grid-meta">Start your day</div>
+      <div class="grid-badge" style="background:#FEF3C7;color:#D97706;">10 min</div>
+    </a>
+    <a href="page-02-session.html" class="grid-card" style="background:#F5F3FF;" title="专注冥想">
+      <div class="grid-icon">🎯</div>
+      <div class="grid-name">Deep Focus</div>
+      <div class="grid-meta">Increase clarity</div>
+      <div class="grid-badge" style="background:#EDE9FE;color:#7C3AED;">20 min</div>
+    </a>
+    <a href="page-02-session.html" class="grid-card" style="background:#FFF0F5;" title="睡前冥想">
+      <div class="grid-icon">🌙</div>
+      <div class="grid-name">Wind Down</div>
+      <div class="grid-meta">Before sleep</div>
+      <div class="grid-badge" style="background:#FCE7F3;color:#DB2777;">15 min</div>
+    </a>
+  </div>
+
+  <!-- Programs -->
+  <div class="section-title">Programs</div>
+  <div class="prog-list">
+    <a href="page-02-session.html" class="prog-item" title="7天新手课程">
+      <div class="prog-icon" style="background:#F0FDFA;">🌱</div>
+      <div class="prog-info">
+        <div class="prog-name">Beginner's Journey</div>
+        <div class="prog-meta">7-day program · 3.2k enrolled</div>
+      </div>
+      <div class="prog-dur">7 days</div>
+      <div class="prog-arrow">›</div>
+    </a>
+    <a href="page-02-session.html" class="prog-item" title="压力管理课程">
+      <div class="prog-icon" style="background:#FFF0F5;">🧊</div>
+      <div class="prog-info">
+        <div class="prog-name">Stress Relief</div>
+        <div class="prog-meta">14-day program · 5.7k enrolled</div>
+      </div>
+      <div class="prog-dur">14 days</div>
+      <div class="prog-arrow">›</div>
+    </a>
+    <a href="page-02-session.html" class="prog-item" title="专注力提升课程">
+      <div class="prog-icon" style="background:#F5F3FF;">⚡</div>
+      <div class="prog-info">
+        <div class="prog-name">Focus Mastery</div>
+        <div class="prog-meta">21-day program · 8.1k enrolled</div>
+      </div>
+      <div class="prog-dur">21 days</div>
+      <div class="prog-arrow">›</div>
+    </a>
+  </div>
+</div><!-- /page-scroll -->
+
+<nav class="tabbar">
+  <a href="page-01-home.html" class="tab-item" title="首页"><div class="tab-icon">🏠</div>Home</a>
+  <a href="page-03-explore.html" class="tab-item active" title="探索"><div class="tab-icon">🔍</div>Explore</a>
+  <a href="page-02-session.html" class="tab-item" title="冥想"><div class="tab-icon" style="font-size:28px;">🌿</div></a>
+  <a href="page-04-progress.html" class="tab-item" title="进度"><div class="tab-icon">📊</div>Progress</a>
+  <a href="page-05-profile.html" class="tab-item" title="我的"><div class="tab-icon">👤</div>Profile</a>
+</nav>
+<script>
+function selCat(el){document.querySelectorAll('.cat-chip').forEach(c=>c.classList.remove('active'));el.classList.add('active');}
+</script>
+</body>
+</html>

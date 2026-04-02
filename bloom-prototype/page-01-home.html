@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>首页 — Bloom</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ===== DESIGN TOKENS — Teal Clean ===== */
+:root{
+  --color-primary:#14B8A6; --color-primary-hover:#0D9488;
+  --color-primary-light:rgba(20,184,166,.12); --color-primary-fg:#fff;
+  --color-bg:#fff; --color-surface:#F0FDFA; --color-surface-2:#CCFBF1;
+  --color-border:#99F6E4; --color-border-light:#5EEAD4;
+  --color-muted:#6B7280; --color-foreground:#134E4A; --color-foreground-inv:#fff;
+  --color-success:#10B981; --color-success-bg:#ECFDF5;
+  --color-warning:#F59E0B; --color-warning-bg:#FFFBEB;
+  --color-error:#EF4444; --color-error-bg:#FEF2F2;
+  --font-sans:'Nunito',system-ui,sans-serif;
+  --fw-r:400; --fw-m:500; --fw-sb:600; --fw-b:700; --fw-eb:800;
+  --text-xs:11px; --text-sm:13px; --text-base:16px; --text-lg:20px; --text-xl:25px;
+  --sp1:4px; --sp2:8px; --sp3:12px; --sp4:16px; --sp5:20px; --sp6:24px;
+  --radius-card:16px; --radius-btn:9999px; --radius-input:9999px;
+  --radius-sm:6px; --radius-md:10px; --radius-full:9999px;
+  --shadow-sm:0 1px 4px rgba(0,0,0,.06); --shadow-md:0 4px 12px rgba(0,0,0,.08);
+  --dur:180ms; --ease:cubic-bezier(.4,0,.2,1); --ease-spring:cubic-bezier(.34,1.56,.64,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+/* ⚠️ BUG-11: 固定视口 844px，禁止 min-height */
+body{
+  width:390px; height:844px; overflow:hidden;
+  background:var(--color-bg); color:var(--color-foreground);
+  font-family:var(--font-sans); -webkit-font-smoothing:antialiased;
+  display:flex; flex-direction:column;
+}
+a{color:inherit;text-decoration:none;}
+button{cursor:pointer;font-family:inherit;border:none;background:none;}
+
+/* ⚠️ BUG-12: page-scroll 包裹主内容 */
+.page-scroll{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;}
+
+/* STATUS BAR */
+.status-bar{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 var(--sp5);flex-shrink:0;}
+.status-time{font-size:15px;font-weight:var(--fw-b);color:var(--color-foreground);}
+.status-icons{display:flex;align-items:center;gap:4px;font-size:12px;color:var(--color-foreground);}
+
+/* TOP NAV */
+.topnav{display:flex;align-items:center;justify-content:space-between;padding:var(--sp2) var(--sp5) var(--sp3);}
+.topnav-greeting{font-size:var(--text-lg);font-weight:var(--fw-eb);line-height:1.2;}
+.topnav-date{font-size:var(--text-sm);color:var(--color-muted);margin-top:2px;}
+.icon-btn{width:40px;height:40px;border-radius:var(--radius-full);display:flex;align-items:center;justify-content:center;font-size:18px;background:var(--color-surface);border:1px solid var(--color-border);transition:all var(--dur);}
+.icon-btn:active{transform:scale(.92);}
+.notif-dot{width:8px;height:8px;background:var(--color-error);border-radius:50%;border:1.5px solid #fff;position:absolute;top:6px;right:6px;}
+.icon-btn-wrap{position:relative;}
+
+/* STREAK BANNER */
+.streak-banner{margin:0 var(--sp5) var(--sp5);padding:var(--sp5);background:linear-gradient(135deg,#0D9488,#14B8A6,#2DD4BF);border-radius:var(--radius-card);color:#fff;position:relative;overflow:hidden;}
+.streak-banner::before{content:'';position:absolute;top:-20px;right:-20px;width:100px;height:100px;background:rgba(255,255,255,.08);border-radius:50%;}
+.streak-banner::after{content:'';position:absolute;bottom:-30px;right:40px;width:70px;height:70px;background:rgba(255,255,255,.06);border-radius:50%;}
+.streak-title{font-size:var(--text-sm);font-weight:var(--fw-sb);opacity:.85;margin-bottom:var(--sp1);}
+.streak-val{font-size:36px;font-weight:var(--fw-eb);line-height:1.1;}
+.streak-desc{font-size:var(--text-xs);opacity:.7;margin-top:var(--sp1);}
+.streak-icon{position:absolute;right:var(--sp5);top:50%;transform:translateY(-50%);font-size:40px;opacity:.8;}
+
+/* TODAY'S SESSION */
+.section-title{font-size:var(--text-sm);font-weight:var(--fw-b);color:var(--color-muted);letter-spacing:.04em;text-transform:uppercase;padding:0 var(--sp5);margin-bottom:var(--sp3);}
+
+/* QUICK SESSIONS */
+.session-scroll{display:flex;gap:var(--sp3);padding:0 var(--sp5);overflow-x:auto;-webkit-overflow-scrolling:touch;margin-bottom:var(--sp6);}
+.session-scroll::-webkit-scrollbar{display:none;}
+.session-card{flex-shrink:0;width:140px;background:var(--color-surface);border:1.5px solid var(--color-border);border-radius:var(--radius-card);padding:var(--sp4);transition:all var(--dur);}
+.session-card:active{transform:scale(.96);}
+.session-card.featured{background:linear-gradient(135deg,#F0FDFA,#CCFBF1);border-color:var(--color-primary);}
+.session-icon{font-size:28px;margin-bottom:var(--sp2);}
+.session-name{font-size:var(--text-sm);font-weight:var(--fw-b);margin-bottom:2px;}
+.session-dur{font-size:var(--text-xs);color:var(--color-muted);}
+.session-badge{display:inline-flex;align-items:center;padding:2px 8px;background:var(--color-primary-light);color:var(--color-primary);font-size:10px;font-weight:var(--fw-sb);border-radius:var(--radius-full);margin-top:var(--sp2);}
+
+/* DAILY GOAL */
+.daily-goal{margin:0 var(--sp5) var(--sp5);background:var(--color-surface);border:1.5px solid var(--color-border);border-radius:var(--radius-card);padding:var(--sp4) var(--sp5);}
+.goal-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--sp3);}
+.goal-label{font-size:var(--text-sm);font-weight:var(--fw-b);}
+.goal-val{font-size:var(--text-sm);color:var(--color-muted);}
+.goal-val span{color:var(--color-primary);font-weight:var(--fw-sb);}
+.progress-bar{height:10px;background:var(--color-border);border-radius:var(--radius-full);overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--color-primary),#2DD4BF);border-radius:var(--radius-full);transition:width .6s var(--ease);}
+.goal-time{display:flex;justify-content:space-between;font-size:var(--text-xs);color:var(--color-muted);margin-top:var(--sp2);}
+
+/* MOOD CHECK */
+.mood-row{display:flex;justify-content:space-around;padding:var(--sp2) var(--sp5) var(--sp6);}
+.mood-btn{display:flex;flex-direction:column;align-items:center;gap:4px;padding:var(--sp3);border-radius:var(--radius-card);transition:all var(--dur);cursor:pointer;}
+.mood-btn:active,.mood-btn.selected{background:var(--color-primary-light);}
+.mood-emoji{font-size:26px;}
+.mood-label{font-size:10px;color:var(--color-muted);font-weight:var(--fw-m);}
+.mood-btn.selected .mood-label{color:var(--color-primary);}
+
+/* RECENT SESSIONS */
+.recent-list{padding:0 var(--sp5);margin-bottom:var(--sp6);}
+.recent-item{display:flex;align-items:center;gap:var(--sp3);padding:var(--sp3) 0;border-bottom:1px solid var(--color-border);}
+.recent-item:last-child{border-bottom:none;}
+.recent-icon-wrap{width:42px;height:42px;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.recent-info{flex:1;min-width:0;}
+.recent-name{font-size:var(--text-sm);font-weight:var(--fw-sb);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.recent-meta{font-size:var(--text-xs);color:var(--color-muted);margin-top:2px;}
+.recent-dur{font-size:var(--text-sm);font-weight:var(--fw-sb);color:var(--color-primary);flex-shrink:0;}
+
+/* TABBAR — BUG-01/12: sticky bottom, 在 page-scroll 外 */
+.tabbar{height:64px;background:var(--color-bg);border-top:1.5px solid var(--color-border);display:flex;align-items:center;justify-content:space-around;padding-bottom:env(safe-area-inset-bottom);flex-shrink:0;}
+.tab-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:var(--sp2) 0;cursor:pointer;font-size:10px;color:var(--color-muted);transition:color var(--dur);min-height:44px;justify-content:center;}
+.tab-item.active{color:var(--color-primary);}
+.tab-icon{font-size:22px;line-height:1;}
+</style>
+</head>
+<body>
+
+<!-- ⚠️ BUG-12: page-scroll 包裹所有内容（除 tabbar） -->
+<div class="page-scroll">
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <span class="status-time">9:41</span>
+    <div class="status-icons">
+      <span>●●●</span><span>WiFi</span><span>100%🔋</span>
+    </div>
+  </div>
+
+  <!-- Top Nav -->
+  <div class="topnav">
+    <div>
+      <div class="topnav-greeting">Good Morning 🌿</div>
+      <div class="topnav-date">Wednesday, April 2</div>
+    </div>
+    <div class="icon-btn-wrap">
+      <div class="icon-btn">🔔</div>
+      <div class="notif-dot"></div>
+    </div>
+  </div>
+
+  <!-- Streak Banner -->
+  <div class="streak-banner">
+    <div class="streak-title">🔥 Current Streak</div>
+    <div class="streak-val">14 Days</div>
+    <div class="streak-desc">Keep it up! Tomorrow makes 15 🌟</div>
+    <div class="streak-icon">🧘</div>
+  </div>
+
+  <!-- Quick Sessions -->
+  <div class="section-title">Today's Sessions</div>
+  <div class="session-scroll">
+    <a href="page-02-session.html" class="session-card featured" title="开始冥想">
+      <div class="session-icon">🌊</div>
+      <div class="session-name">Morning Calm</div>
+      <div class="session-dur">10 min</div>
+      <div class="session-badge">⭐ Featured</div>
+    </a>
+    <a href="page-02-session.html" class="session-card" title="呼吸练习">
+      <div class="session-icon">💨</div>
+      <div class="session-name">Breathwork</div>
+      <div class="session-dur">5 min</div>
+    </a>
+    <a href="page-02-session.html" class="session-card" title="专注冥想">
+      <div class="session-icon">🎯</div>
+      <div class="session-name">Focus Flow</div>
+      <div class="session-dur">15 min</div>
+    </a>
+    <a href="page-02-session.html" class="session-card" title="睡前冥想">
+      <div class="session-icon">🌙</div>
+      <div class="session-name">Sleep Well</div>
+      <div class="session-dur">20 min</div>
+    </a>
+  </div>
+
+  <!-- Daily Goal -->
+  <div class="section-title">Daily Goal</div>
+  <div class="daily-goal">
+    <div class="goal-row">
+      <span class="goal-label">🎯 Meditation Goal</span>
+      <span class="goal-val"><span>18</span> / 20 min</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" style="width:90%;"></div></div>
+    <div class="goal-time"><span>18 min done</span><span>2 min to go</span></div>
+  </div>
+
+  <!-- Mood Check -->
+  <div class="section-title" style="margin-top:var(--sp5);">How are you feeling?</div>
+  <div class="mood-row">
+    <div class="mood-btn" onclick="selectMood(this)"><div class="mood-emoji">😌</div><div class="mood-label">Calm</div></div>
+    <div class="mood-btn selected" onclick="selectMood(this)"><div class="mood-emoji">😊</div><div class="mood-label">Happy</div></div>
+    <div class="mood-btn" onclick="selectMood(this)"><div class="mood-emoji">😤</div><div class="mood-label">Stressed</div></div>
+    <div class="mood-btn" onclick="selectMood(this)"><div class="mood-emoji">😴</div><div class="mood-label">Tired</div></div>
+    <div class="mood-btn" onclick="selectMood(this)"><div class="mood-emoji">🤩</div><div class="mood-label">Energized</div></div>
+  </div>
+
+  <!-- Recent -->
+  <div class="section-title">Recent Sessions</div>
+  <div class="recent-list">
+    <div class="recent-item">
+      <div class="recent-icon-wrap" style="background:#F0FDFA;">🌊</div>
+      <div class="recent-info"><div class="recent-name">Morning Calm</div><div class="recent-meta">Today, 7:30 AM</div></div>
+      <div class="recent-dur">10 min</div>
+    </div>
+    <div class="recent-item">
+      <div class="recent-icon-wrap" style="background:#FFF7ED;">💨</div>
+      <div class="recent-info"><div class="recent-name">4-7-8 Breathwork</div><div class="recent-meta">Yesterday, 9:15 PM</div></div>
+      <div class="recent-dur">8 min</div>
+    </div>
+    <div class="recent-item">
+      <div class="recent-icon-wrap" style="background:#F5F3FF;">🎯</div>
+      <div class="recent-info"><div class="recent-name">Deep Focus</div><div class="recent-meta">Apr 1, 11:00 AM</div></div>
+      <div class="recent-dur">20 min</div>
+    </div>
+  </div>
+</div><!-- /page-scroll -->
+
+<!-- ⚠️ BUG-12: tabbar 在 page-scroll 外 -->
+<nav class="tabbar">
+  <a href="page-01-home.html" class="tab-item active" title="首页">
+    <div class="tab-icon">🏠</div>Home
+  </a>
+  <a href="page-03-explore.html" class="tab-item" title="探索">
+    <div class="tab-icon">🔍</div>Explore
+  </a>
+  <a href="page-02-session.html" class="tab-item" title="开始冥想">
+    <div class="tab-icon" style="font-size:28px;">🌿</div>
+  </a>
+  <a href="page-04-progress.html" class="tab-item" title="进度">
+    <div class="tab-icon">📊</div>Progress
+  </a>
+  <a href="page-05-profile.html" class="tab-item" title="我的">
+    <div class="tab-icon">👤</div>Profile
+  </a>
+</nav>
+
+<script>
+function selectMood(el){
+  document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('selected'));
+  el.classList.add('selected');
+}
+</script>
+</body>
+</html>

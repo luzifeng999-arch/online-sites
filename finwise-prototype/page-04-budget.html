@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Budget & Goals — Finwise</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--color-primary:#6366F1;--color-primary-hover:#4F46E5;--color-primary-light:rgba(99,102,241,.10);--color-primary-fg:#fff;--color-bg:#fff;--color-surface:#F8FAFC;--color-surface-2:#F1F5F9;--color-border:#E2E8F0;--color-border-light:#CBD5E1;--color-muted:#64748B;--color-foreground:#0F172A;--color-success:#10B981;--color-success-bg:#ECFDF5;--color-warning:#F59E0B;--color-warning-bg:#FFFBEB;--color-error:#EF4444;--color-error-bg:#FEF2F2;--color-info:#3B82F6;--font-sans:'Inter',system-ui,sans-serif;--font-display:'Plus Jakarta Sans',sans-serif;--fw-r:400;--fw-m:500;--fw-sb:600;--fw-b:700;--text-xs:11px;--text-sm:13px;--text-base:16px;--text-lg:20px;--text-xl:25px;--text-2xl:31px;--sp1:4px;--sp2:8px;--sp3:12px;--sp4:16px;--sp5:20px;--sp6:24px;--sp8:32px;--radius-card:10px;--radius-btn:8px;--radius-sm:6px;--radius-md:10px;--radius-full:9999px;--shadow-sm:0 1px 4px rgba(0,0,0,.08);--shadow-md:0 4px 12px rgba(0,0,0,.08);--shadow-xl:0 20px 48px rgba(0,0,0,.12);--dur:180ms;--ease:cubic-bezier(.4,0,.2,1);--ease-spring:cubic-bezier(.34,1.56,.64,1);--nav-h:60px;--sidebar-w:240px;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font-sans);background:var(--color-bg);color:var(--color-foreground);-webkit-font-smoothing:antialiased;}
+a{color:inherit;text-decoration:none;}button{cursor:pointer;font-family:inherit;border:none;background:none;}
+.app{display:flex;min-height:100vh;}
+.sidebar{width:var(--sidebar-w);flex-shrink:0;background:#1E1B4B;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;}
+.sidebar-logo{display:flex;align-items:center;gap:var(--sp3);padding:var(--sp5);border-bottom:1px solid rgba(255,255,255,.08);}
+.logo-mark{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#818CF8,#6366F1);display:flex;align-items:center;justify-content:center;font-size:18px;}
+.logo-name{font-family:var(--font-display);font-size:var(--text-lg);font-weight:var(--fw-b);color:#fff;}
+.sidebar-section{padding:var(--sp4) var(--sp3);}
+.sidebar-section-title{font-size:10px;font-weight:var(--fw-sb);color:rgba(255,255,255,.35);letter-spacing:.08em;text-transform:uppercase;padding:0 var(--sp3) var(--sp2);}
+.sidebar-item{display:flex;align-items:center;gap:var(--sp3);padding:var(--sp2) var(--sp3);border-radius:var(--radius-sm);font-size:var(--text-sm);color:rgba(255,255,255,.6);transition:all var(--dur) var(--ease);cursor:pointer;}
+.sidebar-item:hover{background:rgba(255,255,255,.08);color:#fff;}
+.sidebar-item.active{background:rgba(99,102,241,.25);color:#fff;}
+.sideicon{font-size:16px;width:20px;text-align:center;}
+.sidebar-badge{margin-left:auto;background:var(--color-primary);color:#fff;font-size:10px;font-weight:var(--fw-sb);padding:1px 7px;border-radius:var(--radius-full);}
+.sidebar-footer{margin-top:auto;padding:var(--sp4);border-top:1px solid rgba(255,255,255,.08);}
+.sidebar-user{display:flex;align-items:center;gap:var(--sp3);padding:var(--sp2);border-radius:var(--radius-sm);}
+.avatar{width:34px;height:34px;border-radius:var(--radius-full);background:linear-gradient(135deg,#818CF8,#6366F1);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:var(--fw-b);color:#fff;}
+.user-name{font-size:var(--text-sm);font-weight:var(--fw-m);color:#fff;}
+.user-role{font-size:11px;color:rgba(255,255,255,.4);}
+.main{flex:1;overflow:auto;}
+.topnav{height:var(--nav-h);background:var(--color-bg);border-bottom:1px solid var(--color-border);display:flex;align-items:center;padding:0 var(--sp8);gap:var(--sp4);position:sticky;top:0;z-index:50;}
+.topnav-title{font-family:var(--font-display);font-size:var(--text-lg);font-weight:var(--fw-b);flex:1;}
+.icon-btn{width:36px;height:36px;border-radius:var(--radius-full);display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--color-muted);background:var(--color-surface);border:1px solid var(--color-border);transition:all var(--dur);}
+.topnav-avatar{width:36px;height:36px;border-radius:var(--radius-full);background:linear-gradient(135deg,#818CF8,#6366F1);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:var(--fw-b);color:#fff;cursor:pointer;}
+.content{padding:var(--sp8);max-width:1200px;width:100%;}
+.page-header{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--sp5);margin-bottom:var(--sp6);}
+.page-title{font-family:var(--font-display);font-size:26px;font-weight:var(--fw-b);}
+.page-desc{font-size:var(--text-sm);color:var(--color-muted);margin-top:var(--sp1);}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:var(--sp2);padding:var(--sp2) var(--sp5);border-radius:var(--radius-btn);font-size:var(--text-sm);font-weight:var(--fw-m);cursor:pointer;border:none;transition:all var(--dur) var(--ease);}
+.btn:active{transform:scale(.97);}
+.btn-primary{background:var(--color-primary);color:#fff;}
+.btn-primary:hover{background:var(--color-primary-hover);}
+.btn-secondary{background:var(--color-surface);color:var(--color-foreground);border:1px solid var(--color-border);}
+.btn-secondary:hover{background:var(--color-surface-2);}
+.btn-sm{padding:var(--sp1) var(--sp3);font-size:var(--text-xs);}
+/* TABS */
+.page-tabs{display:flex;gap:0;margin-bottom:var(--sp6);border-bottom:1px solid var(--color-border);}
+.page-tab{padding:var(--sp3) var(--sp5);font-size:var(--text-sm);font-weight:var(--fw-m);color:var(--color-muted);cursor:pointer;transition:all var(--dur);border-bottom:2px solid transparent;margin-bottom:-1px;}
+.page-tab:hover{color:var(--color-foreground);}
+.page-tab.active{color:var(--color-primary);border-bottom-color:var(--color-primary);}
+/* BUDGET */
+.budget-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--sp4);margin-bottom:var(--sp8);}
+.budget-card{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-card);padding:var(--sp5);transition:all var(--dur);}
+.budget-card:hover{box-shadow:var(--shadow-md);border-color:var(--color-border-light);}
+.budget-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--sp3);}
+.budget-cat{display:flex;align-items:center;gap:var(--sp2);}
+.budget-icon{font-size:20px;}
+.budget-name{font-weight:var(--fw-sb);font-size:var(--text-sm);}
+.budget-overflow{font-size:var(--text-xs);color:var(--color-error);font-weight:var(--fw-sb);}
+.budget-amounts{display:flex;align-items:baseline;gap:var(--sp2);margin-bottom:var(--sp2);}
+.budget-spent{font-size:var(--text-xl);font-weight:var(--fw-b);font-family:var(--font-display);font-feature-settings:'tnum';}
+.budget-of{font-size:var(--text-sm);color:var(--color-muted);}
+.progress-bar{height:7px;background:var(--color-border);border-radius:var(--radius-full);overflow:hidden;margin-bottom:var(--sp2);}
+.progress-fill{height:100%;border-radius:var(--radius-full);transition:width .6s var(--ease);}
+.progress-safe{background:linear-gradient(90deg,var(--color-primary),#818CF8);}
+.progress-warn{background:linear-gradient(90deg,var(--color-warning),#FBBF24);}
+.progress-over{background:linear-gradient(90deg,var(--color-error),#FCA5A5);}
+.budget-meta{display:flex;justify-content:space-between;font-size:var(--text-xs);color:var(--color-muted);}
+/* GOALS */
+.goals-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--sp4);}
+.goal-card{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-card);padding:var(--sp6);transition:all var(--dur);}
+.goal-card:hover{box-shadow:var(--shadow-md);border-color:var(--color-primary);}
+.goal-card-header{display:flex;align-items:flex-start;gap:var(--sp4);margin-bottom:var(--sp5);}
+.goal-big-icon{width:52px;height:52px;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;}
+.goal-title{font-weight:var(--fw-b);font-size:var(--text-base);margin-bottom:var(--sp1);}
+.goal-target{font-size:var(--text-sm);color:var(--color-muted);}
+.goal-deadline{font-size:var(--text-xs);margin-top:var(--sp1);}
+.goal-progress-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:var(--sp2);}
+.goal-current{font-family:var(--font-display);font-size:var(--text-2xl);font-weight:var(--fw-b);font-feature-settings:'tnum';}
+.goal-pct-badge{font-size:var(--text-sm);font-weight:var(--fw-sb);padding:3px var(--sp3);border-radius:var(--radius-full);}
+.monthly-row{display:flex;gap:var(--sp2);margin-top:var(--sp4);}
+.monthly-bar{flex:1;background:var(--color-border);border-radius:2px;height:40px;position:relative;overflow:hidden;}
+.monthly-fill{position:absolute;bottom:0;left:0;right:0;border-radius:2px;transition:height .6s;}
+/* MODAL */
+.modal-backdrop{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;padding:var(--sp5);opacity:0;pointer-events:none;transition:opacity var(--dur) var(--ease);}
+.modal-backdrop.open{opacity:1;pointer-events:all;}
+.modal{background:var(--color-bg);border-radius:var(--radius-card);box-shadow:var(--shadow-xl);width:100%;max-width:480px;transform:scale(.96);transition:transform var(--dur) var(--ease-spring);overflow:hidden;}
+.modal-backdrop.open .modal{transform:scale(1);}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:var(--sp5) var(--sp6);border-bottom:1px solid var(--color-border);}
+.modal-title{font-size:var(--text-lg);font-weight:var(--fw-sb);}
+.modal-body{padding:var(--sp6);}
+.modal-footer{display:flex;justify-content:flex-end;gap:var(--sp3);padding:var(--sp4) var(--sp6);border-top:1px solid var(--color-border);background:var(--color-surface);}
+.form-field{margin-bottom:var(--sp4);}
+.form-label{display:block;font-size:var(--text-sm);font-weight:var(--fw-m);margin-bottom:var(--sp2);}
+.input{width:100%;height:40px;padding:0 var(--sp4);background:var(--color-bg);border:1px solid var(--color-border);border-radius:var(--radius-input);font-size:var(--text-sm);color:var(--color-foreground);font-family:var(--font-sans);transition:border-color var(--dur);}
+.input:focus{outline:none;border-color:var(--color-primary);box-shadow:0 0 0 3px var(--color-primary-light);}
+.icon-row{display:flex;gap:var(--sp2);flex-wrap:wrap;margin-top:var(--sp2);}
+.icon-opt{width:40px;height:40px;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;border:2px solid transparent;transition:all var(--dur);}
+.icon-opt:hover{background:var(--color-surface);}
+.icon-opt.selected{border-color:var(--color-primary);background:var(--color-primary-light);}
+/* TOAST */
+.toast-wrap{position:fixed;bottom:24px;right:24px;z-index:2000;display:flex;flex-direction:column;gap:8px;pointer-events:none;}
+.toast{background:var(--color-foreground);color:var(--color-bg);padding:var(--sp3) var(--sp5);border-radius:var(--radius-md);font-size:var(--text-sm);font-weight:var(--fw-m);transform:translateX(120%);transition:transform var(--dur) var(--ease-spring);}
+.toast.show{transform:translateX(0);}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="sidebar-logo"><div class="logo-mark">💎</div><span class="logo-name">Finwise</span></div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">Overview</div>
+      <a href="page-01-dashboard.html" class="sidebar-item"><span class="sideicon">📊</span>Dashboard</a>
+      <a href="page-02-transactions.html" class="sidebar-item"><span class="sideicon">💳</span>Transactions<span class="sidebar-badge">12</span></a>
+      <a href="page-03-analytics.html" class="sidebar-item"><span class="sideicon">📈</span>Analytics</a>
+      <a href="page-04-budget.html" class="sidebar-item active"><span class="sideicon">🎯</span>Budget & Goals</a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">Settings</div>
+      <a href="page-05-settings.html" class="sidebar-item"><span class="sideicon">⚙️</span>Settings</a>
+    </div>
+    <div class="sidebar-footer"><div class="sidebar-user"><div class="avatar">AJ</div><div><div class="user-name">Alex Johnson</div><div class="user-role">Free Plan</div></div></div></div>
+  </aside>
+  <div class="main">
+    <nav class="topnav">
+      <span class="topnav-title">Budget & Goals</span>
+      <div style="display:flex;gap:var(--sp2);"><button class="icon-btn">🔔</button><div class="topnav-avatar">AJ</div></div>
+    </nav>
+    <div class="content">
+      <div class="page-header">
+        <div><h1 class="page-title">Budget & Goals</h1><p class="page-desc">Track spending limits and savings milestones</p></div>
+        <div style="display:flex;gap:var(--sp2);">
+          <button class="btn btn-secondary" onclick="openModal('modal-budget')">+ New Budget</button>
+          <button class="btn btn-primary" onclick="openModal('modal-goal')">🎯 New Goal</button>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="page-tabs">
+        <div class="page-tab active" id="tab-budget" onclick="switchTab('budget')">Monthly Budgets</div>
+        <div class="page-tab" id="tab-goals" onclick="switchTab('goals')">Savings Goals</div>
+      </div>
+
+      <!-- Budget Panel -->
+      <div id="panel-budget">
+        <div class="budget-grid">
+          <div class="budget-card">
+            <div class="budget-header"><div class="budget-cat"><span class="budget-icon">🏠</span><span class="budget-name">Housing</span></div></div>
+            <div class="budget-amounts"><div class="budget-spent">$1,500</div><div class="budget-of">of $1,600</div></div>
+            <div class="progress-bar"><div class="progress-fill progress-warn" style="width:94%;"></div></div>
+            <div class="budget-meta"><span>94% used</span><span>$100 left</span></div>
+          </div>
+          <div class="budget-card">
+            <div class="budget-header"><div class="budget-cat"><span class="budget-icon">🍔</span><span class="budget-name">Food & Dining</span></div></div>
+            <div class="budget-amounts"><div class="budget-spent">$520</div><div class="budget-of">of $600</div></div>
+            <div class="progress-bar"><div class="progress-fill progress-safe" style="width:87%;"></div></div>
+            <div class="budget-meta"><span>87% used</span><span>$80 left</span></div>
+          </div>
+          <div class="budget-card">
+            <div class="budget-header"><div class="budget-cat"><span class="budget-icon">🚗</span><span class="budget-name">Transport</span></div><span class="budget-overflow">+$23 over!</span></div>
+            <div class="budget-amounts"><div class="budget-spent" style="color:var(--color-error);">$223</div><div class="budget-of">of $200</div></div>
+            <div class="progress-bar"><div class="progress-fill progress-over" style="width:100%;"></div></div>
+            <div class="budget-meta"><span style="color:var(--color-error);">Over budget</span><span>-$23</span></div>
+          </div>
+          <div class="budget-card">
+            <div class="budget-header"><div class="budget-cat"><span class="budget-icon">🎬</span><span class="budget-name">Entertainment</span></div></div>
+            <div class="budget-amounts"><div class="budget-spent">$95</div><div class="budget-of">of $200</div></div>
+            <div class="progress-bar"><div class="progress-fill progress-safe" style="width:47%;"></div></div>
+            <div class="budget-meta"><span>47% used</span><span>$105 left</span></div>
+          </div>
+          <div class="budget-card">
+            <div class="budget-header"><div class="budget-cat"><span class="budget-icon">📱</span><span class="budget-name">Subscriptions</span></div></div>
+            <div class="budget-amounts"><div class="budget-spent">$187</div><div class="budget-of">of $200</div></div>
+            <div class="progress-bar"><div class="progress-fill progress-warn" style="width:93%;"></div></div>
+            <div class="budget-meta"><span>93% used</span><span>$13 left</span></div>
+          </div>
+          <div class="budget-card" style="border:2px dashed var(--color-border);background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--sp3);cursor:pointer;min-height:140px;" onclick="openModal('modal-budget')">
+            <div style="width:40px;height:40px;border-radius:var(--radius-full);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;font-size:20px;">+</div>
+            <span style="font-size:var(--text-sm);color:var(--color-muted);">Add Budget Category</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Goals Panel -->
+      <div id="panel-goals" style="display:none;">
+        <div class="goals-grid">
+          <div class="goal-card">
+            <div class="goal-card-header">
+              <div class="goal-big-icon" style="background:#EFF6FF;">🏖️</div>
+              <div style="flex:1;">
+                <div class="goal-title">Summer Vacation</div>
+                <div class="goal-target">Target: $5,000</div>
+                <div class="goal-deadline" style="color:var(--color-primary);">📅 Due Jun 15, 2026 · 10 weeks left</div>
+              </div>
+              <button class="btn btn-secondary btn-sm">Edit</button>
+            </div>
+            <div class="goal-progress-row">
+              <div class="goal-current" style="color:var(--color-primary);">$3,200</div>
+              <span class="goal-pct-badge" style="background:var(--color-primary-light);color:var(--color-primary);">64%</span>
+            </div>
+            <div class="progress-bar" style="height:10px;"><div class="progress-fill progress-safe" style="width:64%;"></div></div>
+            <div style="margin-top:var(--sp3);font-size:var(--text-xs);color:var(--color-muted);">$1,800 remaining · Auto-save $180/week to hit target on time</div>
+          </div>
+          <div class="goal-card">
+            <div class="goal-card-header">
+              <div class="goal-big-icon" style="background:#F5F3FF;">💻</div>
+              <div style="flex:1;">
+                <div class="goal-title">New MacBook Pro</div>
+                <div class="goal-target">Target: $3,200</div>
+                <div class="goal-deadline" style="color:var(--color-warning);">📅 Due Dec 1, 2026 · 35 weeks left</div>
+              </div>
+              <button class="btn btn-secondary btn-sm">Edit</button>
+            </div>
+            <div class="goal-progress-row">
+              <div class="goal-current" style="color:var(--color-warning);">$1,800</div>
+              <span class="goal-pct-badge" style="background:var(--color-warning-bg);color:var(--color-warning);">56%</span>
+            </div>
+            <div class="progress-bar" style="height:10px;"><div class="progress-fill progress-warn" style="width:56%;"></div></div>
+            <div style="margin-top:var(--sp3);font-size:var(--text-xs);color:var(--color-muted);">$1,400 remaining · Auto-save $40/week to hit target on time</div>
+          </div>
+          <div class="goal-card">
+            <div class="goal-card-header">
+              <div class="goal-big-icon" style="background:#ECFDF5;">🏦</div>
+              <div style="flex:1;">
+                <div class="goal-title">Emergency Fund</div>
+                <div class="goal-target">Target: $15,000</div>
+                <div class="goal-deadline" style="color:var(--color-muted);">📅 No deadline · Ongoing</div>
+              </div>
+              <button class="btn btn-secondary btn-sm">Edit</button>
+            </div>
+            <div class="goal-progress-row">
+              <div class="goal-current" style="color:var(--color-success);">$8,400</div>
+              <span class="goal-pct-badge" style="background:var(--color-success-bg);color:var(--color-success);">56%</span>
+            </div>
+            <div class="progress-bar" style="height:10px;"><div class="progress-fill" style="width:56%;background:linear-gradient(90deg,var(--color-success),#34D399);"></div></div>
+            <div style="margin-top:var(--sp3);font-size:var(--text-xs);color:var(--color-muted);">$6,600 remaining · Auto-saving $500/month</div>
+          </div>
+          <div class="goal-card" style="border:2px dashed var(--color-border);background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--sp3);cursor:pointer;min-height:200px;" onclick="openModal('modal-goal')">
+            <div style="width:48px;height:48px;border-radius:var(--radius-full);background:var(--color-surface);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;font-size:24px;">+</div>
+            <span style="font-size:var(--text-sm);color:var(--color-muted);">Create a New Goal</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Budget Modal -->
+<div class="modal-backdrop" id="modal-budget" onclick="closeModal('modal-budget')">
+  <div class="modal" role="dialog" aria-modal="true" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <span class="modal-title">Create Budget Category</span>
+      <button class="btn" onclick="closeModal('modal-budget')" style="font-size:18px;color:var(--color-muted);">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-field"><label class="form-label">Category Name</label><input class="input" placeholder="e.g. Health & Fitness"></div>
+      <div class="form-field"><label class="form-label">Monthly Limit</label><input class="input" type="number" placeholder="$0.00"></div>
+      <div class="form-field"><label class="form-label">Icon</label><div class="icon-row"><span class="icon-opt selected" onclick="selIcon(this)">🏋️</span><span class="icon-opt" onclick="selIcon(this)">💊</span><span class="icon-opt" onclick="selIcon(this)">✈️</span><span class="icon-opt" onclick="selIcon(this)">📚</span><span class="icon-opt" onclick="selIcon(this)">🎮</span><span class="icon-opt" onclick="selIcon(this)">👗</span><span class="icon-opt" onclick="selIcon(this)">🐾</span><span class="icon-opt" onclick="selIcon(this)">🧴</span></div></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-budget')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveAndClose('modal-budget','Budget created!')">Create Budget</button>
+    </div>
+  </div>
+</div>
+
+<!-- Goal Modal -->
+<div class="modal-backdrop" id="modal-goal" onclick="closeModal('modal-goal')">
+  <div class="modal" role="dialog" aria-modal="true" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <span class="modal-title">Create Savings Goal</span>
+      <button class="btn" onclick="closeModal('modal-goal')" style="font-size:18px;color:var(--color-muted);">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-field"><label class="form-label">Goal Name</label><input class="input" placeholder="e.g. Dream Vacation"></div>
+      <div class="form-field"><label class="form-label">Target Amount</label><input class="input" type="number" placeholder="$5,000"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--sp4);">
+        <div class="form-field"><label class="form-label">Start Date</label><input class="input" type="date" value="2026-04-01"></div>
+        <div class="form-field"><label class="form-label">Target Date</label><input class="input" type="date"></div>
+      </div>
+      <div class="form-field"><label class="form-label">Auto-Save Amount</label><input class="input" type="number" placeholder="$0 per month"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-goal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveAndClose('modal-goal','Goal created! 🎉')">Create Goal</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toast-wrap"></div>
+<script>
+function switchTab(t){
+  ['budget','goals'].forEach(id=>{
+    document.getElementById('tab-'+id).classList.toggle('active',id===t);
+    document.getElementById('panel-'+id).style.display=id===t?'':'none';
+  });
+}
+function openModal(id){document.getElementById(id).classList.add('open');document.body.style.overflow='hidden';}
+function closeModal(id){document.getElementById(id).classList.remove('open');document.body.style.overflow='';}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.modal-backdrop.open').forEach(m=>closeModal(m.id));});
+function selIcon(el){document.querySelectorAll('.icon-opt').forEach(x=>x.classList.remove('selected'));el.classList.add('selected');}
+function showToast(msg){const c=document.getElementById('toast-wrap');const t=document.createElement('div');t.className='toast';t.textContent=msg;c.appendChild(t);requestAnimationFrame(()=>requestAnimationFrame(()=>t.classList.add('show')));setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),400);},3000);}
+function saveAndClose(id,msg){closeModal(id);showToast(msg);}
+</script>
+</body>
+</html>

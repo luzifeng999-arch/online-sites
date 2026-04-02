@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>进度 — Bloom</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+<style>
+:root{
+  --color-primary:#14B8A6;--color-primary-light:rgba(20,184,166,.12);
+  --color-bg:#fff;--color-surface:#F0FDFA;--color-surface-2:#CCFBF1;
+  --color-border:#99F6E4;--color-muted:#6B7280;--color-foreground:#134E4A;
+  --font-sans:'Nunito',system-ui,sans-serif;
+  --fw-r:400;--fw-m:500;--fw-sb:600;--fw-b:700;--fw-eb:800;
+  --text-xs:11px;--text-sm:13px;--text-base:16px;--text-lg:20px;--text-xl:25px;
+  --sp1:4px;--sp2:8px;--sp3:12px;--sp4:16px;--sp5:20px;--sp6:24px;
+  --radius-card:16px;--radius-btn:9999px;--radius-full:9999px;
+  --dur:180ms;--ease:cubic-bezier(.4,0,.2,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+/* ⚠️ BUG-11 */
+body{width:390px;height:844px;overflow:hidden;background:var(--color-bg);color:var(--color-foreground);font-family:var(--font-sans);-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;}
+a{color:inherit;text-decoration:none;}
+button{cursor:pointer;font-family:inherit;border:none;background:none;}
+/* ⚠️ BUG-12 */
+.page-scroll{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;}
+
+.status-bar{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 var(--sp5);flex-shrink:0;}
+.status-time{font-size:15px;font-weight:var(--fw-b);color:var(--color-foreground);}
+.status-icons{font-size:12px;color:var(--color-foreground);}
+.page-header{padding:0 var(--sp5) var(--sp5);}
+.page-title{font-size:26px;font-weight:var(--fw-eb);}
+.page-sub{font-size:var(--text-sm);color:var(--color-muted);margin-top:2px;}
+
+/* PERIOD TABS */
+.period-tabs{display:flex;background:var(--color-surface);border-radius:var(--radius-full);padding:3px;margin:0 var(--sp5) var(--sp5);gap:2px;}
+.period-tab{flex:1;text-align:center;padding:8px 0;border-radius:var(--radius-full);font-size:var(--text-sm);font-weight:var(--fw-sb);color:var(--color-muted);cursor:pointer;transition:all var(--dur);}
+.period-tab.active{background:#fff;color:var(--color-primary);box-shadow:0 1px 4px rgba(0,0,0,.1);}
+
+/* STATS GRID */
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp3);margin:0 var(--sp5) var(--sp5);}
+.stat-card{background:var(--color-surface);border:1.5px solid var(--color-border);border-radius:var(--radius-card);padding:var(--sp4);transition:all var(--dur);}
+.stat-card:active{transform:scale(.96);}
+.stat-icon{font-size:24px;margin-bottom:var(--sp2);}
+.stat-val{font-size:22px;font-weight:var(--fw-eb);color:var(--color-primary);font-variant-numeric:tabular-nums;}
+.stat-label{font-size:var(--text-xs);color:var(--color-muted);margin-top:2px;}
+.stat-change{font-size:10px;margin-top:var(--sp1);font-weight:var(--fw-sb);}
+
+/* CHART */
+.section-title{font-size:var(--text-sm);font-weight:var(--fw-b);color:var(--color-muted);letter-spacing:.04em;text-transform:uppercase;padding:0 var(--sp5);margin-bottom:var(--sp3);}
+.chart-card{margin:0 var(--sp5) var(--sp5);background:var(--color-surface);border:1.5px solid var(--color-border);border-radius:var(--radius-card);padding:var(--sp4);}
+.chart-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--sp3);}
+.chart-title{font-size:var(--text-sm);font-weight:var(--fw-b);}
+.chart-badge{padding:2px 10px;background:var(--color-primary-light);color:var(--color-primary);font-size:10px;font-weight:var(--fw-sb);border-radius:var(--radius-full);}
+
+/* STREAK CALENDAR */
+.streak-cal{margin:0 var(--sp5) var(--sp5);}
+.cal-row{display:flex;justify-content:space-between;gap:4px;margin-bottom:4px;}
+.cal-day{flex:1;aspect-ratio:1;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:var(--fw-sb);}
+.cal-day.done{background:var(--color-primary);}
+.cal-day.done span{color:#fff;}
+.cal-day.partial{background:rgba(20,184,166,.3);}
+.cal-day.partial span{color:var(--color-primary);}
+.cal-day.empty{background:var(--color-surface);}
+.cal-day.empty span{color:var(--color-muted);}
+.cal-day.today{border:2px solid var(--color-primary);}
+.cal-headers{display:flex;justify-content:space-between;gap:4px;margin-bottom:var(--sp2);}
+.cal-h{flex:1;text-align:center;font-size:10px;color:var(--color-muted);font-weight:var(--fw-sb);}
+
+/* ACHIEVEMENTS */
+.achievement-list{padding:0 var(--sp5);margin-bottom:var(--sp6);}
+.ach-item{display:flex;align-items:center;gap:var(--sp3);padding:var(--sp3) 0;border-bottom:1px solid var(--color-border);}
+.ach-item:last-child{border-bottom:none;}
+.ach-icon-wrap{width:46px;height:46px;border-radius:var(--radius-card);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
+.ach-info{flex:1;}
+.ach-name{font-size:var(--text-sm);font-weight:var(--fw-b);}
+.ach-desc{font-size:var(--text-xs);color:var(--color-muted);margin-top:2px;}
+.ach-date{font-size:10px;color:var(--color-primary);font-weight:var(--fw-sb);}
+.ach-locked{opacity:.4;filter:grayscale(1);}
+
+/* TABBAR */
+.tabbar{height:64px;background:var(--color-bg);border-top:1.5px solid var(--color-border);display:flex;align-items:center;justify-content:space-around;padding-bottom:env(safe-area-inset-bottom);flex-shrink:0;}
+.tab-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:var(--sp2) 0;font-size:10px;color:var(--color-muted);transition:color var(--dur);min-height:44px;justify-content:center;cursor:pointer;}
+.tab-item.active{color:var(--color-primary);}
+.tab-icon{font-size:22px;line-height:1;}
+</style>
+</head>
+<body>
+<div class="page-scroll">
+  <div class="status-bar">
+    <span class="status-time">9:41</span>
+    <span class="status-icons">●●● WiFi 100%🔋</span>
+  </div>
+
+  <div class="page-header">
+    <div class="page-title">Progress</div>
+    <div class="page-sub">Your mindfulness journey</div>
+  </div>
+
+  <div class="period-tabs">
+    <div class="period-tab" onclick="selPeriod(this)">Week</div>
+    <div class="period-tab active" onclick="selPeriod(this)">Month</div>
+    <div class="period-tab" onclick="selPeriod(this)">Year</div>
+  </div>
+
+  <!-- Stats Grid -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon">⏱</div>
+      <div class="stat-val">312 min</div>
+      <div class="stat-label">Total this month</div>
+      <div class="stat-change" style="color:#10B981;">↑ 18% vs last month</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">🔥</div>
+      <div class="stat-val">14 days</div>
+      <div class="stat-label">Current streak</div>
+      <div class="stat-change" style="color:#10B981;">Best: 21 days</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">🧘</div>
+      <div class="stat-val">28</div>
+      <div class="stat-label">Sessions done</div>
+      <div class="stat-change" style="color:#10B981;">↑ 4 vs last month</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">😌</div>
+      <div class="stat-val">8.4</div>
+      <div class="stat-label">Avg mood score</div>
+      <div class="stat-change" style="color:#10B981;">↑ 0.6 pts</div>
+    </div>
+  </div>
+
+  <!-- Daily Minutes Chart -->
+  <div class="section-title">Daily Minutes</div>
+  <div class="chart-card">
+    <div class="chart-header">
+      <span class="chart-title">April 2026</span>
+      <span class="chart-badge">avg 11 min/day</span>
+    </div>
+    <div id="chart-daily" style="height:140px;"></div>
+  </div>
+
+  <!-- Streak Calendar -->
+  <div class="section-title">Streak Calendar</div>
+  <div class="streak-cal">
+    <div class="cal-headers">
+      <div class="cal-h">M</div><div class="cal-h">T</div><div class="cal-h">W</div><div class="cal-h">T</div>
+      <div class="cal-h">F</div><div class="cal-h">S</div><div class="cal-h">S</div>
+    </div>
+    <div class="cal-row">
+      <div class="cal-day empty"><span>25</span></div><div class="cal-day empty"><span>26</span></div><div class="cal-day empty"><span>27</span></div><div class="cal-day empty"><span>28</span></div><div class="cal-day done"><span>29</span></div><div class="cal-day done"><span>30</span></div><div class="cal-day done"><span>31</span></div>
+    </div>
+    <div class="cal-row">
+      <div class="cal-day done"><span>1</span></div><div class="cal-day done"><span>2</span></div><div class="cal-day done"><span>3</span></div><div class="cal-day done"><span>4</span></div><div class="cal-day done"><span>5</span></div><div class="cal-day done"><span>6</span></div><div class="cal-day partial"><span>7</span></div>
+    </div>
+    <div class="cal-row">
+      <div class="cal-day done"><span>8</span></div><div class="cal-day done"><span>9</span></div><div class="cal-day done"><span>10</span></div><div class="cal-day done"><span>11</span></div><div class="cal-day done"><span>12</span></div><div class="cal-day done"><span>13</span></div><div class="cal-day done"><span>14</span></div>
+    </div>
+    <div class="cal-row">
+      <div class="cal-day done"><span>15</span></div><div class="cal-day done"><span>16</span></div><div class="cal-day done"><span>17</span></div><div class="cal-day done"><span>18</span></div><div class="cal-day done"><span>19</span></div><div class="cal-day done"><span>20</span></div><div class="cal-day done"><span>21</span></div>
+    </div>
+    <div class="cal-row">
+      <div class="cal-day done"><span>22</span></div><div class="cal-day done"><span>23</span></div><div class="cal-day done"><span>24</span></div><div class="cal-day done"><span>25</span></div><div class="cal-day done"><span>26</span></div><div class="cal-day done"><span>27</span></div><div class="cal-day done"><span>28</span></div>
+    </div>
+    <div class="cal-row">
+      <div class="cal-day done"><span>29</span></div><div class="cal-day done"><span>30</span></div><div class="cal-day done"><span>31</span></div><div class="cal-day today"><span>2</span></div><div class="cal-day empty"><span>3</span></div><div class="cal-day empty"><span>4</span></div><div class="cal-day empty"><span>5</span></div>
+    </div>
+  </div>
+
+  <!-- Achievements -->
+  <div class="section-title">Achievements</div>
+  <div class="achievement-list">
+    <div class="ach-item">
+      <div class="ach-icon-wrap" style="background:#FFF7ED;">🏆</div>
+      <div class="ach-info">
+        <div class="ach-name">Two-Week Warrior</div>
+        <div class="ach-desc">Meditated 14 days in a row</div>
+      </div>
+      <div class="ach-date">Today!</div>
+    </div>
+    <div class="ach-item">
+      <div class="ach-icon-wrap" style="background:#F0FDFA;">⭐</div>
+      <div class="ach-info">
+        <div class="ach-name">300-Minute Club</div>
+        <div class="ach-desc">300 minutes of meditation</div>
+      </div>
+      <div class="ach-date">Apr 28</div>
+    </div>
+    <div class="ach-item ach-locked">
+      <div class="ach-icon-wrap" style="background:#F5F3FF;">💎</div>
+      <div class="ach-info">
+        <div class="ach-name">Month Master</div>
+        <div class="ach-desc">30-day perfect streak</div>
+      </div>
+      <div class="ach-date" style="color:var(--color-muted);">Locked</div>
+    </div>
+  </div>
+</div><!-- /page-scroll -->
+
+<nav class="tabbar">
+  <a href="page-01-home.html" class="tab-item" title="首页"><div class="tab-icon">🏠</div>Home</a>
+  <a href="page-03-explore.html" class="tab-item" title="探索"><div class="tab-icon">🔍</div>Explore</a>
+  <a href="page-02-session.html" class="tab-item" title="冥想"><div class="tab-icon" style="font-size:28px;">🌿</div></a>
+  <a href="page-04-progress.html" class="tab-item active" title="进度"><div class="tab-icon">📊</div>Progress</a>
+  <a href="page-05-profile.html" class="tab-item" title="我的"><div class="tab-icon">👤</div>Profile</a>
+</nav>
+
+<script>
+function selPeriod(el){document.querySelectorAll('.period-tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');}
+const chart=echarts.init(document.getElementById('chart-daily'));
+chart.setOption({
+  grid:{top:5,right:8,bottom:20,left:30},
+  tooltip:{trigger:'axis',axisPointer:{type:'shadow'}},
+  xAxis:{type:'category',data:['1','5','10','15','20','25','30'],axisLabel:{color:'#6B7280',fontSize:10},axisLine:{lineStyle:{color:'#99F6E4'}}},
+  yAxis:{type:'value',max:30,splitLine:{lineStyle:{color:'#F0FDFA'}},axisLabel:{color:'#6B7280',fontSize:10,formatter:v=>v+'m'}},
+  series:[{type:'bar',data:[8,12,15,20,10,25,18,8,14,22,11,9,16,20,8,12,28,18,14,20,10,15,12,22,18,8,20,25,18,11],itemStyle:{color:'#14B8A6',borderRadius:[4,4,0,0]},barMaxWidth:10}]
+});
+</script>
+</body>
+</html>
