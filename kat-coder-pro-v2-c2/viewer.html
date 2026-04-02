@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<!--
+  ks-design-slide-deck — Viewer Shell v2.0
+  Unified viewer for both Professional (HTML iframes) and Creative (image) modes.
+
+  Template variables (replaced at generation time):
+    KAT-Coder-Pro V2 全新上线      — presentation title
+    creative       — "professional" | "creative"
+    "images/slide-01.jpg","images/slide-02.jpg","images/slide-03.jpg","images/slide-04.jpg","images/slide-05.jpg","images/slide-06.jpg","images/slide-07.jpg","images/slide-08.jpg","images/slide-09.jpg","images/slide-10.jpg"     — comma-separated list injected by script:
+                     Professional: slide-01.html,slide-02.html,...
+                     Creative:     images/slide-01.jpg,images/slide-02.jpg,...
+    ["KAT-Coder-Pro V2 全新上线","Agentic Coding With KwaiKAT","编码能力基准测试 — PintBench","编码能力基准测试 — Case-Eval","实际案例展示","模型应用场景","模型概览 V2 vs V1","模型定价","引领 Agentic Coding 新时代","立即体验 KAT-Coder-Pro V2"]     — JSON array of slide title strings, e.g. ["封面","数据","..."]
+    {{TOTAL}}      — total slide count integer
+
+  DO NOT hand-write viewer.html in output folders.
+  Always copy this file and replace the 5 variables above.
+-->
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KAT-Coder-Pro V2 全新上线</title>
+<!-- Export deps -->
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/libs/pptxgen.bundle.js"></script>
+<style>
+/* ===== Reset ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  width: 100%; height: 100vh; overflow: hidden;
+  background: #0a0a0a;
+  font-family: system-ui, -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  color: #fff;
+}
+
+/* ===== Progress bar ===== */
+#progress {
+  position: fixed; top: 0; left: 0; height: 2px; width: 0%;
+  background: linear-gradient(90deg, #3B82F6, #06B6D4);
+  transition: width 0.3s ease; z-index: 200;
+}
+
+/* ===== Mode badge ===== */
+#mode-badge {
+  position: fixed; top: 10px; right: 14px; z-index: 150;
+  padding: 3px 10px; border-radius: 20px; font-size: 11px;
+  backdrop-filter: blur(8px); letter-spacing: 0.5px;
+  pointer-events: none;
+}
+body.mode-professional #mode-badge {
+  background: rgba(59,130,246,0.15); color: #93C5FD;
+  border: 1px solid rgba(59,130,246,0.25);
+}
+body.mode-creative #mode-badge {
+  background: rgba(168,85,247,0.15); color: #C4B5FD;
+  border: 1px solid rgba(168,85,247,0.25);
+}
+
+/* ===== Stage ===== */
+#stage {
+  position: fixed; top: 2px; left: 0; right: 0; bottom: 56px;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden; transition: background 0.2s;
+}
+
+/* ===== Slide wrapper — 1280x720, scaled to fit ===== */
+.slide-wrapper {
+  width: 1280px; height: 720px;
+  flex-shrink: 0; position: relative;
+  transform-origin: center center;
+  box-shadow: 0 8px 48px rgba(0,0,0,0.65);
+  border-radius: 2px; overflow: hidden;
+}
+
+/* Professional: iframe slides */
+.slide-frame {
+  position: absolute; inset: 0;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+.slide-frame.active { opacity: 1; pointer-events: auto; }
+.slide-frame iframe {
+  width: 1280px; height: 720px; border: none; display: block;
+  background: #fff;
+}
+
+/* Creative: single image */
+.slide-wrapper img#creative-img {
+  width: 1280px; height: 720px; display: block;
+  object-fit: cover; transition: opacity 0.2s ease;
+}
+.slide-wrapper.loading img#creative-img { opacity: 0; }
+
+/* ===== Edit toolbar (professional only) ===== */
+#edit-toolbar {
+  display: none;
+  position: fixed; top: 10px; left: 50%; transform: translateX(-50%);
+  z-index: 150;
+  background: rgba(10,10,20,0.85); backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.12); border-radius: 10px;
+  padding: 5px 10px; gap: 6px; align-items: center;
+}
+body.mode-professional #edit-toolbar { display: flex; }
+
+.edit-btn {
+  height: 28px; padding: 0 10px; border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.12); background: transparent;
+  color: rgba(255,255,255,0.7); font-size: 12px; cursor: pointer;
+  white-space: nowrap; transition: background 0.15s, color 0.15s, border-color 0.15s;
+  display: flex; align-items: center; gap: 4px;
+}
+.edit-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
+.edit-btn.active {
+  background: rgba(59,130,246,0.2); color: #93C5FD;
+  border-color: rgba(59,130,246,0.4);
+}
+.edit-sep { width: 1px; height: 18px; background: rgba(255,255,255,0.12); }
+
+/* ===== Bottom controls bar ===== */
+#controls {
+  position: fixed; bottom: 0; left: 0; right: 0; height: 56px;
+  background: rgba(8,8,10,0.97); backdrop-filter: blur(14px);
+  border-top: 1px solid rgba(255,255,255,0.07);
+  display: flex; align-items: center; gap: 10px; padding: 0 14px;
+  z-index: 100; transition: background 0.2s, color 0.2s;
+}
+
+/* Nav buttons */
+.nav-btn {
+  width: 32px; height: 32px; border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.13);
+  background: transparent; color: #fff; cursor: pointer; font-size: 16px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s; flex-shrink: 0;
+}
+.nav-btn:hover { background: rgba(255,255,255,0.1); }
+.nav-btn:disabled { opacity: 0.28; cursor: default; }
+
+/* Page info */
+#page-info {
+  font-size: 13px; color: rgba(255,255,255,0.45);
+  min-width: 56px; text-align: center; flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ===== Thumbnail strip ===== */
+#thumbnails {
+  flex: 1; display: flex; gap: 6px; overflow-x: auto; padding: 4px 0;
+  align-items: center;
+  scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.15) transparent;
+}
+#thumbnails::-webkit-scrollbar { height: 3px; }
+#thumbnails::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 2px; }
+
+.thumb-item {
+  width: 71px; height: 40px; border-radius: 4px; overflow: hidden;
+  border: 2px solid transparent; cursor: pointer; flex-shrink: 0;
+  background: #1a1a1a; transition: border-color 0.15s, transform 0.15s;
+}
+.thumb-item:hover { border-color: rgba(255,255,255,0.3); transform: scale(1.06); }
+.thumb-item.active { border-color: #3B82F6; box-shadow: 0 0 6px rgba(59,130,246,0.4); }
+
+/* Professional: iframe thumbnail */
+.thumb-item iframe {
+  width: 1280px; height: 720px;
+  transform: scale(0.0556); transform-origin: 0 0;
+  pointer-events: none;
+}
+/* Creative: image thumbnail */
+.thumb-item img {
+  width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none;
+}
+
+/* ===== Background color switcher — 5 options + checker ===== */
+#bg-switcher {
+  display: flex; gap: 5px; align-items: center; flex-shrink: 0;
+}
+.bg-dot {
+  width: 18px; height: 18px; border-radius: 50%; cursor: pointer; flex-shrink: 0;
+  border: 2px solid transparent; transition: border-color 0.15s, transform 0.15s;
+  /* title: attr(title); — invalid CSS, removed */
+}
+.bg-dot:hover { transform: scale(1.2); }
+.bg-dot.active { border-color: rgba(255,255,255,0.85); }
+.bg-dot.checker {
+  background-image:
+    linear-gradient(45deg, #888 25%, transparent 25%),
+    linear-gradient(-45deg, #888 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #888 75%),
+    linear-gradient(-45deg, transparent 75%, #888 75%);
+  background-size: 6px 6px;
+  background-position: 0 0, 0 3px, 3px -3px, -3px 0;
+  background-color: #fff;
+}
+
+/* ===== Tool buttons ===== */
+.tool-btn {
+  width: 32px; height: 32px; border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: transparent; color: rgba(255,255,255,0.7); cursor: pointer; font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s, color 0.15s; flex-shrink: 0;
+}
+.tool-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
+
+/* ===== Export button ===== */
+#export-btn {
+  height: 32px; padding: 0 12px; border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.13);
+  background: transparent; color: rgba(255,255,255,0.75); cursor: pointer; font-size: 12px;
+  white-space: nowrap; transition: background 0.15s; flex-shrink: 0;
+}
+#export-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
+#export-menu {
+  display: none; position: absolute; bottom: 46px; right: 0;
+  background: rgba(12,12,16,0.98); backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;
+  padding: 6px; min-width: 176px; z-index: 200;
+}
+.export-item {
+  display: block; width: 100%; padding: 8px 12px;
+  background: transparent; border: none; color: rgba(255,255,255,0.82);
+  font-size: 13px; text-align: left; cursor: pointer; border-radius: 5px;
+  white-space: nowrap; transition: background 0.1s;
+}
+.export-item:hover { background: rgba(255,255,255,0.1); }
+
+/* ===== Click zones for prev/next ===== */
+.click-zone {
+  position: fixed; top: 0; width: 14%; height: calc(100% - 56px);
+  z-index: 50; cursor: pointer;
+}
+#click-prev { left: 0; }
+#click-next { right: 0; }
+
+/* ===== Keyboard hint ===== */
+#key-hint {
+  position: fixed; bottom: 66px; right: 14px;
+  font-size: 11px; color: rgba(255,255,255,0.16); pointer-events: none; z-index: 90;
+}
+
+/* ===== Light-bg adaptation ===== */
+body.bg-light #controls {
+  background: rgba(235,235,240,0.97);
+  border-top-color: rgba(0,0,0,0.08);
+}
+body.bg-light .nav-btn,
+body.bg-light .tool-btn,
+body.bg-light #export-btn { color: #333; border-color: rgba(0,0,0,0.15); }
+body.bg-light .nav-btn:hover,
+body.bg-light .tool-btn:hover,
+body.bg-light #export-btn:hover { background: rgba(0,0,0,0.06); }
+body.bg-light #page-info { color: rgba(0,0,0,0.45); }
+body.bg-light #export-menu { background: rgba(245,245,248,0.98); border-color: rgba(0,0,0,0.1); }
+body.bg-light .export-item { color: #222; }
+body.bg-light .export-item:hover { background: rgba(0,0,0,0.06); }
+body.bg-light .bg-dot.active { border-color: rgba(0,0,0,0.6); }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+<div id="mode-badge"><!-- filled by JS --></div>
+<div id="key-hint">← → 切换　F 全屏</div>
+
+<!-- Edit toolbar (professional only, hidden in creative) -->
+<div id="edit-toolbar">
+  <span style="font-size:11px;color:rgba(255,255,255,0.35);letter-spacing:0.5px;">编辑模式</span>
+  <div class="edit-sep"></div>
+  <button class="edit-btn active" id="btn-edit-text" title="点击幻灯片内的文字可直接编辑">✏️ 文字编辑</button>
+  <button class="edit-btn" id="btn-drag" title="拖动幻灯片中的元素重新排布">↕ 拖拽布局</button>
+  <div class="edit-sep"></div>
+  <button class="edit-btn" id="btn-reset" title="重置当前幻灯片的所有编辑">↺ 重置</button>
+</div>
+
+<div id="stage">
+  <div class="slide-wrapper" id="slide-wrapper">
+    <!-- Filled by JS based on mode -->
+  </div>
+</div>
+
+<div id="click-prev" class="click-zone" onclick="navigate(-1)"></div>
+<div id="click-next" class="click-zone" onclick="navigate(1)"></div>
+
+<div id="controls">
+  <button class="nav-btn" id="prev-btn" onclick="navigate(-1)" title="上一张 (←)">←</button>
+
+  <div id="thumbnails"></div>
+
+  <span id="page-info">1 / 1</span>
+
+  <button class="nav-btn" id="next-btn" onclick="navigate(1)" title="下一张 (→)">→</button>
+
+  <!-- 5 background colors + checker -->
+  <div id="bg-switcher" title="切换背景色">
+    <div class="bg-dot active" data-bg="#0a0a0a"  style="background:#0a0a0a"  title="深黑"></div>
+    <div class="bg-dot"        data-bg="#0d1b2a"  style="background:#0d1b2a"  title="深蓝灰"></div>
+    <div class="bg-dot"        data-bg="#2a2a2a"  style="background:#2a2a2a"  title="中灰"></div>
+    <div class="bg-dot"        data-bg="#e8e8e8"  style="background:#e8e8e8"  title="浅灰"></div>
+    <div class="bg-dot"        data-bg="#f5f5f5"  style="background:#f5f5f5"  title="近白"></div>
+    <div class="bg-dot checker" data-bg="checker"                             title="棋盘格（透明检测）"></div>
+  </div>
+
+  <button class="tool-btn" id="fullscreen-btn" onclick="toggleFullscreen()" title="全屏 (F)">⛶</button>
+
+  <!-- Export -->
+  <div style="position:relative;flex-shrink:0;">
+    <button id="export-btn" title="导出演示文稿">↓ 导出</button>
+    <div id="export-menu">
+      <button class="export-item" data-action="png-current">📷 当前页 PNG</button>
+      <button class="export-item" data-action="pdf-all">📄 全套 PDF</button>
+      <button class="export-item" data-action="pptx-all">📊 全套 PPTX（截图版）</button>
+      <button class="export-item" data-action="png-zip">🗜 全套 PNG（ZIP）</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ===================================================================
+   CONFIGURATION — replace these 4 variables when copying this file
+   =================================================================== */
+const CFG_MODE   = 'creative';        // "professional" | "creative"
+const CFG_TITLE  = 'KAT-Coder-Pro V2 全新上线';
+const CFG_SLIDES = ["images/slide-01.jpg","images/slide-02.jpg","images/slide-03.jpg","images/slide-04.jpg","images/slide-05.jpg","images/slide-06.jpg","images/slide-07.jpg","images/slide-08.jpg","images/slide-09.jpg","images/slide-10.jpg"];      // professional: ["slide-01.html",...] | creative: ["images/slide-01.jpg",...]
+const CFG_TITLES = ["KAT-Coder-Pro V2 全新上线","Agentic Coding With KwaiKAT","编码能力基准测试 — PintBench","编码能力基准测试 — Case-Eval","实际案例展示","模型应用场景","模型概览 V2 vs V1","模型定价","引领 Agentic Coding 新时代","立即体验 KAT-Coder-Pro V2"];        // ["封面", "内容", ...]
+/* =================================================================== */
+
+const TOTAL   = CFG_SLIDES.length;
+const isPro   = CFG_MODE === 'professional';
+let current   = 0;
+
+/* DOM refs */
+const stage        = document.getElementById('stage');
+const wrapper      = document.getElementById('slide-wrapper');
+const progressBar  = document.getElementById('progress');
+const pageInfo     = document.getElementById('page-info');
+const prevBtn      = document.getElementById('prev-btn');
+const nextBtn      = document.getElementById('next-btn');
+const thumbsCont   = document.getElementById('thumbnails');
+const modeBadge    = document.getElementById('mode-badge');
+
+/* ===== Init mode ===== */
+document.title = CFG_TITLE;
+document.body.classList.add(isPro ? 'mode-professional' : 'mode-creative');
+modeBadge.textContent = isPro ? '📊 专业模式' : '🎨 创意模式';
+
+/* ===== Build slide DOM ===== */
+if (isPro) {
+  /* Professional: iframe containers */
+  CFG_SLIDES.forEach((src, i) => {
+    const div = document.createElement('div');
+    div.className = 'slide-frame' + (i === 0 ? ' active' : '');
+    div.dataset.index = i;
+    const iframe = document.createElement('iframe');
+    iframe.src = src;
+    iframe.scrolling = 'no';
+    iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin');
+    div.appendChild(iframe);
+    wrapper.appendChild(div);
+  });
+} else {
+  /* Creative: single <img> swapped on navigation */
+  const img = document.createElement('img');
+  img.id = 'creative-img';
+  img.alt = '幻灯片';
+  wrapper.appendChild(img);
+}
+
+/* ===== Scale to fit viewport ===== */
+function fitSlides() {
+  const stageW = stage.clientWidth;
+  const stageH = stage.clientHeight;
+  const scale  = Math.min(stageW / 1280, stageH / 720) * 0.96;
+  wrapper.style.transform = `scale(${scale})`;
+}
+fitSlides();
+window.addEventListener('resize', fitSlides);
+
+/* ===== Navigation ===== */
+function showSlide(index) {
+  if (index < 0 || index >= TOTAL) return;
+
+  if (isPro) {
+    document.querySelectorAll('.slide-frame').forEach((f, i) => {
+      f.classList.toggle('active', i === index);
+    });
+  } else {
+    const img = document.getElementById('creative-img');
+    wrapper.classList.add('loading');
+    img.onload = () => wrapper.classList.remove('loading');
+    img.onerror = () => wrapper.classList.remove('loading');
+    img.src = CFG_SLIDES[index];
+  }
+
+  current = index;
+  progressBar.style.width = ((current + 1) / TOTAL * 100) + '%';
+  pageInfo.textContent = (current + 1) + ' / ' + TOTAL;
+  prevBtn.disabled = current === 0;
+  nextBtn.disabled = current === TOTAL - 1;
+
+  /* Update thumbnails */
+  document.querySelectorAll('.thumb-item').forEach((t, i) => {
+    t.classList.toggle('active', i === current);
+  });
+  const activeThumb = thumbsCont.children[current];
+  if (activeThumb) {
+    activeThumb.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+  }
+}
+
+function navigate(dir) { showSlide(current + dir); }
+
+/* ===== Build thumbnails ===== */
+function buildThumbs() {
+  thumbsCont.innerHTML = '';
+  CFG_SLIDES.forEach((src, i) => {
+    const item = document.createElement('div');
+    item.className = 'thumb-item' + (i === 0 ? ' active' : '');
+    item.title = CFG_TITLES[i] || ('幻灯片 ' + (i + 1));
+
+    if (isPro) {
+      const iframe = document.createElement('iframe');
+      iframe.src = src;
+      iframe.scrolling = 'no';
+      iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin');
+      item.appendChild(iframe);
+    } else {
+      const img = document.createElement('img');
+      img.src = src;
+      img.alt = item.title;
+      img.loading = 'lazy';
+      item.appendChild(img);
+    }
+
+    item.addEventListener('click', () => showSlide(i));
+    thumbsCont.appendChild(item);
+  });
+}
+buildThumbs();
+
+/* ===== Fullscreen ===== */
+function toggleFullscreen() {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().catch(() => {});
+  } else {
+    document.exitFullscreen();
+  }
+}
+
+/* ===== Background color switcher ===== */
+const CHECKER_CSS = [
+  'linear-gradient(45deg,#666 25%,transparent 25%)',
+  'linear-gradient(-45deg,#666 25%,transparent 25%)',
+  'linear-gradient(45deg,transparent 75%,#666 75%)',
+  'linear-gradient(-45deg,transparent 75%,#666 75%)'
+].join(',');
+
+document.querySelectorAll('.bg-dot').forEach(dot => {
+  dot.addEventListener('click', () => {
+    document.querySelectorAll('.bg-dot').forEach(d => d.classList.remove('active'));
+    dot.classList.add('active');
+    const bg = dot.dataset.bg;
+    const isLight = bg === '#e8e8e8' || bg === '#f5f5f5' || bg === 'checker';
+
+    if (bg === 'checker') {
+      stage.style.backgroundImage  = CHECKER_CSS;
+      stage.style.backgroundSize   = '16px 16px';
+      stage.style.backgroundPosition = '0 0, 0 8px, 8px -8px, -8px 0';
+      stage.style.backgroundColor  = '#999';
+      document.body.style.background = '';
+    } else {
+      stage.style.backgroundImage  = 'none';
+      stage.style.backgroundColor  = bg;
+      document.body.style.background = bg;
+    }
+
+    document.body.classList.toggle('bg-light', isLight);
+
+    wrapper.style.boxShadow = isLight
+      ? '0 4px 32px rgba(0,0,0,0.28), 0 0 0 1px rgba(0,0,0,0.1)'
+      : '0 8px 48px rgba(0,0,0,0.65)';
+  });
+});
+
+/* ===== Professional: Edit toolbar ===== */
+if (isPro) {
+  let editTextActive = true;
+  let dragActive     = false;
+
+  const btnEditText = document.getElementById('btn-edit-text');
+  const btnDrag     = document.getElementById('btn-drag');
+  const btnReset    = document.getElementById('btn-reset');
+
+  /* Text editing: toggles contenteditable on all text nodes in the active iframe */
+  function setTextEditing(on) {
+    editTextActive = on;
+    btnEditText.classList.toggle('active', on);
+    const iframe = document.querySelector('.slide-frame.active iframe');
+    if (!iframe || !iframe.contentDocument) return;
+    const doc = iframe.contentDocument;
+    doc.querySelectorAll('[contenteditable]').forEach(el => {
+      el.contentEditable = on ? 'true' : 'false';
+    });
+    /* Also allow clicking any text element even without contenteditable */
+    if (on) {
+      doc.querySelectorAll('h1,h2,h3,h4,p,span,li,td,th,div').forEach(el => {
+        if (!el.children.length || el.innerText.trim()) {
+          el.setAttribute('contenteditable', 'true');
+        }
+      });
+    } else {
+      doc.querySelectorAll('[contenteditable="true"]').forEach(el => {
+        el.removeAttribute('contenteditable');
+      });
+    }
+  }
+
+  /* Drag: injects drag logic into the active iframe */
+  function setDragMode(on) {
+    dragActive = on;
+    btnDrag.classList.toggle('active', on);
+    const iframe = document.querySelector('.slide-frame.active iframe');
+    if (!iframe || !iframe.contentDocument) return;
+    const doc = iframe.contentDocument;
+
+    if (on) {
+      doc.querySelectorAll('body > *:not(style):not(script)').forEach(el => {
+        if (!el.dataset.draggable) {
+          el.dataset.draggable = 'true';
+          el.style.cursor = 'move';
+          el.style.userSelect = 'none';
+          el.style.position = el.style.position || 'relative';
+
+          let startX, startY, origX, origY;
+          el.addEventListener('mousedown', e => {
+            if (e.button !== 0) return;
+            startX = e.clientX; startY = e.clientY;
+            const rect = el.getBoundingClientRect();
+            origX = rect.left; origY = rect.top;
+            e.preventDefault();
+
+            function onMove(ev) {
+              const dx = ev.clientX - startX;
+              const dy = ev.clientY - startY;
+              el.style.position = 'absolute';
+              el.style.left = (origX + dx) + 'px';
+              el.style.top  = (origY + dy) + 'px';
+            }
+            function onUp() {
+              doc.removeEventListener('mousemove', onMove);
+              doc.removeEventListener('mouseup', onUp);
+            }
+            doc.addEventListener('mousemove', onMove);
+            doc.addEventListener('mouseup', onUp);
+          });
+        }
+      });
+    } else {
+      doc.querySelectorAll('[data-draggable]').forEach(el => {
+        el.style.cursor = '';
+        el.style.userSelect = '';
+        delete el.dataset.draggable;
+      });
+    }
+  }
+
+  btnEditText.addEventListener('click', () => {
+    editTextActive = !editTextActive;
+    setTextEditing(editTextActive);
+    if (editTextActive && dragActive) {
+      dragActive = false;
+      setDragMode(false);
+    }
+  });
+
+  btnDrag.addEventListener('click', () => {
+    dragActive = !dragActive;
+    setDragMode(dragActive);
+    if (dragActive && editTextActive) {
+      editTextActive = false;
+      setTextEditing(false);
+    }
+  });
+
+  btnReset.addEventListener('click', () => {
+    const frame = document.querySelector('.slide-frame.active iframe');
+    if (frame) { frame.src = frame.src; } /* reload iframe */
+    editTextActive = true;
+    dragActive = false;
+    btnEditText.classList.add('active');
+    btnDrag.classList.remove('active');
+  });
+
+  /* Re-apply text-edit mode whenever a new slide becomes active */
+  const origShowSlide = showSlide;
+  window._origShowSlide = origShowSlide;
+
+  /* Patch: after showSlide settles, apply edit state to new iframe */
+  const observer = new MutationObserver(() => {
+    const activeFrame = document.querySelector('.slide-frame.active iframe');
+    if (activeFrame && activeFrame.contentDocument) {
+      if (editTextActive) setTextEditing(true);
+      if (dragActive)     setDragMode(true);
+    }
+  });
+  observer.observe(wrapper, { subtree: true, attributeFilter: ['class'] });
+}
+
+/* ===== Keyboard navigation ===== */
+document.addEventListener('keydown', e => {
+  /* Don't hijack keyboard if user is editing text inside an iframe */
+  if (isPro) {
+    const iframe = document.querySelector('.slide-frame.active iframe');
+    if (iframe && iframe.contentDocument) {
+      const active = iframe.contentDocument.activeElement;
+      if (active && active.isContentEditable) return;
+    }
+  }
+  switch (e.key) {
+    case 'ArrowRight': case 'ArrowDown': case ' ': case 'PageDown':
+      e.preventDefault(); navigate(1); break;
+    case 'ArrowLeft': case 'ArrowUp': case 'PageUp':
+      e.preventDefault(); navigate(-1); break;
+    case 'Home': e.preventDefault(); showSlide(0); break;
+    case 'End':  e.preventDefault(); showSlide(TOTAL - 1); break;
+    case 'f': case 'F': toggleFullscreen(); break;
+    case 'Escape':
+      if (document.fullscreenElement) document.exitFullscreen();
+      break;
+  }
+});
+
+/* ===== Export ===== */
+const exportBtn  = document.getElementById('export-btn');
+const exportMenu = document.getElementById('export-menu');
+exportBtn.addEventListener('click', e => {
+  e.stopPropagation();
+  exportMenu.style.display = exportMenu.style.display === 'none' ? 'block' : 'none';
+});
+document.addEventListener('click', () => { exportMenu.style.display = 'none'; });
+
+async function slideToCanvas(index) {
+  if (isPro) {
+    /* html2canvas on iframe body */
+    const frame = document.querySelectorAll('.slide-frame')[index];
+    if (!frame) return null;
+    const iframe = frame.querySelector('iframe');
+    if (!iframe || !iframe.contentDocument) return null;
+    return html2canvas(iframe.contentDocument.body, { scale: 1, useCORS: true, allowTaint: true, width: 1280, height: 720 });
+  } else {
+    /* Direct canvas draw for image */
+    return new Promise((res, rej) => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        const c = document.createElement('canvas');
+        c.width = 1280; c.height = 720;
+        c.getContext('2d').drawImage(img, 0, 0, 1280, 720);
+        res(c);
+      };
+      img.onerror = rej;
+      img.src = CFG_SLIDES[index] + '?_t=' + Date.now();
+    });
+  }
+}
+
+document.querySelectorAll('.export-item').forEach(btn => {
+  btn.addEventListener('click', async e => {
+    e.stopPropagation();
+    exportMenu.style.display = 'none';
+    const action = btn.dataset.action;
+    const safeName = CFG_TITLE.replace(/[^a-zA-Z0-9\u4e00-\u9fa5_-]/g, '-').slice(0, 40);
+    const date = new Date().toISOString().slice(0, 10);
+    exportBtn.textContent = '导出中…';
+
+    try {
+      if (action === 'png-current') {
+        const canvas = await slideToCanvas(current);
+        if (!canvas) { exportBtn.textContent = '↓ 导出'; return; }
+        const a = document.createElement('a');
+        a.download = `${safeName}-slide-${String(current + 1).padStart(2, '0')}.png`;
+        a.href = canvas.toDataURL('image/png');
+        a.click();
+
+      } else if (action === 'pdf-all') {
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF({ orientation: 'landscape', unit: 'px', format: [1280, 720] });
+        for (let i = 0; i < TOTAL; i++) {
+          exportBtn.textContent = `PDF ${i + 1}/${TOTAL}…`;
+          const canvas = await slideToCanvas(i);
+          if (!canvas) continue;
+          if (i > 0) pdf.addPage([1280, 720], 'landscape');
+          pdf.addImage(canvas.toDataURL('image/jpeg', 0.92), 'JPEG', 0, 0, 1280, 720);
+        }
+        pdf.save(`${safeName}-${date}.pdf`);
+
+      } else if (action === 'pptx-all') {
+        const pptx = new PptxGenJS();
+        pptx.layout = 'LAYOUT_WIDE';
+        for (let i = 0; i < TOTAL; i++) {
+          exportBtn.textContent = `PPTX ${i + 1}/${TOTAL}…`;
+          const canvas = await slideToCanvas(i);
+          if (!canvas) continue;
+          const imgData = canvas.toDataURL('image/jpeg', 0.92);
+          const slide = pptx.addSlide();
+          slide.addImage({ data: imgData, x: 0, y: 0, w: '100%', h: '100%' });
+        }
+        await pptx.writeFile({ fileName: `${safeName}-${date}.pptx` });
+
+      } else if (action === 'png-zip') {
+        const zip = new JSZip();
+        for (let i = 0; i < TOTAL; i++) {
+          exportBtn.textContent = `ZIP ${i + 1}/${TOTAL}…`;
+          const canvas = await slideToCanvas(i);
+          if (!canvas) continue;
+          const blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
+          zip.file(`slide-${String(i + 1).padStart(2, '0')}.png`, blob);
+        }
+        const content = await zip.generateAsync({ type: 'blob' });
+        const a = document.createElement('a');
+        a.download = `${safeName}-${date}.zip`;
+        a.href = URL.createObjectURL(content);
+        a.click();
+      }
+    } finally {
+      exportBtn.textContent = '↓ 导出';
+    }
+  });
+});
+
+/* ===== Init ===== */
+showSlide(0);
+</script>
+</body>
+</html>
