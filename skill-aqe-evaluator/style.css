@@ -842,6 +842,24 @@ body {
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius:99px; }
 
+/* ─── 历史记录按钮（顶栏）─── */
+.hist-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-2);
+  cursor: pointer;
+  font-family: var(--font);
+  transition: all .15s;
+}
+.hist-btn:hover { border-color: var(--blue); color: var(--blue); }
+
 /* ─── 历史抽屉 ─── */
 .drawer-overlay {
   position: fixed;
@@ -865,7 +883,7 @@ body {
 }
 
 @keyframes drawerIn {
-  from { transform: translateX(100%); opacity:0; }
+  from { transform: translateX(40px); opacity:0; }
   to   { transform: translateX(0);    opacity:1; }
 }
 
@@ -878,84 +896,55 @@ body {
   flex-shrink: 0;
 }
 
-.drawer-header h2 {
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--text-1);
-}
+.drawer-header h2 { font-size:15px; font-weight:700; color:var(--text-1); }
 
-.drawer-body {
-  flex: 1;
-  overflow-y: auto;
-  padding: 8px 0;
-}
+.drawer-body { flex:1; overflow-y:auto; }
 
 .btn-icon {
   width: 28px; height: 28px;
-  border: none;
-  background: var(--bg);
+  border: none; background: var(--bg);
   border-radius: var(--radius-sm);
-  cursor: pointer;
-  font-size: 12px;
-  color: var(--text-3);
+  cursor: pointer; font-size: 12px; color: var(--text-3);
   display: flex; align-items: center; justify-content: center;
-  transition: all .15s;
+  transition: all .15s; font-family: var(--font);
 }
 .btn-icon:hover { background: var(--border); color: var(--text-1); }
 
-/* ─── 报告补充样式 ─── */
-.rpt-verdict-reason {
-  font-size: 12px;
-  opacity: .7;
-  margin-top: 4px;
-}
-
-/* ─── 连接态样式 ─── */
-.conn-pill.online .conn-label  { color: var(--green); }
-.conn-pill.offline .conn-label { color: var(--red); }
-
-/* ─── 报告区固定宽度 ─── */
-#reportBody {
-  width: 100%;
-  padding-bottom: 40px;
-}
-
-/* ─── 进度点动画修复 ─── */
-.pipe-step.active .pipe-dot {
-  animation: spin 1.2s linear infinite;
-}
-.pipe-step.active .pipe-dot::after {
-  content: '' !important;
-  display: block;
-  width: 8px; height: 8px;
-  border: 2px solid transparent;
-  border-top-color: white;
-  border-radius: 50%;
-  margin: 0 auto;
-}
-.pipe-step.done .pipe-dot,
-.pipe-step.error .pipe-dot {
-  animation: none;
-  font-size: 10px;
-  font-weight: 700;
-  color: white;
+/* ─── 手动评分弹窗 ─── */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.5);
+  z-index: 300;
   display: flex; align-items: center; justify-content: center;
+  padding: 24px;
 }
+.modal-card {
+  background: var(--surface);
+  border-radius: 16px;
+  max-width: 440px; width: 100%;
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+.modal-head {
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.modal-head h3 { font-size:15px; font-weight:700; }
+.modal-body-inner { padding: 16px 20px; }
 
 /* ─── 打印 ─── */
 @media print {
-  .topbar, .report-topbar, .bottom-bar { display:none!important; }
+  .topbar, .report-topbar { display:none!important; }
   .stage { padding-top:0; }
-  .rpt-hero { color: black; background: #F1F5F9!important; }
-  .report-topbar { display:none!important; }
+  .rpt-hero { color:black; background:#F1F5F9!important; }
 }
 
 /* ─── 响应式 ─── */
 @media (max-width: 600px) {
-  .rpt-hero { padding: 20px; }
-  .rpt-score-num { font-size: 48px; }
-  .report-topbar { flex-direction: column; align-items: flex-start; gap: 12px; }
-  .hero-text h1 { font-size: 22px; }
-  .drop-inner { padding: 32px 20px; }
-  .rpt-2col { grid-template-columns: 1fr; }
+  .rpt-2col { grid-template-columns:1fr; }
+  .rpt-hero { padding:20px; }
+  .rpt-score-num { font-size:48px; }
+  .report-topbar { flex-direction:column; align-items:flex-start; gap:12px; }
+  .hero-text h1 { font-size:22px; }
+  .drop-inner { padding:32px 20px; }
 }
