@@ -860,6 +860,59 @@ body {
 }
 .hist-btn:hover { border-color: var(--blue); color: var(--blue); }
 
+/* ─── 历史按钮（顶栏）─── */
+.hist-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-2);
+  cursor: pointer;
+  font-family: var(--font);
+  transition: all .15s;
+  flex-shrink: 0;
+}
+.hist-btn:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-lt); }
+
+/* ─── 弹窗遮罩 ─── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.45);
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(3px);
+}
+.modal-overlay.hidden { display: none !important; }
+
+.modal-card {
+  background: var(--surface);
+  border-radius: 16px;
+  max-width: 480px;
+  width: 90%;
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+.modal-head {
+  padding: 20px 20px 12px;
+  border-bottom: 1px solid var(--border);
+}
+.modal-head h3 { font-size: 15px; font-weight: 700; color: var(--text-1); }
+
+.modal-body-inner {
+  padding: 16px 20px;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
 /* ─── 历史抽屉 ─── */
 .drawer-overlay {
   position: fixed;
