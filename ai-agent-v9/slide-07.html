@@ -1,0 +1,62 @@
+<!DOCTYPE html><html lang="zh-CN"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=1280">
+<title>Slide 07 — 企业落地挑战</title>
+<style>
+:root{--bg:#050A14;--accent:#00D4FF;--accent-soft:rgba(0,212,255,0.12);--text-primary:#E8F4FD;--text-secondary:#7ECFEF;--text-muted:#4A90A4;--border:rgba(0,212,255,0.15);--radius:8px;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{width:1280px;height:720px;overflow:hidden;font-family:'Inter','PingFang SC',sans-serif;color:var(--text-primary);}
+body{background:var(--bg);background-image:linear-gradient(rgba(5,10,20,0.82) 0%,rgba(5,10,20,0.78) 100%),url('images/bg-data.jpg');background-size:cover;background-position:center;}
+[contenteditable]{outline:none;}[contenteditable]:hover{outline:1px dashed var(--accent);border-radius:3px;}[contenteditable]:focus{outline:2px solid var(--accent);border-radius:3px;background:var(--accent-soft);}
+.slide-num{position:absolute;bottom:16px;right:24px;font-size:13px;color:var(--text-muted);}
+.page-header{position:absolute;top:36px;left:52px;right:52px;height:72px;display:flex;flex-direction:column;gap:4px;}
+.eyebrow{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);}
+h2{font-size:26px;font-weight:700;color:var(--text-primary);line-height:1.25;margin:0;}
+.content{position:absolute;top:120px;left:40px;right:40px;bottom:48px;display:flex;gap:24px;}
+.left-panel{width:38%;display:flex;flex-direction:column;justify-content:center;gap:12px;background:rgba(5,10,20,0.55);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(0,212,255,0.1);border-radius:var(--radius);padding:18px 20px;}
+.insight-list{display:flex;flex-direction:column;gap:9px;list-style:none;}
+.insight-item{display:flex;gap:10px;font-size:12.5px;color:var(--text-secondary);line-height:1.55;}
+.insight-bullet{color:var(--accent);flex-shrink:0;margin-top:2px;font-size:10px;}
+.badge{display:inline-flex;align-items:center;gap:6px;background:var(--accent-soft);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:11px;color:var(--text-secondary);width:fit-content;margin-top:4px;}
+#chart-container{flex:1;min-height:0;}
+.src-row{position:absolute;bottom:16px;left:52px;display:flex;align-items:center;gap:8px;}
+.src-dot{width:4px;height:4px;border-radius:50%;background:var(--accent);}
+.src-txt{font-size:11px;color:var(--text-muted);}
+</style></head><body>
+<div class="page-header">
+  <span class="eyebrow" contenteditable="true">ENTERPRISE CHALLENGES · 落地挑战</span>
+  <h2 contenteditable="true">落地挑战：可靠性与合规是最大拦路虎</h2>
+</div>
+<div class="content">
+  <div class="left-panel">
+    <ul class="insight-list">
+      <li class="insight-item"><span class="insight-bullet">✦</span><span contenteditable="true">幻觉问题高居榜首（71%），可靠性仍是关键业务场景落地核心障碍</span></li>
+      <li class="insight-item"><span class="insight-bullet">✦</span><span contenteditable="true">数据安全与隐私合规（68%）紧随其后，GDPR 与数据本地化要求日趋严格</span></li>
+      <li class="insight-item"><span class="insight-bullet">✦</span><span contenteditable="true">集成成本（61%）与员工接受度（53%）反映组织变革阻力，本质是管理挑战而非技术挑战</span></li>
+    </ul>
+    <div class="badge"><span>📋</span><span contenteditable="true">调研样本：1,200家企业 · 多选题</span></div>
+  </div>
+  <div id="chart-container"></div>
+</div>
+<div class="src-row"><div class="src-dot"></div><span class="src-txt" contenteditable="true">数据来源：McKinsey AI Adoption Report 2025 | 样本量 n=1,200</span></div>
+<div class="slide-num">7 / 10</div>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+<script>
+const c=echarts.init(document.getElementById('chart-container'));
+const labels=['运行成本过高','ROI难以量化','员工接受度与培训','与现有系统集成成本高','数据安全与隐私合规','幻觉与可靠性问题'];
+const values=[44,48,53,61,68,71];
+const colors=values.map(v=>v>=70?'#00D4FF':v>=60?'#7ECFEF':v>=50?'rgba(0,212,255,.55)':'rgba(0,212,255,.38)');
+c.setOption({
+  backgroundColor:'transparent',
+  /* 水平条形图 — left留长标签空间, right留数值标签空间 */
+  grid:{top:10,right:80,bottom:20,left:180},
+  tooltip:{trigger:'axis',axisPointer:{type:'none'},backgroundColor:'rgba(13,27,42,.9)',borderColor:'rgba(0,212,255,.3)',textStyle:{color:'#E8F4FD',fontSize:12},formatter:p=>`${p[0].name}<br>${p[0].marker}${p[0].value}%`},
+  xAxis:{type:'value',max:80,axisLabel:{color:'#4A90A4',fontSize:11,formatter:'{value}%'},splitLine:{lineStyle:{color:'rgba(0,212,255,.07)'}},axisLine:{show:false}},
+  yAxis:{type:'category',data:labels,axisLabel:{color:'#7ECFEF',fontSize:12,align:'right'},axisLine:{show:false},axisTick:{show:false}},
+  series:[{type:'bar',data:values,barWidth:'52%',
+    itemStyle:{color:p=>colors[p.dataIndex],borderRadius:[0,4,4,0]},
+    label:{show:true,position:'right',formatter:p=>`${p.value}%`,color:'#7ECFEF',fontSize:12,fontWeight:700},
+    emphasis:{itemStyle:{color:'#00D4FF'}}}]
+});
+window.addEventListener('resize',()=>c.resize());
+</script>
+</body></html>
