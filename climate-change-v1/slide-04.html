@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>气候变化的主要原因</title>
+<style>
+:root {
+  --bg: #F0F7F0; --container: #FFFFFF; --container-2: #E8F5E9;
+  --accent: #2E7D32; --accent-soft: rgba(46,125,50,0.10);
+  --text-primary: #1B5E20; --text-secondary: #388E3C; --text-muted: #66BB6A;
+  --border: rgba(46,125,50,0.15); --radius: 12px;
+  --font: 'Inter','PingFang SC','Microsoft YaHei',sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  width: 1280px; height: 720px; overflow: hidden;
+  background: var(--bg); font-family: var(--font);
+}
+[contenteditable] { outline: none; cursor: text; }
+[contenteditable]:hover { outline: 1px dashed var(--accent); border-radius: 3px; }
+[contenteditable]:focus { outline: 2px solid var(--accent); border-radius: 3px; background: var(--accent-soft); }
+.slide-number { position: absolute; bottom: 16px; right: 24px; font-size: 13px; color: var(--text-muted); z-index: 10; }
+
+body {
+  background-image:
+    linear-gradient(to bottom, rgba(240,247,240,0.88) 0%, rgba(240,247,240,0.82) 100%),
+    url('images/slide-04-bg.jpg');
+  background-size: auto, cover;
+  background-position: left, center;
+}
+
+.page-header {
+  position: absolute; top: 0; left: 0; right: 0; height: 80px;
+  padding: 24px 52px 0;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.eyebrow { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+.page-title { font-size: 28px; font-weight: 800; color: var(--text-primary); }
+.header-line { position: absolute; bottom: 0; left: 52px; right: 52px; height: 2px; background: var(--accent); opacity: 0.25; }
+
+/* B2 Bento Grid + ECharts */
+.b2-layout {
+  position: absolute; top: 100px; left: 52px; right: 52px; bottom: 52px;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 16px;
+}
+
+/* 左列大格 = 饼图 */
+.b2-main {
+  grid-row: 1 / 3;
+  background: var(--container); border-radius: var(--radius);
+  padding: 20px 20px 16px;
+  display: flex; flex-direction: column; gap: 8px;
+  box-shadow: 0 2px 12px rgba(46,125,50,0.08);
+  border: 1px solid var(--border);
+}
+
+.chart-title { font-size: 14px; font-weight: 700; color: var(--text-primary); }
+.chart-subtitle { font-size: 11px; color: var(--text-muted); }
+#cause-pie { flex: 1; min-height: 0; }
+
+/* 右侧小格 */
+.b2-sub {
+  background: var(--container); border-radius: var(--radius);
+  padding: 18px 20px; display: flex; flex-direction: column; gap: 8px;
+  box-shadow: 0 2px 12px rgba(46,125,50,0.08);
+  border: 1px solid var(--border);
+}
+
+.sub-icon { font-size: 26px; }
+.sub-pct { font-size: 36px; font-weight: 900; color: var(--accent); line-height: 1; }
+.sub-label { font-size: 15px; font-weight: 700; color: var(--text-primary); }
+.sub-note { font-size: 12px; color: var(--text-secondary); line-height: 1.5; flex: 1; }
+
+.sub-bar { width: 100%; height: 4px; background: var(--border); border-radius: 2px; margin-top: auto; }
+.sub-bar-fill { height: 100%; background: var(--accent); border-radius: 2px; }
+
+/* insight bar */
+.insight-bar {
+  position: absolute; bottom: 14px; left: 52px; right: 52px;
+  background: rgba(46,125,50,0.08); border: 1px solid rgba(46,125,50,0.15);
+  border-radius: 8px; padding: 8px 16px;
+  display: flex; align-items: center; gap: 12px;
+  font-size: 12px; color: var(--text-secondary);
+}
+.insight-icon { font-size: 16px; flex-shrink: 0; }
+.insight-text { flex: 1; }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+</head>
+<body>
+<div class="page-header">
+  <div class="eyebrow" contenteditable="true">CHAPTER 02 · ROOT CAUSES</div>
+  <h2 class="page-title" contenteditable="true">气候变化的主要原因</h2>
+  <div class="header-line"></div>
+</div>
+
+<div class="b2-layout">
+  <!-- 主区：饼图 -->
+  <div class="b2-main">
+    <div class="chart-title" contenteditable="true">全球温室气体排放来源构成</div>
+    <div class="chart-subtitle" contenteditable="true">数据来源：Our World in Data / IEA 2022</div>
+    <div id="cause-pie"></div>
+  </div>
+
+  <!-- 子格1：化石燃料 -->
+  <div class="b2-sub">
+    <div class="sub-icon">⛽</div>
+    <div class="sub-pct" contenteditable="true">73%</div>
+    <div class="sub-label" contenteditable="true">化石燃料燃烧</div>
+    <div class="sub-note" contenteditable="true">煤、石油、天然气是最大排放源，已累计燃烧超 1 万亿吨化石燃料</div>
+    <div class="sub-bar"><div class="sub-bar-fill" style="width:73%"></div></div>
+  </div>
+
+  <!-- 子格2：农业+林业 -->
+  <div class="b2-sub">
+    <div class="sub-icon">🌾</div>
+    <div class="sub-pct" contenteditable="true">18%</div>
+    <div class="sub-label" contenteditable="true">农业畜牧业</div>
+    <div class="sub-note" contenteditable="true">牛羊等反刍动物产生 CH₄，温室效应是 CO₂ 的 80 倍</div>
+    <div class="sub-bar"><div class="sub-bar-fill" style="width:18%"></div></div>
+  </div>
+</div>
+
+<!-- Insight bar -->
+<div class="insight-bar">
+  <span class="insight-icon">💡</span>
+  <span class="insight-text" contenteditable="true">森林砍伐占 6%（每年损失 1000 万公顷），工业过程占 3%（水泥、钢铁）——联合减排潜力巨大</span>
+</div>
+
+<div class="slide-number" contenteditable="false">4 / 9</div>
+
+<script>
+const chart = echarts.init(document.getElementById('cause-pie'));
+chart.setOption({
+  backgroundColor: 'transparent',
+  color: ['#2E7D32','#66BB6A','#A5D6A7','#C8E6C9'],
+  tooltip: {
+    trigger: 'item',
+    formatter: '{b}: {c}% ({d}%)',
+    backgroundColor: '#fff',
+    borderColor: 'rgba(46,125,50,0.2)',
+    textStyle: { color: '#1B5E20' }
+  },
+  legend: {
+    orient: 'vertical', right: '5%', top: 'center',
+    textStyle: { color: '#388E3C', fontSize: 13, fontFamily: 'Inter' },
+    itemGap: 12
+  },
+  series: [{
+    type: 'pie',
+    radius: ['40%','72%'],
+    center: ['40%','52%'],
+    avoidLabelOverlap: true,
+    label: {
+      show: true, position: 'outside',
+      formatter: '{b}\n{c}%',
+      color: '#1B5E20', fontSize: 12, fontWeight: '700'
+    },
+    labelLine: { lineStyle: { color: 'rgba(46,125,50,0.4)' } },
+    data: [
+      { value: 73, name: '化石燃料' },
+      { value: 18, name: '农业畜牧业' },
+      { value: 6,  name: '森林砍伐' },
+      { value: 3,  name: '工业生产' }
+    ],
+    emphasis: {
+      itemStyle: { shadowBlur: 12, shadowColor: 'rgba(46,125,50,0.3)' }
+    }
+  }]
+});
+</script>
+</body>
+</html>

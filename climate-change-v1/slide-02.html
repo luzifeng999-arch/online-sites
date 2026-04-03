@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>目录 — 演讲脉络</title>
+<style>
+:root {
+  --bg: #F0F7F0; --container: #FFFFFF; --container-2: #E8F5E9;
+  --accent: #2E7D32; --accent-soft: rgba(46,125,50,0.10);
+  --text-primary: #1B5E20; --text-secondary: #388E3C; --text-muted: #66BB6A;
+  --border: rgba(46,125,50,0.15); --radius: 12px;
+  --font: 'Inter','PingFang SC','Microsoft YaHei',sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  width: 1280px; height: 720px; overflow: hidden;
+  background: var(--bg); font-family: var(--font);
+}
+[contenteditable] { outline: none; cursor: text; }
+[contenteditable]:hover { outline: 1px dashed var(--accent); border-radius: 3px; }
+[contenteditable]:focus { outline: 2px solid var(--accent); border-radius: 3px; background: var(--accent-soft); }
+.slide-number {
+  position: absolute; bottom: 16px; right: 24px;
+  font-size: 13px; color: var(--text-muted); font-variant-numeric: tabular-nums; z-index: 10;
+}
+
+body {
+  background-image:
+    linear-gradient(to bottom, rgba(240,247,240,0.96) 0%, rgba(240,247,240,0.88) 100%),
+    radial-gradient(ellipse 65% 75% at 105% -5%, rgba(46,125,50,0.18) 0%, transparent 55%),
+    radial-gradient(ellipse 55% 60% at -5% 110%, rgba(129,199,132,0.15) 0%, transparent 55%),
+    url('images/slide-02-bg.jpg');
+  background-size: auto, auto, auto, cover;
+  background-position: left top, left top, left top, center;
+}
+
+/* Header */
+.page-header {
+  position: absolute; top: 0; left: 0; right: 0; height: 80px;
+  padding: 24px 52px 0;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.eyebrow { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+.page-title { font-size: 28px; font-weight: 800; color: var(--text-primary); }
+.header-line { position: absolute; bottom: 0; left: 52px; right: 52px; height: 2px; background: var(--accent); opacity: 0.25; }
+
+/* Chapter Index Layout (F1) */
+.f1-layout {
+  position: absolute; top: 100px; left: 52px; right: 52px; bottom: 44px;
+  display: flex; flex-direction: column; gap: 6px; justify-content: center;
+}
+
+.f1-item {
+  display: flex; gap: 24px; align-items: center;
+  padding: 12px 20px; border-radius: var(--radius);
+  transition: background 0.2s;
+  border: 1px solid transparent;
+}
+
+.f1-item.active {
+  background: var(--accent-soft);
+  border-color: rgba(46,125,50,0.20);
+}
+
+.f1-num {
+  font-size: 30px; font-weight: 900; color: var(--text-muted);
+  width: 44px; flex-shrink: 0; line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.f1-item.active .f1-num { color: var(--accent); }
+
+.f1-content { flex: 1; }
+
+.f1-title {
+  font-size: 17px; font-weight: 700; color: var(--text-primary);
+}
+
+.f1-desc {
+  font-size: 12px; color: var(--text-muted); margin-top: 2px;
+}
+
+.f1-dot {
+  width: 8px; height: 8px; border-radius: 50%; background: var(--accent);
+  opacity: 0; flex-shrink: 0;
+}
+
+.f1-item.active .f1-dot { opacity: 1; }
+</style>
+</head>
+<body>
+<!-- Header -->
+<div class="page-header">
+  <div class="eyebrow" contenteditable="true">OVERVIEW</div>
+  <h2 class="page-title" contenteditable="true">演讲脉络</h2>
+  <div class="header-line"></div>
+</div>
+
+<!-- F1 Chapter Index -->
+<div class="f1-layout">
+  <div class="f1-item active">
+    <div class="f1-num" contenteditable="true">01</div>
+    <div class="f1-content">
+      <div class="f1-title" contenteditable="true">什么是气候变化</div>
+      <div class="f1-desc" contenteditable="true">温室效应、人为变化与自然变化的本质区别</div>
+    </div>
+    <div class="f1-dot"></div>
+  </div>
+  <div class="f1-item">
+    <div class="f1-num" contenteditable="true">02</div>
+    <div class="f1-content">
+      <div class="f1-title" contenteditable="true">主要原因</div>
+      <div class="f1-desc" contenteditable="true">化石燃料、农业、森林砍伐的排放贡献比例</div>
+    </div>
+    <div class="f1-dot"></div>
+  </div>
+  <div class="f1-item">
+    <div class="f1-num" contenteditable="true">03</div>
+    <div class="f1-content">
+      <div class="f1-title" contenteditable="true">关键数据</div>
+      <div class="f1-desc" contenteditable="true">全球升温数据、海冰减少、CO₂浓度等关键指标</div>
+    </div>
+    <div class="f1-dot"></div>
+  </div>
+  <div class="f1-item">
+    <div class="f1-num" contenteditable="true">04</div>
+    <div class="f1-content">
+      <div class="f1-title" contenteditable="true">对人类社会的影响</div>
+      <div class="f1-desc" contenteditable="true">粮食安全、人类健康、经济损失、气候难民</div>
+    </div>
+    <div class="f1-dot"></div>
+  </div>
+  <div class="f1-item">
+    <div class="f1-num" contenteditable="true">05</div>
+    <div class="f1-content">
+      <div class="f1-title" contenteditable="true">对自然生态的冲击</div>
+      <div class="f1-desc" contenteditable="true">生物多样性危机、珊瑚礁退化、海洋酸化</div>
+    </div>
+    <div class="f1-dot"></div>
+  </div>
+  <div class="f1-item">
+    <div class="f1-num" contenteditable="true">06</div>
+    <div class="f1-content">
+      <div class="f1-title" contenteditable="true">政策与科技应对</div>
+      <div class="f1-desc" contenteditable="true">巴黎协定、可再生能源、碳捕捉技术</div>
+    </div>
+    <div class="f1-dot"></div>
+  </div>
+  <div class="f1-item">
+    <div class="f1-num" contenteditable="true">07</div>
+    <div class="f1-content">
+      <div class="f1-title" contenteditable="true">个人行动与未来展望</div>
+      <div class="f1-desc" contenteditable="true">每个人的减排行动与集体希望</div>
+    </div>
+    <div class="f1-dot"></div>
+  </div>
+</div>
+
+<div class="slide-number" contenteditable="false">2 / 9</div>
+</body>
+</html>

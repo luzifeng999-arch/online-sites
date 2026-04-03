@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>政策与科技应对方案</title>
+<style>
+:root {
+  --bg: #F0F7F0; --container: #FFFFFF; --container-2: #E8F5E9;
+  --accent: #2E7D32; --accent-soft: rgba(46,125,50,0.10);
+  --text-primary: #1B5E20; --text-secondary: #388E3C; --text-muted: #66BB6A;
+  --border: rgba(46,125,50,0.15); --radius: 12px;
+  --font: 'Inter','PingFang SC','Microsoft YaHei',sans-serif;
+  --success: #22C55E;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1280px; height: 720px; overflow: hidden; background: var(--bg); font-family: var(--font); }
+[contenteditable] { outline: none; cursor: text; }
+[contenteditable]:hover { outline: 1px dashed var(--accent); border-radius: 3px; }
+[contenteditable]:focus { outline: 2px solid var(--accent); border-radius: 3px; background: var(--accent-soft); }
+.slide-number { position: absolute; bottom: 16px; right: 24px; font-size: 13px; color: var(--text-muted); z-index: 10; }
+
+body {
+  background-image:
+    linear-gradient(to right, rgba(240,247,240,0.86) 0%, rgba(240,247,240,0.82) 100%),
+    url('images/slide-08-bg.jpg');
+  background-size: auto, cover;
+  background-position: left, center;
+}
+
+.page-header {
+  position: absolute; top: 0; left: 0; right: 0; height: 80px;
+  padding: 24px 52px 0; display: flex; flex-direction: column; gap: 4px;
+}
+.eyebrow { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+.page-title { font-size: 28px; font-weight: 800; color: var(--text-primary); }
+.header-line { position: absolute; bottom: 0; left: 52px; right: 52px; height: 2px; background: var(--accent); opacity: 0.25; }
+
+/* B5 Split Chart */
+.b5-layout {
+  position: absolute; top: 100px; left: 52px; right: 52px; bottom: 52px;
+  display: grid; grid-template-columns: 1fr 2fr; gap: 24px;
+}
+
+/* 左侧政策要点 */
+.b5-analysis {
+  display: flex; flex-direction: column; gap: 10px; justify-content: center;
+}
+
+.policy-item {
+  background: var(--container); border-radius: 10px;
+  padding: 12px 16px; display: flex; gap: 10px; align-items: flex-start;
+  border-left: 3px solid var(--accent);
+  box-shadow: 0 1px 6px rgba(46,125,50,0.07);
+  flex: 1;
+}
+
+.policy-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+.policy-body {}
+.policy-title { font-size: 14px; font-weight: 700; color: var(--text-primary); }
+.policy-desc { font-size: 12px; color: var(--text-secondary); margin-top: 3px; line-height: 1.5; }
+
+/* 右侧图表 */
+.b5-chart {
+  background: var(--container); border-radius: var(--radius);
+  padding: 20px 20px 16px;
+  display: flex; flex-direction: column; gap: 8px;
+  box-shadow: 0 2px 16px rgba(46,125,50,0.08);
+  border: 1px solid var(--border);
+}
+.chart-header {}
+.chart-title { font-size: 14px; font-weight: 700; color: var(--text-primary); }
+.chart-subtitle { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+#solution-chart { flex: 1; min-height: 0; }
+
+.insight-bar {
+  position: absolute; bottom: 14px; left: 52px; right: 52px;
+  background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.20);
+  border-radius: 8px; padding: 8px 16px;
+  display: flex; align-items: center; gap: 12px;
+  font-size: 12px; color: var(--text-secondary);
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+</head>
+<body>
+<div class="page-header">
+  <div class="eyebrow" contenteditable="true">CHAPTER 06 · SOLUTIONS</div>
+  <h2 class="page-title" contenteditable="true">政策与科技应对方案</h2>
+  <div class="header-line"></div>
+</div>
+
+<div class="b5-layout">
+  <!-- 左侧：政策要点 -->
+  <div class="b5-analysis">
+    <div class="policy-item">
+      <div class="policy-icon">📋</div>
+      <div class="policy-body">
+        <div class="policy-title" contenteditable="true">巴黎协定</div>
+        <div class="policy-desc" contenteditable="true">197个国家签署，目标将升温控制在 1.5-2°C 以内</div>
+      </div>
+    </div>
+    <div class="policy-item">
+      <div class="policy-icon">☀️</div>
+      <div class="policy-body">
+        <div class="policy-title" contenteditable="true">太阳能革命</div>
+        <div class="policy-desc" contenteditable="true">10年内成本下降 90%，成最便宜能源</div>
+      </div>
+    </div>
+    <div class="policy-item">
+      <div class="policy-icon">🚗</div>
+      <div class="policy-body">
+        <div class="policy-title" contenteditable="true">电动交通</div>
+        <div class="policy-desc" contenteditable="true">2023年全球电动车销量 1400 万辆，占新车 18%</div>
+      </div>
+    </div>
+    <div class="policy-item">
+      <div class="policy-icon">🔬</div>
+      <div class="policy-body">
+        <div class="policy-title" contenteditable="true">碳捕捉技术</div>
+        <div class="policy-desc" contenteditable="true">DAC 技术直接从空气中抽取 CO₂ 封存地下</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 右侧：可再生能源增长柱状图 -->
+  <div class="b5-chart">
+    <div class="chart-header">
+      <div class="chart-title" contenteditable="true">可再生能源装机容量增长趋势（GW）</div>
+      <div class="chart-subtitle" contenteditable="true">数据来源：IRENA 2023年报告</div>
+    </div>
+    <div id="solution-chart"></div>
+  </div>
+</div>
+
+<div class="insight-bar">
+  <span style="font-size:16px">✅</span>
+  <span contenteditable="true">好消息：2023年全球新增可再生能源装机 295GW，创历史新高；风能+太阳能已超越煤电成为最大电力来源</span>
+</div>
+
+<div class="slide-number" contenteditable="false">8 / 9</div>
+
+<script>
+const chart = echarts.init(document.getElementById('solution-chart'));
+chart.setOption({
+  backgroundColor: 'transparent',
+  grid: { left: 60, right: 24, top: 20, bottom: 52 },
+  xAxis: {
+    type: 'category',
+    data: ['2015','2016','2017','2018','2019','2020','2021','2022','2023'],
+    axisLine: { lineStyle: { color: 'rgba(46,125,50,0.3)' } },
+    axisLabel: { color: '#388E3C', fontSize: 12 },
+    axisTick: { show: false }
+  },
+  yAxis: {
+    type: 'value',
+    name: 'GW',
+    nameTextStyle: { color: '#66BB6A', fontSize: 11 },
+    axisLine: { show: false },
+    axisLabel: { color: '#66BB6A', fontSize: 11 },
+    splitLine: { lineStyle: { color: 'rgba(46,125,50,0.1)' } }
+  },
+  series: [
+    {
+      name: '太阳能',
+      type: 'bar',
+      stack: 'energy',
+      data: [228, 295, 405, 509, 627, 760, 944, 1181, 1419],
+      itemStyle: { color: '#A5D6A7', borderRadius: [0,0,0,0] },
+      label: { show: false }
+    },
+    {
+      name: '风能',
+      type: 'bar',
+      stack: 'energy',
+      data: [419, 487, 539, 591, 650, 743, 824, 900, 1017],
+      itemStyle: { color: '#2E7D32', borderRadius: [4,4,0,0] },
+      label: {
+        show: true, position: 'top',
+        formatter: (p) => p.dataIndex === 8 ? '2436GW' : '',
+        color: '#1B5E20', fontSize: 12, fontWeight: 700
+      }
+    }
+  ],
+  legend: {
+    data: ['太阳能','风能'], bottom: 4,
+    textStyle: { color: '#388E3C', fontSize: 12 },
+    itemGap: 24
+  },
+  tooltip: {
+    trigger: 'axis', axisPointer: { type: 'shadow' },
+    backgroundColor: '#fff', borderColor: 'rgba(46,125,50,0.2)',
+    textStyle: { color: '#1B5E20' }
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>什么是气候变化</title>
+<style>
+:root {
+  --bg: #F0F7F0; --container: #FFFFFF; --container-2: #E8F5E9;
+  --accent: #2E7D32; --accent-soft: rgba(46,125,50,0.10);
+  --text-primary: #1B5E20; --text-secondary: #388E3C; --text-muted: #66BB6A;
+  --border: rgba(46,125,50,0.15); --radius: 12px;
+  --font: 'Inter','PingFang SC','Microsoft YaHei',sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  width: 1280px; height: 720px; overflow: hidden;
+  background: var(--bg); font-family: var(--font);
+}
+[contenteditable] { outline: none; cursor: text; }
+[contenteditable]:hover { outline: 1px dashed var(--accent); border-radius: 3px; }
+[contenteditable]:focus { outline: 2px solid var(--accent); border-radius: 3px; background: var(--accent-soft); }
+.slide-number {
+  position: absolute; bottom: 16px; right: 24px;
+  font-size: 13px; color: var(--text-muted); z-index: 10;
+}
+
+body {
+  background-image:
+    linear-gradient(to right, rgba(240,247,240,0.92) 35%, rgba(240,247,240,0.80) 60%, rgba(240,247,240,0.65) 100%),
+    url('images/slide-03-bg.jpg');
+  background-size: auto, cover;
+  background-position: left, center;
+}
+
+.page-header {
+  position: absolute; top: 0; left: 0; right: 0; height: 80px;
+  padding: 24px 52px 0;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.eyebrow { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+.page-title { font-size: 28px; font-weight: 800; color: var(--text-primary); }
+.header-line { position: absolute; bottom: 0; left: 52px; right: 52px; height: 2px; background: var(--accent); opacity: 0.25; }
+
+/* A5 Side-by-Side Compare */
+.a5-layout {
+  position: absolute; top: 100px; left: 52px; right: 52px; bottom: 44px;
+  display: grid; grid-template-columns: 1fr 2px 1fr; gap: 0;
+}
+
+.a5-divider {
+  background: var(--border); align-self: stretch;
+  margin: 8px 0;
+}
+
+.a5-col {
+  padding: 16px 32px; display: flex; flex-direction: column; gap: 16px;
+}
+
+.a5-col-header {
+  display: flex; align-items: center; gap: 12px; padding-bottom: 12px;
+  border-bottom: 2px solid var(--border);
+}
+
+.a5-col-icon {
+  font-size: 32px; flex-shrink: 0;
+}
+
+.a5-col-title {
+  font-size: 20px; font-weight: 800; color: var(--text-primary);
+}
+
+.a5-col-subtitle {
+  font-size: 13px; color: var(--text-muted); margin-top: 2px;
+}
+
+.a5-def-box {
+  background: var(--accent-soft); border-radius: var(--radius);
+  padding: 16px 20px; border-left: 4px solid var(--accent);
+  flex-shrink: 0;
+}
+
+.a5-def-label {
+  font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--accent); font-weight: 700; margin-bottom: 6px;
+}
+
+.a5-def-text {
+  font-size: 15px; color: var(--text-primary); line-height: 1.65;
+  font-weight: 500;
+}
+
+.a5-items { display: flex; flex-direction: column; gap: 10px; flex: 1; }
+
+.a5-item {
+  display: flex; gap: 12px; align-items: flex-start;
+  padding: 12px 14px; background: var(--container);
+  border-radius: 8px; border: 1px solid var(--border);
+  flex: 1;
+}
+
+.a5-item-icon {
+  font-size: 20px; flex-shrink: 0; margin-top: 1px;
+}
+
+.a5-item-body {}
+
+.a5-item-title {
+  font-size: 14px; font-weight: 700; color: var(--text-primary);
+}
+
+.a5-item-desc {
+  font-size: 12.5px; color: var(--text-secondary); line-height: 1.6; margin-top: 3px;
+}
+
+.a5-highlight {
+  background: var(--container-2);
+  border-color: rgba(46,125,50,0.25);
+}
+</style>
+</head>
+<body>
+<div class="page-header">
+  <div class="eyebrow" contenteditable="true">CHAPTER 01 · DEFINITION</div>
+  <h2 class="page-title" contenteditable="true">什么是气候变化</h2>
+  <div class="header-line"></div>
+</div>
+
+<div class="a5-layout">
+  <!-- 左列：定义 + 核心机制 -->
+  <div class="a5-col">
+    <div class="a5-col-header">
+      <div class="a5-col-icon">🌡️</div>
+      <div>
+        <div class="a5-col-title" contenteditable="true">气候变化是什么</div>
+        <div class="a5-col-subtitle" contenteditable="true">科学定义与成因</div>
+      </div>
+    </div>
+    <div class="a5-def-box">
+      <div class="a5-def-label" contenteditable="true">IPCC 定义</div>
+      <div class="a5-def-text" contenteditable="true">气候变化是指在至少 <strong>30 年或更长</strong>时间尺度上，气候系统的统计特征（均值或变率）发生的显著变化。</div>
+    </div>
+    <div class="a5-items">
+      <div class="a5-item a5-highlight">
+        <div class="a5-item-icon">🌿</div>
+        <div class="a5-item-body">
+          <div class="a5-item-title" contenteditable="true">温室效应</div>
+          <div class="a5-item-desc" contenteditable="true">CO₂、CH₄ 等温室气体在大气中积累，像"毯子"一样锁住热量，导致地表温度持续上升</div>
+        </div>
+      </div>
+      <div class="a5-item">
+        <div class="a5-item-icon">🔬</div>
+        <div class="a5-item-body">
+          <div class="a5-item-title" contenteditable="true">97% 科学共识</div>
+          <div class="a5-item-desc" contenteditable="true">全球超 97% 的气候科学家确认，当前气候变化主要由人类活动引起</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="a5-divider"></div>
+
+  <!-- 右列：人为 vs 自然 对比 -->
+  <div class="a5-col">
+    <div class="a5-col-header">
+      <div class="a5-col-icon">⚖️</div>
+      <div>
+        <div class="a5-col-title" contenteditable="true">人为 vs 自然变化</div>
+        <div class="a5-col-subtitle" contenteditable="true">关键区别对比</div>
+      </div>
+    </div>
+    <div class="a5-items">
+      <div class="a5-item a5-highlight">
+        <div class="a5-item-icon">🏭</div>
+        <div class="a5-item-body">
+          <div class="a5-item-title" contenteditable="true">人为气候变化</div>
+          <div class="a5-item-desc" contenteditable="true">工业革命以来 <strong>150 年</strong>，速度极快，主要因化石燃料燃烧。<strong>可通过政策干预减缓</strong></div>
+        </div>
+      </div>
+      <div class="a5-item">
+        <div class="a5-item-icon">🌋</div>
+        <div class="a5-item-body">
+          <div class="a5-item-title" contenteditable="true">自然气候变化</div>
+          <div class="a5-item-desc" contenteditable="true">由火山爆发、太阳活动等主导，以 <strong>千年</strong> 为单位缓慢演化，难以人为控制</div>
+        </div>
+      </div>
+      <div class="a5-item">
+        <div class="a5-item-icon">📈</div>
+        <div class="a5-item-body">
+          <div class="a5-item-title" contenteditable="true">当前速度异常</div>
+          <div class="a5-item-desc" contenteditable="true">现代升温速度比最近冰期结束后的自然升温 <strong>快约 10 倍</strong>，明确非自然原因</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide-number" contenteditable="false">3 / 9</div>
+</body>
+</html>

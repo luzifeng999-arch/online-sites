@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>行动与未来</title>
+<style>
+:root {
+  --bg: #F0F7F0; --container: #FFFFFF; --container-2: #E8F5E9;
+  --accent: #2E7D32; --accent-soft: rgba(46,125,50,0.10);
+  --text-primary: #1B5E20; --text-secondary: #388E3C; --text-muted: #66BB6A;
+  --border: rgba(46,125,50,0.15); --radius: 12px;
+  --font: 'Inter','PingFang SC','Microsoft YaHei',sans-serif;
+  --success: #22C55E;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1280px; height: 720px; overflow: hidden; background: var(--bg); font-family: var(--font); }
+[contenteditable] { outline: none; cursor: text; }
+[contenteditable]:hover { outline: 1px dashed var(--accent); border-radius: 3px; }
+[contenteditable]:focus { outline: 2px solid var(--accent); border-radius: 3px; background: var(--accent-soft); }
+.slide-number { position: absolute; bottom: 16px; right: 24px; font-size: 13px; color: rgba(255,255,255,0.55); z-index: 10; }
+
+body {
+  background-image:
+    linear-gradient(to right, rgba(27,94,32,0.78) 0%, rgba(27,94,32,0.65) 45%, rgba(27,94,32,0.40) 70%, transparent 100%),
+    url('images/slide-09-bg.jpg');
+  background-size: auto, cover;
+  background-position: left, center;
+}
+
+.page-header {
+  position: absolute; top: 0; left: 0; right: 0; height: 80px;
+  padding: 24px 52px 0; display: flex; flex-direction: column; gap: 4px;
+}
+.eyebrow { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: #81C784; font-weight: 600; }
+.page-title { font-size: 28px; font-weight: 800; color: #FFFFFF; }
+.header-line { position: absolute; bottom: 0; left: 52px; right: 52px; height: 2px; background: rgba(165,214,167,0.4); }
+
+/* E1 Summary + Actions 双栏 */
+.e1-layout {
+  position: absolute; top: 100px; left: 52px; right: 52px; bottom: 52px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+}
+
+/* 左侧：个人行动指南 */
+.e1-conclusions {
+  display: flex; flex-direction: column; gap: 0;
+}
+
+.e1-item {
+  flex: 1; display: flex; gap: 14px; align-items: center;
+  border-bottom: 1px solid rgba(165,214,167,0.20);
+  padding: 14px 4px;
+}
+.e1-item:last-child { border-bottom: none; }
+
+.e1-item-icon { font-size: 28px; flex-shrink: 0; }
+.e1-item-body { flex: 1; }
+.e1-item-title { font-size: 16px; font-weight: 700; color: #FFFFFF; }
+.e1-item-desc { font-size: 12.5px; color: rgba(255,255,255,0.75); margin-top: 3px; line-height: 1.5; }
+.e1-item-badge {
+  flex-shrink: 0; padding: 4px 10px; border-radius: 100px;
+  background: rgba(34,197,94,0.2); color: #A5D6A7;
+  font-size: 12px; font-weight: 700; border: 1px solid rgba(165,214,167,0.3);
+}
+
+/* 右侧：展望+CTA */
+.e1-actions {
+  background: rgba(255,255,255,0.10); backdrop-filter: blur(12px);
+  border: 1px solid rgba(165,214,167,0.25); border-radius: var(--radius);
+  padding: 24px 28px; display: flex; flex-direction: column; gap: 0;
+}
+
+.actions-header { margin-bottom: 16px; }
+.actions-title { font-size: 20px; font-weight: 800; color: #FFFFFF; }
+.actions-sub { font-size: 13px; color: rgba(255,255,255,0.70); margin-top: 4px; }
+
+.action-item {
+  flex: 1; display: flex; gap: 12px; align-items: flex-start;
+  border-bottom: 1px solid rgba(165,214,167,0.15);
+  padding: 12px 0;
+}
+.action-item:last-child { border-bottom: none; }
+
+.action-num {
+  font-size: 26px; font-weight: 900; color: #81C784; opacity: 0.5;
+  flex-shrink: 0; width: 32px; line-height: 1;
+}
+.action-body { flex: 1; }
+.action-title { font-size: 15px; font-weight: 700; color: #FFFFFF; }
+.action-desc { font-size: 12px; color: rgba(255,255,255,0.68); margin-top: 3px; line-height: 1.5; }
+
+/* 底部洞察条 */
+.insight-bar {
+  position: absolute; bottom: 14px; left: 52px; right: 52px;
+  background: rgba(165,214,167,0.12); border: 1px solid rgba(165,214,167,0.25);
+  border-radius: 8px; padding: 8px 16px;
+  display: flex; align-items: center; gap: 12px;
+  font-size: 12px; color: rgba(255,255,255,0.75);
+}
+</style>
+</head>
+<body>
+<div class="page-header">
+  <div class="eyebrow" contenteditable="true">CHAPTER 07 · ACTION & HOPE</div>
+  <h2 class="page-title" contenteditable="true">行动与未来</h2>
+  <div class="header-line"></div>
+</div>
+
+<div class="e1-layout">
+  <!-- 左侧：个人减排行动 -->
+  <div class="e1-conclusions">
+    <div class="e1-item">
+      <div class="e1-item-icon">🥗</div>
+      <div class="e1-item-body">
+        <div class="e1-item-title" contenteditable="true">减少肉食，选择素食替代</div>
+        <div class="e1-item-desc" contenteditable="true">素食替代牛肉可减少约 90% 的碳排放</div>
+      </div>
+      <div class="e1-item-badge" contenteditable="true">−90%</div>
+    </div>
+    <div class="e1-item">
+      <div class="e1-item-icon">🚆</div>
+      <div class="e1-item-body">
+        <div class="e1-item-title" contenteditable="true">选乘高铁替代短途飞行</div>
+        <div class="e1-item-desc" contenteditable="true">高铁替代飞机可减少约 95% 的排放</div>
+      </div>
+      <div class="e1-item-badge" contenteditable="true">−95%</div>
+    </div>
+    <div class="e1-item">
+      <div class="e1-item-icon">🚌</div>
+      <div class="e1-item-body">
+        <div class="e1-item-title" contenteditable="true">公共交通替代私家车</div>
+        <div class="e1-item-desc" contenteditable="true">每年坐公交上班可减少约 2.4 吨 CO₂</div>
+      </div>
+      <div class="e1-item-badge" contenteditable="true">−70%</div>
+    </div>
+    <div class="e1-item">
+      <div class="e1-item-icon">⚡</div>
+      <div class="e1-item-body">
+        <div class="e1-item-title" contenteditable="true">选择绿色电力与可再生能源</div>
+        <div class="e1-item-desc" contenteditable="true">家庭改用绿电，可减少 100% 用电碳排放</div>
+      </div>
+      <div class="e1-item-badge" contenteditable="true">−100%</div>
+    </div>
+  </div>
+
+  <!-- 右侧：集体展望 -->
+  <div class="e1-actions">
+    <div class="actions-header">
+      <div class="actions-title" contenteditable="true">集体力量与未来愿景</div>
+      <div class="actions-sub" contenteditable="true">每个人的改变，共同构筑可持续未来</div>
+    </div>
+    <div class="action-item">
+      <div class="action-num" contenteditable="true">01</div>
+      <div class="action-body">
+        <div class="action-title" contenteditable="true">净零排放目标</div>
+        <div class="action-desc" contenteditable="true">全球目标 2050 年前实现碳中和，已有 140+ 国家承诺</div>
+      </div>
+    </div>
+    <div class="action-item">
+      <div class="action-num" contenteditable="true">02</div>
+      <div class="action-body">
+        <div class="action-title" contenteditable="true">自然恢复力</div>
+        <div class="action-desc" contenteditable="true">停止砍伐，森林可在 30 年内自然恢复并吸收大量碳</div>
+      </div>
+    </div>
+    <div class="action-item">
+      <div class="action-num" contenteditable="true">03</div>
+      <div class="action-body">
+        <div class="action-title" contenteditable="true">技术加速</div>
+        <div class="action-desc" contenteditable="true">清洁能源、储能、碳捕捉正以前所未有的速度进步</div>
+      </div>
+    </div>
+    <div class="action-item">
+      <div class="action-num" contenteditable="true">04</div>
+      <div class="action-body">
+        <div class="action-title" contenteditable="true">青年与集体行动</div>
+        <div class="action-desc" contenteditable="true">每次选票、每次消费、每次出行，都在为地球未来投票</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="insight-bar">
+  <span style="font-size:16px">🌍</span>
+  <span contenteditable="true">我们是第一个真正理解气候危机的世代，也是最后一个仍有机会阻止最坏情况发生的世代 — 现在行动，还为时不晚</span>
+</div>
+
+<div class="slide-number" contenteditable="false">9 / 9</div>
+</body>
+</html>

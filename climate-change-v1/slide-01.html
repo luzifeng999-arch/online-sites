@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>封面 — 气候变化与我们的未来</title>
+<style>
+/* ===== Design Tokens — Palette E (Natural Green) ===== */
+:root {
+  --bg: #F0F7F0; --container: #FFFFFF; --container-2: #E8F5E9;
+  --accent: #2E7D32; --accent-soft: rgba(46,125,50,0.12);
+  --text-primary: #1B5E20; --text-secondary: #388E3C; --text-muted: #66BB6A;
+  --border: rgba(46,125,50,0.18);
+  --shadow-1: 0 1px 4px rgba(27,94,32,0.06);
+  --shadow-2: 0 4px 16px rgba(27,94,32,0.12);
+  --shadow-3: 0 8px 32px rgba(27,94,32,0.20);
+  --radius: 12px;
+  --font: 'Inter','PingFang SC','Microsoft YaHei',sans-serif;
+  --success: #22C55E; --warning: #F59E0B; --danger: #EF4444; --info: #3B82F6;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  width: 1280px; height: 720px; overflow: hidden;
+  background: var(--bg); font-family: var(--font); color: var(--text-primary);
+}
+[contenteditable] { outline: none; cursor: text; transition: outline 0.15s; }
+[contenteditable]:hover { outline: 1px dashed var(--accent); border-radius: 3px; }
+[contenteditable]:focus { outline: 2px solid var(--accent); border-radius: 3px; background: var(--accent-soft); }
+.slide-number {
+  position: absolute; bottom: 16px; right: 24px;
+  font-size: 13px; color: rgba(255,255,255,0.6); font-variant-numeric: tabular-nums; z-index: 10;
+}
+
+/* ===== Slide 01 — Cover-D Layout ===== */
+body {
+  background-image:
+    linear-gradient(to right, rgba(27,94,32,0.72) 0%, rgba(27,94,32,0.45) 38%, rgba(27,94,32,0.10) 55%, transparent 70%),
+    radial-gradient(ellipse 65% 75% at 5% -5%, rgba(46,125,50,0.28) 0%, transparent 55%),
+    url('images/slide-01-bg.jpg');
+  background-size: auto, auto, cover;
+  background-position: left, left, center right;
+}
+
+.cover-layout {
+  position: absolute; inset: 0;
+  display: grid; grid-template-columns: 1.3fr 1fr;
+}
+
+/* 左侧文字区 */
+.cover-text {
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 64px 52px; gap: 20px; z-index: 2;
+}
+
+.eyebrow {
+  font-size: 11px; letter-spacing: 4px; text-transform: uppercase;
+  color: #81C784; font-weight: 600;
+}
+
+.main-title {
+  font-size: 52px; font-weight: 900; line-height: 1.1;
+  color: #FFFFFF; text-shadow: 0 2px 16px rgba(0,0,0,0.3);
+}
+
+.accent-bar {
+  width: 64px; height: 4px; background: #A5D6A7; border-radius: 2px;
+}
+
+.subtitle {
+  font-size: 18px; color: rgba(255,255,255,0.85); line-height: 1.6;
+  max-width: 420px; font-weight: 400;
+}
+
+.meta-row {
+  display: flex; gap: 24px; margin-top: 16px;
+}
+
+.meta-item {
+  display: flex; flex-direction: column; gap: 4px;
+}
+
+.meta-value {
+  font-size: 28px; font-weight: 800; color: #A5D6A7;
+}
+
+.meta-label {
+  font-size: 11px; color: rgba(255,255,255,0.65); letter-spacing: 1px;
+}
+
+/* 右侧配图区 */
+.cover-visual {
+  position: relative; overflow: hidden; z-index: 1;
+  margin: 52px 52px 52px 0; border-radius: 16px;
+  background-image: url('images/slide-01-content.jpg');
+  background-size: cover; background-position: center top;
+  box-shadow: var(--shadow-3);
+}
+
+.cover-visual::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(27,94,32,0.35) 0%, transparent 60%);
+  border-radius: 16px;
+}
+
+.visual-badge {
+  position: absolute; bottom: 20px; left: 20px; z-index: 2;
+  background: rgba(255,255,255,0.15); backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.25); border-radius: 8px;
+  padding: 10px 16px; color: #fff; font-size: 13px; font-weight: 600;
+}
+</style>
+</head>
+<body>
+<div class="cover-layout">
+  <!-- 左侧文字区 -->
+  <div class="cover-text">
+    <div class="eyebrow" contenteditable="true">CLIMATE CHANGE · 2024</div>
+    <h1 class="main-title" contenteditable="true">气候变化<br>与我们的未来</h1>
+    <div class="accent-bar"></div>
+    <p class="subtitle" contenteditable="true">地球百年升温超 1°C，人类文明面临<br>有史以来最深刻的生存挑战</p>
+    <div class="meta-row">
+      <div class="meta-item">
+        <span class="meta-value" contenteditable="true">+1.1°C</span>
+        <span class="meta-label" contenteditable="true">全球平均升温</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-value" contenteditable="true">197</span>
+        <span class="meta-label" contenteditable="true">签署国</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-value" contenteditable="true">2050</span>
+        <span class="meta-label" contenteditable="true">净零排放目标</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 右侧配图区 -->
+  <div class="cover-visual">
+    <div class="visual-badge" contenteditable="true">🌱 希望与行动并存</div>
+  </div>
+</div>
+
+<div class="slide-number" contenteditable="false">1 / 9</div>
+</body>
+</html>

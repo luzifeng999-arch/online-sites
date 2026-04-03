@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>关键气候数据速览</title>
+<style>
+:root {
+  --bg: #F0F7F0; --container: #FFFFFF; --container-2: #E8F5E9;
+  --accent: #2E7D32; --accent-soft: rgba(46,125,50,0.10);
+  --text-primary: #1B5E20; --text-secondary: #388E3C; --text-muted: #66BB6A;
+  --border: rgba(46,125,50,0.15); --radius: 12px;
+  --font: 'Inter','PingFang SC','Microsoft YaHei',sans-serif;
+  --danger: #EF4444; --warning: #F59E0B;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  width: 1280px; height: 720px; overflow: hidden;
+  background: var(--bg); font-family: var(--font);
+}
+[contenteditable] { outline: none; cursor: text; }
+[contenteditable]:hover { outline: 1px dashed var(--accent); border-radius: 3px; }
+[contenteditable]:focus { outline: 2px solid var(--accent); border-radius: 3px; background: var(--accent-soft); }
+.slide-number { position: absolute; bottom: 16px; right: 24px; font-size: 13px; color: var(--text-muted); z-index: 10; }
+
+body {
+  background-image:
+    linear-gradient(to right, rgba(240,247,240,0.86) 0%, rgba(240,247,240,0.86) 100%),
+    url('images/slide-05-bg.jpg');
+  background-size: auto, cover;
+  background-position: left, center;
+}
+
+.page-header {
+  position: absolute; top: 0; left: 0; right: 0; height: 80px;
+  padding: 24px 52px 0; display: flex; flex-direction: column; gap: 4px;
+}
+.eyebrow { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+.page-title { font-size: 28px; font-weight: 800; color: var(--text-primary); }
+.header-line { position: absolute; bottom: 0; left: 52px; right: 52px; height: 2px; background: var(--accent); opacity: 0.25; }
+
+/* B4 Metric Wall — 2×3 grid */
+.b4-layout {
+  position: absolute; top: 100px; left: 52px; right: 52px; bottom: 52px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.b4-kpi {
+  background: var(--container); border-radius: var(--radius);
+  padding: 20px 22px; display: flex; flex-direction: column;
+  justify-content: space-between; gap: 8px;
+  box-shadow: 0 2px 12px rgba(46,125,50,0.08);
+  border: 1px solid var(--border);
+  position: relative; overflow: hidden;
+}
+
+.b4-kpi::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: var(--accent);
+}
+
+.b4-kpi.alert::before { background: var(--danger); }
+.b4-kpi.warning::before { background: var(--warning); }
+
+.kpi-label { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
+.kpi-value { font-size: 44px; font-weight: 900; color: var(--accent); line-height: 1; }
+.kpi-value.alert { color: var(--danger); }
+.kpi-value.warning { color: var(--warning); }
+.kpi-change { font-size: 13px; color: var(--text-secondary); }
+
+.insight-bar {
+  position: absolute; bottom: 14px; left: 52px; right: 52px;
+  background: rgba(46,125,50,0.08); border: 1px solid rgba(46,125,50,0.15);
+  border-radius: 8px; padding: 8px 16px;
+  display: flex; align-items: center; gap: 12px;
+  font-size: 12px; color: var(--text-secondary);
+}
+.insight-icon { font-size: 16px; flex-shrink: 0; }
+</style>
+</head>
+<body>
+<div class="page-header">
+  <div class="eyebrow" contenteditable="true">CHAPTER 03 · KEY DATA</div>
+  <h2 class="page-title" contenteditable="true">关键气候数据速览</h2>
+  <div class="header-line"></div>
+</div>
+
+<div class="b4-layout">
+  <div class="b4-kpi alert">
+    <div class="kpi-label" contenteditable="true">全球平均升温</div>
+    <div class="kpi-value alert" contenteditable="true">+1.1°C</div>
+    <div class="kpi-change" contenteditable="true">🔴 2023年为有记录以来最热年份</div>
+  </div>
+
+  <div class="b4-kpi warning">
+    <div class="kpi-label" contenteditable="true">北极海冰面积</div>
+    <div class="kpi-value warning" contenteditable="true">−13%</div>
+    <div class="kpi-change" contenteditable="true">⚠️ 每十年减少13%（卫星观测1979-至今）</div>
+  </div>
+
+  <div class="b4-kpi warning">
+    <div class="kpi-label" contenteditable="true">全球海平面上升</div>
+    <div class="kpi-value warning" contenteditable="true">+20cm</div>
+    <div class="kpi-change" contenteditable="true">⚠️ 20世纪累计上升，速度持续加快</div>
+  </div>
+
+  <div class="b4-kpi alert">
+    <div class="kpi-label" contenteditable="true">热浪频率增加</div>
+    <div class="kpi-value alert" contenteditable="true">5×</div>
+    <div class="kpi-change" contenteditable="true">🔴 年损失超 2000 亿美元经济代价</div>
+  </div>
+
+  <div class="b4-kpi alert">
+    <div class="kpi-label" contenteditable="true">CO₂ 大气浓度</div>
+    <div class="kpi-value alert" contenteditable="true">421ppm</div>
+    <div class="kpi-change" contenteditable="true">🔴 工业革命前仅 280ppm，升幅50%+</div>
+  </div>
+
+  <div class="b4-kpi warning">
+    <div class="kpi-label" contenteditable="true">极端天气经济损失</div>
+    <div class="kpi-value warning" contenteditable="true">$2700亿</div>
+    <div class="kpi-change" contenteditable="true">⚠️ 2022年全球自然灾害经济损失</div>
+  </div>
+</div>
+
+<div class="insight-bar">
+  <span class="insight-icon">🌡️</span>
+  <span contenteditable="true">若升温突破 2°C，极端天气频率将再翻倍；巴黎协定目标是将升温控制在 1.5°C 以内</span>
+</div>
+
+<div class="slide-number" contenteditable="false">5 / 9</div>
+</body>
+</html>

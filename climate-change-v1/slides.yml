@@ -1,0 +1,243 @@
+presentation:
+  title: "气候变化与我们的未来"
+  mode: "professional"
+  total_slides: 9
+  style_theme:
+    palette: "E"
+    tone: "环保/自然科学/公益/教育"
+    rationale: "气候变化主题，受众为公众教育场景，匹配自然环保绿Palette E，传递希望与行动感"
+    layout_rules:
+      title_placement: "top-left-large"
+      title_repeat_rule: "NEVER"
+      max_text_columns: 2
+      slide_number_format: "X / N"
+      brand_logo_rule: "FORBIDDEN"
+      layout_diversity_rule: "EACH_SLIDE_UNIQUE"
+      header_zone:
+        top_padding: 36
+        eyebrow_style: "font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--accent)"
+        h2_style: "font-size:26px;font-weight:700;color:var(--text-primary);margin-top:4px"
+        header_height: 72
+
+slides:
+  - index: 1
+    type: "cover"
+    layout: "Cover-D"
+    title: "气候变化与我们的未来"
+    subtitle: "地球百年升温超1°C，人类文明面临深刻挑战"
+    text_density: "low"
+    images:
+      - role: "bg"
+        css_spec: "background-size:cover;background-position:center right"
+        mask_alpha: 0.42
+        prompt: "aerial view of lush green forest and melting glacier, dramatic climate contrast scene, morning golden light, rich greens and blues, visual subject on right 60%, left side fades to deep forest green, no text no numbers, ultra detailed 8K cinematic"
+        output: "images/slide-01-bg.jpg"
+        aspect: "16:9"
+      - role: "content"
+        css_spec: "flex:2;height:580px;border-radius:16px;overflow:hidden;background-size:cover;background-position:center"
+        mask_alpha: 0
+        prompt: "close-up of cracked dry earth and fresh green sprout growing through it, hope and climate metaphor, natural light, vertical composition, no text no numbers, ultra detailed"
+        output: "images/slide-01-content.jpg"
+        aspect: "3:4"
+
+  - index: 2
+    type: "content"
+    layout: "F1-Chapter-Index"
+    title: "演讲脉络"
+    zone: "full"
+    layout_pattern: "F1-Chapter-Index"
+    text_density: "medium"
+    key_points:
+      - "01 什么是气候变化"
+      - "02 主要原因"
+      - "03 关键数据"
+      - "04 对人类社会的影响"
+      - "05 对自然生态的影响"
+      - "06 政策与科技应对"
+      - "07 个人行动与未来展望"
+    images:
+      - role: "bg"
+        css_spec: "background-size:cover;background-position:center"
+        mask_alpha: 0.80
+        prompt: "lush forest canopy from above, deep greens, soft morning light diffusion, top-down aerial view, minimal atmosphere, no text no numbers, ultra detailed 8K"
+        output: "images/slide-02-bg.jpg"
+        aspect: "16:9"
+
+  - index: 3
+    type: "content"
+    layout: "A5-Side-by-Side-Compare"
+    title: "什么是气候变化"
+    zone: "split-half"
+    layout_pattern: "A5-Side-by-Side-Compare"
+    text_density: "medium"
+    key_points:
+      - "定义：30年以上尺度气候系统显著变化"
+      - "温室效应：CO₂、CH₄等气体锁住热量"
+      - "人为变化：百余年极快速度，可干预"
+      - "自然变化：千年缓慢演化，难以控制"
+    images:
+      - role: "bg"
+        css_spec: "background-size:cover;background-position:20% center"
+        mask_alpha: 0.75
+        prompt: "greenhouse gas visualization, soft green light through leaves, atmospheric haze layers, nature science illustration mood, subject upper left, no text no numbers, 8K"
+        output: "images/slide-03-bg.jpg"
+        aspect: "16:9"
+
+  - index: 4
+    type: "data"
+    layout: "B2-Bento-Grid"
+    title: "气候变化的主要原因"
+    zone: "grid-top-bottom"
+    layout_pattern: "B2-Bento-Grid"
+    text_density: "high"
+    kpi_cards:
+      - label: "化石燃料"
+        value: "73%"
+        note: "已燃烧超1万亿吨"
+      - label: "农业畜牧业"
+        value: "18%"
+        note: "甲烷温室效应是CO₂的80倍"
+      - label: "森林砍伐"
+        value: "6%"
+        note: "年损失1000万公顷"
+      - label: "工业生产"
+        value: "3%"
+        note: "水泥、钢铁排放巨大"
+    chart_slide: true
+    chart_type: "pie"
+    images:
+      - role: "bg"
+        css_spec: "background-size:cover;background-position:center"
+        mask_alpha: 0.85
+        prompt: "industrial smoke and green forest contrast, factory emissions against natural background, diagonal composition, subject lower left, minimal dark green atmosphere, no text no numbers, 8K"
+        output: "images/slide-04-bg.jpg"
+        aspect: "16:9"
+
+  - index: 5
+    type: "data"
+    layout: "B4-Metric-Wall"
+    title: "关键气候数据速览"
+    zone: "grid-3col"
+    layout_pattern: "B4-Metric-Wall"
+    text_density: "high"
+    kpi_cards:
+      - label: "全球升温"
+        value: "+1.1°C"
+        change: "2023年史上最热"
+      - label: "北极海冰减少"
+        value: "-13%"
+        change: "每十年减少"
+      - label: "海平面上升"
+        value: "+20cm"
+        change: "百年累计"
+      - label: "热浪频率增加"
+        value: "5×"
+        change: "年损失超2000亿美元"
+      - label: "CO₂浓度"
+        value: "421ppm"
+        change: "工业革命前仅280ppm"
+      - label: "极端天气损失"
+        value: "$2700亿"
+        change: "2022年灾害损失"
+    images:
+      - role: "bg"
+        css_spec: "background-size:cover;background-position:center"
+        mask_alpha: 0.82
+        prompt: "melting arctic ice with polar bear silhouette, deep blue and white tones, dramatic perspective, subject upper right, misty atmospheric feel, no text no numbers, 8K cinematic"
+        output: "images/slide-05-bg.jpg"
+        aspect: "16:9"
+
+  - index: 6
+    type: "content"
+    layout: "C1-Card-Waterfall"
+    title: "对人类社会的深远影响"
+    zone: "equal-4-col"
+    layout_pattern: "C1-Card-Waterfall"
+    text_density: "high"
+    key_points:
+      - icon: "🌾"
+        title: "粮食危机"
+        desc: "作物产量每十年降1-2%，2050年饥饿人口增1.32亿"
+      - icon: "🏥"
+        title: "健康威胁"
+        desc: "2030-2050年间年增25万人死亡，气候焦虑成新问题"
+      - icon: "💰"
+        title: "经济损失"
+        desc: "2022年灾害损失2700亿美元，1.32亿人将陷入贫困"
+      - icon: "🏚️"
+        title: "气候难民"
+        desc: "2050年预计2.16亿气候难民被迫迁徙"
+    images:
+      - role: "bg"
+        css_spec: "background-size:cover;background-position:center"
+        mask_alpha: 0.80
+        prompt: "flooded city streets with green trees visible above waterline, climate disaster meets nature, diagonal composition dynamic, no text no numbers, 8K"
+        output: "images/slide-06-bg.jpg"
+        aspect: "16:9"
+
+  - index: 7
+    type: "content"
+    layout: "A6-Three-Column"
+    title: "对自然生态的冲击"
+    zone: "grid-3col"
+    layout_pattern: "A6-Three-Column"
+    text_density: "high"
+    key_points:
+      - icon: "🦋"
+        title: "生物多样性"
+        desc: "第六次大灭绝，速度比自然快1000倍，超100万物种面临灭绝"
+      - icon: "🪸"
+        title: "珊瑚礁危机"
+        desc: "50%已退化，珊瑚礁支撑25%海洋物种生存"
+      - icon: "🌊"
+        title: "海洋酸化"
+        desc: "吸收30%人类CO₂排放，贝类外壳被溶解，食物链断裂"
+    images:
+      - role: "bg"
+        css_spec: "background-size:cover;background-position:60% center"
+        mask_alpha: 0.78
+        prompt: "bleached coral reef with colorful fish still swimming, underwater view, turquoise ocean light, center composition, no text no numbers, 8K underwater photography"
+        output: "images/slide-07-bg.jpg"
+        aspect: "16:9"
+
+  - index: 8
+    type: "chart"
+    layout: "B5-Split-Chart"
+    title: "政策与科技应对方案"
+    zone: "split-40-60"
+    layout_pattern: "B5-Split-Chart"
+    chart_slide: true
+    chart_type: "bar"
+    text_density: "high"
+    key_points:
+      - "巴黎协定：197国签署，升温控制1.5-2°C"
+      - "太阳能成本10年降90%"
+      - "2023年电动车销量1400万辆"
+      - "碳捕捉技术DAC直接抽取CO₂"
+    images:
+      - role: "bg"
+        css_spec: "background-size:cover;background-position:center"
+        mask_alpha: 0.82
+        prompt: "solar panels and wind turbines in green valley, renewable energy landscape, golden hour light, subject lower left, hope and progress mood, no text no numbers, 8K"
+        output: "images/slide-08-bg.jpg"
+        aspect: "16:9"
+
+  - index: 9
+    type: "closing"
+    layout: "E1-Summary-Actions"
+    title: "行动与未来"
+    zone: "split-half"
+    layout_pattern: "E1-Summary-Actions"
+    text_density: "high"
+    key_points:
+      - "素食替代牛肉：减少90%排放"
+      - "高铁替代飞机：减少95%排放"
+      - "公交替代开车：减少70%排放"
+      - "购买绿电：减少100%排放"
+    images:
+      - role: "bg"
+        css_spec: "background-size:cover;background-position:center"
+        mask_alpha: 0.75
+        prompt: "person planting a tree sapling in lush green field, sunrise golden light behind, hopeful and action-oriented mood, centered composition, no text no numbers, 8K cinematic"
+        output: "images/slide-09-bg.jpg"
+        aspect: "16:9"

@@ -1,0 +1,12 @@
+[
+  {"prompt": "aerial view of lush green forest and melting glacier, dramatic climate contrast scene, morning golden light, rich greens and blues, visual subject on right 60%, left side fades to deep forest green, no text no numbers, ultra detailed 8K cinematic", "output": "images/slide-01-bg.jpg", "aspect": "16:9"},
+  {"prompt": "close-up of cracked dry earth and fresh green sprout growing through it, hope and climate metaphor, natural light, vertical composition, no text no numbers, ultra detailed", "output": "images/slide-01-content.jpg", "aspect": "3:4"},
+  {"prompt": "lush forest canopy from above, deep greens, soft morning light diffusion, top-down aerial view, minimal atmosphere, no text no numbers, ultra detailed 8K", "output": "images/slide-02-bg.jpg", "aspect": "16:9"},
+  {"prompt": "greenhouse gas visualization, soft green light through leaves, atmospheric haze layers, nature science illustration mood, subject upper left, no text no numbers, 8K", "output": "images/slide-03-bg.jpg", "aspect": "16:9"},
+  {"prompt": "industrial smoke and green forest contrast, factory emissions against natural background, diagonal composition, subject lower left, minimal dark green atmosphere, no text no numbers, 8K", "output": "images/slide-04-bg.jpg", "aspect": "16:9"},
+  {"prompt": "melting arctic ice with polar bear silhouette, deep blue and white tones, dramatic perspective, subject upper right, misty atmospheric feel, no text no numbers, 8K cinematic", "output": "images/slide-05-bg.jpg", "aspect": "16:9"},
+  {"prompt": "flooded city streets with green trees visible above waterline, climate disaster meets nature, diagonal composition dynamic, no text no numbers, 8K", "output": "images/slide-06-bg.jpg", "aspect": "16:9"},
+  {"prompt": "bleached coral reef with colorful fish still swimming, underwater view, turquoise ocean light, center composition, no text no numbers, 8K underwater photography", "output": "images/slide-07-bg.jpg", "aspect": "16:9"},
+  {"prompt": "solar panels and wind turbines in green valley, renewable energy landscape, golden hour light, subject lower left, hope and progress mood, no text no numbers, 8K", "output": "images/slide-08-bg.jpg", "aspect": "16:9"},
+  {"prompt": "person planting a tree sapling in lush green field, sunrise golden light behind, hopeful and action-oriented mood, centered composition, no text no numbers, 8K cinematic", "output": "images/slide-09-bg.jpg", "aspect": "16:9"}
+]

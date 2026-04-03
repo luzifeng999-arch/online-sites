@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>对自然生态的冲击</title>
+<style>
+:root {
+  --bg: #F0F7F0; --container: #FFFFFF; --container-2: #E8F5E9;
+  --accent: #2E7D32; --accent-soft: rgba(46,125,50,0.10);
+  --text-primary: #1B5E20; --text-secondary: #388E3C; --text-muted: #66BB6A;
+  --border: rgba(46,125,50,0.15); --radius: 12px;
+  --font: 'Inter','PingFang SC','Microsoft YaHei',sans-serif;
+  --danger: #EF4444;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1280px; height: 720px; overflow: hidden; background: var(--bg); font-family: var(--font); }
+[contenteditable] { outline: none; cursor: text; }
+[contenteditable]:hover { outline: 1px dashed var(--accent); border-radius: 3px; }
+[contenteditable]:focus { outline: 2px solid var(--accent); border-radius: 3px; background: var(--accent-soft); }
+.slide-number { position: absolute; bottom: 16px; right: 24px; font-size: 13px; color: var(--text-muted); z-index: 10; }
+
+body {
+  background-image:
+    linear-gradient(to right, rgba(240,247,240,0.86) 0%, rgba(240,247,240,0.82) 60%, rgba(240,247,240,0.70) 100%),
+    url('images/slide-07-bg.jpg');
+  background-size: auto, cover;
+  background-position: left, center;
+}
+
+.page-header {
+  position: absolute; top: 0; left: 0; right: 0; height: 80px;
+  padding: 24px 52px 0; display: flex; flex-direction: column; gap: 4px;
+}
+.eyebrow { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+.page-title { font-size: 28px; font-weight: 800; color: var(--text-primary); }
+.header-line { position: absolute; bottom: 0; left: 52px; right: 52px; height: 2px; background: var(--accent); opacity: 0.25; }
+
+/* A6 Three Column */
+.a6-layout {
+  position: absolute; top: 100px; left: 52px; right: 52px; bottom: 52px;
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px;
+}
+
+.a6-col {
+  background: var(--container); border-radius: var(--radius);
+  padding: 24px 20px; display: flex; flex-direction: column; gap: 14px;
+  box-shadow: 0 2px 16px rgba(46,125,50,0.08);
+  border: 1px solid var(--border);
+  position: relative; overflow: hidden;
+}
+
+.a6-col::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+  background: linear-gradient(to right, var(--accent), #81C784);
+}
+
+.a6-icon { font-size: 40px; }
+.a6-title { font-size: 20px; font-weight: 800; color: var(--text-primary); }
+
+.a6-stat {
+  display: flex; align-items: baseline; gap: 6px;
+}
+.a6-stat-num { font-size: 36px; font-weight: 900; color: var(--danger); }
+.a6-stat-unit { font-size: 13px; color: var(--text-muted); }
+
+.a6-body { font-size: 13.5px; color: var(--text-secondary); line-height: 1.7; flex: 1; }
+
+.a6-alert {
+  background: rgba(239,68,68,0.06); border: 1px solid rgba(239,68,68,0.15);
+  border-radius: 8px; padding: 10px 14px;
+}
+.a6-alert-label { font-size: 11px; color: var(--danger); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+.a6-alert-text { font-size: 12px; color: #B71C1C; line-height: 1.5; }
+
+.a6-progress-wrap { display: flex; flex-direction: column; gap: 6px; }
+.a6-progress-label { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); }
+.a6-progress-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.a6-progress-fill { height: 100%; background: var(--danger); border-radius: 3px; }
+
+.insight-bar {
+  position: absolute; bottom: 14px; left: 52px; right: 52px;
+  background: rgba(46,125,50,0.08); border: 1px solid rgba(46,125,50,0.15);
+  border-radius: 8px; padding: 8px 16px;
+  display: flex; align-items: center; gap: 12px;
+  font-size: 12px; color: var(--text-secondary);
+}
+</style>
+</head>
+<body>
+<div class="page-header">
+  <div class="eyebrow" contenteditable="true">CHAPTER 05 · ECOSYSTEM CRISIS</div>
+  <h2 class="page-title" contenteditable="true">对自然生态的冲击</h2>
+  <div class="header-line"></div>
+</div>
+
+<div class="a6-layout">
+  <!-- 生物多样性 -->
+  <div class="a6-col">
+    <div class="a6-icon">🦋</div>
+    <div class="a6-title" contenteditable="true">生物多样性危机</div>
+    <div class="a6-stat">
+      <div class="a6-stat-num" contenteditable="true">100万</div>
+      <div class="a6-stat-unit" contenteditable="true">物种面临灭绝</div>
+    </div>
+    <div class="a6-body" contenteditable="true">科学家称之为"第六次大灭绝"，速度比自然灭绝快 1000 倍。海洋、极地、热带雨林生态系统首当其冲</div>
+    <div class="a6-alert">
+      <div class="a6-alert-label" contenteditable="true">⚠️ 警告</div>
+      <div class="a6-alert-text" contenteditable="true">生物多样性丧失将破坏农业授粉，影响全球粮食安全，超 75% 农作物依赖动物授粉</div>
+    </div>
+    <div class="a6-progress-wrap">
+      <div class="a6-progress-label">
+        <span contenteditable="true">已灭绝风险</span>
+        <span contenteditable="true">28%物种</span>
+      </div>
+      <div class="a6-progress-bar"><div class="a6-progress-fill" style="width:28%"></div></div>
+    </div>
+  </div>
+
+  <!-- 珊瑚礁 -->
+  <div class="a6-col">
+    <div class="a6-icon">🪸</div>
+    <div class="a6-title" contenteditable="true">珊瑚礁退化危机</div>
+    <div class="a6-stat">
+      <div class="a6-stat-num" contenteditable="true">50%</div>
+      <div class="a6-stat-unit" contenteditable="true">珊瑚礁已退化</div>
+    </div>
+    <div class="a6-body" contenteditable="true">珊瑚礁虽仅占海洋面积的 0.1%，却支撑着 25% 的海洋物种生存。海水升温导致大规模白化事件频发</div>
+    <div class="a6-alert">
+      <div class="a6-alert-label" contenteditable="true">🔴 紧急</div>
+      <div class="a6-alert-text" contenteditable="true">若升温达 2°C，预计 99% 的珊瑚礁将永久消失，逾 5 亿人赖以为生的渔业将崩溃</div>
+    </div>
+    <div class="a6-progress-wrap">
+      <div class="a6-progress-label">
+        <span contenteditable="true">已退化</span>
+        <span contenteditable="true">50%珊瑚礁</span>
+      </div>
+      <div class="a6-progress-bar"><div class="a6-progress-fill" style="width:50%"></div></div>
+    </div>
+  </div>
+
+  <!-- 海洋酸化 -->
+  <div class="a6-col">
+    <div class="a6-icon">🌊</div>
+    <div class="a6-title" contenteditable="true">海洋酸化加剧</div>
+    <div class="a6-stat">
+      <div class="a6-stat-num" contenteditable="true">30%</div>
+      <div class="a6-stat-unit" contenteditable="true">CO₂被海洋吸收</div>
+    </div>
+    <div class="a6-body" contenteditable="true">海洋吸收约 30% 的人类 CO₂ 排放，导致 pH 下降（酸化）。贝类、甲壳类外壳被溶解，食物链从底层断裂</div>
+    <div class="a6-alert">
+      <div class="a6-alert-label" contenteditable="true">⚠️ 趋势</div>
+      <div class="a6-alert-text" contenteditable="true">海洋 pH 自工业化以来下降 0.1（酸性增加 26%），牡蛎、海胆等生物繁殖受到严重干扰</div>
+    </div>
+    <div class="a6-progress-wrap">
+      <div class="a6-progress-label">
+        <span contenteditable="true">酸化增加</span>
+        <span contenteditable="true">26%（pH -0.1）</span>
+      </div>
+      <div class="a6-progress-bar"><div class="a6-progress-fill" style="width:26%"></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="insight-bar">
+  <span style="font-size:16px">🌱</span>
+  <span contenteditable="true">生态系统是人类生存的根基——没有健康的珊瑚礁、森林和生物多样性，农业、渔业和人类健康都将无从保障</span>
+</div>
+
+<div class="slide-number" contenteditable="false">7 / 9</div>
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>对人类社会的深远影响</title>
+<style>
+:root {
+  --bg: #F0F7F0; --container: #FFFFFF; --container-2: #E8F5E9;
+  --accent: #2E7D32; --accent-soft: rgba(46,125,50,0.10);
+  --text-primary: #1B5E20; --text-secondary: #388E3C; --text-muted: #66BB6A;
+  --border: rgba(46,125,50,0.15); --radius: 12px;
+  --font: 'Inter','PingFang SC','Microsoft YaHei',sans-serif;
+  --danger: #EF4444; --warning: #F59E0B;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1280px; height: 720px; overflow: hidden; background: var(--bg); font-family: var(--font); }
+[contenteditable] { outline: none; cursor: text; }
+[contenteditable]:hover { outline: 1px dashed var(--accent); border-radius: 3px; }
+[contenteditable]:focus { outline: 2px solid var(--accent); border-radius: 3px; background: var(--accent-soft); }
+.slide-number { position: absolute; bottom: 16px; right: 24px; font-size: 13px; color: var(--text-muted); z-index: 10; }
+
+body {
+  background-image:
+    linear-gradient(to bottom, rgba(240,247,240,0.84) 0%, rgba(240,247,240,0.84) 100%),
+    url('images/slide-06-bg.jpg');
+  background-size: auto, cover;
+  background-position: left, center;
+}
+
+.page-header {
+  position: absolute; top: 0; left: 0; right: 0; height: 80px;
+  padding: 24px 52px 0; display: flex; flex-direction: column; gap: 4px;
+}
+.eyebrow { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+.page-title { font-size: 28px; font-weight: 800; color: var(--text-primary); }
+.header-line { position: absolute; bottom: 0; left: 52px; right: 52px; height: 2px; background: var(--accent); opacity: 0.25; }
+
+/* C1 Card Waterfall — 4 columns */
+.c1-layout {
+  position: absolute; top: 100px; left: 52px; right: 52px; bottom: 52px;
+  display: flex; gap: 16px; align-items: stretch;
+}
+
+.c1-col { flex: 1; display: flex; flex-direction: column; }
+.c1-col:nth-child(even) { padding-top: 40px; }
+
+.c1-card {
+  flex: 1; background: var(--container); border-radius: var(--radius);
+  padding: 20px 16px; display: flex; flex-direction: column; gap: 10px;
+  box-shadow: 0 2px 12px rgba(46,125,50,0.08);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--accent);
+  position: relative; overflow: hidden;
+}
+
+.card-icon { font-size: 32px; }
+.card-title { font-size: 17px; font-weight: 800; color: var(--text-primary); }
+
+.card-stat {
+  display: flex; gap: 6px; align-items: baseline;
+}
+.card-stat-num { font-size: 28px; font-weight: 900; color: var(--danger); }
+.card-stat-unit { font-size: 12px; color: var(--text-muted); }
+
+.card-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.65; flex: 1; }
+
+.card-tag {
+  display: inline-block; padding: 3px 10px; border-radius: 100px;
+  background: rgba(239,68,68,0.08); color: var(--danger);
+  font-size: 11px; font-weight: 600; align-self: flex-start;
+}
+.card-tag.warn { background: rgba(245,158,11,0.08); color: var(--warning); }
+.card-tag.ok { background: var(--accent-soft); color: var(--accent); }
+
+.insight-bar {
+  position: absolute; bottom: 14px; left: 52px; right: 52px;
+  background: rgba(46,125,50,0.08); border: 1px solid rgba(46,125,50,0.15);
+  border-radius: 8px; padding: 8px 16px;
+  display: flex; align-items: center; gap: 12px;
+  font-size: 12px; color: var(--text-secondary);
+}
+</style>
+</head>
+<body>
+<div class="page-header">
+  <div class="eyebrow" contenteditable="true">CHAPTER 04 · HUMAN IMPACT</div>
+  <h2 class="page-title" contenteditable="true">对人类社会的深远影响</h2>
+  <div class="header-line"></div>
+</div>
+
+<div class="c1-layout">
+  <!-- 粮食危机 -->
+  <div class="c1-col">
+    <div class="c1-card">
+      <div class="card-icon">🌾</div>
+      <div class="card-title" contenteditable="true">粮食危机</div>
+      <div class="card-stat">
+        <div class="card-stat-num" contenteditable="true">1.32亿</div>
+        <div class="card-stat-unit" contenteditable="true">人陷入饥饿</div>
+      </div>
+      <div class="card-desc" contenteditable="true">全球作物产量每十年降低 1-2%，主要粮食产区将遭遇更频繁的极端干旱和洪涝，2050年新增饥饿人口1.32亿</div>
+      <div class="card-tag" contenteditable="true">🔴 高风险</div>
+    </div>
+  </div>
+
+  <!-- 健康威胁（下沉） -->
+  <div class="c1-col">
+    <div class="c1-card">
+      <div class="card-icon">🏥</div>
+      <div class="card-title" contenteditable="true">人类健康威胁</div>
+      <div class="card-stat">
+        <div class="card-stat-num" contenteditable="true">25万</div>
+        <div class="card-stat-unit" contenteditable="true">人/年额外死亡</div>
+      </div>
+      <div class="card-desc" contenteditable="true">2030-2050 年间每年额外增加 25 万人死亡（疟疾、热应激、营养不良），气候焦虑成新型心理健康问题</div>
+      <div class="card-tag warn" contenteditable="true">⚠️ 中高风险</div>
+    </div>
+  </div>
+
+  <!-- 经济损失 -->
+  <div class="c1-col">
+    <div class="c1-card">
+      <div class="card-icon">💰</div>
+      <div class="card-title" contenteditable="true">经济损失</div>
+      <div class="card-stat">
+        <div class="card-stat-num" contenteditable="true">$2700亿</div>
+        <div class="card-stat-unit" contenteditable="true">2022年损失</div>
+      </div>
+      <div class="card-desc" contenteditable="true">2022年全球自然灾害造成 2700 亿美元经济损失，气候变化将使 1.32 亿人陷入极端贫困</div>
+      <div class="card-tag" contenteditable="true">🔴 持续增加</div>
+    </div>
+  </div>
+
+  <!-- 气候难民（下沉） -->
+  <div class="c1-col">
+    <div class="c1-card">
+      <div class="card-icon">🏚️</div>
+      <div class="card-title" contenteditable="true">气候难民危机</div>
+      <div class="card-stat">
+        <div class="card-stat-num" contenteditable="true">2.16亿</div>
+        <div class="card-stat-unit" contenteditable="true">人被迫迁徙</div>
+      </div>
+      <div class="card-desc" contenteditable="true">世界银行预测，到 2050 年将有 2.16 亿人因海平面上升、干旱、极端天气等被迫在本国内迁徙</div>
+      <div class="card-tag" contenteditable="true">🔴 严峻警告</div>
+    </div>
+  </div>
+</div>
+
+<div class="insight-bar">
+  <span style="font-size:16px">💡</span>
+  <span contenteditable="true">以上影响并非独立发生——粮食短缺引发冲突，冲突加剧难民，难民增加经济负担，形成气候危机的恶性循环</span>
+</div>
+
+<div class="slide-number" contenteditable="false">6 / 9</div>
+</body>
+</html>
