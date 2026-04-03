@@ -1,834 +1,756 @@
 /* ═══════════════════════════════════════════
-   app.js · 自动化流水线主控
-   流程：上传 → 解析 → AI 评测 → 报告
+   app.js · AQE Evaluator 主流程控制器
+   状态机：viewInput → viewRunning → viewReport
 ═══════════════════════════════════════════ */
 
-/* ── 状态 ── */
-let currentFiles = [];
-let currentResult = null;
-let cancelFlag = false;
+/* ═══════════════════════════════
+   全局状态
+═══════════════════════════════ */
+let _state = 'input';       // 'input' | 'running' | 'report'
+let _currentData = null;    // 最新评测结果
+let _currentHtml = null;    // 最新生成的报告 HTML
+let _aborted    = false;    // 是否已取消
 
-/* ── 工具 ── */
-function formatBytes(b) {
-  if (!b) return '0B';
-  if (b < 1024) return b + 'B';
-  if (b < 1024 * 1024) return (b / 1024).toFixed(1) + 'KB';
-  return (b / 1024 / 1024).toFixed(1) + 'MB';
+/* ═══════════════════════════════
+   DOM 快捷引用
+═══════════════════════════════ */
+const $ = id => document.getElementById(id);
+
+/* ═══════════════════════════════
+   初始化
+═══════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+  initConnStatus();
+  initPipelineSteps();
+  bindEvents();
+  showView('viewInput');
+});
+
+/* ── 连接状态检测 ── */
+function initConnStatus() {
+  const pill = $('connPill');
+  const dot  = $('connDot');
+  const lbl  = $('connLabel');
+
+  setConnUI('checking');
+
+  ApiService.checkStatus().then(status => {
+    setConnUI(status);
+  });
+
+  function setConnUI(s) {
+    const map = {
+      checking: { c: '#94A3B8', t: '检测中', pulse: false },
+      online:   { c: '#16A34A', t: '已连接', pulse: true  },
+      offline:  { c: '#EF4444', t: '离线·演示模式', pulse: false },
+    };
+    const m = map[s] || map.checking;
+    if (dot) { dot.style.background = m.c; dot.classList.toggle('pulse', m.pulse); }
+    if (lbl) { lbl.textContent = m.t; lbl.style.color = m.c; }
+  }
 }
 
-function esc(str) {
-  return String(str || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+/* ═══════════════════════════════
+   视图切换
+═══════════════════════════════ */
+function showView(viewId) {
+  ['viewInput', 'viewRunning', 'viewReport'].forEach(id => {
+    const el = $(id);
+    if (el) el.classList.toggle('hidden', id !== viewId);
+  });
+  _state = viewId.replace('view', '').toLowerCase();
 }
 
-/* ── 视图切换 ── */
-function showView(id) {
-  document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
-  const el = document.getElementById(id);
-  if (el) el.classList.remove('hidden');
-}
+/* ═══════════════════════════════
+   流水线步骤
+═══════════════════════════════ */
+const STEPS = [
+  { id: 'step1', label: '解析 Skill 信息', desc: '识别方向、输入输出格式…' },
+  { id: 'step2', label: '构造测试用例',    desc: '生成典型 / 边界 / 缺省输入…' },
+  { id: 'step3', label: 'SQE-5 工程评测', desc: '触发率 · 意图 · 产出质量 · 边界 · 文档' },
+  { id: 'step4', label: 'AQE 美学评测',   desc: '视觉 · 色彩 · 版式 · 品牌 · 可访问性' },
+  { id: 'step5', label: '生成评测报告',   desc: '综合判定 · Checklist · 修复建议…' },
+];
 
-/* ── 步骤动画 ── */
-function setStep(stepId, state) {
-  // state: 'active' | 'done' | 'error' | ''
-  const el = document.getElementById(stepId);
-  if (!el) return;
-  el.className = 'pipe-step ' + state;
-}
-
-function setStepDesc(stepId, text) {
-  const el = document.getElementById(stepId + 'Desc');
-  if (el) el.textContent = text;
-}
-
-/* ═══════════════════════════════════════════
-   文件读取
-═══════════════════════════════════════════ */
-async function readAsText(file) {
-  return new Promise((resolve) => {
-    const reader = new FileReader();
-    reader.onload  = e => resolve(e.target.result || '');
-    reader.onerror = () => resolve('');
-    reader.readAsText(file, 'UTF-8');
+function initPipelineSteps() {
+  // index.html 已有静态流水线步骤，无需重新生成
+  // 确认步骤容器存在即可
+  const pipeEl = $('pipeline');
+  if (!pipeEl) return;
+  // 补充 pipe-content 容器（如不存在）
+  STEPS.forEach(s => {
+    const el = $(s.id);
+    if (!el) {
+      const stepEl = document.createElement('div');
+      stepEl.className = 'pipe-step';
+      stepEl.id = s.id;
+      stepEl.innerHTML = `<div class="pipe-dot"></div>
+        <div class="pipe-content">
+          <div class="pipe-label">${s.label}</div>
+          <div class="pipe-desc" id="${s.id}Desc">${s.desc}</div>
+        </div>`;
+      pipeEl.appendChild(stepEl);
+    }
   });
 }
 
-function inferDirection(files) {
-  const names = files.map(f => (f.name + (f.webkitRelativePath || '')).toLowerCase()).join(' ');
-  const ext   = files.map(f => f.name.split('.').pop().toLowerCase());
-
-  const htmlCount = ext.filter(e => e === 'html').length;
-  const imgCount  = ext.filter(e => ['png','jpg','jpeg','svg','webp'].includes(e)).length;
-  const vidCount  = ext.filter(e => ['mp4','webm','lottie','json'].includes(e)).length;
-
-  const score = {
-    ui: 0, img: 0, video: 0, doc: 0, eval: 0
-  };
-
-  if (htmlCount > 0) score.ui += htmlCount * 3;
-  if (names.includes('component') || names.includes('dashboard') || names.includes('layout')) score.ui += 5;
-  if (names.includes('react') || names.includes('vue') || names.includes('tailwind')) score.ui += 3;
-  if (imgCount > 0) score.img += imgCount;
-  if (names.includes('illustration') || names.includes('poster') || names.includes('banner')) score.img += 4;
-  if (vidCount > 0) score.video += vidCount * 2;
-  if (names.includes('animation') || names.includes('motion') || names.includes('lottie')) score.video += 4;
-  if (names.includes('ppt') || names.includes('slide') || names.includes('presentation')) score.doc += 6;
-  if (ext.includes('pptx') || ext.includes('pdf')) score.doc += 6;
-  if (names.includes('eval') || names.includes('judge') || names.includes('score')) score.eval += 6;
-
-  const best = Object.entries(score).sort((a, b) => b[1] - a[1])[0];
-  return best[1] > 0 ? best[0] : 'ui';
+function setStep(stepIdx, status, desc) {
+  // status: 'waiting' | 'running' | 'done' | 'error'
+  // CSS classes: '' | 'active' | 'done' | 'error'
+  const cssMap = { running: 'active', done: 'done', error: 'error', waiting: '' };
+  STEPS.forEach((s, i) => {
+    const el = $(s.id);
+    if (!el) return;
+    el.classList.remove('active', 'done', 'error');
+    if (i < stepIdx)  el.classList.add('done');
+    if (i === stepIdx) {
+      const cls = cssMap[status] || '';
+      if (cls) el.classList.add(cls);
+    }
+    if (i === stepIdx && desc) {
+      const descEl = $(`${s.id}Desc`);
+      if (descEl) descEl.textContent = desc;
+    }
+  });
 }
 
-/* ═══════════════════════════════════════════
-   核心：自动化评测流水线
-═══════════════════════════════════════════ */
-async function runPipeline(files) {
-  cancelFlag = false;
+function markAllDone() {
+  STEPS.forEach((_, i) => {
+    const el = $(STEPS[i].id);
+    if (el) { el.classList.remove('active','error'); el.classList.add('done'); }
+  });
+}
+
+/* ═══════════════════════════════
+   表单输入收集
+═══════════════════════════════ */
+function getFormValues() {
+  return {
+    skillName:   ($('inputSkillName')?.value || '').trim(),
+    direction:   ($('inputDirection')?.value || ''),
+    description: ($('inputDescription')?.value || '').trim(),
+    samples:     ($('inputSamples')?.value || '').trim(),
+    competitor:  ($('inputCompetitor')?.value || '').trim(),
+    notes:       ($('inputNotes')?.value || '').trim(),
+  };
+}
+
+function validateForm(vals) {
+  if (!vals.skillName) {
+    shakeInput('inputSkillName');
+    showTip('❌ 请填写被测 Skill 名称');
+    return false;
+  }
+  if (!vals.description) {
+    shakeInput('inputDescription');
+    showTip('❌ 请填写 Skill 描述 / SKILL.md 内容');
+    return false;
+  }
+  if (vals.description.length < 20) {
+    shakeInput('inputDescription');
+    showTip('⚠️ Skill 描述太短，至少 20 字才能得到准确评测');
+    return false;
+  }
+  return true;
+}
+
+function shakeInput(id) {
+  const el = $(id);
+  if (!el) return;
+  el.style.border = '1.5px solid var(--red)';
+  el.classList.add('shake');
+  setTimeout(() => { el.style.border = ''; el.classList.remove('shake'); }, 800);
+}
+
+function showTip(text) {
+  const tip = $('inputTip');
+  if (!tip) return;
+  tip.textContent = text;
+  tip.style.color = text.startsWith('❌') ? '#DC2626' : text.startsWith('⚠️') ? '#D97706' : '#64748B';
+}
+
+/* ═══════════════════════════════
+   评测主流程
+═══════════════════════════════ */
+async function startEvaluation() {
+  const vals = getFormValues();
+  if (!validateForm(vals)) return;
+
+  _aborted = false;
+
+  // 更新 Skill 预览卡
+  const fpName = $('fpName');
+  const fpMeta = $('fpMeta');
+  if (fpName) fpName.textContent = vals.skillName;
+  if (fpMeta) fpMeta.textContent = vals.direction
+    ? `${ApiService.DIRECTIONS[vals.direction]?.name || vals.direction} · 准备评测`
+    : '自动推断方向 · 准备评测';
+
   showView('viewRunning');
 
-  /* 更新标题 */
-  const nameEl = document.getElementById('fpName');
-  const metaEl = document.getElementById('fpMeta');
-  const totalSize = files.reduce((s, f) => s + f.size, 0);
-  const skillGuess = guessSkillName(files);
-  if (nameEl) nameEl.textContent = skillGuess;
-  if (metaEl) metaEl.textContent = `${files.length} 个文件 · ${formatBytes(totalSize)}`;
+  /* ─── Step 1：解析 ─── */
+  setStep(0, 'running', '正在分析 Skill 基本信息…');
+  await sleep(400);
+  if (_aborted) return;
+  setStep(0, 'done', '✅ Skill 信息解析完成');
 
-  /* ─── STEP 1: 解析文件结构 ─── */
-  setStep('step1', 'active');
-  setStepDesc('step1', '扫描文件类型与结构…');
-  await delay(400);
+  /* ─── Step 2：构造用例 ─── */
+  setStep(1, 'running', vals.samples ? '已提供输出样本，构建评测场景…' : '未提供样本，构造推断测试用例…');
+  await sleep(600);
+  if (_aborted) return;
+  setStep(1, 'done', '✅ 测试用例构造完成');
 
-  if (cancelFlag) return resetToUpload();
+  /* ─── Step 3：SQE-5 ─── */
+  setStep(2, 'running', '执行 SQE-5 工程侧评测：D1/D2/D3/D4/D5…');
 
-  const extMap = {};
-  files.forEach(f => {
-    const ext = f.name.split('.').pop().toLowerCase();
-    extMap[ext] = (extMap[ext] || 0) + 1;
-  });
-  const fileList = files.map(f => ({ name: f.name, sizeStr: formatBytes(f.size) }));
-  setStepDesc('step1', `识别到 ${Object.keys(extMap).map(e => `.${e} ×${extMap[e]}`).join(' · ')}`);
-  setStep('step1', 'done');
+  /* ─── Step 4：AQE ─── */
+  const stepTimer = setTimeout(() => {
+    if (!_aborted) setStep(3, 'running', '执行 AQE 美学侧评测：A/B/C/D/E 五维…');
+  }, 2000);
 
-  /* ─── STEP 2: 推断方向 ─── */
-  setStep('step2', 'active');
-  setStepDesc('step2', '分析文件特征…');
-  await delay(300);
+  /* ─── 调用 AI 评测 ─── */
+  const result = await ApiService.evaluate(vals);
 
-  if (cancelFlag) return resetToUpload();
+  clearTimeout(stepTimer);
+  if (_aborted) return;
 
-  const direction = inferDirection(files);
-  const dirNames = { ui:'UI生成', img:'图片生成', video:'视频动效', doc:'文档/PPT', eval:'评测' };
-  setStepDesc('step2', `推断方向：${dirNames[direction] || direction}`);
-  setStep('step2', 'done');
-
-  /* ─── STEP 3: 读取核心内容 ─── */
-  setStep('step3', 'active');
-  setStepDesc('step3', '提取主文件内容…');
-
-  if (cancelFlag) return resetToUpload();
-
-  // 找主 HTML 文件（选最大的）
-  const htmlFiles = files
-    .filter(f => f.name.toLowerCase().endsWith('.html'))
-    .sort((a, b) => b.size - a.size);
-  const cssFiles  = files.filter(f => f.name.toLowerCase().endsWith('.css')).sort((a,b) => b.size - a.size);
-  const mdFiles   = files.filter(f => f.name.toLowerCase().endsWith('.md'));
-
-  let htmlContent = '';
-  let description = '';
-
-  if (htmlFiles[0]) htmlContent = await readAsText(htmlFiles[0]);
-  if (cssFiles[0]) {
-    const css = await readAsText(cssFiles[0]);
-    htmlContent += '\n\n/* CSS */\n' + css;
-  }
-  if (mdFiles[0]) description = await readAsText(mdFiles[0]);
-
-  setStepDesc('step3', `已读取 ${Math.min(htmlContent.length, 6000)} 字符内容`);
-  setStep('step3', 'done');
-
-  /* ─── STEP 4: AI 评测 ─── */
-  setStep('step4', 'active');
-  setStepDesc('step4', '发送到 AI 分析中…');
-
-  if (cancelFlag) return resetToUpload();
-
-  // 检查是否在线
-  const online = ApiService.getStatus() === 'online';
-
-  let result;
-  if (online) {
-    const res = await ApiService.evaluate({
-      direction,
-      htmlContent,
-      fileList,
-      description: description || ''
-    });
-
-    if (!res.ok) {
-      setStep('step4', 'error');
-      setStepDesc('step4', 'AI 分析失败：' + (res.error || '未知错误'));
-      await delay(1500);
-      // 降级到手动模式
-      showManualModal(direction, skillGuess, files);
-      return;
-    }
-
-    result = res.data;
-  } else {
-    // 离线降级
-    setStep('step4', 'error');
-    setStepDesc('step4', '未连接内网，切换为手动评分');
-    await delay(1000);
-    showManualModal(direction, skillGuess, files);
+  if (!result.ok) {
+    setStep(2, 'error', `❌ 评测失败：${result.error}`);
+    await sleep(1500);
+    showEvalError(result.error);
     return;
   }
 
-  setStepDesc('step4', `评测完成 · ${result.verdict} · 综合分 ${result.composite}`);
-  setStep('step4', 'done');
+  setStep(2, 'done', `✅ SQE-5 综合分：${result.data.sqe5?.composite?.toFixed(1) || '—'}`);
+  setStep(3, 'done', `✅ AQE 综合分：${result.data.aqe?.composite?.toFixed(1) || '—'}`);
 
-  /* ─── STEP 5: 生成报告 ─── */
-  setStep('step5', 'active');
-  setStepDesc('step5', '渲染评测报告…');
-  await delay(200);
+  /* ─── Step 5：生成报告 ─── */
+  setStep(4, 'running', '生成 HTML 评测报告…');
+  await sleep(400);
 
-  if (cancelFlag) return resetToUpload();
+  if (_aborted) return;
 
-  // 补充 meta
-  result._skillName = result.skillName || skillGuess;
-  result._date = new Date().toLocaleString('zh-CN');
-  result._id = Storage.genId();
-  result._direction = direction;
-  result._directionName = dirNames[direction] || direction;
+  // 生成报告 HTML
+  const html = ApiService.generateHtmlReport(result.data);
+  _currentData = result.data;
+  _currentHtml = html;
 
-  // 持久化
+  // 保存历史
   Storage.save({
-    id: result._id,
-    skillName: result._skillName,
-    date: result._date,
-    direction,
-    composite: result.composite,
-    verdict: result.verdict,
-    data: result
+    skillName: result.data.skillName,
+    direction: result.data.direction,
+    directionName: result.data.directionName || ApiService.DIRECTIONS[result.data.direction]?.name || result.data.direction,
+    verdict: result.data.overallVerdict,
+    sqeScore: result.data.sqe5?.composite,
+    aqeScore: result.data.aqe?.composite,
+    data: result.data,
+    html,
   });
 
-  currentResult = result;
+  markAllDone();
+  await sleep(500);
 
-  setStep('step5', 'done');
-  setStepDesc('step5', '报告已生成');
-
-  await delay(400);
-  renderReport(result);
+  // 显示报告
+  showReport(html, result.data);
 }
 
-/* ── 延迟 ── */
-function delay(ms) {
-  return new Promise(r => setTimeout(r, ms));
+function showEvalError(errMsg) {
+  showView('viewInput');
+  showTip(`❌ 评测失败：${errMsg || '请检查网络后重试'}`);
 }
 
-/* ── 猜测 Skill 名称 ── */
-function guessSkillName(files) {
-  // 从路径/文件名中猜
-  if (files[0]?.webkitRelativePath) {
-    const parts = files[0].webkitRelativePath.split('/');
-    if (parts.length > 1) return parts[0];
-  }
-  // 找 SKILL.md 或 README.md
-  const md = files.find(f => /skill\.md|readme\.md/i.test(f.name));
-  if (md) return md.name.replace(/\.md$/i, '');
-  // 用 HTML 文件名
-  const html = files.find(f => f.name.endsWith('.html'));
-  if (html) return html.name.replace('.html', '');
-  return '未命名 Skill';
-}
+/* ═══════════════════════════════
+   报告展示
+═══════════════════════════════ */
+function showReport(html, data) {
+  const reportBody = $('reportBody');
+  if (!reportBody) return;
 
-/* ── 重置到上传页 ── */
-function resetToUpload() {
-  currentFiles = [];
-  cancelFlag = false;
-  // 重置步骤状态
-  ['step1','step2','step3','step4','step5'].forEach(s => setStep(s, ''));
-  showView('viewUpload');
-}
+  // 使用 iframe 沙箱渲染完整 HTML 报告
+  const iframe = document.createElement('iframe');
+  iframe.style.cssText = 'width:100%;border:none;min-height:600px;border-radius:8px;';
+  iframe.setAttribute('title', 'AQE 评测报告');
+  iframe.setAttribute('sandbox', 'allow-scripts allow-popups');
+  reportBody.innerHTML = '';
+  reportBody.appendChild(iframe);
 
-/* ═══════════════════════════════════════════
-   报告渲染
-═══════════════════════════════════════════ */
-const DIM_COLORS = { A:'#2563EB', B:'#7C3AED', C:'#059669', D:'#D97706', E:'#DC2626' };
-const DIM_NAMES  = {
-  A: 'A · 视觉层级与信息架构',
-  B: 'B · 色彩美学与情感调性',
-  C: 'C · 版式规范与排版质量',
-  D: 'D · 品牌一致性与风格稳定',
-  E: 'E · 可访问性基线（强制）'
-};
-const VERDICT_CFG = {
-  PASS:  { cls:'pass',  emoji:'✅', label:'PASS · 允许上线',     desc:'综合分 ≥ 7.5 且无维度 < 6.0，评测通过。' },
-  WATCH: { cls:'watch', emoji:'👀', label:'WATCH · 有条件上线',   desc:'综合分 7.0–7.4，建议 2 周内完成修复后重测。' },
-  FAIL:  { cls:'fail',  emoji:'❌', label:'FAIL · 打回修改',      desc:'综合分 < 7.0 或存在维度 < 6.0，需要修复。' },
-  BLOCK: { cls:'block', emoji:'🚫', label:'BLOCK · 强制阻断',     desc:'可访问性（AQE-E）严重不达标，禁止上线。' },
-};
+  // 写入完整 HTML
+  const doc = iframe.contentDocument || iframe.contentWindow.document;
+  doc.open();
+  doc.write(html);
+  doc.close();
 
-function renderReport(r) {
-  const vc = VERDICT_CFG[r.verdict] || VERDICT_CFG.FAIL;
-  const s = r.scores || {};
-  const dims = r.dimensions || {};
-  const failures = r.failures || [];
-  const strengths = r.strengths || [];
-
-  /* 失分项 HTML */
-  const failuresHtml = failures.length > 0
-    ? `<div class="rpt-card" style="padding:0;overflow:hidden;margin-bottom:20px">
-        <div style="padding:16px 20px;border-bottom:1px solid var(--border)">
-          <div class="rpt-card-title">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-            失分项 & 修复建议（${failures.length} 项）
-          </div>
-        </div>
-        <div class="failures-list">
-          ${failures.map(f => `
-          <div class="failure-item ${f.isBlock ? 'is-block' : ''}">
-            <div class="failure-dim-tag" style="background:${DIM_COLORS[f.dim?.replace('AQE-','')[0]] || '#64748B'}">
-              ${esc(f.dim || 'AQE')}
-            </div>
-            <div class="failure-right">
-              <div class="failure-title">
-                ${f.isBlock ? '🚫 ' : f.severity === 'p0' ? '⚠️ ' : ''}${esc(f.title)}
-                <span style="font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px;margin-left:6px;background:${f.severity==='block'||f.isBlock ? '#FEF2F2' : f.severity==='p0' ? '#FFFBEB' : '#F1F5F9'};color:${f.severity==='block'||f.isBlock ? '#DC2626' : f.severity==='p0' ? '#D97706' : '#64748B'}">${(f.severity || f.priority || 'P2').toUpperCase()}</span>
-              </div>
-              <div class="failure-suggestion">${esc(f.detail || f.problem || '')}</div>
-              ${f.fix ? `<div style="margin-top:6px;font-size:12px;color:#2563EB;line-height:1.5">💡 ${esc(f.fix)}</div>` : ''}
-            </div>
-          </div>`).join('')}
-        </div>
-      </div>`
-    : '';
-
-  /* 维度分析列表 */
-  const dimListHtml = ['A','B','C','D','E'].map(d => {
-    const dim = dims[d] || {};
-    const score = s[d] || 5;
-    const isLow = score < 6.0;
-    const isBlock = d === 'E' && (dim.blockFlag || score < 5.0);
-    const pct = (score / 10) * 100;
-    const issues = (dim.issues || []).filter(Boolean);
-    return `
-    <div class="dim-row">
-      <div class="dim-badge" style="background:${DIM_COLORS[d]}">${d}</div>
-      <div class="dim-info">
-        <div class="dim-name" style="color:${isBlock ? 'var(--red)' : isLow ? 'var(--amber)' : 'inherit'}">
-          ${DIM_NAMES[d]}${isBlock ? ' 🚫' : isLow ? ' ⚠️' : ''}
-        </div>
-        <div class="dim-bar-track">
-          <div class="dim-bar-fill" style="width:${pct}%;background:${DIM_COLORS[d]}"></div>
-        </div>
-        ${dim.summary ? `<div class="dim-analysis">${esc(dim.summary)}</div>` : ''}
-        ${issues.map(i => `<div style="font-size:11px;color:var(--red);margin-top:2px">• ${esc(i)}</div>`).join('')}
-      </div>
-      <div class="dim-score-val" style="color:${DIM_COLORS[d]}">${score.toFixed ? score.toFixed(1) : score}</div>
-    </div>`;
-  }).join('');
-
-  /* 亮点 */
-  const strengthsHtml = strengths.length
-    ? `<div class="rpt-card" style="margin-bottom:20px">
-        <div class="rpt-card-title">🌟 亮点</div>
-        ${strengths.map(s => `<div style="font-size:13px;color:var(--text-2);padding:4px 0;line-height:1.5">✓ ${esc(s)}</div>`).join('')}
-      </div>`
-    : '';
-
-  const reportHtml = `
-    <!-- 英雄区 -->
-    <div class="rpt-hero">
-      <div class="rpt-meta-row">
-        <div class="rpt-meta-item">
-          <span class="rpt-meta-label">Skill 名称</span>
-          <span class="rpt-meta-value">${esc(r._skillName || r.skillName || '未命名')}</span>
-        </div>
-        <div class="rpt-meta-item">
-          <span class="rpt-meta-label">评测方向</span>
-          <span class="rpt-meta-value">${esc(r._directionName || r.directionName || r.direction)}</span>
-        </div>
-        <div class="rpt-meta-item">
-          <span class="rpt-meta-label">评测时间</span>
-          <span class="rpt-meta-value">${esc(r._date || '—')}</span>
-        </div>
-        <div class="rpt-meta-item">
-          <span class="rpt-meta-label">报告 ID</span>
-          <span class="rpt-meta-value" style="font-family:var(--mono);font-size:11px">${esc(r._id || '—')}</span>
-        </div>
-      </div>
-      <div class="rpt-score-row">
-        <div class="rpt-score-num">${r.composite?.toFixed ? r.composite.toFixed(1) : r.composite || '—'}</div>
-        <div class="rpt-verdict-wrap">
-          <div class="rpt-verdict-badge ${vc.cls}">${vc.emoji} ${r.verdict}</div>
-          <div class="rpt-verdict-desc">${vc.desc}</div>
-          ${r.verdictReason ? `<div style="font-size:11px;opacity:.65;margin-top:4px">${esc(r.verdictReason)}</div>` : ''}
-        </div>
-      </div>
-    </div>
-
-    <!-- AI 总评 -->
-    ${r.overall || r.summary ? `
-    <div class="rpt-summary">
-      <strong>AI 评价：</strong>${esc(r.overall || r.summary)}
-    </div>` : ''}
-
-    <!-- 雷达图 + 维度分 -->
-    <div class="rpt-2col">
-      <div class="rpt-card">
-        <div class="rpt-card-title">AQE 五维雷达图</div>
-        <div class="radar-card-inner">
-          <svg id="reportRadarSvg" width="200" height="200"></svg>
-        </div>
-      </div>
-      <div class="rpt-card">
-        <div class="rpt-card-title">各维度详情</div>
-        <div class="dim-list">${dimListHtml}</div>
-      </div>
-    </div>
-
-    <!-- 失分项 -->
-    ${failuresHtml}
-
-    <!-- 亮点 -->
-    ${strengthsHtml}
-
-    <!-- 判定结论 -->
-    <div class="verdict-card ${vc.cls}">
-      <div class="verdict-emoji">${vc.emoji}</div>
-      <div>
-        <div class="verdict-text-title">${vc.label}</div>
-        <div class="verdict-text-desc">${vc.desc}</div>
-        ${r.onlineAdvice ? `<div style="margin-top:8px;font-size:12px;font-style:italic">${esc(r.onlineAdvice)}</div>` : ''}
-      </div>
-    </div>
-  `;
-
-  const bodyEl = document.getElementById('reportBody');
-  if (bodyEl) bodyEl.innerHTML = reportHtml;
+  // 动态调整高度
+  const resizeObs = new ResizeObserver(() => {
+    const bodyH = doc.body?.scrollHeight || 0;
+    if (bodyH > 200) iframe.style.height = bodyH + 32 + 'px';
+  });
+  setTimeout(() => {
+    if (doc.body) resizeObs.observe(doc.body);
+  }, 200);
 
   showView('viewReport');
-
-  /* 绘制雷达图 */
-  requestAnimationFrame(() => {
-    const svgEl = document.getElementById('reportRadarSvg');
-    if (svgEl && typeof drawRadar === 'function') {
-      drawRadar(svgEl, s, 200);
-    }
-  });
 }
 
-/* ═══════════════════════════════════════════
-   手动评分弹窗（离线降级）
-═══════════════════════════════════════════ */
-function showManualModal(direction, skillName, files) {
-  const modal = document.getElementById('manualModal');
-  const body  = document.getElementById('manualScoreBody');
-  if (!modal || !body) { showView('viewError'); return; }
-
-  const dims = ['A','B','C','D','E'];
-  const dimNames = {
-    A: 'A · 视觉层级', B: 'B · 色彩美学',
-    C: 'C · 版式规范', D: 'D · 品牌一致性', E: 'E · 可访问性'
-  };
-
-  body.innerHTML = dims.map(d => `
-    <div style="margin-bottom:20px">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-        <label style="font-size:13px;font-weight:600;color:${DIM_COLORS[d]}">${dimNames[d]}</label>
-        <span style="font-size:18px;font-weight:800;color:${DIM_COLORS[d]}" id="mv_${d}">7.0</span>
-      </div>
-      <div style="position:relative;height:8px;background:#E2E8F0;border-radius:99px">
-        <div style="position:absolute;left:0;top:0;bottom:0;width:60%;background:${DIM_COLORS[d]};border-radius:99px;transition:width .15s" id="mf_${d}"></div>
-        <input type="range" min="1" max="10" step="0.5" value="7" style="position:absolute;inset:0;opacity:0;width:100%;cursor:pointer"
-          oninput="document.getElementById('mv_${d}').textContent=parseFloat(this.value).toFixed(1);document.getElementById('mf_${d}').style.width=((this.value-1)/9*100)+'%'">
-      </div>
-    </div>`).join('');
-
-  modal.classList.remove('hidden');
-
-  document.getElementById('btnConfirmManual').onclick = () => {
-    const scores = {};
-    dims.forEach(d => {
-      const input = body.querySelector(`input[oninput*="mv_${d}"]`);
-      scores[d] = input ? parseFloat(input.value) : 7;
-    });
-
-    // 计算综合分
-    const WEIGHTS = {
-      ui:    {A:.30,B:.25,C:.25,D:.10,E:.10},
-      img:   {A:.20,B:.45,C:.15,D:.10,E:.10},
-      video: {A:.25,B:.30,C:.20,D:.15,E:.10},
-      doc:   {A:.25,B:.15,C:.30,D:.15,E:.15},
-      eval:  {A:.00,B:.30,C:.00,D:.40,E:.30},
-    };
-    const w = WEIGHTS[direction] || WEIGHTS.ui;
-    let comp = 0;
-    dims.forEach(d => { comp += scores[d] * (w[d] || 0); });
-    scores.composite = Math.round(comp * 10) / 10;
-
-    const hasBlock = scores.E < 5.0;
-    const hasLow = dims.some(d => scores[d] < 6.0);
-    let verdict = 'FAIL';
-    if (hasBlock) verdict = 'BLOCK';
-    else if (comp >= 7.5 && !hasLow) verdict = 'PASS';
-    else if (comp >= 7.0) verdict = 'WATCH';
-
-    const result = {
-      skillName: skillName,
-      direction,
-      directionName: { ui:'UI生成',img:'图片生成',video:'视频动效',doc:'文档/PPT',eval:'评测' }[direction] || direction,
-      scores,
-      composite: scores.composite,
-      verdict,
-      verdictReason: '手动评分（离线模式）',
-      dimensions: {},
-      failures: [],
-      strengths: [],
-      overall: '（手动评分模式，未进行 AI 分析）',
-      _skillName: skillName,
-      _date: new Date().toLocaleString('zh-CN'),
-      _id: Storage.genId(),
-      _direction: direction,
-      _directionName: { ui:'UI生成',img:'图片生成',video:'视频动效',doc:'文档/PPT',eval:'评测' }[direction] || direction,
-    };
-
-    modal.classList.add('hidden');
-    Storage.save({ id:result._id, skillName, date:result._date, direction, composite:result.composite, verdict, data:result });
-    currentResult = result;
-    renderReport(result);
-  };
-}
-
-/* ═══════════════════════════════════════════
-   雷达图（内联 SVG）
-═══════════════════════════════════════════ */
-function drawRadar(svg, scores, size) {
-  svg.innerHTML = '';
-  const cx = size / 2, cy = size / 2;
-  const maxR = size * 0.36;
-  const n = 5;
-  const angle = i => (i * 2 * Math.PI / n) - Math.PI / 2;
-  const pt = (r, i) => ({ x: cx + r * Math.cos(angle(i)), y: cy + r * Math.sin(angle(i)) });
-  const pts = arr => arr.map(p => `${p.x},${p.y}`).join(' ');
-  const ns = 'http://www.w3.org/2000/svg';
-
-  const dims = ['A','B','C','D','E'];
-
-  // 背景网
-  for (let l = 5; l >= 1; l--) {
-    const r = (l / 5) * maxR;
-    const poly = document.createElementNS(ns, 'polygon');
-    poly.setAttribute('points', pts(dims.map((_, i) => pt(r, i))));
-    poly.setAttribute('fill', l % 2 === 0 ? '#F8FAFC' : '#FFFFFF');
-    poly.setAttribute('stroke', '#E2E8F0');
-    poly.setAttribute('stroke-width', '1');
-    svg.appendChild(poly);
-  }
-
-  // 轴线
-  dims.forEach((_, i) => {
-    const p = pt(maxR, i);
-    const line = document.createElementNS(ns, 'line');
-    line.setAttribute('x1', cx); line.setAttribute('y1', cy);
-    line.setAttribute('x2', p.x); line.setAttribute('y2', p.y);
-    line.setAttribute('stroke', '#E2E8F0'); line.setAttribute('stroke-width', '1');
-    svg.appendChild(line);
-  });
-
-  // 数据区域
-  const dataPoints = dims.map((d, i) => {
-    const v = Math.max(0, Math.min(10, scores[d] || 0));
-    return pt((v / 10) * maxR, i);
-  });
-  const area = document.createElementNS(ns, 'polygon');
-  area.setAttribute('points', pts(dataPoints));
-  area.setAttribute('fill', '#2563EB');
-  area.setAttribute('fill-opacity', '0.15');
-  area.setAttribute('stroke', '#2563EB');
-  area.setAttribute('stroke-width', '2');
-  area.setAttribute('stroke-linejoin', 'round');
-  svg.appendChild(area);
-
-  // 数据点
-  dataPoints.forEach((p, i) => {
-    const c = document.createElementNS(ns, 'circle');
-    c.setAttribute('cx', p.x); c.setAttribute('cy', p.y);
-    c.setAttribute('r', '4');
-    c.setAttribute('fill', DIM_COLORS[dims[i]] || '#2563EB');
-    c.setAttribute('stroke', 'white'); c.setAttribute('stroke-width', '2');
-    svg.appendChild(c);
-  });
-
-  // 标签
-  dims.forEach((d, i) => {
-    const lp = pt(maxR + 20, i);
-    const text = document.createElementNS(ns, 'text');
-    text.setAttribute('x', lp.x); text.setAttribute('y', lp.y);
-    text.setAttribute('text-anchor', 'middle');
-    text.setAttribute('dominant-baseline', 'middle');
-    text.setAttribute('fill', DIM_COLORS[d]);
-    text.setAttribute('font-size', '10');
-    text.setAttribute('font-weight', '700');
-    text.setAttribute('font-family', '-apple-system,sans-serif');
-    text.textContent = d;
-    svg.appendChild(text);
-  });
-}
-
-/* ═══════════════════════════════════════════
-   导出功能
-═══════════════════════════════════════════ */
-function exportMarkdown(r) {
-  if (!r) return;
-  const vc = VERDICT_CFG[r.verdict] || VERDICT_CFG.FAIL;
-  const s = r.scores || {};
-  const dims = r.dimensions || {};
-
-  const md = `# Skill AQE 评测报告
-
-## 基本信息
-
-| 字段 | 值 |
-|------|------|
-| Skill 名称 | ${r._skillName || r.skillName || '未命名'} |
-| 评测方向 | ${r._directionName || r.directionName || ''} |
-| 评测时间 | ${r._date || ''} |
-| 报告 ID | ${r._id || ''} |
-
-## 综合评定
-
-> **${vc.emoji} ${r.verdict}**  ${vc.desc}
-
-**综合分：${r.composite?.toFixed ? r.composite.toFixed(1) : r.composite} / 10**
-
-## AQE 五维评分
-
-| 维度 | 得分 |
-|------|------|
-| A · 视觉层级与信息架构 | ${s.A?.toFixed ? s.A.toFixed(1) : s.A || '—'} |
-| B · 色彩美学与情感调性 | ${s.B?.toFixed ? s.B.toFixed(1) : s.B || '—'} |
-| C · 版式规范与排版质量 | ${s.C?.toFixed ? s.C.toFixed(1) : s.C || '—'} |
-| D · 品牌一致性与风格稳定 | ${s.D?.toFixed ? s.D.toFixed(1) : s.D || '—'} |
-| E · 可访问性基线（强制） | ${s.E?.toFixed ? s.E.toFixed(1) : s.E || '—'} |
-
-## 维度分析
-
-${['A','B','C','D','E'].map(d => {
-  const dim = dims[d] || {};
-  return `### AQE-${d}\n**得分**：${s[d]}\n\n${dim.summary || '（无分析）'}\n${dim.issues?.length ? '\n**问题**：\n' + dim.issues.map(i => `- ${i}`).join('\n') : ''}`;
-}).join('\n\n')}
-
-## 失分项 & 修复建议
-
-${(r.failures || []).map(f => `### ${f.dim}: ${f.title}\n\n${f.detail || ''}\n\n**修复方案**：${f.fix || '—'}`).join('\n\n') || '无明显失分项'}
-
-## 整体评价
-
-${r.overall || r.summary || '（无 AI 评价）'}
-
----
-*由 Skill AQE 评测平台自动生成 · ${r._date}*
-`;
-
-  const blob = new Blob([md], { type: 'text/markdown' });
+/* ═══════════════════════════════
+   导出 / 操作按钮
+═══════════════════════════════ */
+function downloadReportHtml() {
+  if (!_currentHtml) return;
+  const skillName = _currentData?.skillName || 'skill';
+  const date = new Date().toISOString().slice(0, 10);
+  const safeName = (skillName + '-' + date).replace(/[^a-zA-Z0-9\-_\u4e00-\u9fff]/g, '-');
+  const blob = new Blob([_currentHtml], { type: 'text/html;charset=utf-8' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = `AQE_${r._skillName || 'report'}_${Date.now()}.md`;
+  a.download = `aqe-report-${safeName}.html`;
   a.click();
+  URL.revokeObjectURL(a.href);
 }
 
-function exportJson(r) {
-  if (!r) return;
-  const blob = new Blob([JSON.stringify(r, null, 2)], { type: 'application/json' });
+function downloadReportJson() {
+  if (!_currentData) return;
+  const skillName = _currentData.skillName || 'skill';
+  const date = new Date().toISOString().slice(0, 10);
+  const safeName = (skillName + '-' + date).replace(/[^a-zA-Z0-9\-_\u4e00-\u9fff]/g, '-');
+  const blob = new Blob([JSON.stringify(_currentData, null, 2)], { type: 'application/json;charset=utf-8' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = `AQE_${r._id || Date.now()}.json`;
+  a.download = `aqe-data-${safeName}.json`;
   a.click();
+  URL.revokeObjectURL(a.href);
 }
 
-/* ═══════════════════════════════════════════
-   历史记录
-═══════════════════════════════════════════ */
-function renderHistory() {
-  const records = Storage.getAll();
-  const container = document.getElementById('drawerBody');
-  if (!container) return;
-
-  if (!records.length) {
-    container.innerHTML = '<div style="text-align:center;padding:40px;color:#94A3B8;font-size:13px">暂无历史记录</div>';
-    return;
-  }
-
-  const vc2cls = { PASS:'pass', WATCH:'watch', FAIL:'fail', BLOCK:'block' };
-  const vc2clr = { PASS:'#16A34A', WATCH:'#D97706', FAIL:'#DC2626', BLOCK:'#7C3AED' };
-
-  container.innerHTML = records.map(r => `
-    <div style="padding:14px 16px;border-bottom:1px solid #E2E8F0;cursor:pointer" onclick="loadHistoryRecord('${r.id}')">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <span style="font-size:13px;font-weight:600;color:#0F172A">${esc(r.skillName || '未命名')}</span>
-        <span style="font-size:12px;font-weight:700;color:${vc2clr[r.verdict] || '#94A3B8'}">${r.verdict || '—'}</span>
-      </div>
-      <div style="font-size:11px;color:#94A3B8;margin-top:3px">${esc(r.date || '')} · 综合分 ${r.composite?.toFixed ? r.composite.toFixed(1) : r.composite || '—'}</div>
-    </div>
-  `).join('');
-}
-
-function loadHistoryRecord(id) {
-  const records = Storage.getAll();
-  const rec = records.find(r => r.id === id);
-  if (!rec?.data) return;
-  currentResult = rec.data;
-  closeDrawer();
-  renderReport(rec.data);
-}
-
-function openDrawer() {
-  renderHistory();
-  document.getElementById('drawerOverlay').style.display = 'flex';
-  document.getElementById('drawerOverlay').classList.add('active');
-}
-
-function closeDrawer() {
-  const el = document.getElementById('drawerOverlay');
-  el.style.display = 'none';
-  el.classList.remove('active');
-}
-
-/* ═══════════════════════════════════════════
-   错误视图
-═══════════════════════════════════════════ */
-function showError(title, desc) {
-  document.getElementById('errorTitle').textContent = title || 'AI 分析失败';
-  document.getElementById('errorDesc').textContent = desc || '请检查连接后重试';
-  showView('viewError');
-}
-
-/* ═══════════════════════════════════════════
-   初始化
-═══════════════════════════════════════════ */
-function handleFiles(files) {
-  const arr = Array.from(files);
-  if (!arr.length) return;
-  currentFiles = arr;
-  runPipeline(arr);
-}
-
-function initDragDrop() {
-  const zone = document.getElementById('dropZone');
-  if (!zone) return;
-
-  zone.addEventListener('dragover', e => {
-    e.preventDefault();
-    zone.classList.add('dragover');
-  });
-
-  zone.addEventListener('dragleave', e => {
-    if (!zone.contains(e.relatedTarget)) zone.classList.remove('dragover');
-  });
-
-  zone.addEventListener('drop', async e => {
-    e.preventDefault();
-    zone.classList.remove('dragover');
-    const items = e.dataTransfer.items;
-    const files = [];
-
-    if (items) {
-      const promises = [];
-      for (const item of items) {
-        if (item.kind === 'file') {
-          const entry = item.webkitGetAsEntry?.();
-          if (entry) promises.push(readEntry(entry, files));
-          else { const f = item.getAsFile(); if (f) files.push(f); }
-        }
-      }
-      await Promise.all(promises);
-    } else {
-      files.push(...Array.from(e.dataTransfer.files));
-    }
-
-    if (files.length) handleFiles(files);
-  });
-}
-
-async function readEntry(entry, files) {
-  if (entry.isFile) {
-    await new Promise(res => entry.file(f => { files.push(f); res(); }, res));
-  } else if (entry.isDirectory) {
-    const reader = entry.createReader();
-    await new Promise(res => {
-      const batch = () => reader.readEntries(async entries => {
-        if (!entries.length) { res(); return; }
-        await Promise.all(entries.map(e => readEntry(e, files)));
-        batch();
-      }, res);
-      batch();
-    });
+function printReport() {
+  const iframe = document.querySelector('#reportBody iframe');
+  if (iframe?.contentWindow) {
+    iframe.contentWindow.print();
+  } else {
+    window.print();
   }
 }
 
-function init() {
-  /* 拖拽 */
-  initDragDrop();
+/* ═══════════════════════════════
+   历史记录抽屉
+═══════════════════════════════ */
+function openHistoryDrawer() {
+  const overlay = $('drawerOverlay');
+  const body = $('drawerBody');
+  if (!overlay || !body) return;
 
-  /* 文件选择 */
-  document.getElementById('btnPickFolder').addEventListener('click', () => {
-    document.getElementById('folderInput').click();
-  });
-  document.getElementById('btnPickFiles').addEventListener('click', e => {
-    e.stopPropagation();
-    document.getElementById('fileInput').click();
-  });
-  document.getElementById('folderInput').addEventListener('change', e => handleFiles(e.target.files));
-  document.getElementById('fileInput').addEventListener('change', e => handleFiles(e.target.files));
+  const records = Storage.loadAll();
+  if (records.length === 0) {
+    body.innerHTML = '<div style="text-align:center;padding:40px 0;color:#94A3B8;font-size:14px">暂无历史记录</div>';
+  } else {
+    const verdictConfig = {
+      PASS:   { c: '#16A34A', bg: '#F0FDF4', label: '✅ PASS' },
+      WATCH:  { c: '#D97706', bg: '#FFFBEB', label: '👀 WATCH' },
+      FAIL:   { c: '#DC2626', bg: '#FEF2F2', label: '❌ FAIL' },
+      BLOCK:  { c: '#991B1B', bg: '#FFF1F2', label: '🚫 BLOCK' },
+      RETURN: { c: '#64748B', bg: '#F1F5F9', label: '↩ RETURN' },
+    };
+    body.innerHTML = records.map(r => {
+      const vc = verdictConfig[r.verdict] || verdictConfig.FAIL;
+      return `<div class="hist-item" data-id="${r.id}">
+        <div class="hist-item-header">
+          <span class="hist-item-name" title="${escHtml(r.skillName || '')}">${escHtml(r.skillName || '未命名')}</span>
+          <span class="hist-verdict-badge" style="background:${vc.bg};color:${vc.c}">${vc.label}</span>
+        </div>
+        <div class="hist-item-meta">
+          <span class="hist-item-dir">${escHtml(r.directionName || r.direction || '—')}</span>
+          <span class="hist-item-time">${escHtml(r.createdAt || '')}</span>
+          <span>SQE: ${r.sqeScore?.toFixed(1) || '—'} · AQE: ${r.aqeScore?.toFixed(1) || '—'}</span>
+        </div>
+        <div class="hist-item-actions">
+          <button onclick="loadHistory('${r.id}')" class="hist-load-btn">查看报告</button>
+          <button onclick="deleteHistory('${r.id}')" class="hist-del-btn">删除</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  overlay.style.display = 'flex';
+  requestAnimationFrame(() => overlay.classList.add('active'));
+}
+
+function closeHistoryDrawer() {
+  const overlay = $('drawerOverlay');
+  if (!overlay) return;
+  overlay.classList.remove('active');
+  setTimeout(() => { overlay.style.display = 'none'; }, 250);
+}
+
+function loadHistory(id) {
+  const record = Storage.getById(id);
+  if (!record || !record.html) return;
+  _currentData = record.data || null;
+  _currentHtml = record.html;
+  closeHistoryDrawer();
+  showReport(record.html, record.data);
+}
+
+function deleteHistory(id) {
+  Storage.remove(id);
+  openHistoryDrawer(); // 刷新
+}
+
+/* ═══════════════════════════════
+   事件绑定
+═══════════════════════════════ */
+function bindEvents() {
+  /* 开始评测 */
+  const btnStart = $('btnStartEval');
+  if (btnStart) btnStart.addEventListener('click', startEvaluation);
 
   /* 取消 */
-  document.getElementById('btnCancel').addEventListener('click', resetToUpload);
+  const btnCancel = $('btnCancel');
+  if (btnCancel) btnCancel.addEventListener('click', () => {
+    _aborted = true;
+    showView('viewInput');
+    showTip('⚠️ 已取消评测');
+  });
 
   /* 重新评测 */
-  document.getElementById('btnBack').addEventListener('click', resetToUpload);
-
-  /* 导出 */
-  document.getElementById('btnExportMd').addEventListener('click', () => exportMarkdown(currentResult));
-  document.getElementById('btnExportJson').addEventListener('click', () => exportJson(currentResult));
-  document.getElementById('btnPrint').addEventListener('click', () => window.print());
-
-  /* 历史 */
-  document.getElementById('btnHistory').addEventListener('click', openDrawer);
-  document.getElementById('drawerClose').addEventListener('click', closeDrawer);
-  document.getElementById('drawerOverlay').addEventListener('click', e => {
-    if (e.target === document.getElementById('drawerOverlay')) closeDrawer();
+  const btnBack = $('btnBack');
+  if (btnBack) btnBack.addEventListener('click', () => {
+    showView('viewInput');
+    showTip('💡 填写名称 + 描述即可开始评测，提供输出样本可获得更精准的 AQE 评测');
   });
-  document.getElementById('btnClearAll').addEventListener('click', () => {
-    if (confirm('确认清空所有历史记录？')) {
+
+  /* 下载/打印 */
+  const btnExportHtml = $('btnExportHtml');
+  if (btnExportHtml) btnExportHtml.addEventListener('click', downloadReportHtml);
+
+  const btnExportJson = $('btnExportJson');
+  if (btnExportJson) btnExportJson.addEventListener('click', downloadReportJson);
+
+  const btnPrint = $('btnPrint');
+  if (btnPrint) btnPrint.addEventListener('click', printReport);
+
+  /* 历史记录 */
+  const btnHistory = $('btnHistory');
+  if (btnHistory) btnHistory.addEventListener('click', openHistoryDrawer);
+
+  const drawerClose = $('drawerClose');
+  if (drawerClose) drawerClose.addEventListener('click', closeHistoryDrawer);
+
+  const drawerOverlay = $('drawerOverlay');
+  if (drawerOverlay) drawerOverlay.addEventListener('click', e => {
+    if (e.target === drawerOverlay) closeHistoryDrawer();
+  });
+
+  const btnClearAll = $('btnClearAll');
+  if (btnClearAll) btnClearAll.addEventListener('click', () => {
+    if (confirm('确定清空所有历史记录？')) {
       Storage.clearAll();
-      renderHistory();
+      openHistoryDrawer();
     }
   });
 
-  /* 错误页重试 */
-  document.getElementById('btnRetry').addEventListener('click', () => {
-    if (currentFiles.length) runPipeline(currentFiles);
-    else resetToUpload();
-  });
-  document.getElementById('btnManual').addEventListener('click', () => {
-    if (currentFiles.length) showManualModal(inferDirection(currentFiles), guessSkillName(currentFiles), currentFiles);
-    else showView('viewUpload');
+  /* ── API 设置弹窗 ── */
+  const btnSettings = $('btnSettings');
+  if (btnSettings) btnSettings.addEventListener('click', openSettingsModal);
+
+  const btnCloseSettings = $('btnCloseSettings');
+  if (btnCloseSettings) btnCloseSettings.addEventListener('click', closeSettingsModal);
+
+  const btnSaveSettings = $('btnSaveSettings');
+  if (btnSaveSettings) btnSaveSettings.addEventListener('click', saveAndTestSettings);
+
+  const btnTestConn = $('btnTestConn');
+  if (btnTestConn) btnTestConn.addEventListener('click', testApiConnection);
+
+  const settingsModal = $('settingsModal');
+  if (settingsModal) settingsModal.addEventListener('click', e => {
+    if (e.target === settingsModal) closeSettingsModal();
   });
 
-  /* 手动弹窗关闭 */
-  document.getElementById('manualModal').addEventListener('click', e => {
-    if (e.target === document.getElementById('manualModal')) {
-      document.getElementById('manualModal').classList.add('hidden');
-      resetToUpload();
+  /* ESC + Ctrl+Enter 键盘快捷键 */
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      const modal = $('settingsModal');
+      if (modal && !modal.classList.contains('hidden')) closeSettingsModal();
+    }
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+      if (_state === 'input') startEvaluation();
     }
   });
 
-  /* 启动时检测连接（异步，不阻塞UI）*/
-  showView('viewUpload');
-  setTimeout(() => ApiService.testConnection(), 600);
+  /* 实时校验 Skill 名称 */
+  const inputSkillName = $('inputSkillName');
+  if (inputSkillName) {
+    inputSkillName.addEventListener('input', () => {
+      inputSkillName.style.border = '';
+    });
+  }
 }
 
-document.addEventListener('DOMContentLoaded', init);
+/* ═══════════════════════════════
+   快速示例填充
+═══════════════════════════════ */
+function fillExample(type) {
+  const examples = {
+    ui: {
+      name:  'ks-design-slide-deck',
+      dir:   'ui',
+      desc:  `这是一个 UI 生成 Skill，接受用户的自然语言描述，输出高质量的纯 HTML/CSS 界面代码。
+
+# SKILL.md
+
+## 名称
+ks-design-slide-deck
+
+## 功能描述
+根据用户的自然语言需求，生成完整的响应式 Web 界面，使用 Tailwind CSS，支持多种组件（卡片、表格、图表、表单等）。
+
+## 输入格式
+用户用自然语言描述目标界面，例如：
+- "生成一个用户管理控制台"
+- "设计一个数据可视化 Dashboard"
+
+## 输出格式
+完整 HTML 文件（内联 CSS + Tailwind CDN），可直接在浏览器打开。
+
+## 使用限制
+- 不涉及后端逻辑
+- 输出静态页面`,
+      samples: `【输入 Prompt 1】
+生成一个响应式的用户管理后台，包含侧边栏导航和用户列表表格
+
+【输出 1】
+<html>
+<head>
+<link href="https://cdn.tailwindcss.com" rel="stylesheet">
+<title>用户管理</title>
+</head>
+<body class="flex bg-gray-50">
+  <aside class="w-64 h-screen bg-white shadow-sm">
+    <div class="p-4 text-lg font-bold text-blue-600">管理后台</div>
+    <nav class="mt-4">
+      <a class="flex items-center px-4 py-2 text-sm bg-blue-50 text-blue-600 rounded-lg mx-2">用户管理</a>
+    </nav>
+  </aside>
+  <main class="flex-1 p-6">
+    <h1 class="text-2xl font-bold mb-4">用户列表</h1>
+    <table class="w-full bg-white rounded-xl shadow-sm">...</table>
+  </main>
+</body>
+</html>`
+    },
+    doc: {
+      name:  'slide-gen-ppt',
+      dir:   'doc',
+      desc:  `这是一个 PPT/幻灯片生成 Skill，接受主题或大纲，输出完整的 HTML 幻灯片（基于 reveal.js 或纯 HTML）。
+
+# SKILL.md
+
+## 名称
+slide-gen-ppt
+
+## 功能描述
+根据用户提供的主题关键词或结构化大纲，自动生成专业风格的 PPT/幻灯片，输出为独立 HTML 文件。
+
+## 输入格式
+- 主题关键词：如"AI产品发展历程"
+- 或提供大纲
+
+## 输出格式
+独立 HTML 幻灯片，含完整样式`,
+      samples: `【输入 Prompt】
+生成一个关于"AI产品2024年发展趋势"的5页PPT，包含封面、目录、3个内容页
+
+【输出】
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+.slide { width:1080px;height:607px;background:#1E293B;color:white;padding:60px;display:flex;flex-direction:column;justify-content:center; }
+.slide h1 { font-size:48px;font-weight:700;margin-bottom:16px; }
+.slide p  { font-size:18px;opacity:0.8;line-height:1.6; }
+</style>
+</head>
+<body>
+<div class="slide">
+  <h1>AI 产品 2024</h1>
+  <h2>发展趋势与展望</h2>
+</div>
+</body>
+</html>`
+    },
+    img: {
+      name:  'ai-image-gen-poster',
+      dir:   'img',
+      desc:  `这是一个 AI 图片/海报生成 Skill，接受文字描述，生成高质量的商业海报或配图。
+
+# SKILL.md
+
+## 名称
+ai-image-gen-poster
+
+## 功能描述
+基于 Stable Diffusion / DALL-E，根据用户描述生成专业商业图片，支持海报、Banner、产品配图等场景。
+
+## 输入格式
+中文/英文描述 + 风格要求（可选）
+
+## 输出格式
+PNG 图片，1080×1080 或 1920×1080`,
+      samples: `【输入 Prompt 1】
+生成一张科技感的产品发布会海报，主题"AI 新纪元"，蓝紫渐变背景，中文大标题居中
+
+【输出 1】
+（图片 URL）https://api.example.com/gen/result_001.png
+尺寸：1920×1080，风格：科技/未来，主色：#1E40AF + #7C3AED
+
+【输入 Prompt 2】
+生成一个微信朋友圈封面图，品牌调性：温暖、简约
+
+【输出 2】
+（图片 URL）https://api.example.com/gen/result_002.png`
+    }
+  };
+
+  const ex = examples[type];
+  if (!ex) return;
+
+  const nameEl = $('inputSkillName');
+  const dirEl  = $('inputDirection');
+  const descEl = $('inputDescription');
+  const sampEl = $('inputSamples');
+
+  if (nameEl) nameEl.value = ex.name;
+  if (dirEl)  dirEl.value  = ex.dir;
+  if (descEl) descEl.value = ex.desc;
+  if (sampEl) sampEl.value = ex.samples || '';
+
+  showTip('✅ 已填入示例数据，点击"开始 AQE 评测"立即体验');
+
+  // 平滑滚动到表单
+  const card = document.querySelector('.input-card');
+  if (card) card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+/* ═══════════════════════════════
+   高级选项切换
+═══════════════════════════════ */
+function toggleAdvanced() {
+  const body = $('advancedBody');
+  const btn  = $('btnAdvanced');
+  if (!body) return;
+  const isHidden = body.classList.toggle('hidden');
+  if (btn) {
+    const svg = btn.querySelector('svg');
+    if (svg) svg.style.transform = isHidden ? '' : 'rotate(180deg)';
+    btn.classList.toggle('active', !isHidden);
+  }
+}
+
+/* ═══════════════════════════════
+   API 设置弹窗
+═══════════════════════════════ */
+function openSettingsModal() {
+  const modal = $('settingsModal');
+  if (!modal) return;
+
+  const cfg = ApiService.getApiCfg();
+  const baseEl  = $('cfgApiBase');
+  const keyEl   = $('cfgApiKey');
+  const modelEl = $('cfgModel');
+  if (baseEl)  baseEl.value  = (cfg.base  !== 'https://api.openai.com') ? (cfg.base  || '') : '';
+  if (keyEl)   keyEl.value   = cfg.key   || '';
+  if (modelEl) modelEl.value = (cfg.model !== 'gpt-4o')                 ? (cfg.model || '') : '';
+
+  const tip = $('settingsTip');
+  if (tip) { tip.textContent = ''; tip.style.color = ''; }
+
+  modal.classList.remove('hidden');
+  setTimeout(() => { if (keyEl) keyEl.focus(); }, 80);
+}
+
+function closeSettingsModal() {
+  const modal = $('settingsModal');
+  if (modal) modal.classList.add('hidden');
+}
+
+async function saveAndTestSettings() {
+  const base  = ($('cfgApiBase')?.value  || '').trim() || 'https://api.openai.com';
+  const key   = ($('cfgApiKey')?.value   || '').trim();
+  const model = ($('cfgModel')?.value    || '').trim() || 'gpt-4o';
+
+  ApiService.saveApiCfg({ base, key, model });
+
+  const tip     = $('settingsTip');
+  const btnSave = $('btnSaveSettings');
+
+  if (tip)     { tip.textContent = '⏳ 保存成功，正在检测连接…'; tip.style.color = '#64748B'; }
+  if (btnSave)   btnSave.disabled = true;
+
+  try {
+    const status = await ApiService.checkStatus();
+    if (status === 'online') {
+      if (tip) { tip.textContent = '✅ 已连接，API 调用正常！'; tip.style.color = '#16A34A'; }
+      _refreshConnStatus('online');
+      setTimeout(closeSettingsModal, 1200);
+    } else {
+      const hint = key
+        ? '❌ 连接失败，请检查 Key 和 Base URL 是否正确'
+        : '💡 未填写 API Key，已切换到离线演示模式';
+      if (tip) { tip.textContent = hint; tip.style.color = key ? '#DC2626' : '#D97706'; }
+      _refreshConnStatus('offline');
+    }
+  } catch (err) {
+    if (tip) { tip.textContent = `❌ 检测失败：${err.message || '网络错误'}`; tip.style.color = '#DC2626'; }
+    _refreshConnStatus('offline');
+  } finally {
+    if (btnSave) btnSave.disabled = false;
+  }
+}
+
+async function testApiConnection() {
+  const tip     = $('settingsTip');
+  const btnTest = $('btnTestConn');
+
+  if (tip)     { tip.textContent = '⏳ 测试中…'; tip.style.color = '#64748B'; }
+  if (btnTest)   btnTest.disabled = true;
+
+  try {
+    const status = await ApiService.checkStatus();
+    if (status === 'online') {
+      if (tip) { tip.textContent = '✅ 连接成功！'; tip.style.color = '#16A34A'; }
+      _refreshConnStatus('online');
+    } else {
+      const cfg  = ApiService.getApiCfg();
+      const hint = cfg.key
+        ? '❌ 连接失败，请确认 Key 和 Base URL'
+        : '⚠️ 未配置 API Key，使用离线演示模式';
+      if (tip) { tip.textContent = hint; tip.style.color = cfg.key ? '#DC2626' : '#D97706'; }
+      _refreshConnStatus('offline');
+    }
+  } catch (err) {
+    if (tip) { tip.textContent = `❌ ${err.message}`; tip.style.color = '#DC2626'; }
+  } finally {
+    if (btnTest) btnTest.disabled = false;
+  }
+}
+
+/* 刷新顶栏连接状态 */
+function _refreshConnStatus(status) {
+  const dot = $('connDot');
+  const lbl = $('connLabel');
+  const map = {
+    online:  { c: '#16A34A', t: '已连接',      pulse: true  },
+    offline: { c: '#EF4444', t: '离线·演示模式', pulse: false },
+  };
+  const m = map[status] || map.offline;
+  if (dot) { dot.style.background = m.c; dot.classList.toggle('pulse', m.pulse); }
+  if (lbl) { lbl.textContent = m.t; lbl.style.color = m.c; }
+}
+
+/* ═══════════════════════════════
+   工具函数
+═══════════════════════════════ */
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+function escHtml(s) {
+  return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}

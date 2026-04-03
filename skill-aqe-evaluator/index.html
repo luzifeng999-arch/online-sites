@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Skill AQE 评测平台</title>
+  <title>AQE Evaluator · Skill 评测专家</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -12,7 +12,8 @@
   <header class="topbar">
     <div class="topbar-brand">
       <div class="brand-badge">AQE</div>
-      <span class="brand-name">Skill 美学评测</span>
+      <span class="brand-name">Skill 评测专家</span>
+      <span class="brand-sub">用 Skill 评测 Skill</span>
     </div>
     <div class="topbar-right">
       <div class="conn-pill" id="connPill">
@@ -23,72 +24,127 @@
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
         历史记录
       </button>
+      <button class="hist-btn" id="btnSettings" title="配置 API Key">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2"/></svg>
+        API 设置
+      </button>
     </div>
   </header>
 
   <!-- ── 主舞台 ──────────────────────────── -->
   <main class="stage">
 
-    <!-- ═══ STATE 1：上传 ═══ -->
-    <div class="view" id="viewUpload">
+    <!-- ═══ STATE 1：输入 Skill 信息 ═══ -->
+    <div class="view" id="viewInput">
       <div class="hero-text">
-        <h1>上传 Skill，自动出评测报告</h1>
-        <p>拖入 Skill 文件夹 / HTML / ZIP，AI 全自动完成 AQE 五维度分析</p>
+        <h1>输入被测 Skill，自动出 AQE 评测报告</h1>
+        <p>粘贴 Skill 名称、描述、输出样本，AI 全自动执行 SQE-5 + AQE 双轨评测</p>
       </div>
 
-      <div class="drop-zone" id="dropZone">
-        <div class="drop-inner">
-          <div class="drop-icon">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
-              <polyline points="17 8 12 3 7 8"/>
-              <line x1="12" y1="3" x2="12" y2="15"/>
-            </svg>
+      <!-- 主输入卡片 -->
+      <div class="input-card">
+
+        <!-- 被测 Skill 基本信息 -->
+        <div class="input-section">
+          <div class="input-row-2col">
+            <div class="input-group">
+              <label class="input-label">
+                <span class="label-req">*</span> 被测 Skill 名称
+              </label>
+              <input type="text" id="inputSkillName" class="input-field"
+                placeholder="如：ks-design-slide-deck, ui-generator-v2..."
+                maxlength="100">
+            </div>
+            <div class="input-group">
+              <label class="input-label">Skill 方向（可留空自动推断）</label>
+              <select id="inputDirection" class="input-field">
+                <option value="">— 自动推断 —</option>
+                <option value="ui">DIR-01 · UI 生成</option>
+                <option value="img">DIR-02 · 图片生成</option>
+                <option value="video">DIR-03 · 视频动效</option>
+                <option value="doc">DIR-04 · 文档/PPT</option>
+                <option value="eval">DIR-05 · 评测</option>
+              </select>
+            </div>
           </div>
-          <p class="drop-title">拖拽文件到这里</p>
-          <p class="drop-sub">支持文件夹 · HTML · CSS · JS · ZIP · 图片</p>
-          <div class="drop-actions">
-            <button class="btn-upload" id="btnPickFolder">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
-              选择文件夹
-            </button>
-            <button class="btn-upload btn-upload-secondary" id="btnPickFiles">
-              选择文件
-            </button>
+        </div>
+
+        <!-- Skill 描述 / SKILL.md 内容 -->
+        <div class="input-section">
+          <div class="input-group">
+            <label class="input-label">
+              <span class="label-req">*</span> Skill 描述 / SKILL.md 内容
+              <span class="label-tip">至少提供功能描述，最好粘贴完整 SKILL.md</span>
+            </label>
+            <textarea id="inputDescription" class="input-textarea" rows="5"
+              placeholder="粘贴该 Skill 的 SKILL.md 内容，或描述其功能、输入、输出格式...&#10;&#10;例如：这是一个 UI 生成 Skill，接受用户的自然语言描述，输出纯 HTML 界面代码，使用 Tailwind CSS，输出样例：一个响应式的用户管理控制台..."></textarea>
           </div>
-          <input type="file" id="folderInput" webkitdirectory style="display:none">
-          <input type="file" id="fileInput" multiple accept=".html,.css,.js,.json,.zip,.png,.jpg,.svg,.md" style="display:none">
+        </div>
+
+        <!-- 输出样本 -->
+        <div class="input-section">
+          <div class="input-group">
+            <label class="input-label">
+              Skill 的输出样本
+              <span class="label-tip">粘贴 1-3 个「输入 Prompt → Skill 输出」的实际案例，可大幅提升评测准确度</span>
+            </label>
+            <textarea id="inputSamples" class="input-textarea" rows="6"
+              placeholder="格式示例（可粘贴 HTML/文字/代码等实际输出）：&#10;&#10;【输入 Prompt 1】&#10;生成一个用户登录页面&#10;&#10;【输出 1】&#10;&lt;html&gt;...&lt;/html&gt;&#10;&#10;【输入 Prompt 2】..."></textarea>
+          </div>
+        </div>
+
+        <!-- 高级选项（折叠） -->
+        <div class="input-section">
+          <button class="advanced-toggle" id="btnAdvanced" onclick="toggleAdvanced()">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            高级选项
+          </button>
+          <div class="advanced-body hidden" id="advancedBody">
+            <div class="input-row-2col" style="margin-top: 12px;">
+              <div class="input-group">
+                <label class="input-label">竞品对比说明</label>
+                <input type="text" id="inputCompetitor" class="input-field"
+                  placeholder="如：对标 v0.dev，竞品输出质量为 8.5 分...">
+              </div>
+              <div class="input-group">
+                <label class="input-label">补充说明（已知问题/特殊要求）</label>
+                <input type="text" id="inputNotes" class="input-field"
+                  placeholder="如：已知颜色对比度可能不足...">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 提交按钮 -->
+        <div class="input-actions">
+          <div class="action-tip" id="inputTip">
+            💡 填写名称 + 描述即可开始评测，提供输出样本可获得更精准的 AQE 评测
+          </div>
+          <button class="btn-primary btn-lg" id="btnStartEval">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            开始 AQE 评测
+          </button>
         </div>
       </div>
 
-      <!-- 示例提示 -->
-      <div class="upload-tips">
-        <div class="tip-item">
-          <span class="tip-icon">📁</span>
-          <span>整个 Skill 文件夹</span>
-        </div>
-        <div class="tip-sep">或</div>
-        <div class="tip-item">
-          <span class="tip-icon">📄</span>
-          <span>主 HTML 文件</span>
-        </div>
-        <div class="tip-sep">或</div>
-        <div class="tip-item">
-          <span class="tip-icon">🗜️</span>
-          <span>打包 ZIP</span>
-        </div>
+      <!-- 快速示例 -->
+      <div class="examples-strip">
+        <span class="examples-label">快速示例：</span>
+        <button class="example-btn" onclick="fillExample('ui')">🖥 UI 生成 Skill</button>
+        <button class="example-btn" onclick="fillExample('doc')">📄 PPT 生成 Skill</button>
+        <button class="example-btn" onclick="fillExample('img')">🖼 图片生成 Skill</button>
       </div>
     </div>
 
     <!-- ═══ STATE 2：自动跑评测 ═══ -->
     <div class="view hidden" id="viewRunning">
       <div class="running-wrap">
-        <!-- 文件预览卡 -->
-        <div class="file-preview-card" id="filePreviewCard">
-          <div class="fp-icon" id="fpIcon">📁</div>
+        <!-- Skill 预览卡 -->
+        <div class="file-preview-card" id="skillPreviewCard">
+          <div class="fp-icon">🔍</div>
           <div class="fp-info">
             <div class="fp-name" id="fpName">加载中…</div>
-            <div class="fp-meta" id="fpMeta">0 个文件</div>
+            <div class="fp-meta" id="fpMeta">准备评测</div>
           </div>
         </div>
 
@@ -97,36 +153,36 @@
           <div class="pipe-step" id="step1">
             <div class="pipe-dot"></div>
             <div class="pipe-content">
-              <div class="pipe-label">解析文件结构</div>
-              <div class="pipe-desc" id="step1Desc">识别 HTML / CSS / JS / 图片…</div>
+              <div class="pipe-label">解析 Skill 信息</div>
+              <div class="pipe-desc" id="step1Desc">识别名称、方向、输入输出格式…</div>
             </div>
           </div>
           <div class="pipe-step" id="step2">
             <div class="pipe-dot"></div>
             <div class="pipe-content">
-              <div class="pipe-label">推断 Skill 方向</div>
-              <div class="pipe-desc" id="step2Desc">分析 UI / 图片 / 视频 / 文档…</div>
+              <div class="pipe-label">构造测试用例</div>
+              <div class="pipe-desc" id="step2Desc">生成典型输入 / 边界输入 / 缺省输入…</div>
             </div>
           </div>
           <div class="pipe-step" id="step3">
             <div class="pipe-dot"></div>
             <div class="pipe-content">
-              <div class="pipe-label">AI 读取内容</div>
-              <div class="pipe-desc" id="step3Desc">提取 HTML 结构、样式信息…</div>
+              <div class="pipe-label">SQE-5 工程侧评测</div>
+              <div class="pipe-desc" id="step3Desc">触发准确率 · 意图理解 · 产出质量…</div>
             </div>
           </div>
           <div class="pipe-step" id="step4">
             <div class="pipe-dot"></div>
             <div class="pipe-content">
-              <div class="pipe-label">AQE 五维度评测</div>
-              <div class="pipe-desc" id="step4Desc">视觉层级 · 色彩 · 版式 · 品牌 · 可访问性</div>
+              <div class="pipe-label">AQE 美学侧评测</div>
+              <div class="pipe-desc" id="step4Desc">视觉层级 · 色彩 · 版式 · 品牌 · 可访问性…</div>
             </div>
           </div>
           <div class="pipe-step" id="step5">
             <div class="pipe-dot"></div>
             <div class="pipe-content">
-              <div class="pipe-label">生成评测报告</div>
-              <div class="pipe-desc" id="step5Desc">综合判定 · 失分项 · 修复建议</div>
+              <div class="pipe-label">生成 HTML 评测报告</div>
+              <div class="pipe-desc" id="step5Desc">综合判定 · Checklist · 修复建议…</div>
             </div>
           </div>
         </div>
@@ -144,27 +200,14 @@
           重新评测
         </button>
         <div class="report-export-btns">
-          <button class="btn-export" id="btnExportMd">导出 Markdown</button>
-          <button class="btn-export" id="btnExportJson">导出 JSON</button>
+          <button class="btn-export" id="btnExportHtml">下载 HTML 报告</button>
+          <button class="btn-export" id="btnExportJson">导出 JSON 数据</button>
           <button class="btn-export btn-export-primary" id="btnPrint">打印 / PDF</button>
         </div>
       </div>
 
       <!-- 报告主体 -->
       <div id="reportBody"></div>
-    </div>
-
-    <!-- ═══ STATE 4：错误（离线时） ═══ -->
-    <div class="view hidden" id="viewError">
-      <div class="error-wrap">
-        <div class="error-icon">⚠️</div>
-        <h2 class="error-title" id="errorTitle">AI 分析失败</h2>
-        <p class="error-desc" id="errorDesc">请检查网络连接后重试</p>
-        <div class="error-actions">
-          <button class="btn-primary" id="btnRetry">重试</button>
-          <button class="btn-ghost" id="btnManual">切换手动模式</button>
-        </div>
-      </div>
     </div>
 
   </main>
@@ -185,18 +228,37 @@
     </div>
   </div>
 
-  <!-- ── 手动评分弹窗（离线降级）─────────── -->
-  <div class="modal-overlay hidden" id="manualModal">
+  <!-- ── API 设置弹窗 ─────────────────────── -->
+  <div class="modal-overlay hidden" id="settingsModal">
     <div class="modal-card">
-      <div class="modal-head">
-        <h3>手动 AQE 评分（离线模式）</h3>
-        <p style="font-size:12px;color:#94A3B8;margin-top:4px">AI 服务不可用，请手动为五个维度打分（1–10）</p>
+      <div class="modal-head" style="display:flex;align-items:center;justify-content:space-between">
+        <h3>API 设置</h3>
+        <button class="btn-icon" id="btnCloseSettings">✕</button>
       </div>
-      <div class="modal-body-inner" id="manualScoreBody"></div>
-      <div style="padding:16px 20px;border-top:1px solid #E2E8F0">
-        <button id="btnConfirmManual" style="width:100%;padding:12px;background:#2563EB;color:white;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">
-          确认，生成报告
-        </button>
+      <div class="modal-body-inner">
+        <div class="input-group" style="margin-bottom:14px">
+          <label class="input-label">API Base URL</label>
+          <input type="text" id="cfgApiBase" class="input-field"
+            placeholder="https://api.openai.com">
+          <div style="font-size:11px;color:var(--text-3);margin-top:4px">支持 OpenAI 兼容接口，如 DeepSeek / 月之暗面 / 本地 Ollama</div>
+        </div>
+        <div class="input-group" style="margin-bottom:14px">
+          <label class="input-label">API Key <span class="label-req">*</span></label>
+          <input type="password" id="cfgApiKey" class="input-field"
+            placeholder="sk-..." autocomplete="off">
+          <div style="font-size:11px;color:var(--text-3);margin-top:4px">Key 仅存储在本地 localStorage，不会上传服务器</div>
+        </div>
+        <div class="input-group" style="margin-bottom:20px">
+          <label class="input-label">模型名称</label>
+          <input type="text" id="cfgModel" class="input-field"
+            placeholder="gpt-4o">
+          <div style="font-size:11px;color:var(--text-3);margin-top:4px">如：gpt-4o / deepseek-chat / claude-3-5-sonnet-20241022</div>
+        </div>
+        <div style="display:flex;gap:10px">
+          <button class="btn-primary" id="btnSaveSettings" style="flex:1">保存配置</button>
+          <button class="btn-cancel" id="btnTestConn" style="flex:1;border:1px solid var(--border);background:var(--surface);color:var(--text-1)">测试连接</button>
+        </div>
+        <div id="settingsTip" style="margin-top:10px;font-size:12px;color:var(--text-3);min-height:18px"></div>
       </div>
     </div>
   </div>

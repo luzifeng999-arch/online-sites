@@ -1,36 +1,50 @@
 /* ═══════════════════════════════════════════
-   storage.js · 历史记录持久化（精简版）
+   storage.js · 历史记录持久化（localStorage）
 ═══════════════════════════════════════════ */
 
 const Storage = (() => {
-  const KEY = 'aqe_records';
+  const KEY = 'aqe_history_v2';
+  const MAX = 50;
 
-  function getAll() {
-    try { return JSON.parse(localStorage.getItem(KEY) || '[]'); }
-    catch { return []; }
+  function loadAll() {
+    try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch { return []; }
   }
 
-  function save(record) {
-    const list = getAll();
-    list.unshift(record);
-    // 保留最多 50 条
-    if (list.length > 50) list.splice(50);
-    localStorage.setItem(KEY, JSON.stringify(list));
-    return record;
+  function saveAll(records) {
+    localStorage.setItem(KEY, JSON.stringify(records));
   }
 
-  function deleteOne(id) {
-    const list = getAll().filter(r => r.id !== id);
-    localStorage.setItem(KEY, JSON.stringify(list));
+  function save(item) {
+    const records = loadAll();
+    const newItem = {
+      id: Date.now() + '_' + Math.random().toString(36).slice(2,7),
+      createdAt: new Date().toLocaleString('zh-CN'),
+      ...item
+    };
+    records.unshift(newItem);
+    if (records.length > MAX) records.length = MAX;
+    saveAll(records);
+    return newItem;
+  }
+
+  function remove(id) {
+    saveAll(loadAll().filter(r => r.id !== id));
   }
 
   function clearAll() {
     localStorage.removeItem(KEY);
   }
 
-  function genId() {
-    return Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+  function getById(id) {
+    return loadAll().find(r => r.id === id) || null;
   }
 
-  return { getAll, save, deleteOne, clearAll, genId };
+  /* app.js 调用的别名 */
+  function genId() {
+    return Date.now() + '_' + Math.random().toString(36).slice(2, 7);
+  }
+  function list() { return loadAll(); }
+  function clear() { return clearAll(); }
+
+  return { loadAll, save, remove, clearAll, getById, genId, list, clear };
 })();
