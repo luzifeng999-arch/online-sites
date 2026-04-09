@@ -545,43 +545,51 @@
       <div class="section" id="p2-skill1"><div class="section-accent"></div>
         <div class="section-header">
           <div class="section-eyebrow">第二节课 · 进阶实战</div>
-          <h2><em>搭一个设计灵感雷达</em></h2>
-          <div class="section-desc">第一节学会了 IDE 能做什么 → 第二节用 IDE 搭一个真正有价值的工具：聚合 10+ 设计网站、Claude Vision 分析每个案例、输出灵感卡片或趋势周报</div>
-          <div class="goal-box goal-box-t">🎯 主线：搭一个「设计灵感雷达」平台骨架 → 用 Skill A 接入多源采集 + Claude Vision 分析能力 → 用 Skill B 切换成周报输出模式 → 用 Agent 跑通整链路 → 用 Design Mode 改成自己的风格</div>
+          <h2><em>搭一个独立运行的设计灵感雷达</em></h2>
+          <div class="section-desc">第一节学会了 IDE 能做什么 → 第二节用 IDE 搭一个<strong>真正能独立运行的应用</strong>：前端界面 + Python 后端 + 内置 Claude Vision 分析，离开 CF 也能用</div>
+          <div class="goal-box goal-box-t">🎯 主线：CF 生成「前端 + 后端 + Claude API 调用」完整应用骨架 → Skill A 写入多源采集 + Vision 分析逻辑 → Skill B 生成趋势周报模式 → Agent 跑通前后端联调 → Design Mode 改界面风格<br><br>⚠️ 关键认知：Skill 是告诉 CF 「帮我生成什么代码」，真正的 Claude 分析能力住在生成出来的应用里，不在 CF 里</div>
         </div>
         <div class="cards">
 
           <!-- SK1 -->
           <div class="card" style="border-color:rgba(10,149,128,.2);"><div class="card-top ct-teal"></div><div class="card-inner">
-            <div class="card-header"><div class="card-title-row"><div class="badge b-sk">SK1</div><span class="card-title" style="color:var(--teal);">✦ 搭平台骨架：一句话生成设计灵感雷达</span></div><span class="card-time">0 – 20 min</span></div>
-            <div class="alert-box"><strong>核心认知：</strong>IDE 不只能改代码——它能从 0 生成一个完整的 Web 应用。说清「功能 + 风格参考 + 技术形式」，AI 一次生成可运行骨架。</div>
+            <div class="card-header"><div class="card-title-row"><div class="badge b-sk">SK1</div><span class="card-title" style="color:var(--teal);">✦ 搭完整应用骨架：前端 + 后端 + Claude API</span></div><span class="card-time">0 – 20 min</span></div>
+            <div class="alert-box"><strong>核心认知：</strong>CF 生成的不只是一个页面，而是一个完整的独立应用——前端负责展示，后端负责调用 Claude Vision 分析，两者联调跑通后，离开 CF 也能独立运行。</div>
             <div class="timeline">
               <div class="tl-item"><div class="tl-left"><div class="tl-num">1</div><div class="tl-line"></div></div>
                 <div class="tl-content">
-                  <strong>说清楚要什么工具（0–3 min）</strong>
-                  <p>输入：「帮我做一个设计灵感雷达，支持从多个设计网站聚合灵感，展示卡片含图片分析摘要、风格标签、来源站点，支持按风格筛选和收藏，风格参考 Linear，单个 HTML 文件实现」</p>
-                  <p style="margin-top:6px;font-style:italic;color:var(--teal);">关键点：说清楚「功能 + 视觉参考 + 技术形式」，AI 就能一次生成完整骨架。</p>
+                  <strong>说清楚完整应用的结构（0–3 min）</strong>
+                  <p>输入：「帮我搭一个设计灵感雷达应用，包含：① 前端 index.html：搜索栏、来源筛选、灵感卡片（含 AI 分析摘要字段）、收藏功能，风格参考 Linear；② 后端 server.py：Flask 服务，负责调 Dribbble API 抓数据、把图片发给 Claude Vision 分析、返回 JSON 给前端；③ .env 文件：存放 CLAUDE_API_KEY」</p>
+                  <p style="margin-top:6px;font-style:italic;color:var(--teal);">关键点：前端只负责展示，真正的 Claude 分析能力在后端，应用独立运行不依赖 CF。</p>
                 </div>
               </div>
               <div class="tl-item"><div class="tl-left"><div class="tl-num">2</div><div class="tl-line"></div></div>
                 <div class="tl-content">
-                  <strong>现场看平台跑起来（3–15 min）</strong>
-                  <p>AI 生成 HTML + CSS + JS → 浏览器打开 → 有搜索栏、来源筛选栏、灵感卡片区、收藏功能，界面完整但数据是示例。</p>
-                  <div class="preview-code" style="margin-top:10px;"><span class="pc-comment">&lt;!-- 设计灵感雷达 · 骨架版 --&gt;
-&lt;!-- 来源：Dribbble / Behance / Awwwards / 站酷 ... --&gt;</span>
-<span class="pc-tag">&lt;div</span> <span class="pc-attr">class=</span><span class="pc-text">"radar-app"</span><span class="pc-tag">&gt;</span>
-<span class="pc-text">  &lt;header&gt;设计灵感雷达 · 搜索 + 来源筛选&lt;/header&gt;
-  &lt;div class="card-grid"&gt;  &lt;!-- 卡片：图片 + AI分析摘要 + 风格标签 --&gt;
-    &lt;div class="card"&gt;等待接入数据...&lt;/div&gt;
-  &lt;/div&gt;</span>
-<span class="pc-tag">&lt;/div&gt;</span></div>
+                  <strong>配置 Claude API（3–8 min）</strong>
+                  <p>在 .env 文件里填入内部 Claude API 接口信息，这是平台真正的「大脑」：</p>
+                  <div class="code" style="margin-top:8px;"><span class="c-comment"># .env — 平台的 Claude API 配置</span>
+<span class="c-key">CLAUDE_API_KEY</span>=<span class="c-val">你的内部API Key</span>
+<span class="c-key">CLAUDE_API_BASE</span>=<span class="c-val">https://你的内部接口地址/v1</span>
+<span class="c-key">CLAUDE_MODEL</span>=<span class="c-val">claude-sonnet-4-5</span></div>
+                  <p style="margin-top:8px;font-size:12px;color:var(--text-3);">⚠️ .env 不上传 Git，只在本地用。Claude 的能力住在这个应用里，不是 CF 里。</p>
                 </div>
               </div>
-              <div class="tl-item"><div class="tl-left"><div class="tl-num">3</div></div>
+              <div class="tl-item"><div class="tl-left"><div class="tl-num">3</div><div class="tl-line"></div></div>
                 <div class="tl-content">
-                  <strong>抛出核心问题（15–20 min）</strong>
-                  <p>「卡片上的「AI 分析摘要」从哪来？和自己上网搜有什么区别？」→ 引出 Skill 接入多源采集 + Claude Vision 分析能力。</p>
-                  <div class="pills" style="margin-top:10px;"><span class="pill pill-t">🏗 平台骨架已就位</span><span class="pill pill-t">🧠 分析能力待接入</span></div>
+                  <strong>启动后端 + 打开前端（8–18 min）</strong>
+                  <p><code>python server.py</code> 启动后端服务 → 浏览器打开 index.html → 前端连接后端 → 点击「抓取灵感」，后端真实调用 Claude Vision，卡片渲染出有 AI 分析摘要的数据。</p>
+                  <div class="preview-code" style="margin-top:8px;"><span class="pc-comment"># server.py 核心逻辑（CF 自动生成）</span>
+<span class="pc-tag">POST /api/fetch</span>  <span class="pc-text"># 触发采集 + 分析</span>
+  <span class="pc-attr">→</span> <span class="pc-text">调 Dribbble API 拿图片 URL</span>
+  <span class="pc-attr">→</span> <span class="pc-text">调 Claude Vision 逐图分析</span>
+  <span class="pc-attr">→</span> <span class="pc-text">返回 JSON 给前端渲染</span></div>
+                </div>
+              </div>
+              <div class="tl-item"><div class="tl-left"><div class="tl-num">4</div></div>
+                <div class="tl-content">
+                  <strong>抛出关键认知（18–20 min）</strong>
+                  <p>「这个应用现在可以关掉 CF，独立运行。Claude 的分析能力在 server.py 里，不在 CF 里——这才是一个真正可以交付、可以给团队用的工具。」</p>
+                  <div class="pills" style="margin-top:10px;"><span class="pill pill-t">🏗 前端骨架就位</span><span class="pill pill-t">⚙️ 后端服务运行中</span><span class="pill pill-p">🧠 Claude 能力内置</span></div>
                 </div>
               </div>
             </div>
@@ -658,13 +666,13 @@
 
           <!-- P2 Agent -->
           <div class="card" id="p2-agent"><div class="card-inner">
-            <div class="card-header"><div class="card-title-row"><div class="badge b-p">P2</div><span class="card-title">Agent：让平台整个跑通，自动测试验收</span></div><span class="card-time">40 – 50 min</span></div>
+            <div class="card-header"><div class="card-title-row"><div class="badge b-p">P2</div><span class="card-title">Agent：前后端联调 + 自动测试验收</span></div><span class="card-time">40 – 50 min</span></div>
             <ul class="item-list">
-              <li class="item-row"><div class="item-dot d-p"></div><div class="item-body"><strong>一句话让 Agent 接管整个链路</strong><div class="item-sub">「帮我把这个平台跑起来，触发一次灵感抓取，检查卡片有没有正常渲染，移动端能不能用」→ Agent 自主完成：启动 → 抓取 → 检查 → 修复</div></div></li>
-              <li class="item-row"><div class="item-dot d-p"></div><div class="item-body"><strong>发现问题自动修复</strong><div class="item-sub">比如卡片图片加载失败、移动端卡片溢出 → Agent 找到原因 → 自己写修复代码 → 重新验证</div></div></li>
-              <li class="item-row"><div class="item-dot d-a"></div><div class="item-body"><strong>Diffs View 审查每一步改动</strong><div class="item-sub">Agent 改完后，在 Diffs View 逐条查看：改了哪里、为什么改。接受 / 拒绝，控制权在你手里</div></div></li>
+              <li class="item-row"><div class="item-dot d-p"></div><div class="item-body"><strong>一句话让 Agent 跑通前后端联调</strong><div class="item-sub">「帮我把灵感雷达完整跑通：启动 server.py，确认 /api/fetch 接口可用，触发一次采集，检查 Claude Vision 分析结果能否正确渲染到前端卡片，移动端适配正常」→ Agent 自主完成整个链路</div></div></li>
+              <li class="item-row"><div class="item-dot d-p"></div><div class="item-body"><strong>发现问题自动修复</strong><div class="item-sub">常见问题：跨域（CORS）报错、Claude API 返回格式和前端解析不匹配、图片 URL 无法访问 → Agent 找到原因、修复代码、重新验证</div></div></li>
+              <li class="item-row"><div class="item-dot d-a"></div><div class="item-body"><strong>Diffs View 审查每一步改动</strong><div class="item-sub">Agent 改完代码后，Diffs View 逐条查看改了哪里。接受 / 拒绝，控制权在你手里——AI 做，你审</div></div></li>
             </ul>
-            <div class="pills"><span class="pill pill-p">🤖 链路自动测试</span><span class="pill pill-a">📋 Diffs 审查</span><span class="pill pill-t">📱 移动端验证</span></div>
+            <div class="pills"><span class="pill pill-p">🤖 前后端联调</span><span class="pill pill-a">📋 Diffs 审查</span><span class="pill pill-t">📱 移动端验证</span></div>
           </div></div>
 
           <!-- P3 Design Mode -->
