@@ -568,20 +568,22 @@
                   <strong>配置 Claude API（3–8 min）</strong>
                   <p>在 .env 文件里填入内部 Claude API 接口信息，这是平台真正的「大脑」：</p>
                   <div class="code" style="margin-top:8px;"><span class="c-comment"># .env — 平台的 Claude API 配置</span>
-<span class="c-key">CLAUDE_API_KEY</span>=<span class="c-val">你的内部API Key</span>
-<span class="c-key">CLAUDE_API_BASE</span>=<span class="c-val">https://你的内部接口地址/v1</span>
-<span class="c-key">CLAUDE_MODEL</span>=<span class="c-val">claude-sonnet-4-5</span></div>
-                  <p style="margin-top:8px;font-size:12px;color:var(--text-3);">⚠️ .env 不上传 Git，只在本地用。Claude 的能力住在这个应用里，不是 CF 里。</p>
+<span class="c-key">WQ_API_KEY</span>=<span class="c-val">课上请填入自己的 Key</span>
+<span class="c-key">CLAUDE_MODEL</span>=<span class="c-val">ep-yi4t2l-1775115584174507438</span>
+<span class="c-key">CLAUDE_API_BASE</span>=<span class="c-val">https://wanqing-api.corp.kuaishou.com/api/gateway/v1/endpoints</span>
+<span class="c-comment"># 内网环境用: http://wanqing.internal/api/gateway/v1/endpoints</span></div>
+                  <p style="margin-top:8px;font-size:12px;color:var(--text-3);">⚠️ .env 不上传 Git，Key 不共享。Claude 的能力住在这个应用里，不是 CF 里。</p>
                 </div>
               </div>
               <div class="tl-item"><div class="tl-left"><div class="tl-num">3</div><div class="tl-line"></div></div>
                 <div class="tl-content">
                   <strong>启动后端 + 打开前端（8–18 min）</strong>
-                  <p><code>python server.py</code> 启动后端服务 → 浏览器打开 index.html → 前端连接后端 → 点击「抓取灵感」，后端真实调用 Claude Vision，卡片渲染出有 AI 分析摘要的数据。</p>
-                  <div class="preview-code" style="margin-top:8px;"><span class="pc-comment"># server.py 核心逻辑（CF 自动生成）</span>
+                  <p><code>python server.py</code> 启动后端服务 → 浏览器打开 index.html → 点击「抓取灵感」，后端真实调用 Claude Vision，卡片渲染出有 AI 分析摘要的数据。</p>
+                  <div class="preview-code" style="margin-top:8px;"><span class="pc-comment"># server.py 核心调用（CF 自动生成）——OpenAI SDK + 图像理解</span>
+<span class="pc-tag">client</span> = <span class="pc-text">OpenAI(base_url=CLAUDE_API_BASE, api_key=WQ_API_KEY)</span>
 <span class="pc-tag">POST /api/fetch</span>  <span class="pc-text"># 触发采集 + 分析</span>
   <span class="pc-attr">→</span> <span class="pc-text">调 Dribbble API 拿图片 URL</span>
-  <span class="pc-attr">→</span> <span class="pc-text">调 Claude Vision 逐图分析</span>
+  <span class="pc-attr">→</span> <span class="pc-text">client.chat.completions.create(model, [{image_url}, {text:"分析..."}])</span>
   <span class="pc-attr">→</span> <span class="pc-text">返回 JSON 给前端渲染</span></div>
                 </div>
               </div>
