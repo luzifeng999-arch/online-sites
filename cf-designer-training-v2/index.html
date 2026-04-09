@@ -181,8 +181,8 @@
         </div>
         <div class="session-grid">
           <a class="session-card" href="#p1-install" onclick="setActive(document.querySelector('[href=\'#p1-install\']'))">
-            <div class="sc-top"><div class="sc-num sc-num-1">1</div><span class="sc-title">环境搭建 · 浏览器插件 · 写作流</span><span class="sc-time">60 min</span></div>
-            <div class="sc-sub">安装 CF · 联网搜索 · 浏览参考 · 写设计文章</div>
+            <div class="sc-top"><div class="sc-num sc-num-1">1</div><span class="sc-title">环境搭建 · 浏览器插件 · 主题图收集流</span><span class="sc-time">60 min</span></div>
+            <div class="sc-sub">安装 CF · 联网搜索 · 浏览参考 · 收集主题图并自动分类</div>
           </a>
           <a class="session-card" href="#p2-skill1" onclick="setActive(document.querySelector('[href=\'#p2-skill1\']'))">
             <div class="sc-top"><div class="sc-num sc-num-2">2</div><span class="sc-title">搭平台 · 接入能力 · 界面优化</span><span class="sc-time">60 min</span></div>
@@ -196,11 +196,11 @@
         </div>
         <div class="cards">
           <div class="card"><div class="card-top ct-purple"></div><div class="card-inner">
-            <div class="card-header"><div class="card-title-row"><div class="badge b-p">第一节</div><span class="card-title">从零上手 · 搜索资料 · 写设计文章</span></div></div>
+            <div class="card-header"><div class="card-title-row"><div class="badge b-p">第一节</div><span class="card-title">从零上手 · 搜图归类 · 主题图库搭建</span></div></div>
             <ul class="item-list">
               <li class="item-row"><div class="item-dot d-p"></div><div class="item-body"><strong>安装 CodeFlicker</strong><div class="item-sub">完成安装、登录、界面认知，了解 Chat / Composer 的区别</div></div></li>
               <li class="item-row"><div class="item-dot d-b"></div><div class="item-body"><strong>浏览器插件联网</strong><div class="item-sub">让 IDE 控制浏览器，自动搜索 Dribbble / Behance 收集设计灵感</div></div></li>
-              <li class="item-row"><div class="item-dot d-p"></div><div class="item-body"><strong>AI 写设计文章</strong><div class="item-sub">搜索资料 → 生成 2000 字设计文章 → 多轮对话精修，当场产出可发布稿</div></div></li>
+              <li class="item-row"><div class="item-dot d-p"></div><div class="item-body"><strong>AI 收集主题图并自动分类</strong><div class="item-sub">搜索资料 → 下载主题图 → 按风格归档到指定文件夹，直接给设计师参考</div></div></li>
             </ul>
           </div></div>
           <div class="card"><div class="card-top ct-teal"></div><div class="card-inner">
@@ -219,8 +219,8 @@
         <div class="section-header">
           <div class="section-eyebrow">第一节课 · 入门基础</div>
           <h2><em>从零到会用</em></h2>
-          <div class="section-desc">安装 CF · 浏览器插件 · 联网搜索 · 写文章</div>
-          <div class="goal-box">🎯 让设计师完成 CF 安装 + 浏览器插件配置，掌握「联网收集灵感 → 浏览参考 → 写设计文章」完整 AI 辅助工作流</div>
+          <div class="section-desc">安装 CF · 浏览器插件 · 联网搜索 · 收集主题图并自动分类</div>
+          <div class="goal-box">🎯 让设计师完成 CF 安装 + 浏览器插件配置，掌握「联网收集主题图 → 自动下载 → 按风格归类到文件夹」完整 AI 辅助工作流</div>
         </div>
         <div class="cards">
           <!-- P1 -->
@@ -248,14 +248,14 @@
 
           <!-- P3 -->
           <div class="card" id="p1-write"><div class="card-inner">
-            <div class="card-header"><div class="card-title-row"><div class="badge b-p">P3</div><span class="card-title">用 AI 搜集资料 + 写一篇设计文章</span></div><span class="card-time">25 – 50 min</span></div>
+            <div class="card-header"><div class="card-title-row"><div class="badge b-p">P3</div><span class="card-title">用 AI 收集主题图 + 按风格分文件夹整理</span></div><span class="card-time">25 – 50 min</span></div>
             <div class="timeline">
-              <div class="tl-item"><div class="tl-left"><div class="tl-num">1</div><div class="tl-line"></div></div><div class="tl-content"><strong>确定写作主题</strong><p>示例：「2025 年 UI 设计 10 大趋势」，AI 提出文章结构建议</p></div></div>
-              <div class="tl-item"><div class="tl-left"><div class="tl-num">2</div><div class="tl-line"></div></div><div class="tl-content"><strong>AI 自动搜索 + 整理素材</strong><p>「帮我搜索每个趋势的相关资料和案例，整理好来源和要点」</p></div></div>
-              <div class="tl-item"><div class="tl-left"><div class="tl-num">3</div><div class="tl-line"></div></div><div class="tl-content"><strong>生成文章初稿</strong><p>「帮我写一篇适合发布在设计社区的 2000 字文章，语气专业但易读，加入具体案例」</p></div></div>
-              <div class="tl-item"><div class="tl-left"><div class="tl-num">4</div></div><div class="tl-content"><strong>多轮对话精修</strong><p>「第 3 条案例换成 Apple Vision Pro 的 UI」「结尾加一个行动建议」—— 体验对话式迭代</p></div></div>
+              <div class="tl-item"><div class="tl-left"><div class="tl-num">1</div><div class="tl-line"></div></div><div class="tl-content"><strong>确定收集主题</strong><p>示例：「帮我收集春日促销主题图，适合电商活动页参考」，先定义用途、关键词和参考方向</p></div></div>
+              <div class="tl-item"><div class="tl-left"><div class="tl-num">2</div><div class="tl-line"></div></div><div class="tl-content"><strong>AI 自动联网搜索 + 下载素材</strong><p>「去站酷 / Behance / Dribbble 搜相关主题图，下载可参考的头图，优先收集高清、信息完整的案例」</p></div></div>
+              <div class="tl-item"><div class="tl-left"><div class="tl-num">3</div><div class="tl-line"></div></div><div class="tl-content"><strong>按风格自动分类到指定文件夹</strong><p>把搜到的主题图按「渐变科技 / 3D 插画 / 电商大促 / 极简高级」等风格分类，自动放进本地对应文件夹，设计师打开就能看</p></div></div>
+              <div class="tl-item"><div class="tl-left"><div class="tl-num">4</div></div><div class="tl-content"><strong>拆解这条工作流为什么值钱</strong><p>重点讲清楚：以前是人肉搜图、保存、重命名、拖文件夹；现在是一句话完成「搜索 → 筛选 → 下载 → 分类」，直接变成团队可复用流程</p></div></div>
             </div>
-            <div class="banner banner-p">🏆 课堂产出：每位学员完成一篇完整设计文章草稿，可直接发布到即刻 / 掘金等平台</div>
+            <div class="banner banner-p">🏆 课堂产出：得到一套按风格整理好的主题图库文件夹，设计师可直接打开参考，后续活动需求也能重复复用这条流程</div>
           </div></div>
 
           <!-- EXT -->
@@ -275,7 +275,7 @@
           <div class="homework"><div class="hw-icon">✏️</div><div class="hw-body">
             <strong>课后小练习（自愿，不打卡）</strong>
             用今天学的浏览器插件，找一个你觉得设计不错的活动落地页（比如品牌联名 / 节日专题），截图保存下来，记录你觉得好看的地方。<br><br>
-            <span class="hw-cta">💡 第二节我们会把「浏览参考 → 生成同风格活动页」这件事，变成一句话就能自动完成的 Skill。</span>
+            <span class="hw-cta">💡 第二节我们会把「搭一个设计工具平台 → 给它接入搜图能力 → 再自己优化界面」这件事完整跑一遍。</span>
           </div></div>
         </div>
       </div>
@@ -410,7 +410,7 @@
         </div>
         <div class="skill-track">
           <div class="skill-node"><div class="skill-icon">⚙️</div><div class="sk-name">Skill 00</div><div class="sk-desc">环境配置<br>安装 + 联网</div><span class="sk-badge sb-1">第一节</span></div>
-          <div class="skill-node"><div class="skill-icon">🌐</div><div class="sk-name">Skill 01</div><div class="sk-desc">对话 + 联网<br>搜索写作流</div><span class="sk-badge sb-1">第一节</span></div>
+          <div class="skill-node"><div class="skill-icon">🌐</div><div class="sk-name">Skill 01</div><div class="sk-desc">浏览器 MCP<br>搜图 + 下载 + 归类</div><span class="sk-badge sb-1">第一节</span></div>
           <div class="skill-node"><div class="skill-icon">🏗</div><div class="sk-name">Skill 02</div><div class="sk-desc">搭平台骨架<br>一句话建 Web 工具</div><span class="sk-badge sb-2">第二节</span></div>
           <div class="skill-node"><div class="skill-icon">🔌</div><div class="sk-name">Skill 03</div><div class="sk-desc">Skill 接入能力<br>联网 / API 插件化</div><span class="sk-badge sb-2">第二节</span></div>
           <div class="skill-node"><div class="skill-icon">🤖</div><div class="sk-name">Skill 04</div><div class="sk-desc">Agent 跑通<br>自动测试修复</div><span class="sk-badge sb-2">第二节</span></div>
