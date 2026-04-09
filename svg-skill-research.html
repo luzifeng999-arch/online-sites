@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SVG插画生成 Skill — 市场调研报告</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── Reset & Base ─── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d0f14;
+      --bg-card: #13161d;
+      --bg-card2: #1a1e28;
+      --border: rgba(255,255,255,0.07);
+      --border-accent: rgba(99,102,241,0.4);
+      --fg: #e8eaf0;
+      --fg-muted: #7c8494;
+      --fg-dim: #4a5060;
+      --accent: #6366f1;
+      --accent2: #8b5cf6;
+      --accent3: #06b6d4;
+      --green: #10b981;
+      --orange: #f59e0b;
+      --red: #ef4444;
+      --gradient-hero: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #06b6d4 100%);
+      --gradient-card: linear-gradient(135deg, rgba(99,102,241,0.08) 0%, rgba(139,92,246,0.04) 100%);
+      --shadow-card: 0 4px 24px rgba(0,0,0,0.4);
+      --radius: 12px;
+      --radius-sm: 8px;
+      --radius-lg: 16px;
+      --font: 'Inter', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--fg);
+      line-height: 1.7;
+      font-size: 15px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── Scrollbar ─── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: rgba(99,102,241,0.4); border-radius: 3px; }
+
+    /* ─── Layout ─── */
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+    /* ─── Nav ─── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(13,15,20,0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+    }
+    .nav-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; align-items: center; gap: 8px;
+      height: 56px; overflow-x: auto;
+    }
+    .nav-inner::-webkit-scrollbar { display: none; }
+    .nav-logo {
+      font-size: 13px; font-weight: 700; letter-spacing: 0.05em;
+      background: var(--gradient-hero); -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent; white-space: nowrap;
+      margin-right: 12px;
+    }
+    .nav-link {
+      font-size: 12px; color: var(--fg-muted); text-decoration: none;
+      padding: 4px 10px; border-radius: 6px; white-space: nowrap;
+      transition: all 0.15s;
+    }
+    .nav-link:hover { color: var(--fg); background: rgba(255,255,255,0.05); }
+    .nav-sep { width: 1px; height: 16px; background: var(--border); flex-shrink: 0; }
+
+    /* ─── Hero ─── */
+    .hero {
+      padding: 80px 24px 60px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 800px 400px at 50% 0%, rgba(99,102,241,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(99,102,241,0.12); border: 1px solid rgba(99,102,241,0.3);
+      color: #a5b4fc; font-size: 12px; font-weight: 500;
+      padding: 4px 12px; border-radius: 100px; margin-bottom: 24px;
+    }
+    .hero-badge::before { content: '●'; font-size: 8px; color: var(--accent); }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 800;
+      line-height: 1.15; letter-spacing: -0.03em;
+      margin-bottom: 16px;
+    }
+    .hero h1 span {
+      background: var(--gradient-hero);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hero-desc {
+      color: var(--fg-muted); font-size: 16px; max-width: 560px;
+      margin: 0 auto 32px;
+    }
+    .hero-meta {
+      display: flex; align-items: center; justify-content: center;
+      gap: 24px; flex-wrap: wrap;
+    }
+    .hero-meta-item {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 12px; color: var(--fg-dim);
+    }
+    .hero-meta-item strong { color: var(--fg-muted); }
+
+    /* ─── Section ─── */
+    section { padding: 64px 0; }
+    .section-label {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--accent);
+      margin-bottom: 8px;
+    }
+    .section-title {
+      font-size: clamp(1.4rem, 3vw, 2rem); font-weight: 700;
+      letter-spacing: -0.02em; margin-bottom: 12px;
+    }
+    .section-desc { color: var(--fg-muted); font-size: 15px; max-width: 640px; margin-bottom: 40px; }
+    .divider {
+      height: 1px; background: var(--border); margin: 0;
+    }
+
+    /* ─── Cards ─── */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow-card);
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .card:hover { border-color: var(--border-accent); transform: translateY(-2px); }
+    .card-grid { display: grid; gap: 16px; }
+    .card-grid-2 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+    .card-grid-3 { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+    .card-grid-4 { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+    .card-accent { background: var(--gradient-card); border-color: var(--border-accent); }
+
+    /* ─── Stat Cards ─── */
+    .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 40px; }
+    .stat-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px;
+      text-align: center;
+    }
+    .stat-value { font-size: 2rem; font-weight: 800; letter-spacing: -0.03em; }
+    .stat-label { font-size: 12px; color: var(--fg-muted); margin-top: 4px; }
+    .stat-card.accent-green .stat-value { color: var(--green); }
+    .stat-card.accent-blue .stat-value { color: var(--accent3); }
+    .stat-card.accent-purple .stat-value { color: var(--accent2); }
+    .stat-card.accent-orange .stat-value { color: var(--orange); }
+
+    /* ─── Table ─── */
+    .table-wrap { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--border); }
+    table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+    thead th {
+      background: var(--bg-card2); padding: 12px 16px;
+      text-align: left; font-weight: 600; font-size: 12px;
+      color: var(--fg-muted); letter-spacing: 0.04em; text-transform: uppercase;
+      border-bottom: 1px solid var(--border);
+    }
+    tbody td {
+      padding: 11px 16px; border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover td { background: rgba(255,255,255,0.02); }
+
+    /* ─── Badges ─── */
+    .badge {
+      display: inline-block; padding: 2px 8px; border-radius: 100px;
+      font-size: 11px; font-weight: 600; letter-spacing: 0.03em;
+    }
+    .badge-green { background: rgba(16,185,129,0.12); color: var(--green); }
+    .badge-red { background: rgba(239,68,68,0.12); color: var(--red); }
+    .badge-orange { background: rgba(245,158,11,0.12); color: var(--orange); }
+    .badge-blue { background: rgba(6,182,212,0.12); color: var(--accent3); }
+    .badge-purple { background: rgba(139,92,246,0.12); color: var(--accent2); }
+    .badge-indigo { background: rgba(99,102,241,0.12); color: #a5b4fc; }
+
+    /* ─── Score bar ─── */
+    .score-bar { display: flex; align-items: center; gap: 10px; }
+    .score-track {
+      flex: 1; height: 6px; background: var(--bg-card2);
+      border-radius: 3px; overflow: hidden;
+    }
+    .score-fill {
+      height: 100%; border-radius: 3px;
+      background: var(--gradient-hero);
+      transition: width 0.6s ease;
+    }
+    .score-val { font-size: 12px; font-weight: 600; color: var(--fg-muted); width: 32px; }
+
+    /* ─── Tags ─── */
+    .tag {
+      display: inline-block; padding: 3px 10px; border-radius: 6px;
+      font-size: 11px; background: var(--bg-card2); color: var(--fg-muted);
+      border: 1px solid var(--border);
+    }
+    .tag-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+
+    /* ─── Product Cards ─── */
+    .product-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 16px; }
+    .product-icon {
+      width: 40px; height: 40px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; flex-shrink: 0;
+    }
+    .product-name { font-size: 16px; font-weight: 700; margin-bottom: 2px; }
+    .product-tagline { font-size: 12px; color: var(--fg-muted); }
+    .product-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+    .kv-list { display: grid; grid-template-columns: auto 1fr; gap: 6px 16px; font-size: 13px; }
+    .kv-key { color: var(--fg-dim); font-size: 12px; font-weight: 500; white-space: nowrap; }
+    .kv-val { color: var(--fg); }
+
+    /* ─── Rank Table ─── */
+    .rank-num {
+      width: 28px; height: 28px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700;
+    }
+    .rank-1 { background: linear-gradient(135deg, #f59e0b, #f97316); color: #000; }
+    .rank-2 { background: linear-gradient(135deg, #9ca3af, #d1d5db); color: #000; }
+    .rank-3 { background: linear-gradient(135deg, #b45309, #d97706); color: #fff; }
+    .rank-n { background: var(--bg-card2); color: var(--fg-muted); }
+
+    /* ─── Timeline / Phase ─── */
+    .phase-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+    .phase-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 24px; position: relative;
+      overflow: hidden;
+    }
+    .phase-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    }
+    .phase-card.p1::before { background: var(--accent); }
+    .phase-card.p2::before { background: var(--accent2); }
+    .phase-card.p3::before { background: var(--accent3); }
+    .phase-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; margin-bottom: 6px;
+    }
+    .phase-title { font-size: 17px; font-weight: 700; margin-bottom: 10px; }
+    .phase-desc { font-size: 13px; color: var(--fg-muted); line-height: 1.65; }
+
+    /* ─── Code block ─── */
+    .code-block {
+      background: #0a0c12; border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 20px;
+      font-family: var(--font-mono); font-size: 13px; line-height: 1.8;
+      overflow-x: auto; color: #a8b3cf;
+    }
+    .code-block .c-arrow { color: #6366f1; }
+    .code-block .c-box { color: #06b6d4; }
+    .code-block .c-label { color: #10b981; }
+    .code-block .c-note { color: #7c8494; }
+
+    /* ─── Callout ─── */
+    .callout {
+      border-left: 3px solid var(--accent);
+      background: rgba(99,102,241,0.06);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: 16px 20px; margin: 24px 0;
+    }
+    .callout p { font-size: 14px; color: var(--fg); line-height: 1.7; margin: 0; }
+    .callout.warn { border-color: var(--orange); background: rgba(245,158,11,0.06); }
+    .callout.success { border-color: var(--green); background: rgba(16,185,129,0.06); }
+
+    /* ─── Grid matrix ─── */
+    .matrix {
+      display: grid; grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto auto;
+      gap: 2px; border-radius: var(--radius);
+      overflow: hidden; border: 1px solid var(--border);
+    }
+    .matrix-cell {
+      background: var(--bg-card); padding: 20px;
+      border: 1px solid var(--border);
+    }
+    .matrix-cell.highlight { background: rgba(99,102,241,0.08); border-color: var(--border-accent); }
+    .matrix-cell-label { font-size: 11px; color: var(--fg-dim); margin-bottom: 8px; }
+    .matrix-cell-title { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+    .matrix-cell-desc { font-size: 12px; color: var(--fg-muted); line-height: 1.6; }
+
+    /* ─── Challenge grid ─── */
+    .challenge-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 14px 0; border-bottom: 1px solid var(--border);
+    }
+    .challenge-item:last-child { border-bottom: none; }
+    .challenge-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      margin-top: 7px; flex-shrink: 0;
+    }
+    .dot-red { background: var(--red); box-shadow: 0 0 8px var(--red); }
+    .dot-orange { background: var(--orange); box-shadow: 0 0 8px var(--orange); }
+    .challenge-name { font-size: 14px; font-weight: 600; margin-bottom: 3px; }
+    .challenge-desc { font-size: 13px; color: var(--fg-muted); }
+
+    /* ─── Footer ─── */
+    footer {
+      padding: 40px 24px;
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+    footer p { font-size: 12px; color: var(--fg-dim); }
+    footer strong { color: var(--fg-muted); }
+
+    /* ─── Misc ─── */
+    h2 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 8px; }
+    h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 6px; }
+    ul { padding-left: 18px; }
+    ul li { color: var(--fg-muted); font-size: 13.5px; margin-bottom: 5px; }
+    strong { color: var(--fg); font-weight: 600; }
+    .highlight { color: #a5b4fc; font-weight: 600; }
+    .text-green { color: var(--green); }
+    .text-orange { color: var(--orange); }
+    .text-red { color: var(--red); }
+    .text-cyan { color: var(--accent3); }
+    .text-muted { color: var(--fg-muted); }
+    .mt-4 { margin-top: 16px; }
+    .mt-6 { margin-top: 24px; }
+    .mt-8 { margin-top: 32px; }
+    .mb-4 { margin-bottom: 16px; }
+    .mb-6 { margin-bottom: 24px; }
+    .flex { display: flex; }
+    .items-center { align-items: center; }
+    .gap-2 { gap: 8px; }
+    .gap-3 { gap: 12px; }
+    .flex-wrap { flex-wrap: wrap; }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════ NAV ══════════════════════════════ -->
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo">SVG SKILL RESEARCH</div>
+    <div class="nav-sep"></div>
+    <a class="nav-link" href="#market">市场概览</a>
+    <a class="nav-link" href="#competitors">竞品分析</a>
+    <a class="nav-link" href="#llm">LLM能力</a>
+    <a class="nav-link" href="#tech">技术路线</a>
+    <a class="nav-link" href="#gaps">空白分析</a>
+    <a class="nav-link" href="#challenges">主要挑战</a>
+    <a class="nav-link" href="#opportunity">机会定位</a>
+    <a class="nav-link" href="#landscape">竞争格局</a>
+    <a class="nav-link" href="#conclusion">结论建议</a>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════ HERO ══════════════════════════════ -->
+<div class="hero">
+  <div class="container">
+    <div class="hero-badge">调研报告 · 2025 Q2</div>
+    <h1>SVG插画生成 Skill<br /><span>市场深度调研报告</span></h1>
+    <p class="hero-desc">针对AI编程IDE场景，系统梳理SVG生成市场现状、竞品格局、技术路线及产品机会</p>
+    <div class="hero-meta">
+      <span class="hero-meta-item"><strong>调研时间</strong> 2025年4月</span>
+      <span class="hero-meta-item"><strong>作者</strong> luzifeng</span>
+      <span class="hero-meta-item"><strong>涵盖工具</strong> 15+</span>
+      <span class="hero-meta-item"><strong>模型评测</strong> 34个LLM</span>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════ SECTION 1: 市场概览 ══════════════════════════════ -->
+<section id="market">
+  <div class="container">
+    <div class="section-label">Section 01</div>
+    <h2 class="section-title">市场概览</h2>
+    <p class="section-desc">SVG生成领域在2024–2025年经历了爆炸式增长，市场呈三足鼎立格局，LLM能力从"玩具功能"演变为生产级工具。</p>
+
+    <div class="stat-grid">
+      <div class="stat-card accent-green">
+        <div class="stat-value">$20亿+</div>
+        <div class="stat-label">2025年市场规模预测</div>
+      </div>
+      <div class="stat-card accent-blue">
+        <div class="stat-value">35%+</div>
+        <div class="stat-label">年均增长率（CAGR）</div>
+      </div>
+      <div class="stat-card accent-purple">
+        <div class="stat-value">34</div>
+        <div class="stat-label">主流LLM已测试（SVG生成）</div>
+      </div>
+      <div class="stat-card accent-orange">
+        <div class="stat-value">15+</div>
+        <div class="stat-label">专业AI矢量工具</div>
+      </div>
+    </div>
+
+    <h3 class="mt-6 mb-4">三足鼎立的市场格局</h3>
+    <div class="card-grid card-grid-3">
+      <div class="card card-accent">
+        <div style="font-size:28px;margin-bottom:12px;">🎨</div>
+        <div style="font-weight:700;margin-bottom:6px;">专业图像AI平台</div>
+        <div style="font-size:13px;color:var(--fg-muted);">Recraft、VectoSolve、VectorWitch、SVGMaker 等，专注高质量矢量生成</div>
+        <div class="tag-row">
+          <span class="tag">文本生成</span><span class="tag">图片转换</span><span class="tag">API</span>
+        </div>
+      </div>
+      <div class="card">
+        <div style="font-size:28px;margin-bottom:12px;">🖥️</div>
+        <div style="font-weight:700;margin-bottom:6px;">传统设计软件AI化</div>
+        <div style="font-size:13px;color:var(--fg-muted);">Adobe Illustrator + Firefly、Figma 插件生态，面向专业设计师</div>
+        <div class="tag-row">
+          <span class="tag">专业工作流</span><span class="tag">完整编辑</span><span class="tag">团队协作</span>
+        </div>
+      </div>
+      <div class="card">
+        <div style="font-size:28px;margin-bottom:12px;">🤖</div>
+        <div style="font-weight:700;margin-bottom:6px;">LLM直接代码生成</div>
+        <div style="font-size:13px;color:var(--fg-muted);">Claude、Gemini、GPT-4o 等，SVG作为代码直接生成，可迭代</div>
+        <div class="tag-row">
+          <span class="tag">可编辑</span><span class="tag">上下文感知</span><span class="tag">开发者友好</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout success mt-6">
+      <p><strong>核心驱动力：</strong>UI/UX设计师对图标插画的批量需求、前端开发者将SVG作为代码资产使用、电商卖家需要大量矢量素材，三类需求共同推动市场高速增长。</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════ SECTION 2: 竞品分析 ══════════════════════════════ -->
+<section id="competitors">
+  <div class="container">
+    <div class="section-label">Section 02</div>
+    <h2 class="section-title">竞品详细分析</h2>
+    <p class="section-desc">按三条赛道分别拆解：专业AI矢量平台、传统设计软件AI化、LLM直接代码生成。</p>
+
+    <!-- 2.1 专业AI平台 -->
+    <h3 style="color:var(--fg-muted);font-size:13px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:20px;">2.1 专业AI矢量生成平台</h3>
+
+    <div class="card-grid card-grid-2">
+      <!-- Recraft -->
+      <div class="card">
+        <div class="product-header">
+          <div class="product-icon" style="background:linear-gradient(135deg,#6366f1,#8b5cf6);">🎨</div>
+          <div>
+            <div class="product-name">Recraft</div>
+            <div class="product-tagline">最佳文本转矢量平台 · 🥇 推荐</div>
+          </div>
+        </div>
+        <div class="product-meta">
+          <span class="badge badge-purple">Text→SVG</span>
+          <span class="badge badge-indigo">Recraft V4</span>
+          <span class="badge badge-orange">无 API</span>
+        </div>
+        <div class="kv-list">
+          <span class="kv-key">输出质量</span>
+          <div class="score-bar"><div class="score-track"><div class="score-fill" style="width:85%"></div></div><span class="score-val">8.5</span></div>
+          <span class="kv-key">定价</span>
+          <span class="kv-val">免费50次/月（带水印）；Pro <strong>$20/月</strong>无限</span>
+          <span class="kv-key">核心能力</span>
+          <span class="kv-val">Text→SVG、图片矢量化、自定义品牌风格</span>
+          <span class="kv-key">优势</span>
+          <span class="kv-val text-green">风格一致性强，设计专业度高</span>
+          <span class="kv-key">劣势</span>
+          <span class="kv-val text-red">无API，无法集成进开发工作流</span>
+        </div>
+      </div>
+
+      <!-- VectoSolve -->
+      <div class="card">
+        <div class="product-header">
+          <div class="product-icon" style="background:linear-gradient(135deg,#06b6d4,#0891b2);">⚡</div>
+          <div>
+            <div class="product-name">VectoSolve</div>
+            <div class="product-tagline">最佳图片转SVG · 速度最快</div>
+          </div>
+        </div>
+        <div class="product-meta">
+          <span class="badge badge-blue">图片→SVG</span>
+          <span class="badge badge-green">有 API</span>
+          <span class="badge badge-indigo">按量计费</span>
+        </div>
+        <div class="kv-list">
+          <span class="kv-key">输出质量</span>
+          <div class="score-bar"><div class="score-track"><div class="score-fill" style="width:92%"></div></div><span class="score-val">9.2</span></div>
+          <span class="kv-key">生成速度</span>
+          <span class="kv-val"><strong class="text-green">2.8s</strong> 市场最快</span>
+          <span class="kv-key">定价</span>
+          <span class="kv-val"><strong>$0.05/次</strong>起，无月费门槛</span>
+          <span class="kv-key">格式支持</span>
+          <span class="kv-val">SVG · EPS · PDF · DXF</span>
+          <span class="kv-key">劣势</span>
+          <span class="kv-val text-red">仅支持图片输入，不支持文本生成</span>
+        </div>
+      </div>
+
+      <!-- SVGMaker -->
+      <div class="card">
+        <div class="product-header">
+          <div class="product-icon" style="background:linear-gradient(135deg,#10b981,#059669);">🔌</div>
+          <div>
+            <div class="product-name">SVGMaker</div>
+            <div class="product-tagline">最佳开发者API · MCP已支持</div>
+          </div>
+        </div>
+        <div class="product-meta">
+          <span class="badge badge-green">有 API</span>
+          <span class="badge badge-indigo">MCP Server</span>
+          <span class="badge badge-blue">SDK完善</span>
+        </div>
+        <div class="kv-list">
+          <span class="kv-key">输出质量</span>
+          <div class="score-bar"><div class="score-track"><div class="score-fill" style="width:78%"></div></div><span class="score-val">7.8</span></div>
+          <span class="kv-key">API响应</span>
+          <span class="kv-val">4.2s 平均</span>
+          <span class="kv-key">定价</span>
+          <span class="kv-val">Dev <strong>$29/月</strong>（5000次）；Biz <strong>$99/月</strong></span>
+          <span class="kv-key">SLA</span>
+          <span class="kv-val text-green">99.9% 正常运行时间</span>
+          <span class="kv-key">劣势</span>
+          <span class="kv-val text-red">质量低于专业设计工具，无免费层</span>
+        </div>
+      </div>
+
+      <!-- Vectorizer.AI -->
+      <div class="card">
+        <div class="product-header">
+          <div class="product-icon" style="background:linear-gradient(135deg,#f59e0b,#d97706);">🖼️</div>
+          <div>
+            <div class="product-name">Vectorizer.AI</div>
+            <div class="product-tagline">最佳照片向量化 · 渐变处理强</div>
+          </div>
+        </div>
+        <div class="product-meta">
+          <span class="badge badge-orange">照片→SVG</span>
+          <span class="badge badge-indigo">深度学习</span>
+        </div>
+        <div class="kv-list">
+          <span class="kv-key">输出质量</span>
+          <div class="score-bar"><div class="score-track"><div class="score-fill" style="width:88%"></div></div><span class="score-val">8.8</span></div>
+          <span class="kv-key">特点</span>
+          <span class="kv-val">擅长复杂照片和渐变色矢量化</span>
+          <span class="kv-key">定价</span>
+          <span class="kv-val">免费10次/月；Plus <strong>$9.99/月</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 其他平台速览 -->
+    <h3 class="mt-8" style="margin-bottom:16px;">其他平台速览</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>工具</th>
+            <th>评分</th>
+            <th>起步价</th>
+            <th>速度</th>
+            <th>最佳用途</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>VectorWitch</strong></td>
+            <td><div class="score-bar"><div class="score-track" style="width:120px"><div class="score-fill" style="width:84%"></div></div><span class="score-val">8.4</span></div></td>
+            <td>$20/月</td>
+            <td><span class="text-orange">15–20分钟</span></td>
+            <td>专业插画师，路径最干净</td>
+          </tr>
+          <tr>
+            <td><strong>Kittl</strong></td>
+            <td><div class="score-bar"><div class="score-track" style="width:120px"><div class="score-fill" style="width:76%"></div></div><span class="score-val">7.6</span></div></td>
+            <td>$15/月</td>
+            <td>10s</td>
+            <td>一体化设计平台</td>
+          </tr>
+          <tr>
+            <td><strong>Canva</strong></td>
+            <td><div class="score-bar"><div class="score-track" style="width:120px"><div class="score-fill" style="width:73%"></div></div><span class="score-val">7.3</span></div></td>
+            <td>$12.99/月</td>
+            <td>5–15s</td>
+            <td>初学者、社交媒体</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 2.2 传统工具AI化 -->
+    <h3 class="mt-8" style="color:var(--fg-muted);font-size:13px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:20px;">2.2 传统设计软件 AI 化</h3>
+    <div class="card-grid card-grid-2">
+      <div class="card">
+        <div class="product-header">
+          <div class="product-icon" style="background:linear-gradient(135deg,#ff4400,#ff6600);">Ai</div>
+          <div>
+            <div class="product-name">Adobe Illustrator</div>
+            <div class="product-tagline">Text to Vector Graphic — Firefly驱动</div>
+          </div>
+        </div>
+        <ul class="mt-4">
+          <li>Adobe Firefly 模型，2024年正式集成到 Illustrator</li>
+          <li>生成的SVG可在Illustrator中<strong>完全编辑</strong></li>
+          <li>需订阅 Creative Cloud <strong class="text-orange">$54.99/月+</strong></li>
+          <li class="text-green">优势：与专业设计工作流深度整合</li>
+          <li class="text-red">劣势：贵，非程序员不友好，门槛高</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="product-header">
+          <div class="product-icon" style="background:linear-gradient(135deg,#0d99ff,#1a7feb);">F</div>
+          <div>
+            <div class="product-name">Figma</div>
+            <div class="product-tagline">插件生态 + 团队协作</div>
+          </div>
+        </div>
+        <ul class="mt-4">
+          <li>通过<strong>插件市场</strong>支持AI矢量生成</li>
+          <li>团队协作是核心差异化优势</li>
+          <li>SVG精度依赖第三方插件质量，参差不齐</li>
+          <li class="text-green">优势：生态丰富，设计→开发无缝衔接</li>
+          <li class="text-red">劣势：SVG原生输出能力依赖插件</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════ SECTION 3: LLM能力评测 ══════════════════════════════ -->
+<section id="llm">
+  <div class="container">
+    <div class="section-label">Section 02 · 续</div>
+    <h2 class="section-title">LLM 直接代码生成能力评测</h2>
+    <p class="section-desc">LLM生成SVG本质是<strong>代码生成任务</strong>，SVG是代码。这是与IDE场景的SVG Skill最直接竞争的方向。</p>
+
+    <div class="callout">
+      <p><strong>核心洞察：</strong>SVG 支持注释，LLMs 几乎都会在生成的代码中加入注释，这让我们能看出它们的"想法"和意图——即使视觉结果很糟糕，注释也暴露了模型的空间推理逻辑。</p>
+    </div>
+
+    <!-- VectorGym Benchmark -->
+    <h3 class="mt-8 mb-4">🏆 VectorGym Benchmark 2025 — Text2SVG排名</h3>
+    <p style="font-size:13px;color:var(--fg-muted);margin-bottom:16px;">来源：arXiv 2025年最新学术评测，4个任务综合评分，数据来自人工标注金标准</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:44px;">#</th>
+            <th>模型</th>
+            <th>类型</th>
+            <th>Text2SVG（VLM Judge）</th>
+            <th>总分（VectorGym）</th>
+            <th>亮点</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><div class="rank-num rank-1">1</div></td>
+            <td><strong>Gemini 3 Pro</strong></td>
+            <td><span class="badge badge-blue">闭源</span></td>
+            <td><div class="score-bar"><div class="score-track" style="width:130px"><div class="score-fill" style="width:100%"></div></div><span class="score-val">最强</span></div></td>
+            <td><span class="highlight">73.17</span></td>
+            <td>多任务全面领先</td>
+          </tr>
+          <tr>
+            <td><div class="rank-num rank-2">2</div></td>
+            <td><strong>GPT-5.1</strong></td>
+            <td><span class="badge badge-blue">闭源</span></td>
+            <td><div class="score-bar"><div class="score-track" style="width:130px"><div class="score-fill" style="width:93%"></div></div><span class="score-val">93.0</span></div></td>
+            <td>71.36</td>
+            <td>Text2SVG单项最强</td>
+          </tr>
+          <tr>
+            <td><div class="rank-num rank-3">3</div></td>
+            <td><strong>Claude Sonnet 4.5</strong></td>
+            <td><span class="badge badge-blue">闭源</span></td>
+            <td><div class="score-bar"><div class="score-track" style="width:130px"><div class="score-fill" style="width:69%"></div></div><span class="score-val">69.2</span></div></td>
+            <td>70.31</td>
+            <td>SVG编辑任务DINO最高</td>
+          </tr>
+          <tr>
+            <td><div class="rank-num rank-n">4</div></td>
+            <td>GPT-4o</td>
+            <td><span class="badge badge-blue">闭源</span></td>
+            <td><div class="score-bar"><div class="score-track" style="width:130px"><div class="score-fill" style="width:66%"></div></div><span class="score-val">—</span></div></td>
+            <td>64.93</td>
+            <td>—</td>
+          </tr>
+          <tr style="background:rgba(16,185,129,0.04);">
+            <td><div class="rank-num rank-n">★</div></td>
+            <td><strong>Qwen3VL 8B Gym</strong> <span class="badge badge-green" style="margin-left:4px">RL微调</span></td>
+            <td><span class="badge badge-green">开源</span></td>
+            <td><div class="score-bar"><div class="score-track" style="width:130px"><div class="score-fill" style="width:63%"></div></div><span class="score-val">—</span></div></td>
+            <td><span class="text-green">66.05</span></td>
+            <td><strong class="text-green">超越GPT-4o！</strong>开源最强</td>
+          </tr>
+          <tr>
+            <td><div class="rank-num rank-n">5</div></td>
+            <td>Qwen3VL 235B</td>
+            <td><span class="badge badge-green">开源</span></td>
+            <td><div class="score-bar"><div class="score-track" style="width:130px"><div class="score-fill" style="width:60%"></div></div><span class="score-val">—</span></div></td>
+            <td>62.32</td>
+            <td>—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 鹈鹕测试 -->
+    <h3 class="mt-8 mb-4">🐦 Simon Willison「骑自行车的鹈鹕」非正式评测（2025年6月）</h3>
+    <p style="font-size:13px;color:var(--fg-muted);margin-bottom:16px;">用同一个 prompt 让 34 个 LLM 生成 SVG，再用 GPT-4.1-mini 进行 ELO 排名评选最佳。</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:44px;">#</th>
+            <th>模型</th>
+            <th>ELO胜率</th>
+            <th>评价</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><div class="rank-num rank-1">1</div></td>
+            <td><strong>Gemini 2.5 Pro (05-06)</strong></td>
+            <td><span class="text-green">100%</span></td>
+            <td>可识别的鹈鹕喙，有可见脚踏板，最像真正的骑车鹈鹕</td>
+          </tr>
+          <tr>
+            <td><div class="rank-num rank-2">2</div></td>
+            <td><strong>Gemini 2.5 Pro (03-25)</strong></td>
+            <td>97%</td>
+            <td>同等质量，略次于最新版</td>
+          </tr>
+          <tr>
+            <td><div class="rank-num rank-3">3</div></td>
+            <td><strong>o3</strong></td>
+            <td>90.9%</td>
+            <td>有艺术感，略显赛博朋克风格</td>
+          </tr>
+          <tr>
+            <td><div class="rank-num rank-n">4</div></td>
+            <td><strong>Claude Sonnet 4</strong></td>
+            <td>90.9%</td>
+            <td>稳定可识别，面朝左（多数模型面朝右）</td>
+          </tr>
+          <tr>
+            <td><div class="rank-num rank-n">5</div></td>
+            <td>GPT-4.1</td>
+            <td>~80%</td>
+            <td>质量不错，价格极低，性价比最高</td>
+          </tr>
+          <tr>
+            <td><div class="rank-num rank-n">末</div></td>
+            <td>Llama 3.3 70B</td>
+            <td><span class="text-red">0%</span></td>
+            <td>只有三个形状，基本无法识别</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card-grid card-grid-3 mt-6">
+      <div class="card card-accent">
+        <div style="font-size:22px;margin-bottom:8px;">💡</div>
+        <div style="font-weight:600;margin-bottom:6px;">SVG是代码</div>
+        <div style="font-size:13px;color:var(--fg-muted);">Claude以coding能力著称，Reddit用户评测认为其远超ChatGPT和Grok，支持多轮迭代修改</div>
+      </div>
+      <div class="card card-accent">
+        <div style="font-size:22px;margin-bottom:8px;">🔬</div>
+        <div style="font-weight:600;margin-bottom:6px;">RL微调突破</div>
+        <div style="font-size:13px;color:var(--fg-muted);">Qwen3VL 8B经RL微调后超越参数量大30倍的235B模型，证明领域微调潜力巨大</div>
+      </div>
+      <div class="card card-accent">
+        <div style="font-size:22px;margin-bottom:8px;">⚠️</div>
+        <div style="font-weight:600;margin-bottom:6px;">差距依然巨大</div>
+        <div style="font-size:13px;color:var(--fg-muted);">即使是顶级模型也有明显局限，弱模型几乎不可用，选对底座模型是关键</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════ SECTION 4: 技术路线 ══════════════════════════════ -->
+<section id="tech">
+  <div class="container">
+    <div class="section-label">Section 03</div>
+    <h2 class="section-title">技术路线图谱</h2>
+    <p class="section-desc">SVG生成领域存在四条主要技术路线，各有优劣，最优解往往是混合使用。</p>
+
+    <div class="card-grid card-grid-2">
+      <div class="card">
+        <div class="flex items-center gap-3 mb-4">
+          <div style="width:36px;height:36px;background:rgba(99,102,241,0.15);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;">⌨️</div>
+          <div>
+            <div style="font-weight:700;">LLM 代码生成</div>
+            <span class="badge badge-indigo">Text → SVG Code</span>
+          </div>
+        </div>
+        <div style="font-size:13px;color:var(--fg-muted);margin-bottom:12px;">代表：Claude · GPT-4o · Gemini</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px;">
+          <div>
+            <div style="color:var(--green);font-weight:600;margin-bottom:4px;">✓ 优点</div>
+            <div style="color:var(--fg-muted);">可迭代、可编辑<br />支持复杂逻辑<br />上下文感知</div>
+          </div>
+          <div>
+            <div style="color:var(--red);font-weight:600;margin-bottom:4px;">✗ 缺点</div>
+            <div style="color:var(--fg-muted);">空间推理弱<br />复杂形状不准<br />路径冗余</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="flex items-center gap-3 mb-4">
+          <div style="width:36px;height:36px;background:rgba(6,182,212,0.15);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;">🖼️</div>
+          <div>
+            <div style="font-weight:700;">扩散模型 + 矢量化</div>
+            <span class="badge badge-blue">Image → Vector</span>
+          </div>
+        </div>
+        <div style="font-size:13px;color:var(--fg-muted);margin-bottom:12px;">代表：SD + VTracer · Vectorizer.AI</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px;">
+          <div>
+            <div style="color:var(--green);font-weight:600;margin-bottom:4px;">✓ 优点</div>
+            <div style="color:var(--fg-muted);">视觉质量高<br />复杂图像友好<br />成熟方案</div>
+          </div>
+          <div>
+            <div style="color:var(--red);font-weight:600;margin-bottom:4px;">✗ 缺点</div>
+            <div style="color:var(--fg-muted);">两步骤流程<br />矢量化损失质量<br />不可编辑</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="flex items-center gap-3 mb-4">
+          <div style="width:36px;height:36px;background:rgba(139,92,246,0.15);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;">🧬</div>
+          <div>
+            <div style="font-weight:700;">SVG 原生专用模型</div>
+            <span class="badge badge-purple">SVG Native</span>
+          </div>
+        </div>
+        <div style="font-size:13px;color:var(--fg-muted);margin-bottom:12px;">DeepSVG · StarVector · OmniSVG · VectorFusion</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px;">
+          <div>
+            <div style="color:var(--green);font-weight:600;margin-bottom:4px;">✓ 优点</div>
+            <div style="color:var(--fg-muted);">专为SVG设计<br />结构理解好<br />路径更规范</div>
+          </div>
+          <div>
+            <div style="color:var(--red);font-weight:600;margin-bottom:4px;">✗ 缺点</div>
+            <div style="color:var(--fg-muted);">训练成本高<br />泛化性差<br />还未成熟</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card card-accent">
+        <div class="flex items-center gap-3 mb-4">
+          <div style="width:36px;height:36px;background:rgba(16,185,129,0.15);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;">🎯</div>
+          <div>
+            <div style="font-weight:700;">RL 强化学习微调</div>
+            <span class="badge badge-green">渲染反馈 RLRF</span>
+          </div>
+        </div>
+        <div style="font-size:13px;color:var(--fg-muted);margin-bottom:12px;">Qwen3VL 8B Gym · RLRF · GRPO</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px;">
+          <div>
+            <div style="color:var(--green);font-weight:600;margin-bottom:4px;">✓ 优点</div>
+            <div style="color:var(--fg-muted);">小模型超大模型<br />性价比极高<br />可持续优化</div>
+          </div>
+          <div>
+            <div style="color:var(--red);font-weight:600;margin-bottom:4px;">✗ 缺点</div>
+            <div style="color:var(--fg-muted);">需要渲染环境<br />训练较复杂<br />数据要求高</div>
+          </div>
+        </div>
+        <div class="callout" style="margin:14px 0 0;padding:10px 14px;">
+          <p style="font-size:12px;"><strong>突破意义：</strong>8B参数经RL微调后超越235B基础模型并匹配GPT-4o，渲染图像作为奖励信号是关键创新。</p>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="mt-8 mb-4">MCP / 工具集成现状</h3>
+    <div class="card">
+      <div style="display:grid;grid-template-columns:auto 1fr;gap:12px 20px;align-items:start;">
+        <span class="badge badge-green">已上线</span>
+        <div><strong>svgmaker-mcp</strong> — SVGMaker 已提供 MCP 服务器，收录于 awesome-mcp-servers 列表，支持 Agent 工作流集成</div>
+        <span class="badge badge-red">空白</span>
+        <div><strong>专为 IDE 编程助手设计的 SVG Skill</strong> — 目前 Cursor、CodeFlicker 等 AI IDE 均无专门的 SVG 插画生成 Skill</div>
+        <span class="badge badge-orange">机会</span>
+        <div>SVG 代码生成能力已足够实用，但缺乏<strong>项目上下文感知</strong>（颜色变量、设计系统）的工具层封装</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════ SECTION 5: 空白分析 ══════════════════════════════ -->
+<section id="gaps">
+  <div class="container">
+    <div class="section-label">Section 04</div>
+    <h2 class="section-title">Skill / Agent 场景空白分析</h2>
+    <p class="section-desc">目前市面上没有专门为 AI 编程 IDE 设计的 SVG 插画生成 Skill，存在四大核心空白。</p>
+
+    <div class="callout success">
+      <p><strong>现状：</strong>现有工具均需切换应用，无一针对开发者编码工作流设计，缺乏项目上下文感知能力，这是最大的产品机会所在。</p>
+    </div>
+
+    <div class="card mt-6">
+      <div class="challenge-item">
+        <div class="challenge-dot" style="background:var(--accent);box-shadow:0 0 8px var(--accent);"></div>
+        <div>
+          <div class="challenge-name">① 开发者工作流集成</div>
+          <div class="challenge-desc">开发者在写前端代码时直接需要 SVG 素材，所有现有工具均需<strong>切换应用</strong>，严重打断编码流。没有任何工具能在 IDE 内直接生成 SVG 并插入代码。</div>
+        </div>
+      </div>
+      <div class="challenge-item">
+        <div class="challenge-dot" style="background:var(--accent2);box-shadow:0 0 8px var(--accent2);"></div>
+        <div>
+          <div class="challenge-name">② 代码上下文感知</div>
+          <div class="challenge-desc">生成的 SVG 需要符合项目的颜色变量（CSS Custom Properties）、设计系统（Tailwind Token）。现有所有工具均<strong>不理解代码上下文</strong>，生成结果与项目设计规范往往不一致。</div>
+        </div>
+      </div>
+      <div class="challenge-item">
+        <div class="challenge-dot" style="background:var(--accent3);box-shadow:0 0 8px var(--accent3);"></div>
+        <div>
+          <div class="challenge-name">③ 迭代修改能力</div>
+          <div class="challenge-desc">能够基于现有 SVG 进行语义编辑（如"把左边的圆改成星形"），保持多轮对话上下文。Claude 在这方面最强，但没有工具把这个能力包装成开发者友好的 Skill。</div>
+        </div>
+      </div>
+      <div class="challenge-item" style="border-bottom:none;">
+        <div class="challenge-dot" style="background:var(--green);box-shadow:0 0 8px var(--green);"></div>
+        <div>
+          <div class="challenge-name">④ 插画 vs 图标的生态差距</div>
+          <div class="challenge-desc">市面工具多针对<strong>图标</strong>场景（单色、简单几何），而<strong>复杂插画场景</strong>（空状态页、引导页、营销插画、人物场景）几乎无专门支持，是最大的内容空白。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════ SECTION 6: 主要挑战 ══════════════════════════════ -->
+<section id="challenges">
+  <div class="container">
+    <div class="section-label">Section 05</div>
+    <h2 class="section-title">主要挑战</h2>
+    <p class="section-desc">构建高质量 SVG 插画生成 Skill 需要正视技术和评估两类挑战。</p>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+      <!-- 技术挑战 -->
+      <div>
+        <h3 style="margin-bottom:16px;">技术挑战</h3>
+        <div class="card">
+          <div class="challenge-item">
+            <div class="challenge-dot dot-red"></div>
+            <div>
+              <div class="challenge-name">空间推理弱 <span class="badge badge-red" style="margin-left:6px;">高风险</span></div>
+              <div class="challenge-desc">LLM 难以精确控制形状位置和比例，多元素场景易错乱，超过 5 个元素质量急剧下降</div>
+            </div>
+          </div>
+          <div class="challenge-item">
+            <div class="challenge-dot dot-red"></div>
+            <div>
+              <div class="challenge-name">复杂场景 <span class="badge badge-red" style="margin-left:6px;">高风险</span></div>
+              <div class="challenge-desc">多元素相对关系难以把控，人物、场景等复杂插画几乎不可用，需要有效的复杂度控制策略</div>
+            </div>
+          </div>
+          <div class="challenge-item">
+            <div class="challenge-dot dot-orange"></div>
+            <div>
+              <div class="challenge-name">路径优化 <span class="badge badge-orange" style="margin-left:6px;">中风险</span></div>
+              <div class="challenge-desc">LLM 生成的 SVG 代码往往冗余，文件体积大，需要 SVGO 等工具后处理</div>
+            </div>
+          </div>
+          <div class="challenge-item">
+            <div class="challenge-dot dot-orange"></div>
+            <div>
+              <div class="challenge-name">视觉一致性 <span class="badge badge-orange" style="margin-left:6px;">中风险</span></div>
+              <div class="challenge-desc">风格统一难度大，多次生成结果差异大，需要风格约束机制</div>
+            </div>
+          </div>
+          <div class="challenge-item" style="border-bottom:none;">
+            <div class="challenge-dot dot-orange"></div>
+            <div>
+              <div class="challenge-name">渐变 / 动画 <span class="badge badge-orange" style="margin-left:6px;">中风险</span></div>
+              <div class="challenge-desc">复杂视觉效果支持有限，模型容易生成错误语法，需要校验层</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 评估挑战 -->
+      <div>
+        <h3 style="margin-bottom:16px;">评估挑战</h3>
+        <div class="card">
+          <div style="font-size:13px;color:var(--fg-muted);margin-bottom:16px;line-height:1.7;">
+            SVG 质量评估困难，传统像素级指标（MSE、SSIM）与人类感知相关性弱，需要专门的评估体系。
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div style="background:var(--bg-card2);border-radius:var(--radius-sm);padding:14px;">
+              <div style="font-size:12px;font-weight:600;color:var(--accent);margin-bottom:6px;">学术方案</div>
+              <div style="font-size:13px;color:var(--fg-muted);">VectorGym（2025）提出 VLM-as-Judge 方案，经人类评测验证有效。使用 Gemini 3 Pro 作为评判模型，Pearson 相关系数达到最高水平。</div>
+            </div>
+            <div style="background:var(--bg-card2);border-radius:var(--radius-sm);padding:14px;">
+              <div style="font-size:12px;font-weight:600;color:var(--accent3);margin-bottom:6px;">实践指标体系</div>
+              <div style="font-size:13px;color:var(--fg-muted);">
+                <div style="display:flex;flex-direction:column;gap:4px;">
+                  <span>• <strong>视觉相似度</strong>：LPIPS + DINO 特征</span>
+                  <span>• <strong>语义对齐</strong>：CLIP 相似度</span>
+                  <span>• <strong>代码质量</strong>：语法有效率 + 路径复杂度</span>
+                  <span>• <strong>人工评测</strong>：风格一致性 + 可编辑性</span>
+                </div>
+              </div>
+            </div>
+            <div class="callout warn" style="margin:0;">
+              <p style="font-size:12px;"><strong>建议：</strong>建立内部 SVG 质量评测集，覆盖图标、插画、装饰元素三类场景，用于指导模型选型和 Prompt 优化。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════ SECTION 7: 机会定位 ══════════════════════════════ -->
+<section id="opportunity">
+  <div class="container">
+    <div class="section-label">Section 06</div>
+    <h2 class="section-title">机会分析：SVG插画生成 Skill 定位</h2>
+    <p class="section-desc">基于调研，我们的 Skill 应占据「高复杂度 × 开发者工具」象限，以上下文感知为核心差异化。</p>
+
+    <!-- 核心定位 -->
+    <div class="card card-accent mb-6" style="text-align:center;padding:32px;">
+      <div style="font-size:12px;color:var(--fg-dim);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:12px;">Core Positioning</div>
+      <div style="font-size:1.4rem;font-weight:700;letter-spacing:-0.02em;margin-bottom:8px;">
+        面向开发者的<span class="highlight">上下文感知</span> SVG 插画生成助手
+      </div>
+      <div style="font-size:14px;color:var(--fg-muted);">在 IDE 内直接生成，读懂你的代码，输出符合项目设计系统的可用 SVG</div>
+    </div>
+
+    <!-- 五大差异化 -->
+    <h3 class="mb-4">五大差异化能力</h3>
+    <div class="card-grid card-grid-2">
+      <div class="card" style="border-left:3px solid var(--accent);">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+          <span style="font-size:20px;">🎨</span>
+          <span style="font-weight:700;">项目色彩感知</span>
+        </div>
+        <div style="font-size:13px;color:var(--fg-muted);">读取 CSS 变量 / Tailwind Token，用项目的颜色体系生成 SVG，告别颜色不统一的烦恼</div>
+        <div class="tag-row"><span class="tag">CSS Variables</span><span class="tag">Tailwind</span></div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--accent2);">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+          <span style="font-size:20px;">📚</span>
+          <span style="font-weight:700;">风格库管理</span>
+        </div>
+        <div style="font-size:13px;color:var(--fg-muted);">记住用户偏好的插画风格（flat、线稿、等距、卡通等），一键切换风格，保持项目一致性</div>
+        <div class="tag-row"><span class="tag">Flat Design</span><span class="tag">等距插画</span><span class="tag">线稿</span></div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--accent3);">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+          <span style="font-size:20px;">🔄</span>
+          <span style="font-weight:700;">增量迭代修改</span>
+        </div>
+        <div style="font-size:13px;color:var(--fg-muted);">基于已有 SVG 进行语义编辑，支持自然语言描述修改意图，保持多轮对话上下文</div>
+        <div class="tag-row"><span class="tag">SVG Editing</span><span class="tag">多轮对话</span></div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--green);">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+          <span style="font-size:20px;">⚛️</span>
+          <span style="font-weight:700;">组件感知输出</span>
+        </div>
+        <div style="font-size:13px;color:var(--fg-muted);">理解 React / Vue 组件结构，直接输出带 Props 接口的 SVG 组件，而不只是裸 SVG 代码</div>
+        <div class="tag-row"><span class="tag">React</span><span class="tag">Vue</span><span class="tag">TypeScript</span></div>
+      </div>
+    </div>
+    <div class="card mt-4" style="border-left:3px solid var(--orange);">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+        <span style="font-size:20px;">⚡</span>
+        <span style="font-weight:700;">优化输出</span>
+      </div>
+      <div style="font-size:13px;color:var(--fg-muted);">自动进行路径压缩（SVGO），确保代码简洁、加载快，同时进行 SVG 语法校验，禁止无效属性</div>
+      <div class="tag-row"><span class="tag">SVGO</span><span class="tag">路径简化</span><span class="tag">语法校验</span></div>
+    </div>
+
+    <!-- 技术方案 -->
+    <h3 class="mt-8 mb-4">推荐技术实现方案</h3>
+    <div class="code-block">
+      <span class="c-note">// ── SVG 插画生成 Skill 技术栈 ──</span><br /><br />
+      用户 Prompt（描述插画需求）<br />
+      <span class="c-arrow">    ↓</span><br />
+      <span class="c-box">风格引导层</span>  <span class="c-note">（插画类型 / 颜色系统 / 复杂度约束 / Few-shot 示例注入）</span><br />
+      <span class="c-arrow">    ↓</span><br />
+      <span class="c-box">LLM 代码生成层</span>  <span class="c-note">（推荐底座：Claude Sonnet 4.5 或 Gemini 3 Pro）</span><br />
+      <span class="c-arrow">    ↓</span><br />
+      <span class="c-box">SVG 校验层</span>  <span class="c-note">（语法检查 / 渲染验证 / viewBox 规范 / 颜色合法性）</span><br />
+      <span class="c-arrow">    ↓</span><br />
+      <span class="c-box">优化层</span>  <span class="c-note">（SVGO 压缩 / 路径简化 / ID 语义化）</span><br />
+      <span class="c-arrow">    ↓</span><br />
+      <span class="c-label">输出</span>  <span class="c-note">可用 SVG 代码 / React 组件 / Vue 组件</span>
+    </div>
+
+    <!-- Prompt 工程策略 -->
+    <div class="card-grid card-grid-2 mt-6">
+      <div class="card">
+        <div style="font-weight:600;margin-bottom:10px;">🛠️ Prompt 工程关键策略</div>
+        <ul>
+          <li>System Prompt 注入 SVG 最佳实践规范（viewBox、语义化 ID、颜色限制）</li>
+          <li>Few-shot 示例：提供不同风格的参考 SVG 代码片段</li>
+          <li>支持迭代修改：保持 SVG 历史上下文，支持连续对话</li>
+          <li>添加约束条件：限制元素数量、禁止无效属性</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div style="font-weight:600;margin-bottom:10px;">🎯 优先支持场景</div>
+        <ul>
+          <li><strong>空状态页插画</strong> — 前端最高频使用场景</li>
+          <li><strong>404 / 500 错误页</strong> — 每个项目必需</li>
+          <li><strong>功能引导插画</strong> — onboarding 流程</li>
+          <li><strong>图标集合</strong> — 项目定制图标</li>
+          <li><strong>装饰元素</strong> — 背景、分割线、点缀</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════ SECTION 8: 竞争格局 ══════════════════════════════ -->
+<section id="landscape">
+  <div class="container">
+    <div class="section-label">Section 07</div>
+    <h2 class="section-title">竞争格局总结</h2>
+    <p class="section-desc">按「复杂度 × 用户类型」两个维度，定位各主要玩家的市场位置。</p>
+
+    <div class="matrix">
+      <div class="matrix-cell" style="grid-column:1;grid-row:1;border-bottom:2px solid var(--border);border-right:2px solid var(--border);">
+        <div class="matrix-cell-label">高复杂度 · 设计师工具</div>
+        <div class="matrix-cell-title">VectorWitch</div>
+        <div class="matrix-cell-desc">专业插画师，路径最干净，输出质量最高，但速度慢（15-20分钟）</div>
+        <div class="tag-row mt-4">
+          <span class="badge badge-purple">8.4/10</span>
+          <span class="tag">$20/月</span>
+        </div>
+        <div style="margin-top:10px;">
+          <div class="matrix-cell-title">Adobe Illustrator</div>
+          <div class="matrix-cell-desc">老牌专业工具 AI 化，生态最完整，但对非设计师极不友好</div>
+          <div class="tag-row mt-4">
+            <span class="badge badge-orange">$54.99/月+</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="matrix-cell highlight" style="grid-column:2;grid-row:1;border-bottom:2px solid var(--border);">
+        <div class="matrix-cell-label" style="color:var(--accent);">⭐ 高复杂度 · 开发者工具 — 目标象限</div>
+        <div class="matrix-cell-title" style="color:var(--accent);">【SVG Skill 目标区域】</div>
+        <div class="matrix-cell-desc">当前空白！没有任何工具能在 IDE 内直接生成高质量复杂插画，并与项目上下文集成。这是最大的产品机会。</div>
+        <div class="tag-row mt-4">
+          <span class="badge badge-indigo">IDE集成</span>
+          <span class="badge badge-green">上下文感知</span>
+          <span class="badge badge-purple">代码输出</span>
+        </div>
+        <div style="margin-top:12px;">
+          <div class="matrix-cell-title">Gemini 3 Pro / Claude 4.5</div>
+          <div class="matrix-cell-desc">LLM 能力已达到，但缺乏工具层封装，需要 Skill 来桥接</div>
+        </div>
+      </div>
+
+      <div class="matrix-cell" style="grid-column:1;grid-row:2;border-right:2px solid var(--border);">
+        <div class="matrix-cell-label">低复杂度 · 设计师工具</div>
+        <div class="matrix-cell-title">Recraft</div>
+        <div class="matrix-cell-desc">Text→SVG 最佳体验，风格一致性强，但无 API 无法集成</div>
+        <div class="tag-row mt-4"><span class="badge badge-purple">8.5/10</span><span class="tag">$20/月</span></div>
+        <div style="margin-top:10px;">
+          <div class="matrix-cell-title">Canva / Kittl</div>
+          <div class="matrix-cell-desc">面向非专业用户，功能简单，质量一般</div>
+        </div>
+      </div>
+
+      <div class="matrix-cell" style="grid-column:2;grid-row:2;">
+        <div class="matrix-cell-label">低复杂度 · 开发者工具</div>
+        <div class="matrix-cell-title">SVGMaker API</div>
+        <div class="matrix-cell-desc">MCP 已上线，API 完善，但生成质量偏低（7.8/10），适合简单图标</div>
+        <div class="tag-row mt-4"><span class="badge badge-green">有 MCP</span><span class="tag">$29/月</span></div>
+        <div style="margin-top:10px;">
+          <div class="matrix-cell-title">GPT-4.1-nano / mini</div>
+          <div class="matrix-cell-desc">价格极低，质量够用，适合简单图标快速生成</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════ SECTION 9: 结论建议 ══════════════════════════════ -->
+<section id="conclusion">
+  <div class="container">
+    <div class="section-label">Section 08</div>
+    <h2 class="section-title">结论与建议</h2>
+    <p class="section-desc">综合市场现状、技术成熟度和空白分析，给出产品决策建议。</p>
+
+    <!-- 关键结论表 -->
+    <div class="table-wrap mb-8">
+      <table>
+        <thead>
+          <tr><th>维度</th><th>结论</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>市场时机</strong></td>
+            <td><span class="badge badge-green">✅ 好时机</span>  LLM SVG生成能力已成熟，但 IDE 集成 Skill 空白，是入场最佳窗口</td>
+          </tr>
+          <tr>
+            <td><strong>底座模型推荐</strong></td>
+            <td><span class="highlight">Claude Sonnet 4.5</span> 或 <span class="highlight">Gemini 3 Pro</span>（VectorGym 评测中双双领先，两者各有侧重）</td>
+          </tr>
+          <tr>
+            <td><strong>优先场景</strong></td>
+            <td>简单到中等复杂度插画 — <strong>空状态页、404页、装饰元素、引导插画</strong>（前端高频需求）</td>
+          </tr>
+          <tr>
+            <td><strong>MVP 核心功能</strong></td>
+            <td>文本描述 → SVG 代码 + 风格引导 + SVGO 优化输出</td>
+          </tr>
+          <tr>
+            <td><strong>壁垒建设方向</strong></td>
+            <td>积累插画风格 Prompt 库、建立 SVG 组件生态、沉淀用户风格偏好数据</td>
+          </tr>
+          <tr>
+            <td><strong>短期主要风险</strong></td>
+            <td><span class="badge badge-orange">⚠️ 注意</span>  LLM 空间推理仍有明显局限，5个元素以上复杂场景效果不稳定</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 三阶段路线 -->
+    <h3 class="mb-4">三阶段产品路线</h3>
+    <div class="phase-grid">
+      <div class="phase-card p1">
+        <div class="phase-label" style="color:var(--accent);">Phase 1 · MVP</div>
+        <div class="phase-title">文本→简单插画</div>
+        <div class="phase-desc">
+          聚焦前端高频场景：空状态页、404页、装饰元素。<br /><br />
+          底座：Claude Sonnet 4.5<br />
+          输出：带 SVGO 优化的 SVG 代码<br />
+          关键：建立 Prompt 模板库，覆盖10+常见风格
+        </div>
+        <div class="tag-row mt-4">
+          <span class="tag">空状态页</span><span class="tag">404页</span><span class="tag">装饰元素</span>
+        </div>
+      </div>
+      <div class="phase-card p2">
+        <div class="phase-label" style="color:var(--accent2);">Phase 2 · 差异化</div>
+        <div class="phase-title">上下文感知集成</div>
+        <div class="phase-desc">
+          读取项目颜色变量和组件规范，输出符合设计系统的 SVG 组件。<br /><br />
+          功能：CSS Variable 读取 / Tailwind Token 解析<br />
+          输出：React / Vue 组件形式<br />
+          关键：这是与所有现有工具的核心差异点
+        </div>
+        <div class="tag-row mt-4">
+          <span class="tag">CSS变量</span><span class="tag">设计系统</span><span class="tag">组件输出</span>
+        </div>
+      </div>
+      <div class="phase-card p3">
+        <div class="phase-label" style="color:var(--accent3);">Phase 3 · 壁垒</div>
+        <div class="phase-title">专用模型微调</div>
+        <div class="phase-desc">
+          引入 RL 微调的专用小模型，参考 Qwen3VL 8B Gym 方案，提升生成质量同时降低调用成本。<br /><br />
+          方案：RLRF + 渲染反馈奖励<br />
+          目标：开源小模型质量超越 Claude Sonnet<br />
+          关键：积累内部 SVG 评测集 + 训练数据
+        </div>
+        <div class="tag-row mt-4">
+          <span class="tag">RL微调</span><span class="tag">RLRF</span><span class="tag">专用模型</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout success mt-8">
+      <p><strong>最终判断：</strong>现在是入场 SVG 插画生成 Skill 的最佳时机——LLM 能力已足够实用，专业工具无法集成进 IDE，开发者工作流空白巨大。以「上下文感知」为核心差异，以「Claude/Gemini 为底座 + RL 微调为壁垒」为技术路径，分三阶段稳步推进。</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════ FOOTER ══════════════════════════════ -->
+<footer>
+  <div class="container">
+    <p style="margin-bottom:6px;"><strong>SVG 插画生成 Skill — 市场调研报告</strong></p>
+    <p>调研时间：2025年4月 &nbsp;·&nbsp; 作者：<strong>luzifeng</strong> &nbsp;·&nbsp; 涵盖工具：15+ &nbsp;·&nbsp; 评测模型：34个</p>
+    <p style="margin-top:12px;font-size:11px;color:var(--fg-dim);">数据来源：VectorGym arXiv (2025)、Simon Willison's Weblog、Reddit SVG社区、各工具官网公开定价</p>
+  </div>
+</footer>
+
+</body>
+</html>
