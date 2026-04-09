@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>两节课 · 从安装到进阶</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', sans-serif;
+      background: #f5f4f8;
+      color: #1a1a2e;
+      line-height: 1.6;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      text-align: center;
+      padding: 56px 24px 40px;
+      background: #fff;
+    }
+    .hero h1 {
+      font-size: 42px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      color: #111;
+    }
+    .hero p {
+      margin-top: 10px;
+      font-size: 15px;
+      color: #888;
+    }
+
+    /* ── SESSION TABS ── */
+    .tabs {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      padding: 24px 24px 0;
+      background: #fff;
+      flex-wrap: wrap;
+    }
+    .tab {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 20px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: default;
+    }
+    .tab-num {
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700; color: #fff;
+    }
+    .tab-1 { background: #ede9fe; color: #5b21b6; }
+    .tab-1 .tab-num { background: #7c3aed; }
+    .tab-2 { background: #d1fae5; color: #065f46; }
+    .tab-2 .tab-num { background: #059669; }
+    .tab .badge {
+      background: rgba(0,0,0,.08);
+      border-radius: 999px;
+      padding: 2px 10px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    /* ── MAIN GRID ── */
+    .main {
+      max-width: 1160px;
+      margin: 32px auto;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    @media (max-width: 860px) { .main { grid-template-columns: 1fr; } }
+
+    /* ── SESSION CARD ── */
+    .session-card {
+      border-radius: 20px;
+      padding: 28px 28px 20px;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+    .session-card .s-label {
+      font-size: 11px; font-weight: 700; letter-spacing: 1px;
+      opacity: .7; text-transform: uppercase;
+      display: flex; gap: 8px; align-items: center;
+    }
+    .session-card .s-tag {
+      background: rgba(255,255,255,.2);
+      border-radius: 4px; padding: 2px 8px; font-size: 11px;
+    }
+    .session-card .s-num {
+      position: absolute; right: 28px; top: 24px;
+      font-size: 64px; font-weight: 900; opacity: .12; line-height: 1;
+    }
+    .session-card h2 {
+      font-size: 28px; font-weight: 800; margin-top: 8px;
+    }
+    .session-card .s-sub {
+      font-size: 13px; opacity: .75; margin-top: 4px;
+    }
+    .session-card .s-goal {
+      background: rgba(255,255,255,.15);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 13px;
+      margin-top: 16px;
+      display: flex; gap: 8px; align-items: flex-start;
+    }
+    .session-card .s-goal .icon { flex-shrink: 0; }
+
+    .s1 { background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); }
+    .s2 { background: linear-gradient(135deg, #0ea5e9 0%, #059669 100%); }
+
+    /* ── PART CARDS ── */
+    .parts { display: flex; flex-direction: column; gap: 16px; margin-top: 8px; }
+
+    .part {
+      background: #fff;
+      border-radius: 16px;
+      padding: 20px 22px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    }
+    .part-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .part-title-wrap { display: flex; align-items: center; gap: 10px; }
+    .part-badge {
+      width: 28px; height: 28px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 800; color: #fff; flex-shrink: 0;
+    }
+    .p1b { background: #7c3aed; }
+    .p2b { background: #a855f7; }
+    .p3b { background: #ec4899; }
+    .p4b { background: #f97316; }
+    .pskill { background: #059669; }
+    .pext { background: #f59e0b; }
+
+    .part-title { font-size: 15px; font-weight: 700; color: #111; }
+    .part-time {
+      font-size: 12px; font-weight: 600; color: #888;
+      background: #f3f4f6; border-radius: 999px; padding: 3px 10px;
+      white-space: nowrap;
+    }
+
+    .part-items { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .part-items li {
+      display: flex; gap: 8px; align-items: flex-start;
+      font-size: 13.5px; color: #444;
+    }
+    .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      flex-shrink: 0; margin-top: 6px;
+    }
+    .dot-purple { background: #7c3aed; }
+    .dot-pink   { background: #ec4899; }
+    .dot-blue   { background: #0ea5e9; }
+    .dot-green  { background: #059669; }
+    .dot-orange { background: #f97316; }
+    .dot-amber  { background: #f59e0b; }
+    .dot-gray   { background: #9ca3af; }
+
+    .part-items li .item-main { flex: 1; }
+    .part-items li .item-sub {
+      font-size: 12px; color: #999; margin-top: 2px;
+    }
+
+    .part-tags {
+      display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px;
+    }
+    .tag {
+      font-size: 11px; font-weight: 600; padding: 3px 10px;
+      border-radius: 999px; display: flex; align-items: center; gap: 4px;
+    }
+    .tag-purple { background: #ede9fe; color: #5b21b6; }
+    .tag-blue   { background: #dbeafe; color: #1d4ed8; }
+    .tag-green  { background: #d1fae5; color: #065f46; }
+    .tag-pink   { background: #fce7f3; color: #9d174d; }
+    .tag-orange { background: #ffedd5; color: #c2410c; }
+    .tag-amber  { background: #fef3c7; color: #92400e; }
+
+    /* ── SKILL CARD 特殊样式 ── */
+    .part-skill {
+      background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+      border: 1.5px solid #a7f3d0;
+    }
+    .part-skill .part-title { color: #065f46; }
+
+    .skill-template {
+      background: #1e1e2e;
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin: 12px 0;
+      font-family: 'SF Mono', 'Monaco', monospace;
+      font-size: 12px;
+      color: #cdd6f4;
+      line-height: 1.7;
+    }
+    .skill-template .sk-comment { color: #6c7086; }
+    .skill-template .sk-key { color: #89b4fa; }
+    .skill-template .sk-val { color: #a6e3a1; }
+
+    .skill-table {
+      width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 13px;
+    }
+    .skill-table th {
+      background: #d1fae5; color: #065f46;
+      padding: 7px 10px; text-align: left; font-weight: 700; font-size: 12px;
+    }
+    .skill-table td {
+      padding: 7px 10px; border-bottom: 1px solid #f0fdf4; color: #374151;
+    }
+    .skill-table tr:last-child td { border-bottom: none; }
+    .skill-table .trigger {
+      background: #ecfdf5; border-radius: 6px; padding: 2px 8px;
+      font-family: monospace; font-size: 11px; color: #059669;
+    }
+
+    /* ── EXT CARD ── */
+    .part-ext {
+      background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+      border: 1.5px dashed #fbbf24;
+    }
+    .part-ext .part-title { color: #92400e; }
+
+    .ext-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 10px; margin-top: 12px;
+    }
+    .ext-item {
+      background: #fff;
+      border-radius: 10px; padding: 10px 12px;
+      font-size: 12.5px; color: #444;
+    }
+    .ext-item .ext-icon { font-size: 16px; margin-bottom: 4px; }
+    .ext-item strong { display: block; font-size: 13px; color: #111; margin-bottom: 2px; }
+
+    .core-note {
+      background: rgba(239,68,68,.08);
+      border-left: 3px solid #ef4444;
+      border-radius: 0 8px 8px 0;
+      padding: 10px 14px;
+      font-size: 13px; color: #7f1d1d;
+      margin-top: 12px;
+    }
+
+    /* ── OUTPUT BANNER ── */
+    .output-banner {
+      background: linear-gradient(90deg, #7c3aed15, #ec489915);
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin-top: 14px;
+      font-size: 13px; font-weight: 600;
+      color: #5b21b6;
+      display: flex; gap: 6px; align-items: center;
+    }
+    .output-banner-green {
+      background: linear-gradient(90deg, #05996915, #0ea5e915);
+      color: #065f46;
+    }
+
+    /* ── HOMEWORK ── */
+    .homework {
+      background: #f9fafb;
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-top: 8px;
+      font-size: 13px; color: #374151;
+      display: flex; gap: 10px; align-items: flex-start;
+    }
+    .homework .hw-icon { font-size: 18px; flex-shrink: 0; }
+
+    /* ── PANORAMA ── */
+    .panorama {
+      max-width: 1160px; margin: 0 auto 20px; padding: 0 20px;
+    }
+    .panorama h3 {
+      text-align: center; font-size: 22px; font-weight: 800;
+      color: #111; margin-bottom: 28px;
+    }
+    .skill-track {
+      display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;
+    }
+    .skill-node {
+      text-align: center; width: 130px;
+    }
+    .skill-icon {
+      width: 64px; height: 64px; border-radius: 18px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px; margin: 0 auto 10px;
+    }
+    .si-purple { background: linear-gradient(135deg,#7c3aed,#a855f7); }
+    .si-blue   { background: linear-gradient(135deg,#3b82f6,#0ea5e9); }
+    .si-pink   { background: linear-gradient(135deg,#ec4899,#f97316); }
+    .si-green  { background: linear-gradient(135deg,#059669,#10b981); }
+    .skill-node .sk-name { font-size: 13px; font-weight: 700; color: #111; }
+    .skill-node .sk-desc { font-size: 11px; color: #888; margin-top: 2px; }
+    .skill-node .sk-session {
+      font-size: 10px; font-weight: 700;
+      border-radius: 999px; padding: 2px 8px; margin-top: 6px;
+      display: inline-block;
+    }
+    .ss1 { background: #ede9fe; color: #5b21b6; }
+    .ss2 { background: #d1fae5; color: #065f46; }
+
+    .track-divider {
+      display: flex; align-items: center;
+      width: 100%; max-width: 800px; margin: 24px auto;
+      gap: 12px;
+    }
+    .track-divider .line { flex: 1; height: 1px; background: linear-gradient(90deg,#7c3aed,#059669); }
+    .track-divider span { font-size: 12px; color: #888; white-space: nowrap; }
+
+    /* ── AFTER SECTION ── */
+    .after-section {
+      max-width: 1160px; margin: 0 auto 60px; padding: 0 20px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+    }
+    @media (max-width: 680px) { .after-section { grid-template-columns: 1fr; } }
+
+    .after-card {
+      background: #fff; border-radius: 16px; padding: 22px 24px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.06);
+    }
+    .after-card h4 {
+      font-size: 14px; font-weight: 700; color: #888;
+      margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px;
+    }
+    .after-card p { font-size: 13.5px; color: #374151; line-height: 1.7; }
+
+    /* ── QUOTE ── */
+    .quote-bar {
+      text-align: center; padding: 24px; color: #aaa; font-size: 13px;
+    }
+    .quote-bar em { color: #666; }
+
+    /* ── CONNECTOR ARROW ── */
+    .arrow-divider {
+      display: flex; align-items: center; justify-content: center;
+      padding: 6px 0; color: #bbb; font-size: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <h1>两节课 · 从安装到进阶</h1>
+  <p>面向设计师的 CF AI 工具培训方案 · 共 2 小时 · 含实操演示 + 课后作业</p>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <div class="tab tab-1">
+    <div class="tab-num">1</div>
+    第一节：环境搭建 + 浏览器插件 + 写作流
+    <span class="badge">60 min</span>
+  </div>
+  <div class="tab tab-2">
+    <div class="tab-num">2</div>
+    第二节：进阶 · Design Mode + Skill + 独立出品
+    <span class="badge">60 min</span>
+  </div>
+</div>
+
+<!-- MAIN GRID -->
+<div class="main">
+
+  <!-- ══ SESSION 1 ══ -->
+  <div>
+    <!-- 课程头卡 -->
+    <div class="session-card s1" style="margin-bottom:16px;">
+      <div class="s-label">
+        第一节课 <span class="s-tag">入门基础</span>
+      </div>
+      <div class="s-num">01</div>
+      <h2>从零到会用</h2>
+      <div class="s-sub">安装 CF · 浏览器插件 · 联网搜索 · 写文章</div>
+      <div class="s-goal">
+        <span class="icon">🎯</span>
+        课程目标：让设计师完成 CF 安装 + 浏览器插件配置，掌握「网页浏览收集设计灵感 → 写设计文字内容」的完整 AI 辅助工作流
+      </div>
+    </div>
+
+    <div class="parts">
+
+      <!-- P1 -->
+      <div class="part">
+        <div class="part-header">
+          <div class="part-title-wrap">
+            <div class="part-badge p1b">P1</div>
+            <span class="part-title">下载 &amp; 安装 CodeFlicker（CF）</span>
+          </div>
+          <span class="part-time">0 – 10 min</span>
+        </div>
+        <ul class="part-items">
+          <li>
+            <div class="dot dot-purple"></div>
+            <div class="item-main">
+              <div>访问官网下载 CF 安装包</div>
+              <div class="item-sub">codeflicker.com → 选操作系统版本 → 安装完成后登录账号</div>
+            </div>
+          </li>
+          <li>
+            <div class="dot dot-purple"></div>
+            <div class="item-main">
+              <div>初次启动与界面导览</div>
+              <div class="item-sub">认识三个核心区域：文件树 / 编辑区 / AI 对话侧栏，了解 Chat 与 Composer 的区别</div>
+            </div>
+          </li>
+          <li>
+            <div class="dot dot-purple"></div>
+            <div class="item-main">
+              <div>AI 模型选择说明</div>
+              <div class="item-sub">推荐新手使用 Auto / Claude Sonnet，无需纠结模型选择，先跑起来是重要的</div>
+            </div>
+          </li>
+        </ul>
+        <div class="part-tags">
+          <span class="tag tag-purple">⬇ CF 安装</span>
+          <span class="tag tag-purple">👤 账号登录</span>
+          <span class="tag tag-blue">🖥 界面认知</span>
+        </div>
+      </div>
+
+      <!-- P2 -->
+      <div class="part">
+        <div class="part-header">
+          <div class="part-title-wrap">
+            <div class="part-badge p2b">P2</div>
+            <span class="part-title">安装浏览器插件 · 让 IDE 联网</span>
+          </div>
+          <span class="part-time">10 – 25 min</span>
+        </div>
+        <ul class="part-items">
+          <li>
+            <div class="dot dot-pink"></div>
+            <div class="item-main">
+              <div>安装 Browser Tool 插件</div>
+              <div class="item-sub">搜索「Browser」→ 安装 browser-tools-mcp，这个插件让 IDE 能直接控制浏览器</div>
+            </div>
+          </li>
+          <li>
+            <div class="dot dot-pink"></div>
+            <div class="item-main">
+              <div>实操演示：让 AI 帮你搜集设计资料</div>
+              <div class="item-sub">在 Composer 中输入「帮我搜索 2025 年最新的 UI 设计趋势，整理成要点」→ AI 自动打开浏览器、搜索、读取页面内容汇总</div>
+            </div>
+          </li>
+          <li>
+            <div class="dot dot-pink"></div>
+            <div class="item-main">
+              <div>实操演示：浏览 Dribbble / Behance 收集灵感</div>
+              <div class="item-sub">「打开 dribbble.com，找近30天最热的移动端 App 界面设计，截图并描述设计亮点」</div>
+            </div>
+          </li>
+          <li>
+            <div class="dot dot-gray"></div>
+            <div class="item-main">
+              <div>理解工作原理：AI 怎么「看」网页</div>
+              <div class="item-sub">简单解释：Browser MCP 让 AI 读取网页的文字内容 + 截图，相当于帮你看网并做笔记</div>
+            </div>
+          </li>
+        </ul>
+        <div class="part-tags">
+          <span class="tag tag-blue">🔌 MCP 插件</span>
+          <span class="tag tag-blue">🌐 联网搜索</span>
+          <span class="tag tag-purple">📸 网页截图</span>
+        </div>
+      </div>
+
+      <!-- P3 -->
+      <div class="part">
+        <div class="part-header">
+          <div class="part-title-wrap">
+            <div class="part-badge p3b">P3</div>
+            <span class="part-title">用 AI 搜集资料 + 写一篇设计文章</span>
+          </div>
+          <span class="part-time">25 – 50 min</span>
+        </div>
+        <ul class="part-items">
+          <li>
+            <div class="dot dot-pink"></div>
+            <div class="item-main">
+              <div>Step 1：确定写作主题</div>
+              <div class="item-sub">示例主题：「2025 年 UI 设计 10 大趋势」，在 Composer 输入主题，让 AI 提出文字结构建议</div>
+            </div>
+          </li>
+          <li>
+            <div class="dot dot-pink"></div>
+            <div class="item-main">
+              <div>Step 2：AI 自动搜索 + 整理素材</div>
+              <div class="item-sub">指令：「基于这个大纲，帮我搜索每个趋势的相关资料和案例，整理好来源和要点」</div>
+            </div>
+          </li>
+          <li>
+            <div class="dot dot-pink"></div>
+            <div class="item-main">
+              <div>Step 3：生成文章初稿</div>
+              <div class="item-sub">「根据以上素材，帮我写一篇适合发布在设计社区的 2000 字文章，语气专业但易读，加入具体案例」</div>
+            </div>
+          </li>
+          <li>
+            <div class="dot dot-orange"></div>
+            <div class="item-main">
+              <div>Step 4：多轮对话精修文章</div>
+              <div class="item-sub">「第3条案例换成 Apple Vision Pro 的 UI 设计」「结尾加一个对设计师的行动建议」—— 体验对话式迭代</div>
+            </div>
+          </li>
+        </ul>
+        <div class="output-banner">
+          🏆 课堂产出：每位学员完成一篇完整设计文章草稿，可直接发布到即刻、设计师网站等平台
+        </div>
+      </div>
+
+      <!-- EXT -->
+      <div class="part part-ext">
+        <div class="part-header">
+          <div class="part-title-wrap">
+            <div class="part-badge pext">★</div>
+            <span class="part-title">扩展：IDE 能模拟人操作浏览器的任何动作</span>
+          </div>
+          <span class="part-time">50 – 60 min</span>
+        </div>
+        <p style="font-size:13px;color:#78350f;margin-bottom:4px;">这一节告诉设计师：浏览器里你能做的，AI Agent 都能做——而且更快更批量</p>
+        <div class="ext-grid">
+          <div class="ext-item">
+            <div class="ext-icon">▶</div>
+            <strong>点击 / 导航</strong>
+            「打开 xxx 网站，点击第一篇文章，把正文内容复制下来」
+          </div>
+          <div class="ext-item">
+            <div class="ext-icon">📋</div>
+            <strong>填写表单 / 输入内容</strong>
+            「帮我在草稿箱里填写这篇文章，然后点预览」
+          </div>
+          <div class="ext-item">
+            <div class="ext-icon">📷</div>
+            <strong>截图 / 视觉对比</strong>
+            「截图当前页面，分析配色和字体使用方式，给出改进建议」
+          </div>
+          <div class="ext-item">
+            <div class="ext-icon">📊</div>
+            <strong>批量抓取数据</strong>
+            「逐页翻阅 Behance 搜索结果，把所有移动端 App 案例的标题和作者整理成表格」
+          </div>
+        </div>
+        <div class="core-note">
+          ★ 核心认知：浏览器工具让 IDE 从「会写代码的工具」变成「会上网的助手」，可以替代大量重复的网页操作工作
+        </div>
+      </div>
+
+      <!-- 课后作业 1 -->
+      <div class="homework">
+        <div class="hw-icon">✏️</div>
+        <div>
+          <strong style="font-size:14px;color:#111;">课后作业</strong><br>
+          独立完成：用 CF + 浏览器插件，搜集一个你感兴趣的设计话题的资料，写一篇 1000 字左右的设计笔记并发布到任意平台（即刻 / 掘金 / 公众号 / 朋友圈均可）。<br>
+          <strong style="color:#7c3aed;">第二节请把你发布的链接 / 截图带来。</strong>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- end session 1 -->
+
+  <!-- ══ SESSION 2 ══ -->
+  <div>
+    <!-- 课程头卡 -->
+    <div class="session-card s2" style="margin-bottom:16px;">
+      <div class="s-label">
+        第二节课 <span class="s-tag">进阶实战</span>
+      </div>
+      <div class="s-num">02</div>
+      <h2>从会用到出品</h2>
+      <div class="s-sub">Design Mode · Skill 实战 · Agent 指挥 · 独立发布</div>
+      <div class="s-goal">
+        <span class="icon">🎯</span>
+        课程目标：掌握 Design Mode 可视化编辑、写属于自己的第一个 Skill、用 Agent 多任务编排能力，最终独立产出一个可部署的真实作品（网页 / 工具 / 原型）
+      </div>
+    </div>
+
+    <div class="parts">
+
+      <!-- P1 Design Mode -->
+      <div class="part">
+        <div class="part-header">
+          <div class="part-title-wrap">
+            <div class="part-badge p1b">P1</div>
+            <span class="part-title">Design Mode：用眼睛指挥 AI 改界面</span>
+          </div>
+          <span class="part-time">0 – 15 min</span>
+        </div>
+        <ul class="part-items">
+          <li>
+            <div class="dot dot-blue"></div>
+            <div class="item-main">
+              <div>什么是 Design Mode</div>
+              <div class="item-sub">⌘+Shift+D 进入设计模式，在内置浏览器中用鼠标框选任意 UI 元素 → AI 自动加入对话上下文</div>
+            </div>
+          </li>
+          <li>
+            <div class="dot dot-green"></div>
+            <div class="item-main">
+              <div>实操：框选 UI 元素 + 对话修改</div>
+              <div class="item-sub">框选一个按钮 → 对话「把这个按钮改成圆角，颜色改成珊瑚红，加一个微妙的投影」→ 实时看到变化</div>
+            </div>
+          </li>
+          <li>
+            <div class="dot dot-green"></div>
+            <div class="item-main">
+              <div>Shift 框选多个元素批量修改</div>
+              <div class="item-sub">框选一整个导航栏 →「把整个导航改成毛玻璃风格，背景半透明，border-bottom 改成渐变实线」</div>
+            </div>
+          </li>
+        </ul>
+        <div class="part-tags">
+          <span class="tag tag-blue">🎨 Design Mode</span>
+          <span class="tag tag-green">🎯 精准框选</span>
+          <span class="tag tag-green">⚡ 批量修改</span>
+        </div>
+      </div>
+
+      <!-- P2 设计稿转网页 -->
+      <div class="part">
+        <div class="part-header">
+          <div class="part-title-wrap">
+            <div class="part-badge p2b">P2</div>
+            <span class="part-title">从设计稿到真实网页：完整转化流程</span>
+          </div>
+          <span class="part-time">15 – 30 min</span>
+        </div>
+        <ul class="part-items">
+          <li>
+            <div class="dot dot-blue"></div>
+            <div class="item-main">
+              <div>截图上传 Figma 设计稿 → 生成 HTML</div>
+              <div class="item-sub">在 Composer 中上传设计稿截图 →「根据这张设计稿，生成对应的 HTML+Tailwind CSS 页面，保持视觉一致」</div>
+            </div>
+          </li>
+          <li>
+            <div class="dot dot-blue"></div>
+            <div class="item-main">
+              <div>Design Mode 对齐视觉细节</div>
+              <div class="item-sub">生成后用 Design Mode 框选不对的地方逐一修正，不需要看代码，全程自然语言操作</div>
+            </div>
+          </li>
+          <li>
+            <div class="dot dot-green"></div>
+            <div class="item-main">
+              <div>响应式适配 + 交互动效一键加上</div>
+              <div class="item-sub">「帮这个页面加上移动端响应式布局」「hover 时卡片轻微上浮，加半透明投影过渡动画」</div>
+            </div>
+          </li>
+        </ul>
+        <div class="output-banner output-banner-green">
+          🔑 关键认知：设计师不再需要等「开发」，自己就能把设计稿变成真实可运行的 HTML 页面
+        </div>
+      </div>
+
+      <!-- P_SKILL Skill 实战 ⭐ -->
+      <div class="part part-skill">
+        <div class="part-header">
+          <div class="part-title-wrap">
+            <div class="part-badge pskill">SK</div>
+            <span class="part-title">✦ 写你的第一个 Skill</span>
+          </div>
+          <span class="part-time">30 – 45 min</span>
+        </div>
+        <ul class="part-items">
+          <li>
+            <div class="dot dot-green"></div>
+            <div class="item-main">
+              <div>Skill 是什么？30 秒说清楚</div>
+              <div class="item-sub">把一段常用指令固化成「工具」——下次说触发词，AI 自动按流程跑，写一次，复用 N 次</div>
+            </div>
+          </li>
+          <li>
+            <div class="dot dot-green"></div>
+            <div class="item-main">
+              <div>演示一个现成 Skill：周报生成</div>
+              <div class="item-sub">说「帮我写周报」→ Skill 自动触发 → 问答填写工作内容 → 金字塔结构输出，结论先行</div>
+            </div>
+          </li>
+        </ul>
+
+        <!-- Skill 模板代码 -->
+        <div class="skill-template">
+          <span class="sk-comment"># 周报生成 Skill</span><br><br>
+          <span class="sk-key">## 触发方式</span><br>
+          <span class="sk-val">当我说「帮我写周报」时启动</span><br><br>
+          <span class="sk-key">## 执行步骤</span><br>
+          <span class="sk-val">1. 询问：本周完成了哪些事（列条目即可）</span><br>
+          <span class="sk-val">2. 询问：遇到了哪些问题</span><br>
+          <span class="sk-val">3. 按金字塔原则重新组织，结论先行</span><br><br>
+          <span class="sk-key">## 输出格式</span><br>
+          <span class="sk-val">核心结论（2句）/ 完成事项 / 问题 / 下周计划</span>
+        </div>
+
+        <!-- 每人的 Skill 方向 -->
+        <p style="font-size:12px;font-weight:700;color:#065f46;margin-bottom:6px;">每人选一个场景，当场改写并验证 →</p>
+        <table class="skill-table">
+          <thead>
+            <tr><th>场景</th><th>Skill 方向</th><th>触发词</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>活动设计</td>
+              <td>活动 H5 需求文档生成</td>
+              <td><span class="trigger">帮我写活动需求</span></td>
+            </tr>
+            <tr>
+              <td>数据分析</td>
+              <td>数据分析报告生成 + 可视化</td>
+              <td><span class="trigger">帮我分析这份数据</span></td>
+            </tr>
+            <tr>
+              <td>素材生成</td>
+              <td>文字模板参数配置 Skill</td>
+              <td><span class="trigger">帮我生成文字模板</span></td>
+            </tr>
+            <tr>
+              <td>文档规范</td>
+              <td>需求文档规范化（金字塔原则）</td>
+              <td><span class="trigger">帮我规范这份文档</span></td>
+            </tr>
+            <tr>
+              <td>周报 / 汇报</td>
+              <td>散乱笔记 → 结构化汇报大纲</td>
+              <td><span class="trigger">帮我写周报</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="output-banner output-banner-green" style="margin-top:12px;">
+          ✦ 产出：每人完成属于自己工作场景的 Skill，说触发词就能复用
+        </div>
+      </div>
+
+      <!-- P3 Agent -->
+      <div class="part">
+        <div class="part-header">
+          <div class="part-title-wrap">
+            <div class="part-badge p3b">P3</div>
+            <span class="part-title">Agent 编排：指挥 AI 完成复杂任务</span>
+          </div>
+          <span class="part-time">45 – 55 min</span>
+        </div>
+        <ul class="part-items">
+          <li>
+            <div class="dot dot-pink"></div>
+            <div class="item-main">
+              <div>什么是 Agent 模式</div>
+              <div class="item-sub">Agent 模式下 AI 会自主规划步骤、创建文件、运行代码、查看结果并自我纠正，设计师只需描述目标</div>
+            </div>
+          </li>
+          <li>
+            <div class="dot dot-orange"></div>
+            <div class="item-main">
+              <div>实操：用 Agent 做一个完整的 Landing Page</div>
+              <div class="item-sub">「帮我做一个设计师作品集 Landing Page：顶部 Hero 区 / 作品展示 Grid / 关于我 / 联系方式，风格简洁的深色系」</div>
+            </div>
+          </li>
+          <li>
+            <div class="dot dot-orange"></div>
+            <div class="item-main">
+              <div>多 Agent 并行：同时处理多个任务</div>
+              <div class="item-sub">开多个 Composer 窗口，一个生成页面，一个写文案，一个搜索竞品参考，三路并行互不干扰</div>
+            </div>
+          </li>
+          <li>
+            <div class="dot dot-gray"></div>
+            <div class="item-main">
+              <div>审查 Diffs View：看 AI 改了什么</div>
+              <div class="item-sub">每次 Agent 完成任务后，在 Diffs View 里查看变更内容，选择接受 / 拒绝，保持对结果的控制权</div>
+            </div>
+          </li>
+        </ul>
+        <div class="part-tags">
+          <span class="tag tag-pink">🤖 Agent 模式</span>
+          <span class="tag tag-orange">📋 Diffs 审查</span>
+          <span class="tag tag-orange">⚡ 并行任务</span>
+        </div>
+      </div>
+
+      <!-- P4 独立出品 -->
+      <div class="part">
+        <div class="part-header">
+          <div class="part-title-wrap">
+            <div class="part-badge p4b">P4</div>
+            <span class="part-title">独立出品：发布你的第一个真实产品</span>
+          </div>
+          <span class="part-time">55 – 60 min</span>
+        </div>
+        <ul class="part-items">
+          <li>
+            <div class="dot dot-orange"></div>
+            <div class="item-main">
+              <div>快速部署到公网（Vercel / GitHub Pages）</div>
+              <div class="item-sub">「帮我把这个页面部署到 Vercel，生成一个可以分享的链接」—— 设计师第一次拥有真实的线上产品</div>
+            </div>
+          </li>
+          <li>
+            <div class="dot dot-orange"></div>
+            <div class="item-main">
+              <div>进阶：做自己的设计工具</div>
+              <div class="item-sub">示例：「帮我做一个色板管理工具，可以输入颜色名称，自动生成对应的色板，支持导出 Tailwind 配置」</div>
+            </div>
+          </li>
+          <li>
+            <div class="dot dot-orange"></div>
+            <div class="item-main">
+              <div>A/B 变体快速出包</div>
+              <div class="item-sub">「把这个 Landing Page 生成 3 个配色变体：科技蓝 / 温暖橙 / 奢华深色，每个都能独立访问」</div>
+            </div>
+          </li>
+        </ul>
+        <div class="output-banner output-banner-green">
+          🏆 课堂产出：每位学员完成一个有真实访问链接的网页作品，可以发朋友圈展示
+        </div>
+      </div>
+
+      <!-- 课后作业 2 -->
+      <div class="homework">
+        <div class="hw-icon">✏️</div>
+        <div>
+          <strong style="font-size:14px;color:#111;">课后作业</strong><br>
+          独立完成：用 Agent 模式制作一个「设计师专属小工具」（色板、字体预览、组件库展示网站均可），部署上线分享链接。
+        </div>
+      </div>
+
+    </div>
+  </div><!-- end session 2 -->
+
+</div><!-- end main grid -->
+
+<!-- ── PANORAMA ── -->
+<div class="panorama">
+  <h3>两节课 · 技能成长全景</h3>
+  <div class="skill-track">
+    <div class="skill-node">
+      <div class="skill-icon si-purple">⚙️</div>
+      <div class="sk-name">Skill 00</div>
+      <div class="sk-desc">环境配置<br>安装 + 联网</div>
+      <span class="sk-session ss1">第一节</span>
+    </div>
+    <div class="skill-node">
+      <div class="skill-icon si-blue">🌐</div>
+      <div class="sk-name">Skill 01</div>
+      <div class="sk-desc">对话 + 联网<br>搜索写作流</div>
+      <span class="sk-session ss1">第一节</span>
+    </div>
+    <div class="skill-node">
+      <div class="skill-icon si-pink">🎨</div>
+      <div class="sk-name">Skill 02</div>
+      <div class="sk-desc">Design Mode<br>视觉直接编辑</div>
+      <span class="sk-session ss2">第二节</span>
+    </div>
+    <div class="skill-node">
+      <div class="skill-icon si-green">✦</div>
+      <div class="sk-name">Skill 03</div>
+      <div class="sk-desc">自定义 Skill<br>写一次复用 N 次</div>
+      <span class="sk-session ss2">第二节</span>
+    </div>
+    <div class="skill-node">
+      <div class="skill-icon si-blue">🤖</div>
+      <div class="sk-name">Skill 04</div>
+      <div class="sk-desc">Agent 指挥<br>独立出品</div>
+      <span class="sk-session ss2">第二节</span>
+    </div>
+  </div>
+
+  <div class="track-divider">
+    <div class="line"></div>
+    <span>课后能做的事</span>
+    <div class="line"></div>
+  </div>
+</div>
+
+<!-- ── AFTER ── -->
+<div class="after-section">
+  <div class="after-card">
+    <h4>第一节课后的事</h4>
+    <p>用 AI 搜集设计资料 · 写设计文章 · 让 IDE 自动操作浏览器<br><br>
+    <strong style="color:#7c3aed;">带来第二节：</strong>你发布的文章链接或截图</p>
+  </div>
+  <div class="after-card">
+    <h4>第二节课后的事</h4>
+    <p>设计稿变真实网页 · 发布上线产品 · 做自己的设计工具 · 用 Skill 自动化重复工作</p>
+  </div>
+</div>
+
+<div class="quote-bar">
+  <em>「2026 年，Cursor 的目标 KPI 就是把所有设计师都变成会造软件的人。」</em> — Cursor Team
+</div>
+
+</body>
+</html>
