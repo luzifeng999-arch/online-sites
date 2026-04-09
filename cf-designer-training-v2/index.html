@@ -545,33 +545,33 @@
       <div class="section" id="p2-skill1"><div class="section-accent"></div>
         <div class="section-header">
           <div class="section-eyebrow">第二节课 · 进阶实战</div>
-          <h2><em>搭一个自己的平台</em></h2>
-          <div class="section-desc">第一节学会了 IDE 能做什么 → 第二节直接用 IDE 搭建一个设计工具平台，接入不同的能力，再优化它的界面</div>
-          <div class="goal-box goal-box-t">🎯 主线：从 0 搭一个「设计灵感聚合工具」的 Web 平台 → 用 Skill 给它接入联网搜索能力 → 用 Agent 跑通整个链路 → 用 Design Mode 把界面改成自己喜欢的风格</div>
+          <h2><em>搭一个设计灵感雷达</em></h2>
+          <div class="section-desc">第一节学会了 IDE 能做什么 → 第二节用 IDE 搭一个真正有价值的工具：聚合 10+ 设计网站、Claude Vision 分析每个案例、输出灵感卡片或趋势周报</div>
+          <div class="goal-box goal-box-t">🎯 主线：搭一个「设计灵感雷达」平台骨架 → 用 Skill A 接入多源采集 + Claude Vision 分析能力 → 用 Skill B 切换成周报输出模式 → 用 Agent 跑通整链路 → 用 Design Mode 改成自己的风格</div>
         </div>
         <div class="cards">
 
           <!-- SK1 -->
           <div class="card" style="border-color:rgba(10,149,128,.2);"><div class="card-top ct-teal"></div><div class="card-inner">
-            <div class="card-header"><div class="card-title-row"><div class="badge b-sk">SK1</div><span class="card-title" style="color:var(--teal);">✦ 搭平台骨架：一句话生成可运行的 Web 工具</span></div><span class="card-time">0 – 20 min</span></div>
-            <div class="alert-box"><strong>核心认知：</strong>IDE 不只能改代码——它能从 0 帮你生成一个完整的 Web 应用。一句需求描述，直接跑起来的平台就出来了。</div>
+            <div class="card-header"><div class="card-title-row"><div class="badge b-sk">SK1</div><span class="card-title" style="color:var(--teal);">✦ 搭平台骨架：一句话生成设计灵感雷达</span></div><span class="card-time">0 – 20 min</span></div>
+            <div class="alert-box"><strong>核心认知：</strong>IDE 不只能改代码——它能从 0 生成一个完整的 Web 应用。说清「功能 + 风格参考 + 技术形式」，AI 一次生成可运行骨架。</div>
             <div class="timeline">
               <div class="tl-item"><div class="tl-left"><div class="tl-num">1</div><div class="tl-line"></div></div>
                 <div class="tl-content">
-                  <strong>说清楚你想要什么工具（0–3 min）</strong>
-                  <p>输入一句描述：「帮我做一个设计灵感聚合工具，有搜索栏、展示卡片区域、收藏功能，风格参考 Linear，用单个 HTML 文件实现」</p>
-                  <p style="margin-top:6px;font-style:italic;color:var(--teal);">关键点：说清楚「功能是什么 + 视觉风格参考 + 技术形式」，AI 就能一次生成可运行的骨架。</p>
+                  <strong>说清楚要什么工具（0–3 min）</strong>
+                  <p>输入：「帮我做一个设计灵感雷达，支持从多个设计网站聚合灵感，展示卡片含图片分析摘要、风格标签、来源站点，支持按风格筛选和收藏，风格参考 Linear，单个 HTML 文件实现」</p>
+                  <p style="margin-top:6px;font-style:italic;color:var(--teal);">关键点：说清楚「功能 + 视觉参考 + 技术形式」，AI 就能一次生成完整骨架。</p>
                 </div>
               </div>
               <div class="tl-item"><div class="tl-left"><div class="tl-num">2</div><div class="tl-line"></div></div>
                 <div class="tl-content">
                   <strong>现场看平台跑起来（3–15 min）</strong>
-                  <p>AI 生成 HTML + CSS + JS → 在浏览器直接打开 → 是一个真实可操作的界面：有搜索栏、卡片展示区、收藏按钮，但数据还是空的。</p>
-                  <div class="preview-code" style="margin-top:10px;"><span class="pc-comment">&lt;!-- 设计灵感聚合工具 · 骨架版 --&gt;
-&lt;!-- 功能：搜索栏 / 灵感卡片 / 收藏 / 过滤标签 --&gt;</span>
-<span class="pc-tag">&lt;div</span> <span class="pc-attr">class=</span><span class="pc-text">"app"</span><span class="pc-tag">&gt;</span>
-<span class="pc-text">  &lt;header&gt;设计灵感聚合 · 搜索栏&lt;/header&gt;
-  &lt;div class="card-grid"&gt;  &lt;!-- 灵感卡片区（空壳）--&gt;
+                  <p>AI 生成 HTML + CSS + JS → 浏览器打开 → 有搜索栏、来源筛选栏、灵感卡片区、收藏功能，界面完整但数据是示例。</p>
+                  <div class="preview-code" style="margin-top:10px;"><span class="pc-comment">&lt;!-- 设计灵感雷达 · 骨架版 --&gt;
+&lt;!-- 来源：Dribbble / Behance / Awwwards / 站酷 ... --&gt;</span>
+<span class="pc-tag">&lt;div</span> <span class="pc-attr">class=</span><span class="pc-text">"radar-app"</span><span class="pc-tag">&gt;</span>
+<span class="pc-text">  &lt;header&gt;设计灵感雷达 · 搜索 + 来源筛选&lt;/header&gt;
+  &lt;div class="card-grid"&gt;  &lt;!-- 卡片：图片 + AI分析摘要 + 风格标签 --&gt;
     &lt;div class="card"&gt;等待接入数据...&lt;/div&gt;
   &lt;/div&gt;</span>
 <span class="pc-tag">&lt;/div&gt;</span></div>
@@ -579,9 +579,9 @@
               </div>
               <div class="tl-item"><div class="tl-left"><div class="tl-num">3</div></div>
                 <div class="tl-content">
-                  <strong>感知差距，引出下一步（15–20 min）</strong>
-                  <p>骨架好看，但是空的——没有真实数据。抛出问题：<em style="color:var(--teal);">「怎么让这个工具自动帮我去搜 Dribbble 上的内容，填进卡片里？」</em> → 引出 Skill 接入能力。</p>
-                  <div class="pills" style="margin-top:10px;"><span class="pill pill-t">🏗 平台骨架已就位</span><span class="pill pill-t">📭 数据待接入</span></div>
+                  <strong>抛出核心问题（15–20 min）</strong>
+                  <p>「卡片上的「AI 分析摘要」从哪来？和自己上网搜有什么区别？」→ 引出 Skill 接入多源采集 + Claude Vision 分析能力。</p>
+                  <div class="pills" style="margin-top:10px;"><span class="pill pill-t">🏗 平台骨架已就位</span><span class="pill pill-t">🧠 分析能力待接入</span></div>
                 </div>
               </div>
             </div>
@@ -589,45 +589,71 @@
 
           <!-- SK2 -->
           <div class="card" id="p2-skill2" style="border-color:rgba(94,106,210,.2);"><div class="card-top ct-grad"></div><div class="card-inner">
-            <div class="card-header"><div class="card-title-row"><div class="badge b-sk2">SK2</div><span class="card-title" style="color:var(--purple);">⭐ 接入能力：用 Skill 给平台装上「眼睛」</span></div><span class="card-time">20 – 40 min</span></div>
-            <div class="alert-box"><strong>核心认知：</strong>Skill 是给平台接入外部能力的方式——让工具学会「自动搜索网络 + 提取内容 + 填充到界面」。不同的 Skill = 不同的能力插件，随时可以换。</div>
+            <div class="card-header"><div class="card-title-row"><div class="badge b-sk2">SK2</div><span class="card-title" style="color:var(--purple);">⭐ 接入能力：Skill A 灵感采集 + Skill B 趋势周报</span></div><span class="card-time">20 – 40 min</span></div>
+            <div class="alert-box"><strong>核心认知：</strong>同一个平台，装不同 Skill = 不同能力。Skill A 让平台学会「多源采集 + Claude Vision 分析每张图」；Skill B 切换成「趋势归纳 + 输出周报」模式。换 Skill 不用改平台。</div>
 
-            <p style="font-size:12px;font-weight:700;color:var(--purple);margin-bottom:10px;">📄 Skill 文件（.codeflicker/skills/inspiration-fetch.md）</p>
-            <div class="code"><span class="c-comment"># 灵感抓取 Skill
-# 能力：浏览器 MCP + 内容提取 + 写入平台数据</span>
+            <p style="font-size:12px;font-weight:700;color:var(--purple);margin-bottom:10px;">📄 Skill A：灵感采集分析（.codeflicker/skills/radar-collect.md）</p>
+            <div class="code"><span class="c-comment"># 灵感雷达采集 Skill
+# 能力：多源抓取 + Claude Vision 逐图分析</span>
 
 <span class="c-key">## 触发方式</span>
-<span class="c-val">当我说「帮我抓取今天的设计灵感」时启动</span>
+<span class="c-val">当我说「帮我抓今天的设计灵感」时启动</span>
 
-<span class="c-key">## 执行步骤</span>
-<span class="c-val">1. 打开浏览器搜索 Dribbble / Behance 最新热门
-2. 提取 Top 10 作品：标题 / 作者 / 标签 / 截图描述 / 链接
-3. 按 JSON 格式整理数据
-4. 把数据写入平台的 data.js 文件，触发页面刷新</span>
+<span class="c-key">## 数据源（按顺序采集）</span>
+<span class="c-val">- Dribbble API → 热门 UI / 插画 / 品牌作品
+- Behance API → 完整项目集，含设计说明
+- Awwwards（Browser MCP）→ 获奖网站截图
+- 站酷（Browser MCP）→ 国内设计趋势
+目标：共采集 60–100 条原始数据</span>
 
-<span class="c-key">## 输出格式</span>
-<span class="c-val">更新 data.js，页面卡片区自动渲染新数据
-并在侧栏生成「本次抓取摘要」：共抓取 N 条 / 热门标签 Top3</span></div>
+<span class="c-key">## 分析步骤</span>
+<span class="c-val">1. 对每张图调用 Claude Vision：
+   提取主色调 / 布局结构 / 风格关键词 / 可借鉴点
+2. 汇总所有分析结果写入 data.js
+3. 页面卡片自动渲染：图片 + AI 分析摘要 + 风格标签</span>
+
+<span class="c-key">## 输出</span>
+<span class="c-val">灵感卡片页面更新 + 采集摘要：N 条 / 热门风格 Top3</span></div>
 
             <div class="divider"></div>
-            <p style="font-size:12px;font-weight:700;color:var(--purple);margin-bottom:10px;">⚡ 接入后的效果</p>
+            <p style="font-size:12px;font-weight:700;color:var(--purple);margin-bottom:6px;">📄 Skill B：趋势周报（.codeflicker/skills/radar-report.md）</p>
+            <div class="code"><span class="c-comment"># 设计趋势周报 Skill
+# 能力：聚合分析结果 → 归趋势 → 输出报告</span>
+
+<span class="c-key">## 触发方式</span>
+<span class="c-val">当我说「帮我生成本周设计趋势报告」时启动</span>
+
+<span class="c-key">## 执行步骤</span>
+<span class="c-val">1. 读取 data.js 中已有的 Claude Vision 分析结果
+2. 发给 Claude 做趋势归纳：
+   - 色彩趋势（高频色值 + 配色风格）
+   - 布局趋势（网格类型 / 信息密度）
+   - 风格趋势（关键词频率统计）
+3. 筛选最具代表性的 5–8 个案例
+4. 输出 weekly-report.html</span>
+
+<span class="c-key">## 输出</span>
+<span class="c-val">weekly-report.html：结构化周报，可截图发给团队</span></div>
+
+            <div class="divider"></div>
+            <p style="font-size:12px;font-weight:700;color:var(--purple);margin-bottom:10px;">⚡ 为什么比自己上网搜强</p>
             <div class="flow">
-              <div class="flow-step"><div class="flow-num" style="background:var(--teal);">1</div><div class="flow-body"><strong>SK1 骨架已就位</strong>：平台界面可运行，卡片区待填充</div></div>
+              <div class="flow-step"><div class="flow-num" style="background:var(--teal);">1</div><div class="flow-body"><strong>自己搜</strong>：逛 10 个网站，截图收藏，2 小时，得到一堆没分析的图</div></div>
               <div class="flow-connector"></div>
-              <div class="flow-step"><div class="flow-num" style="background:var(--purple);">2</div><div class="flow-body"><strong>说「帮我抓取今天的设计灵感」</strong> → Skill 自动打开浏览器 → 搜索抓取 → 写入 data.js</div></div>
+              <div class="flow-step"><div class="flow-num" style="background:var(--purple);">2</div><div class="flow-body"><strong>灵感雷达</strong>：触发一次，5 分钟，60–100 条，每张图都有 AI 分析摘要</div></div>
               <div class="flow-connector"></div>
-              <div class="flow-step"><div class="flow-num" style="background:#6B62D8;">3</div><div class="flow-body"><strong>刷新平台页面</strong>：卡片区真实数据进来了——标题、标签、描述都填好了</div></div>
+              <div class="flow-step"><div class="flow-num" style="background:#6B62D8;">3</div><div class="flow-body"><strong>Skill B 周报</strong>：「本周 65% 作品用暗底亮色」「圆角集中 12–16px」，有观点有数据</div></div>
               <div class="flow-connector"></div>
-              <div class="flow-step"><div class="flow-num" style="background:#0A8A7C;">4</div><div class="flow-body"><strong>换一个 Skill = 换一种数据源</strong>：把 Dribbble 换成 Pinterest / Awwwards，平台立刻有新能力</div></div>
+              <div class="flow-step"><div class="flow-num" style="background:#0A8A7C;">4</div><div class="flow-body"><strong>换 Skill = 换能力</strong>：再装一个「配色提取 Skill」，平台多一种分析维度，骨架不动</div></div>
             </div>
 
             <div class="ability-grid" style="margin-top:16px;">
-              <div class="ability-item"><strong>🔌 Skill = 能力插件</strong>每个 Skill 是一个独立能力，随时接入 / 换掉，平台不用重写</div>
-              <div class="ability-item"><strong>🌐 浏览器 MCP 自动抓取</strong>不需要 API key，直接模拟人在网上操作，搜索 + 截图 + 提取</div>
-              <div class="ability-item"><strong>🔄 多能力叠加</strong>再加一个「配色提取 Skill」「字体分析 Skill」，平台能力翻倍</div>
-              <div class="ability-item"><strong>📦 平台 = 长期工具</strong>不是一次性文件，是你自己的工具，下次打开继续用、继续升级</div>
+              <div class="ability-item"><strong>🌐 10+ 数据源</strong>Dribbble / Behance / Awwwards / 站酷 / 花瓣 / Lapa.ninja 等，国内外覆盖</div>
+              <div class="ability-item"><strong>👁 Claude Vision 分析</strong>不只是收集图片，AI 真的看懂每张图：配色、布局、风格关键词</div>
+              <div class="ability-item"><strong>� 两个 Skill 两种模式</strong>同一个平台：按需找灵感 or 输出周报，切换 Skill 即可</div>
+              <div class="ability-item"><strong>📦 长期可用资产</strong>每次运行积累数据，周报越出越有对比价值，不是一次性工具</div>
             </div>
-            <div class="banner banner-p">⭐ 核心认知：这就是「用 IDE 搭平台」的本质——骨架是平台，Skill 是插件，每加一个 Skill 就多一种能力</div>
+            <div class="banner banner-p">⭐ 核心认知：工具的价值不是帮你收集，是帮你理解。Browser MCP 是腿，Claude Vision 是眼，Skill 是插件——三件事组合，才是一个真正有用的工具。</div>
           </div></div>
 
           <!-- P2 Agent -->
@@ -643,8 +669,8 @@
 
           <!-- P3 Design Mode -->
           <div class="card" id="p2-design" style="border-color:rgba(184,115,22,.2);"><div class="card-top ct-amber"></div><div class="card-inner">
-            <div class="card-header"><div class="card-title-row"><div class="badge b-a">P3</div><span class="card-title">Design Mode：把平台界面改成自己的风格</span></div><span class="card-time">50 – 60 min</span></div>
-            <p style="font-size:13px;color:var(--amber);margin-bottom:14px;opacity:.9;">平台能跑通了，但 AI 生成的界面不是你的审美？最后 10 分钟，不看代码，直接上手框选改。</p>
+            <div class="card-header"><div class="card-title-row"><div class="badge b-a">P3</div><span class="card-title">Design Mode：把灵感雷达改成你自己的风格</span></div><span class="card-time">50 – 60 min</span></div>
+            <p style="font-size:13px;color:var(--amber);margin-bottom:14px;opacity:.9;">平台能跑通了，数据也进来了，但 AI 生成的界面是通用的。最后 10 分钟，不看代码，框选改成你自己的风格——用设计师的眼光收尾。</p>
             <ul class="item-list">
               <li class="item-row"><div class="item-dot d-a"></div><div class="item-body"><strong>⌘+Shift+D 进入 Design Mode</strong><div class="item-sub">在内置浏览器里直接框选灵感卡片、标题、背景区域 → AI 识别你指的是哪个元素，等你的指令</div></div></li>
               <li class="item-row"><div class="item-dot d-a"></div><div class="item-body"><strong>示例：「卡片背景改成深色，标签用彩色区分，头部加一个渐变 Banner」</strong><div class="item-sub">实时看到变化。改完就是你自己风格的工具——和别人的 AI 生成品完全不同</div></div></li>
@@ -656,8 +682,11 @@
           <!-- HW2 -->
           <div class="homework"><div class="hw-icon">✏️</div><div class="hw-body">
             <strong>课后可以试试</strong>
-            把今天搭的平台继续升级：再加一个 Skill（比如「配色提取」或「竞品截图对比」），让你的工具多一种能力。或者用 Design Mode 把界面改成你的品牌色，截图分享出来。<br><br>
-            <span class="hw-cta">💡 你搭的不是一次性文件，是一个可以持续迭代的属于你自己的设计工具。</span>
+            给你的灵感雷达加新能力，选一个方向：<br>
+            · 写一个「配色提取 Skill」，让雷达自动输出每个案例的色板<br>
+            · 把数据源换成 Muzli / Awwwards，看看抓回来什么不同内容<br>
+            · 用 Design Mode 把界面改成你负责项目的品牌色，截图发出来<br><br>
+            <span class="hw-cta">💡 你搭的不是一次性 demo，是一个每周都能跑、可以持续积累设计数据的雷达系统。</span>
           </div></div>
 
         </div>
