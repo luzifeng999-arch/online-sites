@@ -406,7 +406,7 @@
         <a class="nav-item" href="#p2-skill1" data-target="p2-skill1"><span class="nav-icon">🏗</span> 搭平台骨架<span class="nav-badge">0–20m</span></a>
         <a class="nav-item" href="#p2-skill2" data-target="p2-skill2"><span class="nav-icon">🔌</span> 接入能力 Skill<span class="nav-badge">20–40m</span></a>
         <a class="nav-item" href="#p2-agent" data-target="p2-agent"><span class="nav-icon">🤖</span> Agent 跑通链路<span class="nav-badge">40–50m</span></a>
-        <a class="nav-item" href="#p2-design" data-target="p2-design"><span class="nav-icon">🎨</span> Design Mode 美化<span class="nav-badge">50–60m</span></a>
+        <a class="nav-item" href="#p2-design" data-target="p2-design"><span class="nav-icon">🎨</span> 社区 Skill 美化<span class="nav-badge">50–60m</span></a>
       </div>
     </nav>
     <div class="sidebar-footer">v2.1 · 2026-04 · luzifeng</div>
@@ -545,22 +545,22 @@
       <div class="section" id="p2-skill1"><div class="section-accent"></div>
         <div class="section-header">
           <div class="section-eyebrow">第二节课 · 进阶实战</div>
-          <h2><em>搭一个独立运行的设计灵感雷达</em></h2>
-          <div class="section-desc">第一节学会了 IDE 能做什么 → 第二节用 IDE 搭一个<strong>真正能独立运行的应用</strong>：前端界面 + Python 后端 + 内置 Claude Vision 分析，离开 CF 也能用</div>
-          <div class="goal-box goal-box-t">🎯 主线：CF 生成「前端 + 后端 + Claude API 调用」完整应用骨架 → Skill A 写入多源采集 + Vision 分析逻辑 → Skill B 生成趋势周报模式 → Agent 跑通前后端联调 → Design Mode 改界面风格<br><br>⚠️ 关键认知：Skill 是告诉 CF 「帮我生成什么代码」，真正的 Claude 分析能力住在生成出来的应用里，不在 CF 里</div>
+          <h2><em>搭一个对话式设计助手</em></h2>
+          <div class="section-desc">第一节学会了 IDE 能做什么 → 第二节用 IDE 搭一个<strong>比 Eagle 强一个维度的工具</strong>：你说「我要做马年海报」，它自动理解意图、Browser MCP 采集参考图、Claude Vision 逐图分析，然后给你具体的设计建议</div>
+          <div class="goal-box goal-box-t">🎯 主线：CF 生成「前端 + 后端四接口 + Claude API」完整应用骨架 → 加历史记录功能 + 趋势周报功能 → Agent 跑通前后端联调 → 引用社区 Skill 美化界面<br><br>⚠️ 关键认知：Eagle 是仓库，今天的工具是你的设计同事——它不只帮你存，它帮你找、分析、给建议</div>
         </div>
         <div class="cards">
 
           <!-- SK1 -->
           <div class="card" style="border-color:rgba(10,149,128,.2);"><div class="card-top ct-teal"></div><div class="card-inner">
-            <div class="card-header"><div class="card-title-row"><div class="badge b-sk">SK1</div><span class="card-title" style="color:var(--teal);">✦ 搭完整应用骨架：前端 + 后端 + Claude API</span></div><span class="card-time">0 – 20 min</span></div>
-            <div class="alert-box"><strong>核心认知：</strong>CF 生成的不只是一个页面，而是一个完整的独立应用——前端负责展示，后端负责调用 Claude Vision 分析，两者联调跑通后，离开 CF 也能独立运行。</div>
+            <div class="card-header"><div class="card-title-row"><div class="badge b-sk">SK1</div><span class="card-title" style="color:var(--teal);">✦ 搭完整应用骨架：对话式设计助手</span></div><span class="card-time">0 – 20 min</span></div>
+            <div class="alert-box"><strong>核心认知：</strong>今天做的不是 Eagle 那种图片仓库，而是一个会对话的设计同事——你说「我要做马年海报」，它理解意图、自动采集参考、逐图分析、给出设计建议。Claude 的能力住在应用里，不在 CF 里。</div>
             <div class="timeline">
               <div class="tl-item"><div class="tl-left"><div class="tl-num">1</div><div class="tl-line"></div></div>
                 <div class="tl-content">
                   <strong>说清楚完整应用的结构（0–3 min）</strong>
-                  <p>输入：「帮我搭一个设计灵感雷达应用，包含：① 前端 index.html：搜索栏、来源筛选、灵感卡片（含 AI 分析摘要字段）、收藏功能，风格参考 Linear；② 后端 server.py：Flask 服务，负责调 Dribbble API 抓数据、把图片发给 Claude Vision 分析、返回 JSON 给前端；③ .env 文件：存放 CLAUDE_API_KEY」</p>
-                  <p style="margin-top:6px;font-style:italic;color:var(--teal);">关键点：前端只负责展示，真正的 Claude 分析能力在后端，应用独立运行不依赖 CF。</p>
+                  <p>输入：「帮我搭一个对话式设计助手应用：① 前端 index.html：对话输入框、助手解读区（Claude 理解的意图和关键词）、参考卡片区（封面+标题+分析+可点击跳转）、右侧设计建议面板、底部生成参考报告按钮，风格 Linear 深色；② 后端 server.py：四个接口——/api/analyze-intent（理解意图）、/api/collect（Browser MCP 采集+Vision 分析）、/api/suggest（生成设计建议）、/api/report（整合报告）；③ .env 文件」</p>
+                  <p style="margin-top:6px;font-style:italic;color:var(--teal);">关键点：Eagle 不会分析，这个会。你说想做什么，它帮你找参考、分析参考、告诉你怎么做。</p>
                 </div>
               </div>
               <div class="tl-item"><div class="tl-left"><div class="tl-num">2</div><div class="tl-line"></div></div>
@@ -576,20 +576,23 @@
               </div>
               <div class="tl-item"><div class="tl-left"><div class="tl-num">3</div><div class="tl-line"></div></div>
                 <div class="tl-content">
-                  <strong>启动后端 + 打开前端（8–18 min）</strong>
-                  <p><code>python server.py</code> 启动后端服务 → 浏览器打开 index.html → 点击「抓取灵感」，后端真实调用 Claude Vision，卡片渲染出有 AI 分析摘要的数据。</p>
+                  <strong>启动并演示完整链路（8–18 min）</strong>
+                  <p>在 CF Composer 说「帮我安装依赖并启动 server.py」→ 浏览器打开 index.html → 输入「我想做一个马年海报」→ 点发送：</p>
                   <div class="preview-code" style="margin-top:8px;"><span class="pc-comment"># server.py 核心调用（CF 自动生成）——OpenAI SDK + 图像理解</span>
 <span class="pc-tag">client</span> = <span class="pc-text">OpenAI(base_url=CLAUDE_API_BASE, api_key=WQ_API_KEY)</span>
-<span class="pc-tag">POST /api/fetch</span>  <span class="pc-text"># 触发采集 + 分析</span>
-  <span class="pc-attr">→</span> <span class="pc-text">Browser MCP 打开设计网站，抓封面图+标题+原始链接</span>
+<span class="pc-tag">POST /api/analyze-intent</span>  <span class="pc-text"># 理解意图</span>
+  <span class="pc-attr">→</span> <span class="pc-text">Claude 返回主题词 / 推荐关键词 / 初步设计方向</span>
+<span class="pc-tag">POST /api/collect</span>  <span class="pc-text"># 采集 + 分析</span>
+  <span class="pc-attr">→</span> <span class="pc-text">Browser MCP 打开 Dribbble/Behance/Awwwards/站酷，抓封面图+标题+链接</span>
   <span class="pc-attr">→</span> <span class="pc-text">client.chat.completions.create(model, [{image_url}, {text:"分析..."}])</span>
-  <span class="pc-attr">→</span> <span class="pc-text">返回 JSON（含 source_url），卡片点击跳转原始作品</span></div>
+<span class="pc-tag">POST /api/suggest</span>  <span class="pc-text"># 设计建议</span>
+  <span class="pc-attr">→</span> <span class="pc-text">综合所有分析结果 → Claude 生成 3–5 条针对性设计建议</span></div>
                 </div>
               </div>
               <div class="tl-item"><div class="tl-left"><div class="tl-num">4</div></div>
                 <div class="tl-content">
                   <strong>抛出关键认知（18–20 min）</strong>
-                  <p>「这个应用现在可以关掉 CF，独立运行。Claude 的分析能力在 server.py 里，不在 CF 里——这才是一个真正可以交付、可以给团队用的工具。」</p>
+                  <p>「Eagle 是仓库，你今天做的是设计同事。Eagle 存完图你还是要自己想，这个工具帮你找参考、分析参考、告诉你为什么好。这才是 AI 应该做的事。」</p>
                   <div class="pills" style="margin-top:10px;"><span class="pill pill-t">🏗 前端骨架就位</span><span class="pill pill-t">⚙️ 后端服务运行中</span><span class="pill pill-p">🧠 Claude 能力内置</span></div>
                 </div>
               </div>
@@ -598,71 +601,45 @@
 
           <!-- SK2 -->
           <div class="card" id="p2-skill2" style="border-color:rgba(94,106,210,.2);"><div class="card-top ct-grad"></div><div class="card-inner">
-            <div class="card-header"><div class="card-title-row"><div class="badge b-sk2">SK2</div><span class="card-title" style="color:var(--purple);">⭐ Skill：把需求存下来，让工具可持续迭代</span></div><span class="card-time">20 – 40 min</span></div>
-            <div class="alert-box"><strong>核心认知：</strong>直接对 CF 说需求和写 Skill 文件效果一样——但 Skill 把需求<strong>存了下来</strong>。存在项目里，下次打开还在，发给同事他也能用，用 Git 管理改动有记录。把 Skill 理解成这个工具的「功能扩展手册」——手册存着，任何人拿到项目都能按手册迭代。</div>
+            <div class="card-header"><div class="card-title-row"><div class="badge b-sk2">SK2</div><span class="card-title" style="color:var(--purple);">⭐ 加功能：历史记录 + 趋势周报</span></div><span class="card-time">20 – 40 min</span></div>
+            <div class="alert-box"><strong>核心认知：</strong>应用骨架有了，接下来用 CF 再加两个功能——让它从「单次查询」变成「越用越有价值的设计资产」。每次对话都在积累数据，趋势周报越来越准。</div>
 
-            <p style="font-size:12px;font-weight:700;color:var(--purple);margin-bottom:10px;">📄 Skill A：灵感采集分析（.codeflicker/skills/radar-collect.md）</p>
-            <div class="code"><span class="c-comment"># 灵感雷达采集 Skill
-# 能力：多源抓取 + Claude Vision 逐图分析</span>
-
-<span class="c-key">## 触发方式</span>
-<span class="c-val">当我说「帮我抓今天的设计灵感」时启动</span>
-
-<span class="c-key">## 数据源（按顺序采集）</span>
-<span class="c-val">- Dribbble API → 热门 UI / 插画 / 品牌作品
-- Behance API → 完整项目集，含设计说明
-- Awwwards（Browser MCP）→ 获奖网站截图
-- 站酷（Browser MCP）→ 国内设计趋势
-目标：共采集 60–100 条原始数据</span>
-
-<span class="c-key">## 分析步骤</span>
-<span class="c-val">1. 对每张图调用 Claude Vision：
-   提取主色调 / 布局结构 / 风格关键词 / 可借鉴点
-2. 汇总所有分析结果写入 data.js
-3. 页面卡片自动渲染：图片 + AI 分析摘要 + 风格标签</span>
-
-<span class="c-key">## 输出</span>
-<span class="c-val">灵感卡片页面更新 + 采集摘要：N 条 / 热门风格 Top3</span></div>
+            <p style="font-size:12px;font-weight:700;color:var(--purple);margin-bottom:10px;">⚙️ 加功能 A：历史记录（在 Composer 里直接说）</p>
+            <div class="code"><span class="c-comment"># 粘贴到 Composer 触发</span>
+<span class="c-val">帮我给对话式设计助手加「历史记录」功能：
+后端：/api/collect 完成后自动保存到 history.json
+新增 GET /api/history（返回历史列表）
+新增 GET /api/history/&lt;id&gt;（返回某次完整数据）
+前端：左侧加历史记录侧边栏，点击一条历史
+快速恢复当时的参考卡片和设计建议，支持删除</span></div>
 
             <div class="divider"></div>
-            <p style="font-size:12px;font-weight:700;color:var(--purple);margin-bottom:6px;">📄 Skill B：趋势周报（.codeflicker/skills/radar-report.md）</p>
-            <div class="code"><span class="c-comment"># 设计趋势周报 Skill
-# 能力：聚合分析结果 → 归趋势 → 输出报告</span>
-
-<span class="c-key">## 触发方式</span>
-<span class="c-val">当我说「帮我生成本周设计趋势报告」时启动</span>
-
-<span class="c-key">## 执行步骤</span>
-<span class="c-val">1. 读取 data.js 中已有的 Claude Vision 分析结果
-2. 发给 Claude 做趋势归纳：
-   - 色彩趋势（高频色值 + 配色风格）
-   - 布局趋势（网格类型 / 信息密度）
-   - 风格趋势（关键词频率统计）
-3. 筛选最具代表性的 5–8 个案例
-4. 输出 weekly-report.html</span>
-
-<span class="c-key">## 输出</span>
-<span class="c-val">weekly-report.html：结构化周报，可截图发给团队</span></div>
+            <p style="font-size:12px;font-weight:700;color:var(--purple);margin-bottom:6px;">⚙️ 加功能 B：趋势周报（在 Composer 里直接说）</p>
+            <div class="code"><span class="c-comment"># 粘贴到 Composer 触发</span>
+<span class="c-val">帮我给对话式设计助手加「趋势周报」功能：
+后端 /api/report：读取过去 7 天 history.json，
+调 Claude 归纳：色彩趋势 / 布局趋势 / 风格趋势 /
+主题趋势（关键词频率 Top5），筛选 5–8 个代表案例
+前端：「生成本周趋势报告」按钮 → 右侧展示报告
+支持导出 PDF（window.print()）</span></div>
 
             <div class="divider"></div>
-            <p style="font-size:12px;font-weight:700;color:var(--purple);margin-bottom:10px;">⚡ 为什么比自己上网搜强</p>
+            <p style="font-size:12px;font-weight:700;color:var(--purple);margin-bottom:10px;">⚡ 为什么比 Eagle 强</p>
             <div class="flow">
-              <div class="flow-step"><div class="flow-num" style="background:var(--teal);">1</div><div class="flow-body"><strong>自己搜</strong>：逛 10 个网站，截图收藏，2 小时，得到一堆没分析的图</div></div>
+              <div class="flow-step"><div class="flow-num" style="background:#6B62D8;">Eagle</div><div class="flow-body"><strong>手动存图 → 自己翻 → 没有分析</strong>：存进去 500 张，下次做项目还是要自己想</div></div>
               <div class="flow-connector"></div>
-              <div class="flow-step"><div class="flow-num" style="background:var(--purple);">2</div><div class="flow-body"><strong>灵感雷达</strong>：触发一次，5 分钟，60–100 条，每张图都有 AI 分析摘要</div></div>
+              <div class="flow-step"><div class="flow-num" style="background:var(--teal);">今天</div><div class="flow-body"><strong>说意图 → AI 自动收集 → Claude 分析 → 给建议</strong>：找参考和想方案一步完成</div></div>
               <div class="flow-connector"></div>
-              <div class="flow-step"><div class="flow-num" style="background:#6B62D8;">3</div><div class="flow-body"><strong>Skill B 周报</strong>：「本周 65% 作品用暗底亮色」「圆角集中 12–16px」，有观点有数据</div></div>
-              <div class="flow-connector"></div>
-              <div class="flow-step"><div class="flow-num" style="background:#0A8A7C;">4</div><div class="flow-body"><strong>Skill 可共享可积累</strong>：你写的需求存在项目里，发给同事他也能用，项目迭代记录清晰</div></div>
+              <div class="flow-step"><div class="flow-num" style="background:var(--purple);">积累</div><div class="flow-body"><strong>历史记录 + 周报</strong>：「本周团队 70% 参考用暗金配色」，有数据支撑的设计洞察</div></div>
             </div>
 
             <div class="ability-grid" style="margin-top:16px;">
-              <div class="ability-item"><strong>📝 Skill = 需求备忘录</strong>写进项目，可复用、可共享、可用 Git 管理——不是一次性对话</div>
-              <div class="ability-item"><strong>👁 Claude Vision 分析</strong>不只是收集图片，AI 真的看懂每张图：配色、布局、风格关键词</div>
-              <div class="ability-item"><strong>🔄 加新功能只需写 Skill</strong>想扩展数据源或加周报，新建一个 Skill 文件触发即可，不用重写应用</div>
-              <div class="ability-item"><strong>📦 项目可持续交付</strong>项目发给同事，他们也能看 Skill 手册了解怎么迭代这个工具</div>
+              <div class="ability-item"><strong>💬 对话式触发</strong>说「我要做马年海报」，AI 自己判断需要什么参考，不用你手动搜</div>
+              <div class="ability-item"><strong>👁 Claude Vision 分析</strong>不只收图，AI 真的看懂每张图：配色、布局、风格关键词、可借鉴点</div>
+              <div class="ability-item"><strong>📚 历史记录召回</strong>做过的设计调研一键找回，连当时的分析和建议都在</div>
+              <div class="ability-item"><strong>📊 趋势周报</strong>每次使用都在积累，一周后 Claude 告诉你团队的真实设计偏好</div>
             </div>
-            <div class="banner banner-p">⭐ 核心认知：Skill 不是神奇的能力插件，就是你把对 CF 说的需求存下来。存在项目里，可复用、可共享、可迭代——这就是它的全部价值。</div>
+            <div class="banner banner-p">⭐ 核心价值：Eagle 是仓库，今天做的是设计同事。它越用越聪明，每次查询都在积累——这才是一个真正会增值的设计工具。</div>
           </div></div>
 
           <!-- P2 Agent -->
@@ -676,57 +653,57 @@
             <div class="pills"><span class="pill pill-p">🤖 前后端联调</span><span class="pill pill-a">📋 Diffs 审查</span><span class="pill pill-t">📱 移动端验证</span></div>
           </div></div>
 
-          <!-- P3 Design Mode -->
+          <!-- P3 社区 Skill 美化 -->
           <div class="card" id="p2-design" style="border-color:rgba(184,115,22,.2);"><div class="card-top ct-amber"></div><div class="card-inner">
-            <div class="card-header"><div class="card-title-row"><div class="badge b-a">P3</div><span class="card-title">Design Mode：把灵感雷达改成你自己的风格</span></div><span class="card-time">50 – 60 min</span></div>
-            <p style="font-size:13px;color:var(--amber);margin-bottom:14px;opacity:.9;">平台能跑通了，数据也进来了，但 AI 生成的界面是通用的。最后 10 分钟，不看代码，框选改成你自己的风格——用设计师的眼光收尾。</p>
+            <div class="card-header"><div class="card-title-row"><div class="badge b-a">P3</div><span class="card-title">社区 Skill：引用现成风格，一句话改界面</span></div><span class="card-time">50 – 60 min</span></div>
+            <p style="font-size:13px;color:var(--amber);margin-bottom:14px;opacity:.9;">功能跑通了。现在从 CF 社区引用一个别人写好的界面 Skill，不需要手写 CSS，一句话把整个界面换成你自己的品牌风格。</p>
             <ul class="item-list">
-              <li class="item-row"><div class="item-dot d-a"></div><div class="item-body"><strong>⌘+Shift+D 进入 Design Mode</strong><div class="item-sub">在内置浏览器里直接框选灵感卡片、标题、背景区域 → AI 识别你指的是哪个元素，等你的指令</div></div></li>
-              <li class="item-row"><div class="item-dot d-a"></div><div class="item-body"><strong>示例：「卡片背景改成深色，标签用彩色区分，头部加一个渐变 Banner」</strong><div class="item-sub">实时看到变化。改完就是你自己风格的工具——和别人的 AI 生成品完全不同</div></div></li>
-              <li class="item-row"><div class="item-dot d-x"></div><div class="item-body"><strong>完整闭环总结</strong><div class="item-sub">SK1 搭平台骨架 → SK2 接入抓取能力 → Agent 跑通整链路 → Design Mode 界面个性化 → 你有了一个真实可用的设计灵感工具</div></div></li>
+              <li class="item-row"><div class="item-dot d-a"></div><div class="item-body"><strong>打开 CF 社区 Skill 面板</strong><div class="item-sub">CF 顶部菜单 → Skills → Browse Community Skills → 搜索「UI」或「Dark Theme」</div></div></li>
+              <li class="item-row"><div class="item-dot d-a"></div><div class="item-body"><strong>引用并应用社区 Skill</strong><div class="item-sub">在 Composer 说「引用社区 Skill『Linear Dark UI』，把对话式设计助手改成深色背景、卡片悬停发光、对话输入框全宽居中样式」→ CF 按 Skill 规范改你的 index.html</div></div></li>
+              <li class="item-row"><div class="item-dot d-x"></div><div class="item-body"><strong>完整闭环总结</strong><div class="item-sub">SK1 搭应用骨架 → SK2 加历史记录+周报 → Agent 跑通四步链路 → 社区 Skill 一句话美化界面 → 你有了一个对话式设计助手</div></div></li>
             </ul>
-            <div class="banner banner-a">🏆 课堂最终产出：一个真实可运行的「设计灵感聚合平台」——会自动搜索网络，有自己的界面风格，可以每天打开用</div>
+            <div class="banner banner-a">🏆 课堂最终产出：一个真正比 Eagle 强的设计工具——说意图、自动找参考、Claude 分析、给设计建议，越用越有价值</div>
           </div></div>
 
-          <!-- BONUS: cf-remote -->
+          <!-- BONUS: KIM remote -->
           <div class="card" style="border-color:rgba(34,197,94,.2);margin-top:0;"><div class="card-top" style="background:linear-gradient(90deg,#16a34a,#0d9488);"></div><div class="card-inner">
-            <div class="card-header"><div class="card-title-row"><div class="badge" style="background:linear-gradient(135deg,#16a34a,#0d9488);color:#fff;font-size:10px;padding:3px 8px;border-radius:6px;">BONUS</div><span class="card-title" style="color:#16a34a;">📱 彩蛋：用微信远程控制你的灵感雷达</span></div><span class="card-time">课后自探</span></div>
-            <div class="alert-box" style="border-color:rgba(34,197,94,.25);background:rgba(34,197,94,.05);"><strong>场景：</strong>下班锁屏走人，在地铁上发一句微信「帮我的灵感雷达再抓一次数据」——CF 接到消息，自动运行，分析完把结果发回给你。到家之前，今天的设计灵感已经整理好了。</div>
+            <div class="card-header"><div class="card-title-row"><div class="badge" style="background:linear-gradient(135deg,#16a34a,#0d9488);color:#fff;font-size:10px;padding:3px 8px;border-radius:6px;">BONUS</div><span class="card-title" style="color:#16a34a;">💬 彩蛋：用 KIM 远程控制你的设计助手</span></div><span class="card-time">课后自探</span></div>
+            <div class="alert-box" style="border-color:rgba(34,197,94,.25);background:rgba(34,197,94,.05);"><strong>场景：</strong>电脑留在公司锁屏了，在地铁上打开 KIM 发一句「帮我找极简风格的 App 登录页参考」——CF 接到消息，自动跑完整链路：理解意图 → Browser MCP 采集 → Claude Vision 分析 → 生成设计建议，摘要发回给你。到家之前，明天评审要用的参考已经备好了。</div>
 
-            <p style="font-size:12px;font-weight:700;color:#16a34a;margin:14px 0 10px;">💬 在微信里就能做的事</p>
+            <p style="font-size:12px;font-weight:700;color:#16a34a;margin:14px 0 10px;">💬 在 KIM 里就能做的事</p>
             <div class="flow">
-              <div class="flow-step"><div class="flow-num" style="background:#16a34a;">1</div><div class="flow-body"><strong>触发采集</strong>：「帮我的灵感雷达抓一次今天的数据」→ server.py 启动，Claude 分析，结果回传</div></div>
+              <div class="flow-step"><div class="flow-num" style="background:#16a34a;">1</div><div class="flow-body"><strong>触发采集</strong>：「帮我找马年春节活动的参考」→ 意图理解 → Browser MCP 采集 → Claude 分析 → 设计建议摘要回传</div></div>
               <div class="flow-connector"></div>
-              <div class="flow-step"><div class="flow-num" style="background:#0d9488;">2</div><div class="flow-body"><strong>发图提问</strong>：截一张竞品截图发过去，「这个卡片布局值得借鉴吗」→ Claude Vision 直接分析回复</div></div>
+              <div class="flow-step"><div class="flow-num" style="background:#0d9488;">2</div><div class="flow-body"><strong>发图分析</strong>：截一张竞品截图发过去，「这个交互设计值得学吗」→ Claude Vision 分析布局/配色/可借鉴点</div></div>
               <div class="flow-connector"></div>
-              <div class="flow-step"><div class="flow-num" style="background:#0891b2;">3</div><div class="flow-body"><strong>加新功能</strong>：「帮我给雷达加一个按色调筛选的功能」→ CF 改代码，Diffs 发回让你确认</div></div>
+              <div class="flow-step"><div class="flow-num" style="background:#0891b2;">3</div><div class="flow-body"><strong>生成周报</strong>：「帮我生成本周趋势报告」→ 读取 history.json → Claude 归纳趋势 → 结构化报告回传</div></div>
             </div>
 
             <p style="font-size:12px;font-weight:700;color:#16a34a;margin:16px 0 10px;">📸 效果展示</p>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
               <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:10px;aspect-ratio:9/16;max-height:280px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--text-3);font-size:11px;text-align:center;padding:16px;">
-                <span style="font-size:24px;">📱</span>
+                <span style="font-size:24px;">💬</span>
                 <strong>占位图 ①</strong>
-                微信对话截图<br>发送「帮我抓一次灵感」<br>CF 回复采集结果摘要
+                KIM 对话截图<br>发送「帮我找马年海报参考」<br>CF 回复采集结果和设计建议
               </div>
               <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:10px;aspect-ratio:9/16;max-height:280px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--text-3);font-size:11px;text-align:center;padding:16px;">
                 <span style="font-size:24px;">🖼️</span>
                 <strong>占位图 ②</strong>
-                微信发图截图<br>发一张设计截图<br>CF 返回 Vision 分析结果
+                KIM 发图截图<br>发一张设计截图<br>CF 返回 Vision 分析结果
               </div>
             </div>
 
-            <div class="banner" style="background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.2);color:#15803d;">🚀 cf-remote：通过微信消息远程控制 CodeFlicker 的工具。你今天搭的应用 + cf-remote = 一个随时在工作的 AI 设计助手，不需要开电脑。</div>
+            <div class="banner" style="background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.2);color:#15803d;">🚀 KIM 远程控制：通过 KIM 消息控制 CodeFlicker。你今天做的对话式设计助手 + KIM = 一个随时在工作的 AI 设计同事，不需要开电脑。</div>
           </div></div>
 
           <!-- HW2 -->
           <div class="homework"><div class="hw-icon">✏️</div><div class="hw-body">
             <strong>课后可以试试</strong>
-            给你的灵感雷达加新能力，选一个方向：<br>
-            · 写一个「配色提取 Skill」，让雷达自动输出每个案例的色板<br>
-            · 把数据源换成 Muzli / Awwwards，看看抓回来什么不同内容<br>
-            · 用 Design Mode 把界面改成你负责项目的品牌色，截图发出来<br><br>
-            <span class="hw-cta">💡 你搭的不是一次性 demo，是一个每周都能跑、可以持续积累设计数据的雷达系统。</span>
+            给你的对话式设计助手加新能力，选一个方向：<br>
+            · 在 Composer 说「加竞品分析模式：输入竞品名称，自动收集截图并对比分析」<br>
+            · 在 Composer 说「加色板提取：每次分析完自动输出主色板 PNG」<br>
+            · 在 Composer 说「加更多数据源：Lapa.ninja / Mobbin / Muzli」<br><br>
+            <span class="hw-cta">💡 你今天做的是设计同事，不是图片仓库。它越用越懂你——每次对话都在积累你的设计偏好。</span>
           </div></div>
 
         </div>
