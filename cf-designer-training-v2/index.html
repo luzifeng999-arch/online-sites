@@ -688,6 +688,37 @@
             <div class="banner banner-a">🏆 课堂最终产出：一个真实可运行的「设计灵感聚合平台」——会自动搜索网络，有自己的界面风格，可以每天打开用</div>
           </div></div>
 
+          <!-- BONUS: cf-remote -->
+          <div class="card" style="border-color:rgba(34,197,94,.2);margin-top:0;"><div class="card-top" style="background:linear-gradient(90deg,#16a34a,#0d9488);"></div><div class="card-inner">
+            <div class="card-header"><div class="card-title-row"><div class="badge" style="background:linear-gradient(135deg,#16a34a,#0d9488);color:#fff;font-size:10px;padding:3px 8px;border-radius:6px;">BONUS</div><span class="card-title" style="color:#16a34a;">📱 彩蛋：用微信远程控制你的灵感雷达</span></div><span class="card-time">课后自探</span></div>
+            <div class="alert-box" style="border-color:rgba(34,197,94,.25);background:rgba(34,197,94,.05);"><strong>场景：</strong>下班锁屏走人，在地铁上发一句微信「帮我的灵感雷达再抓一次数据」——CF 接到消息，自动运行，分析完把结果发回给你。到家之前，今天的设计灵感已经整理好了。</div>
+
+            <p style="font-size:12px;font-weight:700;color:#16a34a;margin:14px 0 10px;">💬 在微信里就能做的事</p>
+            <div class="flow">
+              <div class="flow-step"><div class="flow-num" style="background:#16a34a;">1</div><div class="flow-body"><strong>触发采集</strong>：「帮我的灵感雷达抓一次今天的数据」→ server.py 启动，Claude 分析，结果回传</div></div>
+              <div class="flow-connector"></div>
+              <div class="flow-step"><div class="flow-num" style="background:#0d9488;">2</div><div class="flow-body"><strong>发图提问</strong>：截一张竞品截图发过去，「这个卡片布局值得借鉴吗」→ Claude Vision 直接分析回复</div></div>
+              <div class="flow-connector"></div>
+              <div class="flow-step"><div class="flow-num" style="background:#0891b2;">3</div><div class="flow-body"><strong>加新功能</strong>：「帮我给雷达加一个按色调筛选的功能」→ CF 改代码，Diffs 发回让你确认</div></div>
+            </div>
+
+            <p style="font-size:12px;font-weight:700;color:#16a34a;margin:16px 0 10px;">📸 效果展示</p>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+              <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:10px;aspect-ratio:9/16;max-height:280px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--text-3);font-size:11px;text-align:center;padding:16px;">
+                <span style="font-size:24px;">📱</span>
+                <strong>占位图 ①</strong>
+                微信对话截图<br>发送「帮我抓一次灵感」<br>CF 回复采集结果摘要
+              </div>
+              <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:10px;aspect-ratio:9/16;max-height:280px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--text-3);font-size:11px;text-align:center;padding:16px;">
+                <span style="font-size:24px;">🖼️</span>
+                <strong>占位图 ②</strong>
+                微信发图截图<br>发一张设计截图<br>CF 返回 Vision 分析结果
+              </div>
+            </div>
+
+            <div class="banner" style="background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.2);color:#15803d;">🚀 cf-remote：通过微信消息远程控制 CodeFlicker 的工具。你今天搭的应用 + cf-remote = 一个随时在工作的 AI 设计助手，不需要开电脑。</div>
+          </div></div>
+
           <!-- HW2 -->
           <div class="homework"><div class="hw-icon">✏️</div><div class="hw-body">
             <strong>课后可以试试</strong>
