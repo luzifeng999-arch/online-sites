@@ -581,9 +581,9 @@
                   <div class="preview-code" style="margin-top:8px;"><span class="pc-comment"># server.py 核心调用（CF 自动生成）——OpenAI SDK + 图像理解</span>
 <span class="pc-tag">client</span> = <span class="pc-text">OpenAI(base_url=CLAUDE_API_BASE, api_key=WQ_API_KEY)</span>
 <span class="pc-tag">POST /api/fetch</span>  <span class="pc-text"># 触发采集 + 分析</span>
-  <span class="pc-attr">→</span> <span class="pc-text">调 Dribbble API 拿图片 URL</span>
+  <span class="pc-attr">→</span> <span class="pc-text">Browser MCP 打开设计网站，抓封面图+标题+原始链接</span>
   <span class="pc-attr">→</span> <span class="pc-text">client.chat.completions.create(model, [{image_url}, {text:"分析..."}])</span>
-  <span class="pc-attr">→</span> <span class="pc-text">返回 JSON 给前端渲染</span></div>
+  <span class="pc-attr">→</span> <span class="pc-text">返回 JSON（含 source_url），卡片点击跳转原始作品</span></div>
                 </div>
               </div>
               <div class="tl-item"><div class="tl-left"><div class="tl-num">4</div></div>
