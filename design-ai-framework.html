@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design AI · 平台能力框架</title>
+<style>
+  /* ── Apple Design System ── */
+  :root {
+    --bg:        #f5f5f7;
+    --surface:   #ffffff;
+    --label:     #1d1d1f;
+    --secondary: #6e6e73;
+    --accent:    #0071e3;
+    --accent-bg: #e8f2fd;
+    --border:    #d2d2d7;
+    --empty-bg:  rgba(255,255,255,0.55);
+    --radius:    12px;
+    --gap:       7px;
+    --font: -apple-system, BlinkMacSystemFont, "PingFang SC", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--label);
+    min-height: 100vh;
+    padding: 64px 52px;
+  }
+
+  /* ── Page header ── */
+
+
+  /* ── Grid ── */
+  .matrix {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    /* 每行固定 80px，共 10 行（1 表头 + 9 数据） */
+    grid-template-rows: repeat(10, 80px);
+    gap: var(--gap);
+  }
+
+  /* ── Base cell ── */
+  .cell {
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0 12px;
+    font-size: 12.5px;
+    line-height: 1.5;
+    /* height 由 grid-template-rows 控制，不再单独设 */
+    overflow: hidden;
+  }
+
+  /* 角落占位 */
+  .corner { background: transparent; }
+
+  /* 列表头 */
+  .col-hd {
+    background: var(--surface);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--label);
+    letter-spacing: -0.01em;
+  }
+
+  /* 行标签 */
+  .row-hd {
+    background: var(--surface);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--label);
+    letter-spacing: -0.01em;
+  }
+
+  /* 空白格 */
+  .empty {
+    background: var(--empty-bg);
+    border: 1.5px dashed var(--border);
+  }
+
+  /* 有内容格 */
+  .on {
+    background: var(--accent-bg);
+    flex-direction: column;
+    gap: 2px;
+  }
+  .on .main {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #004aad;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+  }
+  .on .sub {
+    font-size: 11px;
+    font-weight: 400;
+    color: #3478c5;
+    line-height: 1.4;
+  }
+</style>
+</head>
+<body>
+
+
+<div class="matrix">
+
+  <!-- 列标题行 -->
+  <div class="cell corner"></div>
+  <div class="cell col-hd">需求理解</div>
+  <div class="cell col-hd">创意生成</div>
+  <div class="cell col-hd">布局编辑</div>
+  <div class="cell col-hd">规范 / 资产治理</div>
+  <div class="cell col-hd">设计代码无损映射</div>
+  <div class="cell col-hd">上线 / 业务投放</div>
+
+  <!-- 图像物料 -->
+  <div class="cell row-hd">图像物料</div>
+  <div class="cell on"><span class="main">意图识别</span><span class="sub">文本 / 图片输入</span></div>
+  <div class="cell on"><span class="main">商品图 · 封面图 · 海报</span></div>
+  <div class="cell on"><span class="main">B 端 banner</span><span class="sub">多尺寸自适应</span></div>
+  <div class="cell on"><span class="main">内容过滤 · 兜底</span></div>
+  <div class="cell empty"></div>
+  <div class="cell empty"></div>
+
+  <!-- 素材处理 -->
+  <div class="cell row-hd">素材处理</div>
+  <div class="cell empty"></div>
+  <div class="cell on"><span class="main">图像高清化 · 图像扩展</span></div>
+  <div class="cell on"><span class="main">智能构图 · 裁切</span></div>
+  <div class="cell empty"></div>
+  <div class="cell on"><span class="main">素材格式转换</span></div>
+  <div class="cell empty"></div>
+
+  <!-- 电商物料 -->
+  <div class="cell row-hd">电商物料</div>
+  <div class="cell on"><span class="main">专家知识库</span></div>
+  <div class="cell on"><span class="main">电商物料生成</span><span class="sub">背景 · 模特</span></div>
+  <div class="cell on"><span class="main">换色 · 版式适配</span></div>
+  <div class="cell on"><span class="main">品牌色规范</span></div>
+  <div class="cell on"><span class="main">商品营销素材</span></div>
+  <div class="cell empty"></div>
+
+  <!-- 运营广告 -->
+  <div class="cell row-hd">运营广告</div>
+  <div class="cell on"><span class="main">运营场景识别</span></div>
+  <div class="cell on"><span class="main">广告制作 · 落地页</span></div>
+  <div class="cell on"><span class="main">开屏广告</span><span class="sub">生活服务 banner</span></div>
+  <div class="cell empty"></div>
+  <div class="cell empty"></div>
+  <div class="cell empty"></div>
+
+  <!-- 营销素材 -->
+  <div class="cell row-hd">营销素材</div>
+  <div class="cell empty"></div>
+  <div class="cell on"><span class="main">推广图 · 分享卡片</span></div>
+  <div class="cell empty"></div>
+  <div class="cell empty"></div>
+  <div class="cell empty"></div>
+  <div class="cell empty"></div>
+
+  <!-- 动效资产 -->
+  <div class="cell row-hd">动效资产</div>
+  <div class="cell on"><span class="main">动效需求理解</span></div>
+  <div class="cell on"><span class="main">产品动效</span></div>
+  <div class="cell empty"></div>
+  <div class="cell empty"></div>
+  <div class="cell empty"></div>
+  <div class="cell empty"></div>
+
+  <!-- 视频素材 -->
+  <div class="cell row-hd">视频素材</div>
+  <div class="cell empty"></div>
+  <div class="cell on"><span class="main">直播礼物 · 商业化广告</span></div>
+  <div class="cell empty"></div>
+  <div class="cell on"><span class="main">风控视频</span></div>
+  <div class="cell empty"></div>
+  <div class="cell empty"></div>
+
+  <!-- 贴纸/互动 -->
+  <div class="cell row-hd">贴纸 / 互动</div>
+  <div class="cell empty"></div>
+  <div class="cell on"><span class="main">商品贴纸 · 生活贴纸</span></div>
+  <div class="cell on"><span class="main">布局智能适配</span></div>
+  <div class="cell on"><span class="main">贴纸资产库</span></div>
+  <div class="cell empty"></div>
+  <div class="cell empty"></div>
+
+  <!-- 模版/代码 -->
+  <div class="cell row-hd">模版 / 代码</div>
+  <div class="cell empty"></div>
+  <div class="cell on"><span class="main">会场 UI · 商品模版</span></div>
+  <div class="cell on"><span class="main">模板编辑器</span><span class="sub">参数化配置</span></div>
+  <div class="cell empty"></div>
+  <div class="cell empty"></div>
+  <div class="cell empty"></div>
+
+</div>
+
+<!--
+  ✨ Awesome Design — Apple 风格
+  ─────────────────────────────
+  核心改动：
+  ┌─ 颜色：#f5f5f7 浅灰背景 / #0071e3 蓝色 accent
+  ├─ 字体：-apple-system / SF Pro Text
+  ├─ 卡片：12px 圆角，无阴影无边框
+  ├─ 格子：gap 布局，固定 80px 高度确保一致性
+  └─ 高亮：accent-bg #e8f2fd + 深蓝文字
+-->
+</body>
+</html>
