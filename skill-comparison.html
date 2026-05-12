@@ -1,0 +1,1328 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1440">
+<title>HTML PPT Skill 横向评测报告</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+:root {
+  /* ── 背景层级 ── */
+  --bg:        #F5F4F0;
+  --bg-warm:   #EAE9E4;
+  --surface:   #FFFFFF;
+  --surface-2: #F9F8F5;
+  --surface-3: #EFEDE8;
+
+  /* ── 边框 ── */
+  --border:    rgba(0,0,0,0.07);
+  --border-md: rgba(0,0,0,0.12);
+  --border-lg: rgba(0,0,0,0.18);
+
+  /* ── 文字 ── */
+  --t1: #0F0F0F;
+  --t2: #505060;
+  --t3: #9898A8;
+  --t4: #C4C4D0;
+
+  /* ── 主色 & Skill 颜色 ── */
+  --accent:  #2563EB;
+  --c1: #2563EB; --c1a: rgba(37,99,235,0.10); --c1b: rgba(37,99,235,0.18);
+  --c2: #059669; --c2a: rgba(5,150,105,0.10); --c2b: rgba(5,150,105,0.18);
+  --c3: #7C3AED; --c3a: rgba(124,58,237,0.10); --c3b: rgba(124,58,237,0.18);
+  --c4: #D97706; --c4a: rgba(217,119,6,0.10); --c4b: rgba(217,119,6,0.18);
+  --c5: #DC2626; --c5a: rgba(220,38,38,0.10); --c5b: rgba(220,38,38,0.18);
+
+  /* ── 功能色 ── */
+  --green: #059669; --green-a: rgba(5,150,105,0.10);
+  --red:   #DC2626; --red-a:   rgba(220,38,38,0.10);
+  --gold:  #B45309;
+
+  /* ── 字型 ── */
+  --sans: 'Inter', 'Noto Sans SC', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+
+  /* ── 圆角 & 阴影 ── */
+  --r-sm: 6px;
+  --r:    12px;
+  --r-lg: 18px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow:    0 4px 16px rgba(0,0,0,0.07), 0 1px 4px rgba(0,0,0,0.04);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,0.10), 0 4px 12px rgba(0,0,0,0.05);
+
+  /* ── 过渡 ── */
+  --ease: cubic-bezier(.22,.68,0,1.2);
+  --ease-out: cubic-bezier(0,.6,.4,1);
+}
+
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--t1);
+  line-height: 1.6;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ═══════════════════════════════════════
+   LAYOUT SHELL
+═══════════════════════════════════════ */
+.page-wrap {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 48px 100px;
+}
+
+/* ═══════════════════════════════════════
+   TYPOGRAPHY SCALE
+═══════════════════════════════════════ */
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--mono); font-size: 11px; font-weight: 700;
+  color: var(--accent); text-transform: uppercase; letter-spacing: .12em;
+  margin-bottom: 14px;
+}
+.eyebrow::before {
+  content: ''; display: block;
+  width: 22px; height: 2px; background: var(--accent); border-radius: 2px;
+}
+
+/* ═══════════════════════════════════════
+   STICKY NAV
+═══════════════════════════════════════ */
+.nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(245,244,240,0.88);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border-bottom: 1px solid var(--border-md);
+}
+.nav-inner {
+  max-width: 1320px; margin: 0 auto;
+  padding: 0 48px;
+  height: 52px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-brand {
+  font-weight: 800; font-size: 13px; color: var(--t1);
+  display: flex; align-items: center; gap: 8px;
+}
+.nav-brand-dot {
+  width: 8px; height: 8px; border-radius: 50%; background: var(--accent);
+}
+.nav-links { display: flex; gap: 4px; }
+.nav-link {
+  font-size: 12px; font-weight: 500; color: var(--t2);
+  padding: 5px 12px; border-radius: var(--r-sm);
+  text-decoration: none; transition: all .18s;
+  cursor: pointer;
+}
+.nav-link:hover { background: var(--surface); color: var(--t1); }
+.nav-link.active { background: var(--c1a); color: var(--c1); }
+
+/* ═══════════════════════════════════════
+   HERO
+═══════════════════════════════════════ */
+.hero {
+  padding: 72px 0 64px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero-glow {
+  position: absolute;
+  width: 700px; height: 300px;
+  top: 0; left: 50%; transform: translateX(-50%);
+  background: radial-gradient(ellipse at 50% 0%, rgba(37,99,235,0.07) 0%, transparent 65%);
+  pointer-events: none;
+}
+.hero-pill {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--surface); border: 1px solid var(--border-md);
+  border-radius: 100px; padding: 6px 16px 6px 10px;
+  margin-bottom: 28px;
+  box-shadow: var(--shadow-sm);
+}
+.hero-pill-dot {
+  width: 8px; height: 8px; border-radius: 50%; background: var(--green);
+  box-shadow: 0 0 0 3px var(--green-a);
+  animation: pulse 2s ease infinite;
+}
+@keyframes pulse {
+  0%,100% { box-shadow: 0 0 0 3px var(--green-a); }
+  50%      { box-shadow: 0 0 0 6px rgba(5,150,105,0.04); }
+}
+.hero-pill-text { font-family: var(--mono); font-size: 11px; color: var(--t2); letter-spacing: .04em; }
+
+.hero-title {
+  font-size: 54px; font-weight: 900; line-height: 1.05;
+  letter-spacing: -2px; color: var(--t1);
+  margin-bottom: 18px;
+}
+.hero-title em { color: var(--accent); font-style: normal; }
+.hero-title .underline {
+  position: relative; display: inline-block;
+}
+.hero-title .underline::after {
+  content: '';
+  position: absolute; bottom: -3px; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--accent), #818CF8);
+  border-radius: 2px;
+}
+.hero-sub {
+  font-size: 16px; color: var(--t2); line-height: 1.75;
+  max-width: 560px; margin: 0 auto 40px;
+}
+
+/* Hero 统计数字条 */
+.hero-stats {
+  display: inline-flex;
+  background: var(--surface);
+  border: 1px solid var(--border-md);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.hero-stat {
+  padding: 16px 36px;
+  border-right: 1px solid var(--border);
+  text-align: center;
+}
+.hero-stat:last-child { border-right: none; }
+.hero-stat-val {
+  font-family: var(--mono); font-size: 24px; font-weight: 900;
+  color: var(--t1); display: block;
+}
+.hero-stat-key { font-size: 11px; color: var(--t3); margin-top: 2px; }
+
+/* ═══════════════════════════════════════
+   SECTION
+═══════════════════════════════════════ */
+.section { margin-bottom: 64px; scroll-margin-top: 70px; }
+
+/* ═══════════════════════════════════════
+   METHODOLOGY BANNER
+═══════════════════════════════════════ */
+.method-banner {
+  background: var(--surface);
+  border: 1px solid var(--border-md);
+  border-radius: var(--r-lg);
+  padding: 32px 36px;
+  box-shadow: var(--shadow-sm);
+}
+.method-banner-title {
+  font-size: 15px; font-weight: 700; color: var(--t1);
+  margin-bottom: 20px; display: flex; align-items: center; gap: 8px;
+}
+.method-banner-title-icon {
+  width: 28px; height: 28px; border-radius: 8px;
+  background: var(--c1a); display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+}
+.method-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 20px; }
+.method-item {
+  padding: 16px; background: var(--surface-2);
+  border: 1px solid var(--border); border-radius: var(--r);
+}
+.method-num {
+  font-family: var(--mono); font-size: 10px; color: var(--t3);
+  text-transform: uppercase; letter-spacing: .1em; margin-bottom: 6px;
+}
+.method-name { font-size: 13px; font-weight: 700; color: var(--t1); margin-bottom: 5px; }
+.method-desc { font-size: 12px; color: var(--t2); line-height: 1.55; }
+
+/* ═══════════════════════════════════════
+   SKILL CARDS ROW
+═══════════════════════════════════════ */
+.skill-row { display: grid; grid-template-columns: repeat(5,1fr); gap: 14px; }
+.skill-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 22px 20px 18px;
+  position: relative; overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: transform .22s var(--ease), box-shadow .22s;
+  cursor: default;
+}
+.skill-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow);
+}
+.skill-card-stripe {
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  border-radius: var(--r) var(--r) 0 0;
+}
+.skill-card-id {
+  font-family: var(--mono); font-size: 10px; color: var(--t4);
+  text-transform: uppercase; letter-spacing: .1em; margin-bottom: 7px;
+}
+.skill-card-name {
+  font-size: 14px; font-weight: 800; line-height: 1.25; margin-bottom: 8px;
+}
+.skill-card-desc {
+  font-size: 12px; color: var(--t2); line-height: 1.6;
+}
+.skill-card-src {
+  margin-top: 12px;
+  display: inline-flex; align-items: center; gap: 4px;
+  background: var(--surface-3); border-radius: 4px;
+  padding: 2px 8px; font-size: 10px; color: var(--t3);
+  font-family: var(--mono);
+}
+
+/* ═══════════════════════════════════════
+   DIMENSION CARDS
+═══════════════════════════════════════ */
+.dim-row { display: grid; grid-template-columns: repeat(7,1fr); gap: 10px; }
+.dim-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 16px 14px 14px;
+  box-shadow: var(--shadow-sm);
+  transition: border-color .2s;
+}
+.dim-card:hover { border-color: var(--border-md); }
+.dim-index { font-family: var(--mono); font-size: 10px; color: var(--t4); margin-bottom: 4px; }
+.dim-name { font-size: 12.5px; font-weight: 700; color: var(--t1); margin-bottom: 6px; line-height: 1.3; }
+.dim-weight-pill {
+  display: inline-flex; align-items: center;
+  background: var(--c1a); color: var(--c1);
+  border-radius: 20px; padding: 2px 8px;
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  margin-bottom: 8px;
+}
+.dim-rationale { font-size: 11px; color: var(--t2); line-height: 1.5; }
+
+/* ═══════════════════════════════════════
+   SCORING TABLE
+═══════════════════════════════════════ */
+.table-shell {
+  background: var(--surface);
+  border: 1px solid var(--border-md);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+.table-scroll { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+
+/* thead */
+thead tr { background: var(--surface-2); }
+th {
+  padding: 13px 16px; text-align: left;
+  font-family: var(--mono); font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .08em;
+  color: var(--t2);
+  border-bottom: 2px solid var(--border-md);
+  white-space: nowrap;
+}
+th.th-dim { width: 140px; color: var(--t3); }
+th.c1 { color: var(--c1); }
+th.c2 { color: var(--c2); }
+th.c3 { color: var(--c3); }
+th.c4 { color: var(--c4); }
+th.c5 { color: var(--c5); }
+
+/* tbody */
+td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(0,0,0,0.012); }
+
+td.td-dim {
+  background: var(--surface-2);
+  font-family: var(--mono); font-size: 11px; font-weight: 600;
+  color: var(--t2); white-space: nowrap;
+}
+.td-dim-sub { font-size: 10px; color: var(--t4); font-weight: 400; margin-top: 2px; }
+
+/* score cell */
+.sc { display: flex; flex-direction: column; gap: 5px; }
+.sc-top { display: flex; align-items: center; gap: 6px; }
+.sc-num {
+  font-family: var(--mono); font-weight: 900; font-size: 16px; line-height: 1;
+}
+.c1 .sc-num { color: var(--c1); }
+.c2 .sc-num { color: var(--c2); }
+.c3 .sc-num { color: var(--c3); }
+.c4 .sc-num { color: var(--c4); }
+.c5 .sc-num { color: var(--c5); }
+.sc-best {
+  font-family: var(--mono); font-size: 9px; font-weight: 700;
+  background: rgba(5,150,105,0.12); color: var(--green);
+  border-radius: 3px; padding: 1px 5px;
+}
+.sc-bar-wrap {
+  height: 4px; background: var(--surface-3); border-radius: 2px; overflow: hidden;
+}
+.sc-bar { height: 100%; border-radius: 2px; transition: width .6s var(--ease-out); }
+.c1 .sc-bar { background: var(--c1); }
+.c2 .sc-bar { background: var(--c2); }
+.c3 .sc-bar { background: var(--c3); }
+.c4 .sc-bar { background: var(--c4); }
+.c5 .sc-bar { background: var(--c5); }
+.sc-evidence {
+  font-size: 11px; color: var(--t2); line-height: 1.55;
+}
+.sc-evidence strong { color: var(--t1); font-weight: 600; }
+
+/* total row */
+.tr-total td { background: var(--surface-2) !important; border-top: 2px solid var(--border-lg); }
+.tr-total td.td-dim { background: var(--surface-3) !important; }
+.total-num {
+  font-family: var(--mono); font-size: 28px; font-weight: 900; line-height: 1;
+}
+.c1 .total-num { color: var(--c1); }
+.c2 .total-num { color: var(--c2); }
+.c3 .total-num { color: var(--c3); }
+.c4 .total-num { color: var(--c4); }
+.c5 .total-num { color: var(--c5); }
+.rank-pill {
+  display: inline-flex; align-items: center; gap: 3px;
+  border-radius: 20px; padding: 3px 9px;
+  font-size: 11px; font-weight: 700; font-family: var(--mono);
+  margin-top: 4px;
+}
+.rank-1 { background: #FEF3C7; color: #92400E; border: 1px solid #FDE68A; }
+.rank-2 { background: #F1F5F9; color: #475569; border: 1px solid #CBD5E1; }
+.rank-3 { background: #FFF5F5; color: #991B1B; border: 1px solid #FCA5A5; }
+.rank-4 { background: var(--surface-3); color: var(--t3); border: 1px solid var(--border); }
+.rank-5 { background: var(--surface-3); color: var(--t3); border: 1px solid var(--border); }
+.total-formula { font-size: 10.5px; color: var(--t3); margin-top: 6px; font-family: var(--mono); line-height: 1.4; }
+
+/* ═══════════════════════════════════════
+   NOTE BOX
+═══════════════════════════════════════ */
+.note-box {
+  margin-top: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 var(--r) var(--r) 0;
+  padding: 14px 18px;
+  font-size: 12px; color: var(--t2); line-height: 1.65;
+}
+.note-box strong { color: var(--t1); }
+
+/* ═══════════════════════════════════════
+   STRENGTH / WEAKNESS CARDS
+═══════════════════════════════════════ */
+.sw-row { display: grid; grid-template-columns: repeat(5,1fr); gap: 14px; }
+.sw-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 20px 18px;
+  box-shadow: var(--shadow-sm);
+  transition: transform .2s var(--ease), box-shadow .2s;
+}
+.sw-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+.sw-card-header { margin-bottom: 14px; }
+.sw-card-name { font-size: 13px; font-weight: 800; margin-bottom: 3px; }
+.sw-score-row { display: flex; align-items: baseline; gap: 5px; margin-top: 4px; }
+.sw-score { font-family: var(--mono); font-size: 22px; font-weight: 900; }
+.sw-rank { font-size: 11px; color: var(--t3); font-family: var(--mono); }
+
+.sw-section { margin-bottom: 10px; }
+.sw-label {
+  font-size: 10px; font-family: var(--mono); text-transform: uppercase;
+  letter-spacing: .1em; color: var(--t4); margin-bottom: 7px;
+}
+.sw-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.sw-item { display: flex; align-items: flex-start; gap: 7px; }
+.sw-dot {
+  width: 16px; height: 16px; border-radius: 50%; flex-shrink: 0; margin-top: 1px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px; font-weight: 900;
+}
+.dot-pro { background: var(--green-a); color: var(--green); }
+.dot-con { background: var(--red-a); color: var(--red); }
+.sw-text { font-size: 11.5px; color: var(--t2); line-height: 1.5; }
+.sw-divider { height: 1px; background: var(--border); margin: 10px 0; }
+
+/* ═══════════════════════════════════════
+   SCENE TABLE
+═══════════════════════════════════════ */
+.scene-shell {
+  background: var(--surface);
+  border: 1px solid var(--border-md);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+.scene-table { width: 100%; border-collapse: collapse; }
+.scene-table th {
+  padding: 12px 18px; text-align: left;
+  font-size: 11px; font-family: var(--mono); font-weight: 700;
+  color: var(--t2); text-transform: uppercase; letter-spacing: .08em;
+  border-bottom: 2px solid var(--border-md);
+  background: var(--surface-2);
+}
+.scene-table td {
+  padding: 13px 18px; font-size: 13px;
+  border-bottom: 1px solid var(--border); color: var(--t1);
+  vertical-align: middle;
+}
+.scene-table tr:last-child td { border-bottom: none; }
+.scene-table tbody tr { transition: background .15s; }
+.scene-table tbody tr:hover td { background: var(--surface-2); }
+.scene-tag {
+  display: inline-flex; align-items: center; gap: 5px;
+  border-radius: 6px; padding: 4px 10px;
+  font-size: 12px; font-weight: 700; white-space: nowrap;
+}
+.scene-reason { font-size: 12px; color: var(--t2); line-height: 1.55; }
+.scene-reason strong { color: var(--t1); font-weight: 600; }
+
+/* ═══════════════════════════════════════
+   SCORE SUMMARY RIBBON
+═══════════════════════════════════════ */
+.summary-row {
+  display: grid; grid-template-columns: repeat(5,1fr); gap: 12px;
+  margin-bottom: 40px;
+}
+.summary-card {
+  border-radius: var(--r);
+  padding: 18px 16px;
+  display: flex; flex-direction: column; gap: 6px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  transition: transform .2s var(--ease);
+}
+.summary-card:hover { transform: translateY(-2px); }
+.summary-rank { font-family: var(--mono); font-size: 10px; font-weight: 700; opacity: .6; }
+.summary-name { font-size: 13px; font-weight: 800; }
+.summary-score { font-family: var(--mono); font-size: 28px; font-weight: 900; }
+.summary-bar-wrap { height: 5px; background: rgba(255,255,255,0.25); border-radius: 3px; overflow: hidden; }
+.summary-bar { height: 100%; border-radius: 3px; background: rgba(255,255,255,0.7); }
+.summary-note { font-size: 11px; opacity: .7; line-height: 1.4; }
+
+.sc1 { background: linear-gradient(135deg, #1e4fd8, #3b82f6); color: #fff; }
+.sc2 { background: linear-gradient(135deg, #047857, #10b981); color: #fff; }
+.sc3 { background: linear-gradient(135deg, #5b21b6, #8b5cf6); color: #fff; }
+.sc4 { background: linear-gradient(135deg, #b45309, #f59e0b); color: #fff; }
+.sc5 { background: linear-gradient(135deg, #991b1b, #ef4444); color: #fff; }
+
+/* ═══════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════ */
+.footer {
+  border-top: 1px solid var(--border-md);
+  padding: 28px 0 0;
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 14px;
+}
+.footer-note { font-size: 12px; color: var(--t3); font-family: var(--mono); line-height: 1.7; }
+.footer-badge {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--c1a); border: 1px solid var(--c1b);
+  border-radius: var(--r); padding: 8px 16px;
+  font-family: var(--mono); font-size: 12px; font-weight: 700; color: var(--c1);
+}
+
+/* ═══════════════════════════════════════
+   TOOLTIP
+═══════════════════════════════════════ */
+[data-tip] { position: relative; }
+[data-tip]:hover::after {
+  content: attr(data-tip);
+  position: absolute; bottom: calc(100% + 6px); left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  background: var(--t1); color: #fff;
+  padding: 5px 10px; border-radius: 6px;
+  font-size: 11px; font-family: var(--mono);
+  pointer-events: none; z-index: 999;
+  box-shadow: var(--shadow);
+}
+
+/* ═══════════════════════════════════════
+   SCROLL REVEAL
+═══════════════════════════════════════ */
+.reveal {
+  opacity: 0; transform: translateY(18px);
+  transition: opacity .55s, transform .55s var(--ease-out);
+}
+.reveal.visible { opacity: 1; transform: none; }
+.reveal-delay-1 { transition-delay: .08s; }
+.reveal-delay-2 { transition-delay: .16s; }
+.reveal-delay-3 { transition-delay: .24s; }
+.reveal-delay-4 { transition-delay: .32s; }
+.reveal-delay-5 { transition-delay: .40s; }
+
+/* ═══════════════════════════════════════
+   MISC UTILS
+═══════════════════════════════════════ */
+.divider { height: 1px; background: var(--border); margin: 56px 0; }
+.text-accent { color: var(--accent); }
+.text-mono { font-family: var(--mono); }
+</style>
+</head>
+<body>
+
+<!-- ══ 顶部导航 ══ -->
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="nav-brand">
+      <div class="nav-brand-dot"></div>
+      Skill Benchmark Report
+    </div>
+    <div class="nav-links">
+      <span class="nav-link" onclick="scrollTo('s-method')">方法论</span>
+      <span class="nav-link" onclick="scrollTo('s-dim')">评分维度</span>
+      <span class="nav-link" onclick="scrollTo('s-matrix')">评分矩阵</span>
+      <span class="nav-link" onclick="scrollTo('s-sw')">优劣分析</span>
+      <span class="nav-link" onclick="scrollTo('s-scene')">场景推荐</span>
+    </div>
+  </div>
+</nav>
+
+<div class="page-wrap">
+
+<!-- ══ Hero ══ -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-pill">
+    <div class="hero-pill-dot"></div>
+    <span class="hero-pill-text">客观量化评测 · 2026-05-12 · luzifeng</span>
+  </div>
+  <h1 class="hero-title">
+    5 个 <em>HTML PPT Skill</em><br>
+    <span class="underline">客观横向对比</span>
+  </h1>
+  <p class="hero-sub">7 个维度独立打分，每条分值均附原始证据（SKILL.md 功能数量 / 文档条款），权重公开透明，可质疑、可验证。</p>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <span class="hero-stat-val">5</span>
+      <div class="hero-stat-key">参测 Skill</div>
+    </div>
+    <div class="hero-stat">
+      <span class="hero-stat-val">7</span>
+      <div class="hero-stat-key">评分维度</div>
+    </div>
+    <div class="hero-stat">
+      <span class="hero-stat-val">90</span>
+      <div class="hero-stat-key">加权满分</div>
+    </div>
+    <div class="hero-stat">
+      <span class="hero-stat-val">SKILL.md</span>
+      <div class="hero-stat-key">数据来源</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 方法论 ══ -->
+<section class="section reveal" id="s-method">
+  <div class="eyebrow">评测方法论 — 先读这里</div>
+  <div class="method-banner">
+    <div class="method-banner-title">
+      <div class="method-banner-title-icon">🧮</div>
+      如何保证客观性？
+    </div>
+    <div class="method-grid">
+      <div class="method-item">
+        <div class="method-num">原则 01</div>
+        <div class="method-name">证据可溯源</div>
+        <div class="method-desc">每个分项标注来源（功能数量 / 文件大小 / SKILL.md 特定章节），非主观印象</div>
+      </div>
+      <div class="method-item">
+        <div class="method-num">原则 02</div>
+        <div class="method-name">维度对等比较</div>
+        <div class="method-desc">7 个维度对所有 skill 完全相同，满分标准统一定义，不因 skill 不同而改变</div>
+      </div>
+      <div class="method-item">
+        <div class="method-num">原则 03</div>
+        <div class="method-name">权重透明公开</div>
+        <div class="method-desc">权重基于「PPT 生成」主场景重要性，在维度说明中明确标注，任何人可质疑</div>
+      </div>
+      <div class="method-item">
+        <div class="method-num">原则 04</div>
+        <div class="method-name">主场偏见修正</div>
+        <div class="method-desc">designai-ppt-html 为作者自研，所有加分项须有文档证据，不允许「自我推断加分」</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 参赛选手 ══ -->
+<section class="section reveal">
+  <div class="eyebrow">五位参赛选手</div>
+  <div class="skill-row">
+    <div class="skill-card reveal reveal-delay-1">
+      <div class="skill-card-stripe" style="background:var(--c1)"></div>
+      <div class="skill-card-id">SKILL #1</div>
+      <div class="skill-card-name" style="color:var(--c1)">designai-ppt-html</div>
+      <div class="skill-card-desc">四阶段流程，42 Pattern × 19 Palette，AI 批量生图，Playwright 截图验证，5 维度质量门禁，Stage 1.5 Showcase 确认</div>
+      <div class="skill-card-src">作者自研 · 快手内网</div>
+    </div>
+    <div class="skill-card reveal reveal-delay-2">
+      <div class="skill-card-stripe" style="background:var(--c2)"></div>
+      <div class="skill-card-id">SKILL #2</div>
+      <div class="skill-card-name" style="color:var(--c2)">ks-design-slide-deck</div>
+      <div class="skill-card-desc">v4.6.5，创意/专业双模式，15 Palette，联网抓数据，图生图参考视觉，viewer v2.0</div>
+      <div class="skill-card-src">快手内部官方</div>
+    </div>
+    <div class="skill-card reveal reveal-delay-3">
+      <div class="skill-card-stripe" style="background:var(--c3)"></div>
+      <div class="skill-card-id">SKILL #3</div>
+      <div class="skill-card-name" style="color:var(--c3)">html-ppt</div>
+      <div class="skill-card-desc">36 主题 × 31 版式 × 15 全套模板，27 CSS 动效 + 20 Canvas FX，演讲者模式，纯静态无依赖</div>
+      <div class="skill-card-src">开源 · GitHub</div>
+    </div>
+    <div class="skill-card reveal reveal-delay-4">
+      <div class="skill-card-stripe" style="background:var(--c4)"></div>
+      <div class="skill-card-id">SKILL #4</div>
+      <div class="skill-card-name" style="color:var(--c4)">guizang-ppt-skill</div>
+      <div class="skill-card-desc">单文件 HTML，WebGL 背景，杂志风 & 瑞士国际主义双风格，Motion One 动效，横向翻页</div>
+      <div class="skill-card-src">个人创作</div>
+    </div>
+    <div class="skill-card reveal reveal-delay-5">
+      <div class="skill-card-stripe" style="background:var(--c5)"></div>
+      <div class="skill-card-id">SKILL #5</div>
+      <div class="skill-card-name" style="color:var(--c5)">huashu-design</div>
+      <div class="skill-card-desc">花叔Design，原型+动画+幻灯片三合一，60fps 视频导出，5 流派 × 20 种设计哲学咨询</div>
+      <div class="skill-card-src">花叔出品</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 7 个维度 ══ -->
+<section class="section reveal" id="s-dim">
+  <div class="eyebrow">7 个评分维度定义</div>
+  <div class="dim-row">
+    <div class="dim-card">
+      <div class="dim-index">D1</div>
+      <div class="dim-name">设计系统深度</div>
+      <div class="dim-weight-pill">权重 ×1.8</div>
+      <div class="dim-rationale">主题/Palette 数量、版式 Pattern 数量、Design Token 完整度。PPT 视觉一致性的基础，权重最高。</div>
+    </div>
+    <div class="dim-card">
+      <div class="dim-index">D2</div>
+      <div class="dim-name">AI 生图能力</div>
+      <div class="dim-weight-pill">权重 ×1.5</div>
+      <div class="dim-rationale">内置 AI 配图生成、CDN 上传、批量并发。无此能力需用户手动配图，体验差距显著。</div>
+    </div>
+    <div class="dim-card">
+      <div class="dim-index">D3</div>
+      <div class="dim-name">工程化质量</div>
+      <div class="dim-weight-pill">权重 ×1.4</div>
+      <div class="dim-rationale">QA 检查脚本、Playwright 验证、错误处理、交付物完整度（viewer/导出/打包）。</div>
+    </div>
+    <div class="dim-card">
+      <div class="dim-index">D4</div>
+      <div class="dim-name">生成前确认</div>
+      <div class="dim-weight-pill">权重 ×1.3</div>
+      <div class="dim-rationale">Showcase 预览/风格确认机制。全量生成后才发现风格不对返工成本极高，确认流程价值显著。</div>
+    </div>
+    <div class="dim-card">
+      <div class="dim-index">D5</div>
+      <div class="dim-name">版式多样性</div>
+      <div class="dim-weight-pill">权重 ×1.2</div>
+      <div class="dim-rationale">封面/数据/引言/图表等版式的数量和差异度，决定幻灯片视觉丰富性上限。</div>
+    </div>
+    <div class="dim-card">
+      <div class="dim-index">D6</div>
+      <div class="dim-name">动效互动体验</div>
+      <div class="dim-weight-pill">权重 ×1.0</div>
+      <div class="dim-rationale">CSS/Canvas/WebGL 动效数量、图表交互性、演讲者模式等演示时的运行时体验。</div>
+    </div>
+    <div class="dim-card">
+      <div class="dim-index">D7</div>
+      <div class="dim-name">输入灵活性</div>
+      <div class="dim-weight-pill">权重 ×0.8</div>
+      <div class="dim-rationale">支持的输入格式（文本/URL/文件/图片）和联网调研能力。权重最低，多数场景用户会提供文本。</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 总分总览 Ribbon ══ -->
+<section class="section reveal" id="s-matrix">
+  <div class="eyebrow">加权总分排名</div>
+  <div class="summary-row">
+    <div class="summary-card sc1 reveal reveal-delay-1">
+      <div class="summary-rank">#1 综合最高</div>
+      <div class="summary-name">designai-ppt-html</div>
+      <div class="summary-score">83.3</div>
+      <div class="summary-bar-wrap"><div class="summary-bar" style="width:92%"></div></div>
+      <div class="summary-note">设计系统 + 工程化双项最高，Showcase 确认机制独有</div>
+    </div>
+    <div class="summary-card sc2 reveal reveal-delay-2">
+      <div class="summary-rank">#2</div>
+      <div class="summary-name">ks-design-slide-deck</div>
+      <div class="summary-score">79.9</div>
+      <div class="summary-bar-wrap"><div class="summary-bar" style="width:88%"></div></div>
+      <div class="summary-note">输入灵活性最强，图生图参考视觉迁移独有</div>
+    </div>
+    <div class="summary-card sc5 reveal reveal-delay-3">
+      <div class="summary-rank">#3</div>
+      <div class="summary-name">huashu-design</div>
+      <div class="summary-score">73.1</div>
+      <div class="summary-bar-wrap"><div class="summary-bar" style="width:81%"></div></div>
+      <div class="summary-note">动效 + 设计哲学咨询强，适用范围最广</div>
+    </div>
+    <div class="summary-card sc3 reveal reveal-delay-4">
+      <div class="summary-rank">#4</div>
+      <div class="summary-name">html-ppt</div>
+      <div class="summary-score">72.7</div>
+      <div class="summary-bar-wrap"><div class="summary-bar" style="width:81%"></div></div>
+      <div class="summary-note">动效最丰富，演讲者模式最完善，无 AI 生图</div>
+    </div>
+    <div class="summary-card sc4 reveal reveal-delay-5">
+      <div class="summary-rank">#5</div>
+      <div class="summary-name">guizang-ppt-skill</div>
+      <div class="summary-score">63.3</div>
+      <div class="summary-bar-wrap"><div class="summary-bar" style="width:70%"></div></div>
+      <div class="summary-note">视觉最独特，WebGL 背景，单文件最简交付</div>
+    </div>
+  </div>
+
+  <!-- 评分矩阵 -->
+  <div class="eyebrow" style="margin-top:8px;">评分矩阵 — 每格均附可验证证据</div>
+  <div class="table-shell">
+  <div class="table-scroll">
+  <table>
+    <thead>
+      <tr>
+        <th class="th-dim">维度 / 满分</th>
+        <th class="c1">designai-ppt-html</th>
+        <th class="c2">ks-design-slide-deck</th>
+        <th class="c3">html-ppt</th>
+        <th class="c4">guizang-ppt-skill</th>
+        <th class="c5">huashu-design</th>
+      </tr>
+    </thead>
+    <tbody>
+
+    <!-- D1 -->
+    <tr>
+      <td class="td-dim">D1 设计系统<div class="td-dim-sub">满分10 × 1.8 = 18</div></td>
+      <td class="c1"><div class="sc">
+        <div class="sc-top"><span class="sc-num">9.5</span><span class="sc-best">最高</span></div>
+        <div class="sc-bar-wrap"><div class="sc-bar" style="width:95%"></div></div>
+        <div class="sc-evidence"><strong>19套Palette</strong>（完整CSS变量Token）× <strong>42种Pattern</strong>（A~I九大类），palettes.md 24KB，layout-patterns.md 94KB</div>
+      </div></td>
+      <td class="c2"><div class="sc">
+        <div class="sc-top"><span class="sc-num">8.0</span></div>
+        <div class="sc-bar-wrap"><div class="sc-bar" style="width:80%"></div></div>
+        <div class="sc-evidence"><strong>15套Palette</strong>，Design Token系统完整，但Pattern分类文档不如前者详细</div>
+      </div></td>
+      <td class="c3"><div class="sc">
+        <div class="sc-top"><span class="sc-num">8.5</span></div>
+        <div class="sc-bar-wrap"><div class="sc-bar" style="width:85%"></div></div>
+        <div class="sc-evidence"><strong>36套主题CSS</strong>（assets/themes/）+ base.css统一Token，主题丰富度最高，但主题间逻辑差异大</div>
+      </div></td>
+      <td class="c4"><div class="sc">
+        <div class="sc-top"><span class="sc-num">5.5</span></div>
+        <div class="sc-bar-wrap"><div class="sc-bar" style="width:55%"></div></div>
+        <div class="sc-evidence">杂志风5套 + 瑞士风4套，共<strong>9套主题</strong>，token体系相对简单</div>
+      </div></td>
+      <td class="c5"><div class="sc">
+        <div class="sc-top"><span class="sc-num">6.0</span></div>
+        <div class="sc-bar-wrap"><div class="sc-bar" style="width:60%"></div></div>
+        <div class="sc-evidence">无预置设计系统，从<strong>5流派×20种哲学</strong>动态生成，灵活但一致性无法量化</div>
+      </div></td>
+    </tr>
+
+    <!-- D2 -->
+    <tr>
+      <td class="td-dim">D2 AI 生图<div class="td-dim-sub">满分10 × 1.5 = 15</div></td>
+      <td class="c1"><div class="sc">
+        <div class="sc-top"><span class="sc-num">9.0</span></div>
+        <div class="sc-bar-wrap"><div class="sc-bar" style="width:90%"></div></div>
+        <div class="sc-evidence"><strong>batch_generate.py 多线程并发</strong>，prompt按Palette配色词精准构建，CDN自动上传并注入HTML</div>
+      </div></td>
+      <td class="c2"><div class="sc">
+        <div class="sc-top"><span class="sc-num">9.0</span><span class="sc-best">同最高</span></div>
+        <div class="sc-bar-wrap"><div class="sc-bar" style="width:90%"></div></div>
+        <div class="sc-evidence">并发生图 + 额外<strong>generate_image_ref.py 图生图</strong>，参考图视觉风格迁移，能力更全面</div>
+      </div></td>
+      <td class="c3"><div class="sc">
+        <div class="sc-top"><span class="sc-num">1.0</span></div>
+        <div class="sc-bar-wrap"><div class="sc-bar" style="width:10%"></div></div>
+        <div class="sc-evidence">仅Headless Chrome PNG导出脚本，<strong>无AI配图生成能力</strong>，配图需用户自备</div>
+      </div></td>
+      <td class="c4"><div class="sc">
+        <div class="sc-top"><span class="sc-num">2.0</span></div>
+        <div class="sc-bar-wrap"><div class="sc-bar" style="width:20%"></div></div>
+        <div class="sc-evidence">SKILL.md提及"可选问用户是否要GPT-M 2.0配图"，<strong>非内置能力</strong>，为可选项</div>
+      </div></td>
+      <td class="c5"><div class="sc">
+        <div class="sc-top"><span class="sc-num">3.5</span></div>
+        <div class="sc-bar-wrap"><div class="sc-bar" style="width:35%"></div></div>
+        <div class="sc-evidence">通过Unsplash/Wikimedia取真实图，专注App原型；幻灯片配图<strong>无系统性批量生成</strong></div>
+      </div></td>
+    </tr>
+
+    <!-- D3 -->
+    <tr>
+      <td class="td-dim">D3 工程化质量<div class="td-dim-sub">满分10 × 1.4 = 14</div></td>
+      <td class="c1"><div class="sc">
+        <div class="sc-top"><span class="sc-num">9.5</span><span class="sc-best">最高</span></div>
+        <div class="sc-bar-wrap"><div class="sc-bar" style="width:95%"></div></div>
+        <div class="sc-evidence"><strong>qa_check.py L1~L19静态检查</strong> + export_playwright.py截图验证 + assemble --inline自包含组装 + stage4-quality-gate.md门禁</div>
+      </div></td>
+      <td class="c2"><div class="sc">
+        <div class="sc-top"><span class="sc-num">7.5</span></div>
+        <div class="sc-bar-wrap"><div class="sc-bar" style="width:75%"></div></div>
+        <div class="sc-evidence">viewer-shell v2.0（5档背景色/缩略图/导出），contenteditable编辑工具栏，<strong>无独立QA检查脚本</strong></div>
+      </div></td>
+      <td class="c3"><div class="sc">
+        <div class="sc-top"><span class="sc-num">7.0</span></div>
+        <div class="sc-bar-wrap"><div class="sc-bar" style="width:70%"></div></div>
+        <div class="sc-evidence">Headless Chrome渲染脚本，FX Runtime自动管理，keyboard runtime完善；<strong>无结构化QA</strong></div>
+      </div></td>
+      <td class="c4"><div class="sc">
+        <div class="sc-top"><span class="sc-num">5.0</span></div>
+        <div class="sc-bar-wrap"><div class="sc-bar" style="width:50%"></div></div>
+        <div class="sc-evidence">单文件交付（低维护复杂度），Motion One CDN+本地双保险；<strong>无QA检查、无导出脚本</strong></div>
+      </div></td>
+      <td class="c5"><div class="sc">
+        <div class="sc-top"><span class="sc-num">8.0</span></div>
+        <div class="sc-bar-wrap"><div class="sc-bar" style="width:80%"></div></div>
+        <div class="sc-evidence"><strong>Playwright点击测试（App原型强制执行）</strong>，60fps插帧视频导出，明确质量原则；但非PPT专项QA</div>
+      </div></td>
+    </tr>
+
+    <!-- D4 -->
+    <tr>
+      <td class="td-dim">D4 生成前确认<div class="td-dim-sub">满分10 × 1.3 = 13</div></td>
+      <td class="c1"><div class="sc">
+        <div class="sc-top"><span class="sc-num">9.0</span><span class="sc-best">最高</span></div>
+        <div class="sc-bar-wrap"><div class="sc-bar" style="width:90%"></div></div>
+        <div class="sc-evidence"><strong>Stage 1.5 Showcase强制流程</strong>：先生2张样稿+AI生图+project_preview预览，用户确认后才全量；Stage2设入口守卫</div>
+      </div></td>
+      <td class="c2"><div class="sc">
+        <div class="sc-top"><span class="sc-num">8.0</span></div>
+        <div class="sc-bar-wrap"><div class="sc-bar" style="width:80%"></div></div>
+        <div class="sc-evidence"><strong>强制preview_ask交互式</strong>模式选择（创意/专业）+ 15套Palette选择；但<strong>无Showcase样稿预览</strong></div>
+      </div></td>
+      <td class="c3"><div class="sc">
+        <div class="sc-top"><span class="sc-num">6.0</span></div>
+        <div class="sc-bar-wrap"><div class="sc-bar" style="width:60%"></div></div>
+        <div class="sc-evidence">SKILL.md明确"动手前必须了解3件事"（内容/风格/模板），有确认对话；但<strong>无Showcase预览机制</strong></div>
+      </div></td>
+      <td class="c4"><div class="sc">
+        <div class="sc-top"><span class="sc-num">7.0</span></div>
+        <div class="sc-bar-wrap"><div class="sc-bar" style="width:70%"></div></div>
+        <div class="sc-evidence"><strong>7问澄清清单</strong>（风格/受众/时长/素材/图片/主题色/硬约束），对齐全面；但无视觉样稿预览</div>
+      </div></td>
+      <td class="c5"><div class="sc">
+        <div class="sc-top"><span class="sc-num">7.5</span></div>
+        <div class="sc-bar-wrap"><div class="sc-bar" style="width:75%"></div></div>
+        <div class="sc-evidence"><strong>设计方向顾问模式</strong>：3方向×并行Demo让用户选；5维度专家评审；但非标准化PPT确认流程</div>
+      </div></td>
+    </tr>
+
+    <!-- D5 -->
+    <tr>
+      <td class="td-dim">D5 版式多样性<div class="td-dim-sub">满分10 × 1.2 = 12</div></td>
+      <td class="c1"><div class="sc">
+        <div class="sc-top"><span class="sc-num">9.0</span><span class="sc-best">同最高</span></div>
+        <div class="sc-bar-wrap"><div class="sc-bar" style="width:90%"></div></div>
+        <div class="sc-evidence"><strong>42种Pattern</strong>：A封面/B目录/C数据墙/D图表/E引言/F流水线/G证言/H大字报/I结论卡，layout-patterns.md 94KB CSS骨架</div>
+      </div></td>
+      <td class="c2"><div class="sc">
+        <div class="sc-top"><span class="sc-num">6.5</span></div>
+        <div class="sc-bar-wrap"><div class="sc-bar" style="width:65%"></div></div>
+        <div class="sc-evidence">有版式体系但SKILL.md<strong>未明确给出数量</strong>，依赖slides.yml配置；具体数量不可量化</div>
+      </div></td>
+      <td class="c3"><div class="sc">
+        <div class="sc-top"><span class="sc-num">9.0</span><span class="sc-best">同最高</span></div>
+        <div class="sc-bar-wrap"><div class="sc-bar" style="width:90%"></div></div>
+        <div class="sc-evidence"><strong>31种单页版式 + 15套全套模板</strong>，pitch/product/tech/xhs/course等场景全覆盖</div>
+      </div></td>
+      <td class="c4"><div class="sc">
+        <div class="sc-top"><span class="sc-num">5.5</span></div>
+        <div class="sc-bar-wrap"><div class="sc-bar" style="width:55%"></div></div>
+        <div class="sc-evidence">layouts.md + layouts-swiss.md，约<strong>8~12类布局</strong>（钩子/定调/主体/数据大字报/图片网格等）</div>
+      </div></td>
+      <td class="c5"><div class="sc">
+        <div class="sc-top"><span class="sc-num">5.0</span></div>
+        <div class="sc-bar-wrap"><div class="sc-bar" style="width:50%"></div></div>
+        <div class="sc-evidence">幻灯片为多场景之一，<strong>无预置PPT版式库</strong>，版式由AI即兴生成；灵活但结果不可预期</div>
+      </div></td>
+    </tr>
+
+    <!-- D6 -->
+    <tr>
+      <td class="td-dim">D6 动效互动<div class="td-dim-sub">满分10 × 1.0 = 10</div></td>
+      <td class="c1"><div class="sc">
+        <div class="sc-top"><span class="sc-num">5.5</span></div>
+        <div class="sc-bar-wrap"><div class="sc-bar" style="width:55%"></div></div>
+        <div class="sc-evidence">ECharts可交互图表，入场淡入动效，contenteditable编辑；<strong>无WebGL/Canvas FX动效</strong></div>
+      </div></td>
+      <td class="c2"><div class="sc">
+        <div class="sc-top"><span class="sc-num">6.0</span></div>
+        <div class="sc-bar-wrap"><div class="sc-bar" style="width:60%"></div></div>
+        <div class="sc-evidence">ECharts图表，5档背景色切换，拖拽布局工具栏；无高级动效，与#1相近</div>
+      </div></td>
+      <td class="c3"><div class="sc">
+        <div class="sc-top"><span class="sc-num">9.5</span><span class="sc-best">最高</span></div>
+        <div class="sc-bar-wrap"><div class="sc-bar" style="width:95%"></div></div>
+        <div class="sc-evidence"><strong>27种CSS动效 + 20种Canvas FX</strong>（粒子/烟花/星空/矩阵雨/力导图/神经网络…），演讲者模式S键，BroadcastChannel同步</div>
+      </div></td>
+      <td class="c4"><div class="sc">
+        <div class="sc-top"><span class="sc-num">8.5</span></div>
+        <div class="sc-bar-wrap"><div class="sc-bar" style="width:85%"></div></div>
+        <div class="sc-evidence"><strong>WebGL流体/等高线/网格点阵背景</strong> + Motion One入场动效，视觉冲击力最强；但动效主要在背景层</div>
+      </div></td>
+      <td class="c5"><div class="sc">
+        <div class="sc-top"><span class="sc-num">9.0</span></div>
+        <div class="sc-bar-wrap"><div class="sc-bar" style="width:90%"></div></div>
+        <div class="sc-evidence"><strong>60fps动画引擎 + 25fps插帧 + palette优化GIF + 6首BGM</strong>，Tweaks实时调参，Playwright点击测试</div>
+      </div></td>
+    </tr>
+
+    <!-- D7 -->
+    <tr>
+      <td class="td-dim">D7 输入灵活性<div class="td-dim-sub">满分10 × 0.8 = 8</div></td>
+      <td class="c1"><div class="sc">
+        <div class="sc-top"><span class="sc-num">6.0</span></div>
+        <div class="sc-bar-wrap"><div class="sc-bar" style="width:60%"></div></div>
+        <div class="sc-evidence">文本/话题输入，<strong>无联网调研、无文件导入</strong>；优先专注内容生成而非输入解析</div>
+      </div></td>
+      <td class="c2"><div class="sc">
+        <div class="sc-top"><span class="sc-num">9.5</span><span class="sc-best">最高</span></div>
+        <div class="sc-bar-wrap"><div class="sc-bar" style="width:95%"></div></div>
+        <div class="sc-evidence"><strong>文本/URL/.key/.pptx/.pdf + 参考图 + fetch_web联网调研</strong>，输入格式最全面</div>
+      </div></td>
+      <td class="c3"><div class="sc">
+        <div class="sc-top"><span class="sc-num">6.5</span></div>
+        <div class="sc-bar-wrap"><div class="sc-bar" style="width:65%"></div></div>
+        <div class="sc-evidence">文本/话题，<strong>无联网调研</strong>；场景覆盖较广（含小红书/演讲/技术分享多场景模板）</div>
+      </div></td>
+      <td class="c4"><div class="sc">
+        <div class="sc-top"><span class="sc-num">6.0</span></div>
+        <div class="sc-bar-wrap"><div class="sc-bar" style="width:60%"></div></div>
+        <div class="sc-evidence">文本/大纲/图片（用户提供），<strong>无联网调研</strong>；SKILL.md建议保存大纲到.md</div>
+      </div></td>
+      <td class="c5"><div class="sc">
+        <div class="sc-top"><span class="sc-num">8.0</span></div>
+        <div class="sc-bar-wrap"><div class="sc-bar" style="width:80%"></div></div>
+        <div class="sc-evidence"><strong>WebSearch联网验证（强制，最高优先级）</strong>，Unsplash/Wikimedia取真实图；事实核查贯穿全流程</div>
+      </div></td>
+    </tr>
+
+    <!-- 总分 -->
+    <tr class="tr-total">
+      <td class="td-dim">加权总分<div class="td-dim-sub">满分 90 分</div></td>
+      <td class="c1">
+        <div class="total-num">83.3</div>
+        <div><span class="rank-pill rank-1">🥇 第 1 名</span></div>
+        <div class="total-formula">9.5×1.8 + 9.0×1.5 + 9.5×1.4 + 9.0×1.3 + 9.0×1.2 + 5.5×1.0 + 6.0×0.8</div>
+      </td>
+      <td class="c2">
+        <div class="total-num">79.9</div>
+        <div><span class="rank-pill rank-2">🥈 第 2 名</span></div>
+        <div class="total-formula">8.0×1.8 + 9.0×1.5 + 7.5×1.4 + 8.0×1.3 + 6.5×1.2 + 6.0×1.0 + 9.5×0.8</div>
+      </td>
+      <td class="c3">
+        <div class="total-num">72.7</div>
+        <div><span class="rank-pill rank-4">第 4 名</span></div>
+        <div class="total-formula">8.5×1.8 + 1.0×1.5 + 7.0×1.4 + 6.0×1.3 + 9.0×1.2 + 9.5×1.0 + 6.5×0.8</div>
+      </td>
+      <td class="c4">
+        <div class="total-num">63.3</div>
+        <div><span class="rank-pill rank-5">第 5 名</span></div>
+        <div class="total-formula">5.5×1.8 + 2.0×1.5 + 5.0×1.4 + 7.0×1.3 + 5.5×1.2 + 8.5×1.0 + 6.0×0.8</div>
+      </td>
+      <td class="c5">
+        <div class="total-num">73.1</div>
+        <div><span class="rank-pill rank-3">🥉 第 3 名</span></div>
+        <div class="total-formula">6.0×1.8 + 3.5×1.5 + 8.0×1.4 + 7.5×1.3 + 5.0×1.2 + 9.0×1.0 + 8.0×0.8</div>
+      </td>
+    </tr>
+
+    </tbody>
+  </table>
+  </div><!-- table-scroll -->
+  </div><!-- table-shell -->
+
+  <div class="note-box">
+    <strong>计分说明：</strong>加权总分 = Σ(各维度原始分 × 权重系数)，满分 = 10×(1.8+1.5+1.4+1.3+1.2+1.0+0.8) = 90。<br>
+    <strong>权重异议？</strong>若认为动效更重要，可将 D6 权重改为 1.8，排名将随之变化——透明权重的价值正在于此。
+  </div>
+</section>
+
+<!-- ══ 优劣分析 ══ -->
+<section class="section reveal" id="s-sw">
+  <div class="eyebrow">各 Skill 的绝对优势与已知局限</div>
+  <div class="sw-row">
+
+    <div class="sw-card s1 reveal reveal-delay-1">
+      <div class="sw-card-header">
+        <div class="sw-card-name" style="color:var(--c1)">designai-ppt-html</div>
+        <div class="sw-score-row">
+          <div class="sw-score" style="color:var(--c1)">83.3</div>
+          <div class="sw-rank">/ 90 · 综合第1</div>
+        </div>
+      </div>
+      <div class="sw-section">
+        <div class="sw-label">核心优势</div>
+        <ul class="sw-list">
+          <li class="sw-item"><div class="sw-dot dot-pro">+</div><div class="sw-text">设计系统最完整（42 Pattern × 19 Palette，文档 94KB）</div></li>
+          <li class="sw-item"><div class="sw-dot dot-pro">+</div><div class="sw-text">唯一有 Stage 1.5 Showcase 预览 + Stage 2 守卫双重确认</div></li>
+          <li class="sw-item"><div class="sw-dot dot-pro">+</div><div class="sw-text">工程化最完善（L1~L19 QA + Playwright 截图验证）</div></li>
+        </ul>
+      </div>
+      <div class="sw-divider"></div>
+      <div class="sw-section">
+        <div class="sw-label">已知局限</div>
+        <ul class="sw-list">
+          <li class="sw-item"><div class="sw-dot dot-con">−</div><div class="sw-text">无 WebGL / Canvas FX 炫酷动效</div></li>
+          <li class="sw-item"><div class="sw-dot dot-con">−</div><div class="sw-text">不支持联网调研和文件导入</div></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sw-card s2 reveal reveal-delay-2">
+      <div class="sw-card-header">
+        <div class="sw-card-name" style="color:var(--c2)">ks-design-slide-deck</div>
+        <div class="sw-score-row">
+          <div class="sw-score" style="color:var(--c2)">79.9</div>
+          <div class="sw-rank">/ 90 · 综合第2</div>
+        </div>
+      </div>
+      <div class="sw-section">
+        <div class="sw-label">核心优势</div>
+        <ul class="sw-list">
+          <li class="sw-item"><div class="sw-dot dot-pro">+</div><div class="sw-text">输入灵活性最强（文本/URL/.pptx/.key/.pdf/参考图）</div></li>
+          <li class="sw-item"><div class="sw-dot dot-pro">+</div><div class="sw-text">唯一支持图生图（参考视觉风格迁移）</div></li>
+          <li class="sw-item"><div class="sw-dot dot-pro">+</div><div class="sw-text">fetch_web 联网调研，实时话题自动填数据</div></li>
+        </ul>
+      </div>
+      <div class="sw-divider"></div>
+      <div class="sw-section">
+        <div class="sw-label">已知局限</div>
+        <ul class="sw-list">
+          <li class="sw-item"><div class="sw-dot dot-con">−</div><div class="sw-text">无 Showcase 样稿预览机制</div></li>
+          <li class="sw-item"><div class="sw-dot dot-con">−</div><div class="sw-text">版式数量文档未明确，不可量化</div></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sw-card s3 reveal reveal-delay-3">
+      <div class="sw-card-header">
+        <div class="sw-card-name" style="color:var(--c3)">html-ppt</div>
+        <div class="sw-score-row">
+          <div class="sw-score" style="color:var(--c3)">72.7</div>
+          <div class="sw-rank">/ 90 · 综合第4</div>
+        </div>
+      </div>
+      <div class="sw-section">
+        <div class="sw-label">核心优势</div>
+        <ul class="sw-list">
+          <li class="sw-item"><div class="sw-dot dot-pro">+</div><div class="sw-text">动效最丰富（27 CSS + 20 Canvas FX）</div></li>
+          <li class="sw-item"><div class="sw-dot dot-pro">+</div><div class="sw-text">演讲者模式最完善（BroadcastChannel 双窗同步）</div></li>
+          <li class="sw-item"><div class="sw-dot dot-pro">+</div><div class="sw-text">版式多样（31 单页 + 15 全套），小红书图文支持</div></li>
+        </ul>
+      </div>
+      <div class="sw-divider"></div>
+      <div class="sw-section">
+        <div class="sw-label">已知局限</div>
+        <ul class="sw-list">
+          <li class="sw-item"><div class="sw-dot dot-con">−</div><div class="sw-text">完全没有 AI 配图能力（致命短板）</div></li>
+          <li class="sw-item"><div class="sw-dot dot-con">−</div><div class="sw-text">无联网调研，无生成前确认机制</div></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sw-card s4 reveal reveal-delay-4">
+      <div class="sw-card-header">
+        <div class="sw-card-name" style="color:var(--c4)">guizang-ppt-skill</div>
+        <div class="sw-score-row">
+          <div class="sw-score" style="color:var(--c4)">63.3</div>
+          <div class="sw-rank">/ 90 · 综合第5</div>
+        </div>
+      </div>
+      <div class="sw-section">
+        <div class="sw-label">核心优势</div>
+        <ul class="sw-list">
+          <li class="sw-item"><div class="sw-dot dot-pro">+</div><div class="sw-text">视觉最独特（WebGL 背景，杂志感/瑞士风）</div></li>
+          <li class="sw-item"><div class="sw-dot dot-pro">+</div><div class="sw-text">单文件交付，部署最简单</div></li>
+          <li class="sw-item"><div class="sw-dot dot-pro">+</div><div class="sw-text">7 问澄清清单，需求对齐最系统</div></li>
+        </ul>
+      </div>
+      <div class="sw-divider"></div>
+      <div class="sw-section">
+        <div class="sw-label">已知局限</div>
+        <ul class="sw-list">
+          <li class="sw-item"><div class="sw-dot dot-con">−</div><div class="sw-text">无 AI 配图，无 QA 检查</div></li>
+          <li class="sw-item"><div class="sw-dot dot-con">−</div><div class="sw-text">不适合大段表格数据/图表叠加（官方自述）</div></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sw-card s5 reveal reveal-delay-5">
+      <div class="sw-card-header">
+        <div class="sw-card-name" style="color:var(--c5)">huashu-design</div>
+        <div class="sw-score-row">
+          <div class="sw-score" style="color:var(--c5)">73.1</div>
+          <div class="sw-rank">/ 90 · 综合第3</div>
+        </div>
+      </div>
+      <div class="sw-section">
+        <div class="sw-label">核心优势</div>
+        <ul class="sw-list">
+          <li class="sw-item"><div class="sw-dot dot-pro">+</div><div class="sw-text">60fps 动画引擎，可导出 MP4/GIF</div></li>
+          <li class="sw-item"><div class="sw-dot dot-pro">+</div><div class="sw-text">5 流派×20 设计哲学，最强设计方向咨询</div></li>
+          <li class="sw-item"><div class="sw-dot dot-pro">+</div><div class="sw-text">App 原型 + 幻灯片 + 动画全场景覆盖</div></li>
+        </ul>
+      </div>
+      <div class="sw-divider"></div>
+      <div class="sw-section">
+        <div class="sw-label">已知局限</div>
+        <ul class="sw-list">
+          <li class="sw-item"><div class="sw-dot dot-con">−</div><div class="sw-text">幻灯片只是多功能之一，PPT 专项能力弱</div></li>
+          <li class="sw-item"><div class="sw-dot dot-con">−</div><div class="sw-text">无预置 PPT 版式库，结果不可预期</div></li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══ 场景推荐 ══ -->
+<section class="section reveal" id="s-scene">
+  <div class="eyebrow">什么场景选哪个 — 场景推荐矩阵</div>
+  <div class="scene-shell">
+    <table class="scene-table">
+      <thead>
+        <tr>
+          <th style="width:200px;">使用场景</th>
+          <th style="width:160px;">首选推荐</th>
+          <th>推荐理由（基于评分证据）</th>
+          <th style="width:130px;">备选</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>数据汇报 / 季度总结</strong><br><span style="font-size:11px;color:var(--t2)">需要图表、数据墙、精准配色</span></td>
+          <td><span class="scene-tag" style="background:var(--c1a);color:var(--c1)">designai-ppt-html</span></td>
+          <td class="scene-reason">D1(9.5)+D3(9.5)+D5(9.0) 三维最高，42 种版式含数据墙/ECharts 图表，Showcase 确认后生成，QA 兜底</td>
+          <td><span class="scene-tag" style="background:var(--c2a);color:var(--c2)">ks-slide-deck</span></td>
+        </tr>
+        <tr>
+          <td><strong>话题即兴做 PPT</strong><br><span style="font-size:11px;color:var(--t2)">只有一个主题，无原始材料</span></td>
+          <td><span class="scene-tag" style="background:var(--c2a);color:var(--c2)">ks-slide-deck</span></td>
+          <td class="scene-reason">D7(9.5) 最高，<strong>fetch_web 自动调研填充内容</strong>，无需用户准备素材即可生成有数据支撑的幻灯片</td>
+          <td><span class="scene-tag" style="background:var(--c5a);color:var(--c5)">huashu</span></td>
+        </tr>
+        <tr>
+          <td><strong>视觉冲击力优先</strong><br><span style="font-size:11px;color:var(--t2)">发布会、演讲、网页分享</span></td>
+          <td><span class="scene-tag" style="background:var(--c4a);color:var(--c4)">guizang-ppt</span></td>
+          <td class="scene-reason">WebGL 背景 + Motion One，视觉独特性强；单文件 HTML 一键分享；杂志风/瑞士风适合发布会场景</td>
+          <td><span class="scene-tag" style="background:var(--c3a);color:var(--c3)">html-ppt</span></td>
+        </tr>
+        <tr>
+          <td><strong>演讲者模式 / 逐字稿</strong><br><span style="font-size:11px;color:var(--t2)">需要提词器、下一页预览</span></td>
+          <td><span class="scene-tag" style="background:var(--c3a);color:var(--c3)">html-ppt</span></td>
+          <td class="scene-reason">D6(9.5) 最高，S键弹出<strong>4磁卡演讲者窗口</strong>（当前/下一页/逐字稿/计时器），BroadcastChannel 双窗同步，唯一完整实现</td>
+          <td><span class="scene-tag" style="background:var(--c5a);color:var(--c5)">huashu</span></td>
+        </tr>
+        <tr>
+          <td><strong>旧 PPT 转换 / 参考图迁移</strong><br><span style="font-size:11px;color:var(--t2)">有 .pptx/.key/.pdf 输入</span></td>
+          <td><span class="scene-tag" style="background:var(--c2a);color:var(--c2)">ks-slide-deck</span></td>
+          <td class="scene-reason">D7(9.5) 最高，唯一支持 <strong>.pptx/.key/.pdf 输入 + 图生图参考视觉风格迁移</strong>，文件解析能力最全</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td><strong>产品原型 + 配套幻灯片</strong><br><span style="font-size:11px;color:var(--t2)">需要 App 交互原型和 PPT 同时交付</span></td>
+          <td><span class="scene-tag" style="background:var(--c5a);color:var(--c5)">huashu-design</span></td>
+          <td class="scene-reason">唯一<strong>原型+幻灯片+动画三合一</strong>，Playwright 交互测试，60fps 视频导出，无需切换工具</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td><strong>小红书图文 / 3:4 竖版</strong><br><span style="font-size:11px;color:var(--t2)">内容运营场景</span></td>
+          <td><span class="scene-tag" style="background:var(--c3a);color:var(--c3)">html-ppt</span></td>
+          <td class="scene-reason">唯一内置 <strong>xhs-post 3:4 模板</strong>，xiaohongshu-white / soft-pastel / rainbow-gradient 主题专为小红书场景设计</td>
+          <td>—</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══ Footer ══ -->
+<footer class="footer">
+  <div class="footer-note">
+    数据来源：各 SKILL.md 原始文档 · 评分日期：2026-05-12 · 作者：luzifeng<br>
+    权重体系基于「PPT 专项生成」场景设定，其他场景权重应重新调整
+  </div>
+  <div class="footer-badge">🏆 designai-ppt-html · 83.3 / 90 · 综合第1</div>
+</footer>
+
+</div><!-- /.page-wrap -->
+
+<script>
+// ── 导航高亮 ──
+const sections = ['s-method','s-dim','s-matrix','s-sw','s-scene'];
+const navLinks = document.querySelectorAll('.nav-link');
+function updateNav() {
+  let current = '';
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && window.scrollY >= el.offsetTop - 100) current = id;
+  });
+  navLinks.forEach(link => {
+    const target = link.getAttribute('onclick').match(/'([^']+)'/)[1];
+    link.classList.toggle('active', target === current);
+  });
+}
+window.addEventListener('scroll', updateNav, { passive: true });
+
+// ── Scroll Reveal ──
+const revealEls = document.querySelectorAll('.reveal');
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+  });
+}, { threshold: 0.06 });
+revealEls.forEach(el => obs.observe(el));
+
+// ── Bar 动画（进入视口时播放）──
+const bars = document.querySelectorAll('.sc-bar, .summary-bar');
+bars.forEach(b => {
+  const w = b.style.width;
+  b.style.width = '0%';
+  const barObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        setTimeout(() => { b.style.width = w; }, 120);
+        barObs.unobserve(b);
+      }
+    });
+  }, { threshold: 0.5 });
+  barObs.observe(b);
+});
+</script>
+</body>
+</html>
+
+<script>
+function scrollTo(id) {
+  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+// Reveal on scroll
+const revealEls = document.querySelectorAll('.reveal');
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+}, { threshold: 0.08 });
+revealEls.forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
