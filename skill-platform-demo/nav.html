@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>万擎 Skill 平台 — 原型导航</title>
+<style>
+:root {
+  --bg:#0D1117;--bg2:#161B22;--bg3:#1C2128;--bg4:#21262D;
+  --bgHover:#2D333B;--border:#30363D;--borderLight:#3D444D;
+  --text:#E6EDF3;--text2:#8B949E;--textMuted:#6E7681;
+  --accent:#1677FF;--accentH:#0958D9;--accentL:rgba(22,119,255,.15);
+  --success:#3FB950;--successBg:rgba(63,185,80,.1);
+  --purple:#A371F7;--purpleBg:rgba(163,113,247,.1);
+  --r:6px;--rL:10px;--rXL:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;font-size:13px;min-height:100vh;display:flex;flex-direction:column}
+a{text-decoration:none;color:inherit}
+
+/* TOP */
+.top{background:var(--bg2);border-bottom:1px solid var(--border);padding:12px 32px;display:flex;align-items:center;gap:12px}
+.logo{display:flex;align-items:center;gap:9px;font-weight:700;font-size:16px}
+.logo-box{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#1677FF,#722ED1);display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff;font-size:15px}
+.top-badge{font-size:11px;padding:2px 9px;border-radius:9px;background:var(--purpleBg);color:var(--purple);border:1px solid rgba(163,113,247,.3);margin-left:4px}
+.top-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.ks-btn{padding:6px 14px;border-radius:var(--r);font-size:12px;font-weight:500;background:var(--accent);color:#fff;cursor:pointer;border:none;transition:background .15s}
+.ks-btn:hover{background:var(--accentH)}
+
+/* HERO */
+.hero{padding:52px 32px 40px;text-align:center;position:relative;overflow:hidden}
+.hero::before,.hero::after{content:'';position:absolute;border-radius:50%;pointer-events:none}
+.hero::before{width:400px;height:400px;top:-120px;left:50%;transform:translateX(-50%);background:radial-gradient(circle,rgba(22,119,255,.12) 0%,transparent 70%)}
+.hero::after{width:300px;height:300px;bottom:-80px;right:10%;background:radial-gradient(circle,rgba(114,46,209,.1) 0%,transparent 70%)}
+.hero-tag{display:inline-flex;align-items:center;gap:6px;background:var(--accentL);color:#79C0FF;border:1px solid rgba(22,119,255,.3);padding:4px 12px;border-radius:20px;font-size:12px;font-weight:500;margin-bottom:18px}
+.hero-title{font-size:32px;font-weight:800;line-height:1.2;margin-bottom:12px}
+.hero-title .g{background:linear-gradient(90deg,#1677FF,#722ED1,#E07B39);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{font-size:14px;color:var(--text2);max-width:520px;margin:0 auto 28px;line-height:1.7}
+.hero-ctas{display:flex;gap:10px;justify-content:center}
+.cta-primary{padding:10px 24px;border-radius:var(--r);background:var(--accent);color:#fff;font-size:14px;font-weight:600;cursor:pointer;border:none;transition:all .15s;display:flex;align-items:center;gap:6px}
+.cta-primary:hover{background:var(--accentH);transform:translateY(-1px)}
+.cta-secondary{padding:10px 24px;border-radius:var(--r);background:var(--bg3);color:var(--text);font-size:14px;font-weight:500;cursor:pointer;border:1px solid var(--border);transition:all .15s;display:flex;align-items:center;gap:6px}
+.cta-secondary:hover{background:var(--bgHover);border-color:var(--borderLight)}
+
+/* FLOW */
+.flow{padding:10px 32px 36px;max-width:960px;margin:0 auto;width:100%}
+.flow-title{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--textMuted);text-align:center;margin-bottom:20px;display:flex;align-items:center;gap:8px;justify-content:center}
+.flow-title::before,.flow-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.flow-steps{display:flex;align-items:stretch;gap:0;position:relative}
+.step{flex:1;position:relative}
+.step-arrow{position:absolute;right:-16px;top:50%;transform:translateY(-50%);color:var(--textMuted);font-size:20px;z-index:2;pointer-events:none}
+.step-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rL);padding:18px 16px;height:100%;display:flex;flex-direction:column;gap:8px;transition:all .2s;cursor:pointer;position:relative;overflow:hidden}
+.step-card::before{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;opacity:0;transition:opacity .2s}
+.step-card:hover{border-color:var(--borderLight);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.4)}
+.step-card:hover::before{opacity:1}
+.s1::before{background:linear-gradient(90deg,#1677FF,#0958D9)}
+.s2::before{background:linear-gradient(90deg,#722ED1,#A371F7)}
+.s3::before{background:linear-gradient(90deg,#D29922,#E09B3A)}
+.s4::before{background:linear-gradient(90deg,#3FB950,#2EA843)}
+.step-num{font-size:11px;font-weight:700;color:var(--textMuted);letter-spacing:.05em}
+.step-icon{font-size:26px;margin:2px 0}
+.step-name{font-size:14px;font-weight:700}
+.step-desc{font-size:12px;color:var(--text2);line-height:1.5;flex:1}
+.step-tag{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:var(--r);font-size:11px;font-weight:500;margin-top:4px;align-self:flex-start}
+.tag-blue{background:var(--accentL);color:#79C0FF}
+.tag-purple{background:var(--purpleBg);color:var(--purple)}
+.tag-orange{background:rgba(210,153,34,.12);color:#D29922}
+.tag-green{background:var(--successBg);color:var(--success)}
+.step-open{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--accent);margin-top:auto;padding-top:8px;border-top:1px solid var(--border)}
+
+/* FILE MAP */
+.filemap{max-width:960px;margin:0 auto 36px;padding:0 32px;width:100%}
+.filemap-inner{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rXL);overflow:hidden}
+.filemap-head{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600}
+.filemap-dots{display:flex;gap:5px;margin-right:6px}
+.filemap-dot{width:10px;height:10px;border-radius:50%}
+.filemap-body{padding:20px;display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.file-item{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:12px 10px;text-align:center;transition:all .15s;cursor:pointer}
+.file-item:hover{border-color:var(--borderLight);background:var(--bgHover)}
+.file-icon{font-size:22px;margin-bottom:6px}
+.file-name{font-size:12px;font-weight:600;margin-bottom:2px}
+.file-size{font-size:10px;color:var(--textMuted)}
+.file-status{display:inline-block;margin-top:4px;padding:1px 6px;border-radius:4px;font-size:10px;font-weight:600}
+.st-done{background:var(--successBg);color:var(--success)}
+.st-current{background:var(--accentL);color:#79C0FF}
+
+/* QUICK START */
+.qs{max-width:960px;margin:0 auto 40px;padding:0 32px;width:100%}
+.qs-inner{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rXL);overflow:hidden}
+.qs-head{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600}
+.qs-body{padding:18px 20px;display:flex;flex-direction:column;gap:8px}
+.qs-item{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);transition:background .15s}
+.qs-item:hover{background:var(--bgHover)}
+.qs-num{width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.qs-content{flex:1}
+.qs-label{font-size:13px;font-weight:600;margin-bottom:2px}
+.qs-detail{font-size:12px;color:var(--text2);line-height:1.5}
+.qs-link{display:inline-flex;align-items:center;gap:4px;color:var(--accent);font-size:12px;font-weight:500;margin-top:4px;cursor:pointer;transition:opacity .15s}
+.qs-link:hover{opacity:.7}
+
+/* FOOTER */
+.footer{margin-top:auto;padding:20px 32px;border-top:1px solid var(--border);display:flex;align-items:center;gap:10px;background:var(--bg2)}
+.footer-text{font-size:12px;color:var(--textMuted)}
+.footer-links{display:flex;gap:16px;margin-left:auto}
+.footer-link{font-size:12px;color:var(--text2);cursor:pointer;transition:color .15s}
+.footer-link:hover{color:var(--text)}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="top">
+  <div class="logo">
+    <div class="logo-box">S</div>
+    万擎 Skill 平台
+  </div>
+  <span class="top-badge">✨ 交互原型 v1.0</span>
+  <div class="top-right">
+    <span style="font-size:12px;color:var(--text2)">基于《Kwai Agent Skill 广场 Phase 2》PRD</span>
+    <a href="index.html" class="ks-btn">进入平台 →</a>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-tag">
+    <svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a2 2 0 012 2v4H6V3a2 2 0 012-2zm3 6V3a3 3 0 00-6 0v4a2 2 0 00-2 2v5a2 2 0 002 2h6a2 2 0 002-2V9a2 2 0 00-2-2z"/></svg>
+    design-workflow-orchestrator 输出产物
+  </div>
+  <h1 class="hero-title">万擎 <span class="g">Skill 平台</span> 交互原型</h1>
+  <p class="hero-sub">依据 PRD 完整还原的 B 端高保真原型，覆盖 Skill 全生命周期：创建 → 编辑 → 安全扫描 → 发布上线</p>
+  <div class="hero-ctas">
+    <a href="index.html" class="cta-primary">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M1 2.5A1.5 1.5 0 012.5 1h3A1.5 1.5 0 017 2.5v3A1.5 1.5 0 015.5 7h-3A1.5 1.5 0 011 5.5v-3zm8 0A1.5 1.5 0 0110.5 1h3A1.5 1.5 0 0115 2.5v3A1.5 1.5 0 0113.5 7h-3A1.5 1.5 0 019 5.5v-3zm-8 8A1.5 1.5 0 012.5 9h3A1.5 1.5 0 017 10.5v3A1.5 1.5 0 015.5 15h-3A1.5 1.5 0 011 13.5v-3zm8 0A1.5 1.5 0 0110.5 9h3a1.5 1.5 0 011.5 1.5v3a1.5 1.5 0 01-1.5 1.5h-3A1.5 1.5 0 019 13.5v-3z"/></svg>
+      浏览所有页面
+    </a>
+    <a href="square.html" class="cta-secondary">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M0 8a8 8 0 1116 0A8 8 0 010 8zm5.904-2.803a.5.5 0 10-.808.588L7.753 9l-2.657 3.215a.5.5 0 00.808.588L8 9.763l2.096 3.04a.5.5 0 00.808-.588L8.247 9l2.657-3.215a.5.5 0 00-.808-.588L8 8.237 5.904 5.197z"/></svg>
+      Skill 广场
+    </a>
+  </div>
+</div>
+
+<!-- FLOW STEPS -->
+<div class="flow">
+  <div class="flow-title">核心用户流程</div>
+  <div class="flow-steps">
+
+    <div class="step">
+      <a href="index.html">
+        <div class="step-card s1">
+          <div class="step-num">STEP 01</div>
+          <div class="step-icon">📦</div>
+          <div class="step-name">我的 Skill</div>
+          <div class="step-desc">管理已创建 / 安装的 Skill，查看运行状态，一键新建</div>
+          <div class="step-tag tag-blue">index.html</div>
+          <div class="step-open">
+            <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M1 8a.5.5 0 01.5-.5h11.793l-3.147-3.146a.5.5 0 01.708-.708l4 4a.5.5 0 010 .708l-4 4a.5.5 0 01-.708-.708L13.293 8.5H1.5A.5.5 0 011 8z"/></svg>
+            打开页面
+          </div>
+        </div>
+      </a>
+      <div class="step-arrow">›</div>
+    </div>
+
+    <div class="step">
+      <a href="editor.html">
+        <div class="step-card s2">
+          <div class="step-num">STEP 02</div>
+          <div class="step-icon">✍️</div>
+          <div class="step-name">Skill 编辑器</div>
+          <div class="step-desc">三栏 IDE 布局：文件树 / 代码编辑器 / 调试 + 环境变量面板</div>
+          <div class="step-tag tag-purple">editor.html</div>
+          <div class="step-open">
+            <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M1 8a.5.5 0 01.5-.5h11.793l-3.147-3.146a.5.5 0 01.708-.708l4 4a.5.5 0 010 .708l-4 4a.5.5 0 01-.708-.708L13.293 8.5H1.5A.5.5 0 011 8z"/></svg>
+            打开页面
+          </div>
+        </div>
+      </a>
+      <div class="step-arrow">›</div>
+    </div>
+
+    <div class="step">
+      <a href="security.html">
+        <div class="step-card s3">
+          <div class="step-num">STEP 03</div>
+          <div class="step-icon">🛡️</div>
+          <div class="step-name">安全扫描</div>
+          <div class="step-desc">自动扫描代码安全 / 网络行为 / 合规性，通过后方可发布</div>
+          <div class="step-tag tag-orange">security.html</div>
+          <div class="step-open">
+            <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M1 8a.5.5 0 01.5-.5h11.793l-3.147-3.146a.5.5 0 01.708-.708l4 4a.5.5 0 010 .708l-4 4a.5.5 0 01-.708-.708L13.293 8.5H1.5A.5.5 0 011 8z"/></svg>
+            打开页面
+          </div>
+        </div>
+      </a>
+      <div class="step-arrow">›</div>
+    </div>
+
+    <div class="step">
+      <a href="square.html">
+        <div class="step-card s4">
+          <div class="step-num">STEP 04</div>
+          <div class="step-icon">🌐</div>
+          <div class="step-name">Skill 广场</div>
+          <div class="step-desc">发布上线后展示在广场，供其他用户搜索浏览、一键安装</div>
+          <div class="step-tag tag-green">square.html</div>
+          <div class="step-open">
+            <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M1 8a.5.5 0 01.5-.5h11.793l-3.147-3.146a.5.5 0 01.708-.708l4 4a.5.5 0 010 .708l-4 4a.5.5 0 01-.708-.708L13.293 8.5H1.5A.5.5 0 011 8z"/></svg>
+            打开页面
+          </div>
+        </div>
+      </a>
+    </div>
+
+  </div>
+</div>
+
+<!-- FILE MAP -->
+<div class="filemap">
+  <div class="filemap-inner">
+    <div class="filemap-head">
+      <div class="filemap-dots">
+        <div class="filemap-dot" style="background:#FF5F57"></div>
+        <div class="filemap-dot" style="background:#FFBD2E"></div>
+        <div class="filemap-dot" style="background:#28CA41"></div>
+      </div>
+      📁 skill-platform-demo / — 原型文件目录
+    </div>
+    <div class="filemap-body">
+      <a href="nav.html">
+        <div class="file-item">
+          <div class="file-icon">🗺️</div>
+          <div class="file-name">nav.html</div>
+          <div class="file-size">导航枢纽</div>
+          <div class="file-status st-current">当前页</div>
+        </div>
+      </a>
+      <a href="index.html">
+        <div class="file-item">
+          <div class="file-icon">📦</div>
+          <div class="file-name">index.html</div>
+          <div class="file-size">我的 Skill</div>
+          <div class="file-status st-done">已完成</div>
+        </div>
+      </a>
+      <a href="editor.html">
+        <div class="file-item">
+          <div class="file-icon">✍️</div>
+          <div class="file-name">editor.html</div>
+          <div class="file-size">编辑器</div>
+          <div class="file-status st-done">已完成</div>
+        </div>
+      </a>
+      <a href="security.html">
+        <div class="file-item">
+          <div class="file-icon">🛡️</div>
+          <div class="file-name">security.html</div>
+          <div class="file-size">安全扫描</div>
+          <div class="file-status st-done">已完成</div>
+        </div>
+      </a>
+      <a href="square.html">
+        <div class="file-item">
+          <div class="file-icon">🌐</div>
+          <div class="file-name">square.html</div>
+          <div class="file-size">Skill 广场</div>
+          <div class="file-status st-done">已完成</div>
+        </div>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- QUICK START -->
+<div class="qs">
+  <div class="qs-inner">
+    <div class="qs-head">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M6.271 5.055a.5.5 0 01.52.038l3.5 2.5a.5.5 0 010 .814l-3.5 2.5A.5.5 0 016 10.5v-5a.5.5 0 01.271-.445z"/><path d="M0 4a2 2 0 012-2h12a2 2 0 012 2v8a2 2 0 01-2 2H2a2 2 0 01-2-2V4zm15 0a1 1 0 00-1-1H2a1 1 0 00-1 1v8a1 1 0 001 1h12a1 1 0 001-1V4z"/></svg>
+      快速体验路径
+    </div>
+    <div class="qs-body">
+      <div class="qs-item">
+        <div class="qs-num">1</div>
+        <div class="qs-content">
+          <div class="qs-label">浏览我的 Skill 列表</div>
+          <div class="qs-detail">打开 index.html，查看已安装的 Skill 卡片，点击「新建 Skill」体验创建弹窗</div>
+          <a href="index.html" class="qs-link">进入 index.html <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M1 8a.5.5 0 01.5-.5h11.793l-3.147-3.146a.5.5 0 01.708-.708l4 4a.5.5 0 010 .708l-4 4a.5.5 0 01-.708-.708L13.293 8.5H1.5A.5.5 0 011 8z"/></svg></a>
+        </div>
+      </div>
+      <div class="qs-item">
+        <div class="qs-num">2</div>
+        <div class="qs-content">
+          <div class="qs-label">编辑 Skill 代码</div>
+          <div class="qs-detail">点击任意 Skill 卡片进入 editor.html，切换文件树 / 代码编辑 / 调试面板</div>
+          <a href="editor.html" class="qs-link">进入 editor.html <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M1 8a.5.5 0 01.5-.5h11.793l-3.147-3.146a.5.5 0 01.708-.708l4 4a.5.5 0 010 .708l-4 4a.5.5 0 01-.708-.708L13.293 8.5H1.5A.5.5 0 011 8z"/></svg></a>
+        </div>
+      </div>
+      <div class="qs-item">
+        <div class="qs-num">3</div>
+        <div class="qs-content">
+          <div class="qs-label">执行安全扫描</div>
+          <div class="qs-detail">点击编辑器右上角「安全扫描」，在 security.html 体验进度动画及「通过 / 未通过」两种报告形态</div>
+          <a href="security.html" class="qs-link">进入 security.html <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M1 8a.5.5 0 01.5-.5h11.793l-3.147-3.146a.5.5 0 01.708-.708l4 4a.5.5 0 010 .708l-4 4a.5.5 0 01-.708-.708L13.293 8.5H1.5A.5.5 0 011 8z"/></svg></a>
+        </div>
+      </div>
+      <div class="qs-item">
+        <div class="qs-num">4</div>
+        <div class="qs-content">
+          <div class="qs-label">在广场发现 &amp; 安装 Skill</div>
+          <div class="qs-detail">切换到 square.html，使用搜索框 / 分类侧栏过滤，点击「+ 安装」选择目标平台</div>
+          <a href="square.html" class="qs-link">进入 square.html <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M1 8a.5.5 0 01.5-.5h11.793l-3.147-3.146a.5.5 0 01.708-.708l4 4a.5.5 0 010 .708l-4 4a.5.5 0 01-.708-.708L13.293 8.5H1.5A.5.5 0 011 8z"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="footer-text">🤖 由 design-workflow-orchestrator · prd-to-prompt · requirement-intake · design-demo-engineer 协同生成</div>
+  <div class="footer-links">
+    <span class="footer-link" onclick="copyPath()">📋 复制路径</span>
+    <a href="index.html" class="footer-link">index.html</a>
+    <a href="editor.html" class="footer-link">editor.html</a>
+    <a href="security.html" class="footer-link">security.html</a>
+    <a href="square.html" class="footer-link">square.html</a>
+  </div>
+</div>
+
+<script>
+function copyPath() {
+  const p = location.href.replace('nav.html','');
+  navigator.clipboard?.writeText(p).then(() => {
+    const el = document.querySelector('.footer-link');
+    el.textContent = '✅ 已复制';
+    setTimeout(() => el.textContent = '📋 复制路径', 2000);
+  });
+}
+</script>
+
+</body>
+</html>

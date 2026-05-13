@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skill 编辑器 — 万擎 Skill 广场</title>
+<style>
+:root {
+  --bg-base:#0D1117;--bg-sidebar:#161B22;--bg-panel:#1C2128;--bg-card:#21262D;
+  --bg-hover:#2D333B;--bg-active:#1F3A5F;--bg-input:#22272E;
+  --border:#30363D;--border-light:#3D444D;
+  --text-primary:#E6EDF3;--text-secondary:#8B949E;--text-muted:#6E7681;
+  --accent:#1677FF;--accent-hover:#0958D9;--accent-light:rgba(22,119,255,.15);--accent-border:rgba(22,119,255,.4);
+  --success:#3FB950;--success-bg:rgba(63,185,80,.12);
+  --warning:#D29922;--warning-bg:rgba(210,153,34,.12);
+  --danger:#F85149;--danger-bg:rgba(248,81,73,.12);
+  --tag-blue:#388BFD;
+  --radius:6px;--radius-lg:8px;--radius-xl:12px;
+  --shadow:0 4px 12px rgba(0,0,0,.4);--shadow-lg:0 8px 24px rgba(0,0,0,.5);
+  --font-mono:"JetBrains Mono","Fira Code","Consolas",monospace;
+  --trans:200ms ease;
+  /* Layout */
+  --filetree-w:220px;--editor-w:1fr;--right-w:380px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;font-size:13px;background:var(--bg-base);color:var(--text-primary);line-height:1.5}
+button{cursor:pointer;font-family:inherit;border:none;outline:none}
+input,textarea{font-family:inherit;outline:none;border:none}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border-light);border-radius:3px}
+
+/* ===== TOPBAR ===== */
+.topbar{height:44px;background:var(--bg-sidebar);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 12px;gap:10px;flex-shrink:0;z-index:50}
+.back-btn{display:flex;align-items:center;gap:5px;padding:5px 8px;border-radius:var(--radius);color:var(--text-secondary);background:transparent;font-size:12px;transition:all var(--trans)}
+.back-btn:hover{background:var(--bg-hover);color:var(--text-primary)}
+.skill-breadcrumb{display:flex;align-items:center;gap:6px;font-size:13px}
+.breadcrumb-sep{color:var(--text-muted)}
+.skill-name-tag{font-weight:600;color:var(--text-primary)}
+.type-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:500;background:var(--accent-light);color:var(--tag-blue);border:1px solid var(--accent-border)}
+.topbar-actions{margin-left:auto;display:flex;gap:8px;align-items:center}
+.btn-sm{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:var(--radius);font-size:12px;font-weight:500;transition:all var(--trans)}
+.btn-primary{background:var(--accent);color:white}.btn-primary:hover{background:var(--accent-hover)}
+.btn-secondary{background:var(--bg-hover);color:var(--text-primary);border:1px solid var(--border)}.btn-secondary:hover{background:var(--bg-card);border-color:var(--border-light)}
+.btn-danger-outline{background:transparent;color:var(--danger);border:1px solid rgba(248,81,73,.4)}.btn-danger-outline:hover{background:var(--danger-bg)}
+.btn-success{background:#1a4731;color:var(--success);border:1px solid rgba(63,185,80,.3)}.btn-success:hover{background:#1e5438}
+.step-info{font-size:11px;color:var(--text-muted);padding:0 8px}
+
+/* ===== EDITOR LAYOUT ===== */
+.editor-layout{display:grid;grid-template-columns:var(--filetree-w) 1fr var(--right-w);height:calc(100vh - 44px);overflow:hidden}
+
+/* ===== FILE TREE ===== */
+.filetree{background:var(--bg-sidebar);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.filetree-header{padding:8px 10px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px;flex-shrink:0}
+.filetree-title{font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted);flex:1}
+.icon-btn{width:22px;height:22px;border-radius:4px;background:transparent;border:none;color:var(--text-secondary);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all var(--trans);font-size:14px}
+.icon-btn:hover{background:var(--bg-hover);color:var(--text-primary)}
+.filetree-search{padding:6px 8px;border-bottom:1px solid var(--border);flex-shrink:0}
+.filetree-search input{width:100%;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius);color:var(--text-primary);padding:4px 8px;font-size:12px}
+.filetree-search input:focus{border-color:var(--accent)}
+.filetree-body{flex:1;overflow-y:auto;padding:4px 0}
+.tree-item{display:flex;align-items:center;gap:6px;padding:5px 10px;cursor:pointer;transition:all var(--trans);font-size:12px;color:var(--text-secondary);position:relative;user-select:none}
+.tree-item:hover{background:var(--bg-hover);color:var(--text-primary)}
+.tree-item.active{background:var(--bg-active);color:var(--tag-blue)}
+.tree-item.folder{font-weight:500;color:var(--text-primary)}
+.tree-item .indent{display:inline-block;width:12px;flex-shrink:0}
+.tree-item .item-icon{font-size:13px;flex-shrink:0}
+.tree-item .item-name{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tree-item .item-actions{opacity:0;display:flex;gap:2px;transition:opacity var(--trans)}
+.tree-item:hover .item-actions{opacity:1}
+.tree-item-action{padding:1px 4px;border-radius:3px;font-size:11px;color:var(--text-muted);background:transparent;cursor:pointer;transition:all var(--trans)}
+.tree-item-action:hover{background:var(--bg-card);color:var(--text-primary)}
+.tree-badge{font-size:10px;padding:1px 5px;border-radius:4px;background:var(--danger-bg);color:var(--danger);font-weight:600}
+.sub-items{display:none}
+.sub-items.open{display:block}
+
+/* ===== CODE EDITOR AREA ===== */
+.editor-area{display:flex;flex-direction:column;overflow:hidden;background:var(--bg-base)}
+.editor-tabs{height:34px;background:var(--bg-sidebar);border-bottom:1px solid var(--border);display:flex;align-items:flex-end;overflow-x:auto;flex-shrink:0}
+.editor-tab{display:flex;align-items:center;gap:6px;padding:0 14px;height:32px;border-top:1px solid var(--border);border-right:1px solid var(--border);font-size:12px;color:var(--text-secondary);cursor:pointer;background:var(--bg-panel);white-space:nowrap;transition:background var(--trans)}
+.editor-tab:hover{color:var(--text-primary)}
+.editor-tab.active{background:var(--bg-base);color:var(--text-primary);border-top:1px solid var(--accent)}
+.editor-tab .tab-close{width:16px;height:16px;border-radius:3px;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity var(--trans);font-size:12px;color:var(--text-secondary)}
+.editor-tab:hover .tab-close,.editor-tab.active .tab-close{opacity:1}
+.editor-tab .tab-close:hover{background:var(--bg-hover);color:var(--text-primary)}
+.code-body{flex:1;overflow:auto;padding:0}
+.code-area{display:flex;height:100%}
+.line-nums{padding:14px 8px 14px 14px;text-align:right;color:var(--text-muted);font-family:var(--font-mono);font-size:12px;line-height:22px;user-select:none;border-right:1px solid var(--border);min-width:44px;background:var(--bg-base)}
+.code-content{flex:1;padding:14px;font-family:var(--font-mono);font-size:12px;line-height:22px;color:var(--text-primary);white-space:pre;overflow:auto}
+/* Syntax highlight helpers */
+.kw{color:#FF7B72}.str{color:#A5D6FF}.cmt{color:#8B949E;font-style:italic}.fn{color:#D2A8FF}.prop{color:#79C0FF}.num{color:#F0B429}
+.editor-statusbar{height:22px;background:var(--accent);display:flex;align-items:center;padding:0 12px;gap:16px;flex-shrink:0}
+.statusbar-item{font-size:11px;color:rgba(255,255,255,.8);display:flex;align-items:center;gap:4px}
+
+/* ===== RIGHT PANEL ===== */
+.right-panel{border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;background:var(--bg-panel)}
+.right-tabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0;background:var(--bg-sidebar)}
+.right-tab{flex:1;padding:10px 4px;text-align:center;font-size:12px;color:var(--text-secondary);cursor:pointer;border-bottom:2px solid transparent;transition:all var(--trans);white-space:nowrap}
+.right-tab:hover{color:var(--text-primary);background:var(--bg-hover)}
+.right-tab.active{color:var(--tag-blue);border-bottom-color:var(--accent);background:var(--bg-panel)}
+.right-content{flex:1;overflow-y:auto;display:none}
+.right-content.active{display:flex;flex-direction:column}
+
+/* ===== DEBUG TAB ===== */
+.debug-config{padding:12px;border-bottom:1px solid var(--border);flex-shrink:0}
+.debug-config-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.debug-config-label{font-size:11px;color:var(--text-secondary);width:52px;flex-shrink:0}
+.model-select{flex:1;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius);color:var(--text-primary);padding:5px 8px;font-size:12px;cursor:pointer}
+.chat-area{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:10px}
+.chat-msg{display:flex;gap:8px;max-width:100%}
+.chat-avatar{width:24px;height:24px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
+.chat-bubble{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:8px 11px;font-size:12px;line-height:1.6;max-width:calc(100% - 34px)}
+.chat-bubble.user{background:var(--accent-light);border-color:var(--accent-border)}
+.chat-tool-call{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:6px 10px;font-size:11px;color:var(--text-muted);font-family:var(--font-mono);margin:4px 0}
+.chat-tool-call .tool-name{color:var(--tag-blue);font-weight:600}
+.typing-indicator{display:flex;gap:4px;padding:8px 12px;align-items:center}
+.dot{width:6px;height:6px;background:var(--text-muted);border-radius:50%;animation:blink 1.2s infinite}
+.dot:nth-child(2){animation-delay:.2s}
+.dot:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,80%,100%{opacity:.3}40%{opacity:1}}
+.chat-input-area{padding:10px;border-top:1px solid var(--border);flex-shrink:0}
+.chat-input-wrap{background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius-lg);display:flex;align-items:flex-end;gap:6px;padding:8px 10px;transition:border-color var(--trans)}
+.chat-input-wrap:focus-within{border-color:var(--accent)}
+.chat-input-wrap textarea{flex:1;background:transparent;color:var(--text-primary);font-size:12px;resize:none;line-height:1.5;max-height:80px}
+.chat-input-wrap textarea::placeholder{color:var(--text-muted)}
+.send-btn{width:28px;height:28px;border-radius:var(--radius);background:var(--accent);color:white;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background var(--trans)}
+.send-btn:hover{background:var(--accent-hover)}
+
+/* ===== ENV VARS TAB ===== */
+.env-section{padding:12px}
+.env-section-title{font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.env-row{display:flex;gap:8px;margin-bottom:6px;align-items:center}
+.env-key{flex:2;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius);color:var(--text-primary);padding:5px 8px;font-size:12px;font-family:var(--font-mono)}
+.env-val{flex:3;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius);color:var(--text-primary);padding:5px 8px;font-size:12px}
+.env-del{width:22px;height:22px;border-radius:4px;background:transparent;color:var(--text-muted);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all var(--trans);font-size:14px}
+.env-del:hover{background:var(--danger-bg);color:var(--danger)}
+.env-add-btn{display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:var(--radius);background:var(--bg-hover);color:var(--text-secondary);font-size:12px;border:1px dashed var(--border);cursor:pointer;transition:all var(--trans);margin-top:4px}
+.env-add-btn:hover{background:var(--bg-card);color:var(--text-primary);border-color:var(--border-light)}
+.env-hint{font-size:11px;color:var(--text-muted);margin-top:10px;padding:8px 10px;background:var(--bg-card);border-radius:var(--radius);border-left:2px solid var(--accent);line-height:1.6}
+
+/* ===== RESIZER ===== */
+.resizer{width:4px;background:transparent;cursor:col-resize;position:relative;flex-shrink:0;transition:background var(--trans)}
+.resizer:hover{background:var(--accent)}
+
+/* ===== CONFIRM MODAL ===== */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;z-index:500;opacity:0;pointer-events:none;transition:opacity var(--trans)}
+.modal-overlay.show{opacity:1;pointer-events:all}
+.modal{background:var(--bg-panel);border:1px solid var(--border);border-radius:var(--radius-xl);width:400px;box-shadow:var(--shadow-lg);transform:translateY(12px);transition:transform var(--trans)}
+.modal-overlay.show .modal{transform:translateY(0)}
+.modal-header{padding:16px 18px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.modal-icon{font-size:18px}
+.modal-title{font-size:14px;font-weight:600}
+.modal-body{padding:16px 18px;font-size:13px;color:var(--text-secondary);line-height:1.6}
+.modal-footer{padding:12px 18px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px}
+</style>
+</head>
+<body>
+
+<!-- ===== TOP BAR ===== -->
+<div class="topbar">
+  <a href="index.html" class="back-btn">
+    <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M15 8a.5.5 0 00-.5-.5H2.707l3.147-3.146a.5.5 0 10-.708-.708l-4 4a.5.5 0 000 .708l4 4a.5.5 0 00.708-.708L2.707 8.5H14.5A.5.5 0 0015 8z"/></svg>
+    我的 Skill
+  </a>
+  <span class="breadcrumb-sep">/</span>
+  <div class="skill-breadcrumb">
+    <span class="skill-name-tag">design-demo-engineer</span>
+    <span class="type-badge">
+      <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8z"/><path d="M6.271 5.055a.5.5 0 01.52.038l3.5 2.5a.5.5 0 010 .814l-3.5 2.5A.5.5 0 016 10.5v-5a.5.5 0 01.271-.445z"/></svg>
+      智能体创建
+    </span>
+    <span style="font-size:11px;color:var(--text-muted);background:var(--bg-card);padding:2px 8px;border-radius:10px;border:1px solid var(--border)">草稿</span>
+  </div>
+  <div class="topbar-actions">
+    <span class="step-info">步骤 2/3：编辑调试</span>
+    <button class="btn-sm btn-secondary" onclick="openDeleteModal()">
+      <svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor"><path d="M6.5 1h3a.5.5 0 01.5.5v1H6v-1a.5.5 0 01.5-.5zM11 2.5v-1A1.5 1.5 0 009.5 0h-3A1.5 1.5 0 005 1.5v1H2.506a.58.58 0 00-.01 0H1.5a.5.5 0 000 1h.538l.853 10.66A2 2 0 004.885 16h6.23a2 2 0 001.994-1.84l.853-10.66h.538a.5.5 0 000-1h-.995a.59.59 0 00-.01 0H11zm1.958 1l-.846 10.58a1 1 0 01-.997.92h-6.23a1 1 0 01-.997-.92L3.042 3.5h9.916z"/></svg>
+      删除
+    </button>
+    <button class="btn-sm btn-secondary" onclick="runScan()">
+      <svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a2 2 0 012 2v4H6V3a2 2 0 012-2zm3 6V3a3 3 0 00-6 0v4a2 2 0 00-2 2v5a2 2 0 002 2h6a2 2 0 002-2V9a2 2 0 00-2-2zM5 8h6a1 1 0 011 1v5a1 1 0 01-1 1H5a1 1 0 01-1-1V9a1 1 0 011-1z"/></svg>
+      安全扫描
+    </button>
+    <button class="btn-sm btn-primary" onclick="goNextStep()">
+      下一步
+      <svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M1 8a.5.5 0 01.5-.5h11.793l-3.147-3.146a.5.5 0 01.708-.708l4 4a.5.5 0 010 .708l-4 4a.5.5 0 01-.708-.708L13.293 8.5H1.5A.5.5 0 011 8z"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- ===== EDITOR LAYOUT ===== -->
+<div class="editor-layout" id="editor-layout">
+
+  <!-- ===== FILE TREE ===== -->
+  <div class="filetree">
+    <div class="filetree-header">
+      <span class="filetree-title">文件</span>
+      <button class="icon-btn" title="新建文件" onclick="addFile()">+</button>
+      <button class="icon-btn" title="新建文件夹">📁</button>
+      <button class="icon-btn" title="下载 ZIP">⬇</button>
+    </div>
+    <div class="filetree-search">
+      <input placeholder="搜索文件..." />
+    </div>
+    <div class="filetree-body" id="filetree-body">
+
+      <!-- SKILL.md -->
+      <div class="tree-item active" onclick="openFile('SKILL.md','skill')">
+        <span class="indent"></span>
+        <span class="item-icon">📄</span>
+        <span class="item-name">SKILL.md</span>
+        <span style="font-size:10px;color:var(--accent);margin-left:auto">●</span>
+        <div class="item-actions">
+          <span class="tree-item-action" title="重命名">✏</span>
+          <span class="tree-item-action" title="删除">🗑</span>
+          <span class="tree-item-action" title="下载">⬇</span>
+        </div>
+      </div>
+
+      <!-- references/ folder -->
+      <div class="tree-item folder" onclick="toggleFolder('ref-folder')">
+        <span class="indent"></span>
+        <span class="item-icon" id="ref-icon">📂</span>
+        <span class="item-name">references/</span>
+        <div class="item-actions">
+          <span class="tree-item-action">+</span>
+          <span class="tree-item-action">🗑</span>
+        </div>
+      </div>
+      <div class="sub-items open" id="ref-folder">
+        <div class="tree-item" onclick="openFile('advanced-patterns.md','md')">
+          <span class="indent" style="width:24px"></span>
+          <span class="item-icon">📄</span>
+          <span class="item-name">advanced-patterns.md</span>
+          <div class="item-actions">
+            <span class="tree-item-action">✏</span>
+            <span class="tree-item-action">🗑</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- scripts/ folder -->
+      <div class="tree-item folder" onclick="toggleFolder('scripts-folder')">
+        <span class="indent"></span>
+        <span class="item-icon" id="scripts-icon">📂</span>
+        <span class="item-name">scripts/</span>
+        <div class="item-actions">
+          <span class="tree-item-action">+</span>
+          <span class="tree-item-action">🗑</span>
+        </div>
+      </div>
+      <div class="sub-items open" id="scripts-folder">
+        <div class="tree-item" onclick="openFile('main.py','py')">
+          <span class="indent" style="width:24px"></span>
+          <span class="item-icon">🐍</span>
+          <span class="item-name">main.py</span>
+          <div class="item-actions">
+            <span class="tree-item-action">✏</span>
+            <span class="tree-item-action">🗑</span>
+            <span class="tree-item-action">⬇</span>
+          </div>
+        </div>
+        <div class="tree-item" onclick="openFile('version_check.py','py')">
+          <span class="indent" style="width:24px"></span>
+          <span class="item-icon">🐍</span>
+          <span class="item-name">version_check.py</span>
+          <div class="item-actions">
+            <span class="tree-item-action">✏</span>
+            <span class="tree-item-action">🗑</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- .skill-meta.json -->
+      <div class="tree-item" onclick="openFile('.skill-meta.json','json')">
+        <span class="indent"></span>
+        <span class="item-icon">⚙️</span>
+        <span class="item-name">.skill-meta.json</span>
+        <div class="item-actions">
+          <span class="tree-item-action">✏</span>
+          <span class="tree-item-action">🗑</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== CODE EDITOR ===== -->
+  <div class="editor-area">
+    <div class="editor-tabs" id="editor-tabs">
+      <div class="editor-tab active" id="tab-SKILL.md" onclick="switchTab('SKILL.md')">
+        <span>📄</span> SKILL.md
+        <span class="tab-close" onclick="closeTab(event,'SKILL.md')">×</span>
+      </div>
+    </div>
+    <div class="code-body">
+      <div class="code-area" id="code-display">
+        <div class="line-nums" id="line-nums"></div>
+        <div class="code-content" id="code-content" contenteditable="true" spellcheck="false"></div>
+      </div>
+    </div>
+    <div class="editor-statusbar">
+      <span class="statusbar-item">
+        <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor"><path d="M8 15A7 7 0 118 1a7 7 0 010 14zm0 1A8 8 0 108 0a8 8 0 000 16z"/><path d="M10.97 4.97a.235.235 0 00-.02.022L7.477 9.417 5.384 7.323a.75.75 0 00-1.06 1.06L6.97 11.03a.75.75 0 001.079-.02l3.992-4.99a.75.75 0 00-1.071-1.05z"/></svg>
+        自动保存
+      </span>
+      <span class="statusbar-item">SKILL.md</span>
+      <span class="statusbar-item">Markdown</span>
+      <span class="statusbar-item" id="cursor-pos">行 1，列 1</span>
+      <span class="statusbar-item" style="margin-left:auto">UTF-8</span>
+    </div>
+  </div>
+
+  <!-- ===== RIGHT PANEL ===== -->
+  <div class="right-panel">
+    <div class="right-tabs">
+      <div class="right-tab active" onclick="switchRightTab('debug', this)">💬 调试</div>
+      <div class="right-tab" onclick="switchRightTab('security', this)">🛡️ 安全</div>
+      <div class="right-tab" onclick="switchRightTab('env', this)">🔑 环境变量</div>
+      <div class="right-tab" onclick="switchRightTab('preview', this)">👁 预览</div>
+    </div>
+
+    <!-- DEBUG -->
+    <div class="right-content active" id="tab-debug">
+      <div class="debug-config">
+        <div class="debug-config-row">
+          <span class="debug-config-label">模型</span>
+          <select class="model-select">
+            <option>Kimi 2.0 Flash（推荐）</option>
+            <option>DeepSeek V3</option>
+            <option>Qwen2.5-72B</option>
+            <option>GPT-4o</option>
+          </select>
+        </div>
+        <div style="font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:4px">
+          <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor"><path d="M8 15A7 7 0 118 1a7 7 0 010 14zm0 1A8 8 0 108 0a8 8 0 000 16z"/><path d="M7.002 11a1 1 0 112 0 1 1 0 01-2 0zM7.1 4.995a.905.905 0 111.8 0l-.35 3.507a.552.552 0 01-1.1 0L7.1 4.995z"/></svg>
+          调试消耗平台方免费额度，不计入个人用量
+        </div>
+      </div>
+      <div class="chat-area" id="chat-area">
+        <div class="chat-msg">
+          <div class="chat-avatar" style="background:linear-gradient(135deg,#1677FF,#722ED1)">S</div>
+          <div class="chat-bubble">
+            <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px">系统</div>
+            Skill 已就绪，可发送 query 测试效果。当前加载的 Skill 文件：<code style="color:var(--text-code);font-family:var(--font-mono)">SKILL.md</code>
+          </div>
+        </div>
+        <div class="chat-msg">
+          <div class="chat-avatar" style="background:var(--bg-card);color:var(--text-secondary);border:1px solid var(--border)">我</div>
+          <div class="chat-bubble user">帮我生成一个电商Dashboard的交互原型，B端后台风格</div>
+        </div>
+        <div class="chat-msg">
+          <div class="chat-avatar" style="background:linear-gradient(135deg,#1677FF,#722ED1)">S</div>
+          <div style="flex:1">
+            <div class="chat-bubble">
+              <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px">design-demo-engineer</div>
+              <div class="chat-tool-call">
+                <span class="tool-name">read_file</span>（"SKILL.md"）→ <span style="color:var(--success)">✓ 成功</span>
+              </div>
+              <div class="chat-tool-call">
+                <span class="tool-name">write_to_file</span>（"dashboard.html"）→ <span style="color:var(--success)">✓ 写入 847 行</span>
+              </div>
+              好的！我已基于你的需求生成了一个电商 Dashboard 原型，包含：
+              <ul style="margin-top:6px;padding-left:16px;line-height:1.8">
+                <li>顶部 KPI 指标卡片（GMV / 订单量 / 转化率）</li>
+                <li>销售趋势折线图（ECharts）</li>
+                <li>商品列表 + 筛选器</li>
+                <li>深色/浅色模式 Tweaks 面板</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="chat-input-area">
+        <div class="chat-input-wrap">
+          <textarea rows="2" placeholder="发送 query 测试 Skill 效果..." id="chat-input" onkeydown="handleChatKey(event)"></textarea>
+          <button class="send-btn" onclick="sendChat()">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M15.964.686a.5.5 0 00-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 00-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 00.886-.083l6-15Zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 00-.154-.154l-.338-.215 7.494-7.494 1.178-.471-.47 1.178Z"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECURITY -->
+    <div class="right-content" id="tab-security">
+      <a href="security.html" style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:12px;color:var(--text-secondary);text-decoration:none" onclick="switchRightToSecurity()">
+        <div style="font-size:40px">🛡️</div>
+        <div style="font-size:13px">查看安全扫描报告</div>
+        <div style="font-size:11px;color:var(--text-muted)">点击跳转到安全扫描页面</div>
+      </a>
+    </div>
+
+    <!-- ENV VARS -->
+    <div class="right-content" id="tab-env">
+      <div class="env-section">
+        <div class="env-section-title">
+          🔑 环境变量配置
+          <span style="font-size:10px;color:var(--text-muted);font-weight:400">Skill 脚本可直接引用</span>
+        </div>
+        <div id="env-rows">
+          <div class="env-row">
+            <input class="env-key" value="API_KEY" placeholder="变量名" />
+            <input class="env-val" type="password" value="sk-xxxxxx" placeholder="变量值" />
+            <div class="env-del" onclick="this.closest('.env-row').remove()">×</div>
+          </div>
+          <div class="env-row">
+            <input class="env-key" value="BASE_URL" placeholder="变量名" />
+            <input class="env-val" value="https://api.example.com" placeholder="变量值" />
+            <div class="env-del" onclick="this.closest('.env-row').remove()">×</div>
+          </div>
+        </div>
+        <div class="env-add-btn" onclick="addEnvRow()">
+          + 添加变量
+        </div>
+        <div class="env-hint">
+          💡 环境变量仅保存在当前调试环境中，不会包含在 Skill 文件内。发布后，用户需自行配置对应变量。
+        </div>
+      </div>
+    </div>
+
+    <!-- PREVIEW -->
+    <div class="right-content" id="tab-preview">
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:12px">
+        <div style="font-size:40px">👁️</div>
+        <div style="font-size:13px;color:var(--text-secondary)">文件预览</div>
+        <div style="font-size:11px;color:var(--text-muted)">在文件树中点击文件即可预览</div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- DELETE CONFIRM MODAL -->
+<div class="modal-overlay" id="delete-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-icon">⚠️</span>
+      <span class="modal-title">确认删除</span>
+    </div>
+    <div class="modal-body">删除后不可恢复，确定要删除该文件吗？</div>
+    <div class="modal-footer">
+      <button class="btn-sm btn-secondary" onclick="closeDeleteModal()">取消</button>
+      <button class="btn-sm" style="background:var(--danger);color:white;padding:5px 14px;border-radius:var(--radius);font-size:12px" onclick="closeDeleteModal()">删除</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== FILE CONTENTS =====
+const fileContents = {
+  'SKILL.md': `---\nname: design-demo-engineer\ndescription: |\n  Build high-quality visual Web artifacts using\n  HTML/CSS/JavaScript/React.\n---\n\n# Web Design Engineer\n\n## Scope\n\n✅ Applicable: Visual front-end deliverables\n❌ Not applicable: Back-end APIs, CLI tools\n\n## Workflow\n\n### Step 1: Understand Requirements\n\nKey areas to probe:\n- **Product context**: Target users, design system\n- **Output type**: Web page / prototype / dashboard\n- **Variation dimensions**: Layout, color, interaction\n\n### Step 2: Gather Design Context\n\nGood design is rooted in existing context.\nNever start from thin air.\n\n### Step 3: Declare Design System\n\nBefore writing code, articulate:\n- Color palette\n- Typography system\n- Spacing unit\n- Border-radius strategy`,
+  'advanced-patterns.md': `# Advanced Patterns\n\n## Codebase Recon\n\nLayer 1 — Design tokens & theme files\nLayer 2 — Component library & overrides\nLayer 3 — Existing pages & layout patterns\nLayer 4 — Rules & guidelines\n\n## Tweaks Panel\n\nEvery deliverable must include a Tweaks panel\nwith at minimum:\n- Theme color swatches (3-5 colors)\n- Dark/light mode toggle`,
+  'main.py': `#!/usr/bin/env python3\n"""Skill usage tracking script."""\nimport os\nimport sys\nimport json\nimport urllib.request\n\nAIRTABLE_API_KEY = os.environ.get("AIRTABLE_API_KEY", "")\nBASE_ID = os.environ.get("AIRTABLE_BASE_ID", "")\nTABLE_NAME = "SkillUsage"\n\ndef record_usage():\n    url = f"https://api.airtable.com/v0/{BASE_ID}/{TABLE_NAME}"\n    headers = {\n        "Authorization": f"Bearer {AIRTABLE_API_KEY}",\n        "Content-Type": "application/json"\n    }\n    data = json.dumps({"fields": {"skill": "design-demo-engineer"}})\n    req = urllib.request.Request(url, data=data.encode(), headers=headers)\n    with urllib.request.urlopen(req) as resp:\n        result = json.loads(resp.read())\n        record_id = result.get("id", "")\n        print(f"[KU_RECORD_ID] {record_id}")\n\nif __name__ == "__main__":\n    record_usage()`,
+  '.skill-meta.json': `{\n  "full_name": "design-demo-engineer",\n  "skill_name": "design-demo-engineer",\n  "namespace": "shifangfang",\n  "skill_id": "4269",\n  "version": "1.0.0"\n}`,
+  'version_check.py': `#!/usr/bin/env python3\n"""Version compatibility check."""\nimport sys\n\nMIN_PYTHON = (3, 8)\n\ndef check_version():\n    if sys.version_info < MIN_PYTHON:\n        print(f"Python {MIN_PYTHON[0]}.{MIN_PYTHON[1]}+ required")\n        sys.exit(1)\n    print(f"Python {sys.version_info.major}.{sys.version_info.minor} OK")\n\nif __name__ == "__main__":\n    check_version()`
+};
+
+let activeFile = 'SKILL.md';
+let openTabs = ['SKILL.md'];
+
+function renderCode(filename) {
+  const content = fileContents[filename] || '// 暂无内容';
+  const lines = content.split('\n');
+  document.getElementById('line-nums').innerHTML = lines.map((_,i) => `<div>${i+1}</div>`).join('');
+  document.getElementById('code-content').textContent = content;
+}
+
+function openFile(filename, type) {
+  activeFile = filename;
+  document.querySelectorAll('.tree-item').forEach(i => i.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  if (!openTabs.includes(filename)) {
+    openTabs.push(filename);
+    const tab = document.createElement('div');
+    tab.className = 'editor-tab';
+    tab.id = 'tab-' + filename;
+    tab.innerHTML = `<span>${getFileIcon(filename)}</span> ${filename} <span class="tab-close" onclick="closeTab(event,'${filename}')">×</span>`;
+    tab.onclick = () => switchTab(filename);
+    document.getElementById('editor-tabs').appendChild(tab);
+  }
+  switchTab(filename);
+}
+
+function getFileIcon(f) {
+  if (f.endsWith('.py')) return '🐍';
+  if (f.endsWith('.json')) return '⚙️';
+  return '📄';
+}
+
+function switchTab(filename) {
+  activeFile = filename;
+  document.querySelectorAll('.editor-tab').forEach(t => t.classList.remove('active'));
+  const t = document.getElementById('tab-' + filename);
+  if (t) t.classList.add('active');
+  renderCode(filename);
+}
+
+function closeTab(e, filename) {
+  e.stopPropagation();
+  const idx = openTabs.indexOf(filename);
+  openTabs.splice(idx, 1);
+  const t = document.getElementById('tab-' + filename);
+  if (t) t.remove();
+  if (activeFile === filename) {
+    if (openTabs.length > 0) switchTab(openTabs[Math.max(0, idx-1)]);
+    else document.getElementById('code-content').textContent = '';
+  }
+}
+
+function toggleFolder(id) {
+  const el = document.getElementById(id);
+  el.classList.toggle('open');
+}
+
+// ===== RIGHT TABS =====
+function switchRightTab(name, el) {
+  document.querySelectorAll('.right-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.right-content').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+}
+
+// ===== CHAT =====
+function handleChatKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChat(); }
+}
+function sendChat() {
+  const input = document.getElementById('chat-input');
+  const msg = input.value.trim();
+  if (!msg) return;
+  const area = document.getElementById('chat-area');
+  area.innerHTML += `<div class="chat-msg"><div class="chat-avatar" style="background:var(--bg-card);color:var(--text-secondary);border:1px solid var(--border)">我</div><div class="chat-bubble user">${msg}</div></div>`;
+  input.value = '';
+  // Typing indicator
+  area.innerHTML += `<div class="chat-msg" id="typing-msg"><div class="chat-avatar" style="background:linear-gradient(135deg,#1677FF,#722ED1)">S</div><div class="chat-bubble"><div class="typing-indicator"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div></div>`;
+  area.scrollTop = area.scrollHeight;
+  setTimeout(() => {
+    document.getElementById('typing-msg')?.remove();
+    area.innerHTML += `<div class="chat-msg"><div class="chat-avatar" style="background:linear-gradient(135deg,#1677FF,#722ED1)">S</div><div class="chat-bubble"><div style="font-size:11px;color:var(--text-muted);margin-bottom:4px">design-demo-engineer</div>收到！正在基于 SKILL.md 处理你的需求...</div></div>`;
+    area.scrollTop = area.scrollHeight;
+  }, 1500);
+}
+
+// ===== ENV VARS =====
+function addEnvRow() {
+  const row = document.createElement('div');
+  row.className = 'env-row';
+  row.innerHTML = `<input class="env-key" placeholder="变量名"/><input class="env-val" placeholder="变量值"/><div class="env-del" onclick="this.closest('.env-row').remove()">×</div>`;
+  document.getElementById('env-rows').appendChild(row);
+}
+
+// ===== MODALS =====
+function openDeleteModal() { document.getElementById('delete-modal').classList.add('show'); }
+function closeDeleteModal() { document.getElementById('delete-modal').classList.remove('show'); }
+document.getElementById('delete-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeDeleteModal(); });
+
+function runScan() {
+  window.location.href = 'security.html';
+}
+function goNextStep() {
+  alert('校验通过 ✓\n已进入发布配置步骤（Part 3）');
+}
+function addFile() {
+  const name = prompt('新建文件名：');
+  if (!name) return;
+  fileContents[name] = `# ${name}\n\n`;
+  const item = document.createElement('div');
+  item.className = 'tree-item';
+  item.innerHTML = `<span class="indent"></span><span class="item-icon">📄</span><span class="item-name">${name}</span>`;
+  item.onclick = () => openFile(name, 'md');
+  document.getElementById('filetree-body').appendChild(item);
+}
+
+// Init
+renderCode('SKILL.md');
+</script>
+</body>
+</html>

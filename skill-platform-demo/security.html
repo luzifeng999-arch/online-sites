@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>安全扫描报告 — 万擎 Skill 广场</title>
+<style>
+:root {
+  --bg-base:#0D1117;--bg-sidebar:#161B22;--bg-panel:#1C2128;--bg-card:#21262D;
+  --bg-hover:#2D333B;--bg-active:#1F3A5F;--bg-input:#22272E;
+  --border:#30363D;--border-light:#3D444D;
+  --text-primary:#E6EDF3;--text-secondary:#8B949E;--text-muted:#6E7681;
+  --accent:#1677FF;--accent-hover:#0958D9;--accent-light:rgba(22,119,255,.15);--accent-border:rgba(22,119,255,.4);
+  --success:#3FB950;--success-bg:rgba(63,185,80,.12);--success-border:rgba(63,185,80,.3);
+  --warning:#D29922;--warning-bg:rgba(210,153,34,.12);--warning-border:rgba(210,153,34,.3);
+  --danger:#F85149;--danger-bg:rgba(248,81,73,.12);--danger-border:rgba(248,81,73,.3);
+  --info:#58A6FF;--info-bg:rgba(88,166,255,.12);--info-border:rgba(88,166,255,.3);
+  --radius:6px;--radius-lg:8px;--radius-xl:12px;
+  --shadow:0 4px 12px rgba(0,0,0,.4);--shadow-lg:0 8px 24px rgba(0,0,0,.5);
+  --trans:200ms ease;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;font-size:13px;background:var(--bg-base);color:var(--text-primary);line-height:1.5;display:flex;flex-direction:column}
+button{cursor:pointer;font-family:inherit;border:none;outline:none}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border-light);border-radius:3px}
+
+/* TOPBAR */
+.topbar{height:44px;background:var(--bg-sidebar);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 16px;gap:10px;flex-shrink:0}
+.back-btn{display:flex;align-items:center;gap:5px;padding:5px 8px;border-radius:var(--radius);color:var(--text-secondary);background:transparent;font-size:12px;transition:all var(--trans);text-decoration:none}
+.back-btn:hover{background:var(--bg-hover);color:var(--text-primary)}
+.sep{color:var(--text-muted)}
+.page-title{font-weight:600;font-size:14px}
+.topbar-right{margin-left:auto;display:flex;gap:8px;align-items:center}
+.btn{display:flex;align-items:center;gap:5px;padding:5px 13px;border-radius:var(--radius);font-size:12px;font-weight:500;transition:all var(--trans)}
+.btn-primary{background:var(--accent);color:white}.btn-primary:hover{background:var(--accent-hover)}
+.btn-secondary{background:var(--bg-hover);color:var(--text-primary);border:1px solid var(--border)}.btn-secondary:hover{background:var(--bg-card)}
+.btn-success{background:#1a4731;color:var(--success);border:1px solid var(--success-border)}.btn-success:hover{background:#1e5438}
+
+/* LAYOUT */
+.content{flex:1;overflow-y:auto;padding:24px;max-width:900px;margin:0 auto;width:100%}
+
+/* SUMMARY CARD */
+.summary-card{background:var(--bg-panel);border:1px solid var(--border);border-radius:var(--radius-xl);padding:20px 24px;margin-bottom:20px;display:flex;align-items:flex-start;gap:20px}
+.summary-icon{font-size:40px;flex-shrink:0;margin-top:2px}
+.summary-main{flex:1}
+.summary-title{font-size:16px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:10px}
+.summary-desc{font-size:13px;color:var(--text-secondary);line-height:1.6;margin-bottom:12px}
+.summary-stats{display:flex;gap:16px}
+.stat-item{display:flex;align-items:center;gap:6px;font-size:12px}
+.stat-dot{width:8px;height:8px;border-radius:50%}
+.result-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:10px;font-size:12px;font-weight:600}
+.result-badge.pass{background:var(--success-bg);color:var(--success);border:1px solid var(--success-border)}
+.result-badge.fail{background:var(--danger-bg);color:var(--danger);border:1px solid var(--danger-border)}
+.result-badge.scanning{background:var(--info-bg);color:var(--info);border:1px solid var(--info-border)}
+.result-badge.pending{background:var(--bg-hover);color:var(--text-secondary);border:1px solid var(--border)}
+
+/* PROGRESS BAR */
+.scan-progress{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-xl);padding:16px 20px;margin-bottom:20px;display:none}
+.scan-progress.show{display:block}
+.progress-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.progress-label{font-size:13px;font-weight:500}
+.progress-pct{font-size:13px;color:var(--accent);font-weight:600}
+.progress-bar-wrap{height:6px;background:var(--bg-hover);border-radius:3px;overflow:hidden}
+.progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--accent),#722ED1);border-radius:3px;transition:width .4s ease;width:0%}
+.progress-hint{font-size:11px;color:var(--text-muted);margin-top:8px}
+
+/* SECTION */
+.section{margin-bottom:16px}
+.section-header{display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);cursor:pointer;transition:background var(--trans);user-select:none}
+.section-header:hover{background:var(--bg-hover)}
+.section-header.open{border-bottom-left-radius:0;border-bottom-right-radius:0}
+.section-icon{font-size:16px;flex-shrink:0}
+.section-name{font-size:13px;font-weight:600;flex:1}
+.section-stats{display:flex;gap:6px;align-items:center}
+.risk-count{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:8px;font-size:11px;font-weight:600}
+.risk-count.danger{background:var(--danger-bg);color:var(--danger)}
+.risk-count.warning{background:var(--warning-bg);color:var(--warning)}
+.risk-count.success{background:var(--success-bg);color:var(--success)}
+.risk-count.info{background:var(--info-bg);color:var(--info)}
+.chevron{color:var(--text-muted);transition:transform var(--trans);font-size:12px}
+.section-header.open .chevron{transform:rotate(90deg)}
+
+/* ITEMS */
+.section-items{border:1px solid var(--border);border-top:none;border-radius:0 0 var(--radius-lg) var(--radius-lg);overflow:hidden;display:none}
+.section-items.open{display:block}
+.risk-item{padding:12px 16px;border-bottom:1px solid var(--border);transition:background var(--trans)}
+.risk-item:last-child{border-bottom:none}
+.risk-item:hover{background:var(--bg-hover)}
+.risk-item-header{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.risk-label{font-size:13px;font-weight:500}
+.risk-level{display:inline-flex;align-items:center;gap:3px;padding:1px 7px;border-radius:8px;font-size:11px;font-weight:600}
+.risk-level.none{background:var(--success-bg);color:var(--success)}
+.risk-level.low{background:var(--info-bg);color:var(--info)}
+.risk-level.medium{background:var(--warning-bg);color:var(--warning)}
+.risk-level.high{background:var(--danger-bg);color:var(--danger)}
+.risk-desc{font-size:12px;color:var(--text-secondary);line-height:1.6}
+.risk-detail{margin-top:6px;font-size:12px;color:var(--danger);background:var(--danger-bg);border-left:2px solid var(--danger);padding:6px 10px;border-radius:0 var(--radius) var(--radius) 0;display:none}
+.risk-level.high ~ .risk-detail,.risk-level.medium ~ .risk-detail{display:block}
+.risk-suggestion{margin-top:6px;font-size:11px;color:var(--warning);background:var(--warning-bg);border:1px solid var(--warning-border);padding:6px 10px;border-radius:var(--radius);display:none}
+.risk-level.medium ~ .risk-suggestion{display:block}
+
+/* EMPTY STATE */
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:300px;gap:14px;text-align:center}
+.empty-icon{font-size:48px}
+.empty-title{font-size:15px;font-weight:600}
+.empty-desc{font-size:13px;color:var(--text-secondary);max-width:320px;line-height:1.6}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:10px 18px;font-size:13px;box-shadow:var(--shadow-lg);opacity:0;transition:all .3s;z-index:999;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <a href="editor.html" class="back-btn">
+    <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M15 8a.5.5 0 00-.5-.5H2.707l3.147-3.146a.5.5 0 10-.708-.708l-4 4a.5.5 0 000 .708l4 4a.5.5 0 00.708-.708L2.707 8.5H14.5A.5.5 0 0015 8z"/></svg>
+    返回编辑器
+  </a>
+  <span class="sep">/</span>
+  <span class="page-title">安全扫描报告</span>
+  <span style="font-size:11px;color:var(--text-muted);background:var(--bg-card);padding:2px 8px;border-radius:10px;border:1px solid var(--border);margin-left:4px">design-demo-engineer · v1.0.0</span>
+  <div class="topbar-right">
+    <button class="btn btn-secondary" onclick="resetScan()">
+      <svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M8 3a5 5 0 104.546 2.914.5.5 0 00-.908-.417A4 4 0 118 4v1.5l2-2-2-2V3z"/></svg>
+      重新扫描
+    </button>
+    <button class="btn btn-primary" id="next-btn" onclick="goNext()" disabled style="opacity:.5;cursor:not-allowed">
+      稍后扫描，下一步
+      <svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M1 8a.5.5 0 01.5-.5h11.793l-3.147-3.146a.5.5 0 01.708-.708l4 4a.5.5 0 010 .708l-4 4a.5.5 0 01-.708-.708L13.293 8.5H1.5A.5.5 0 011 8z"/></svg>
+    </button>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- ① 初始缺省态（未扫描） -->
+  <div id="state-empty">
+    <div class="empty-state">
+      <div class="empty-icon">🛡️</div>
+      <div class="empty-title">当前版本还未进行安全扫描</div>
+      <div class="empty-desc">Skill 通过全部安全检测后，方可正式发布上线，扫描过程预计需要几分钟。建议现在进行安全扫描，并按建议修改风险项。也可在后续步骤提交 Skill 后进行扫描。</div>
+      <button class="btn btn-primary" style="padding:8px 24px;font-size:13px" onclick="startScan()">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a2 2 0 012 2v4H6V3a2 2 0 012-2zm3 6V3a3 3 0 00-6 0v4a2 2 0 00-2 2v5a2 2 0 002 2h6a2 2 0 002-2V9a2 2 0 00-2-2zM5 8h6a1 1 0 011 1v5a1 1 0 01-1 1H5a1 1 0 01-1-1V9a1 1 0 011-1z"/></svg>
+        开始扫描
+      </button>
+    </div>
+  </div>
+
+  <!-- ② 扫描中进度条 -->
+  <div id="state-scanning" style="display:none">
+    <div class="summary-card">
+      <div class="summary-icon">⏳</div>
+      <div class="summary-main">
+        <div class="summary-title">
+          正在扫描中
+          <span class="result-badge scanning">
+            <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor" style="animation:spin 1s linear infinite"><path d="M8 3a5 5 0 104.546 2.914.5.5 0 00-.908-.417A4 4 0 118 4v1.5l2-2-2-2V3z"/></svg>
+            扫描中
+          </span>
+        </div>
+        <div class="summary-desc">正在扫描，预计需要 <span id="remain-time">2</span> 分钟，请稍候...</div>
+      </div>
+    </div>
+    <div class="scan-progress show">
+      <div class="progress-header">
+        <span class="progress-label">安全检测进度</span>
+        <span class="progress-pct" id="pct-text">0%</span>
+      </div>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill" id="progress-bar"></div>
+      </div>
+      <div class="progress-hint" id="progress-hint">正在初始化扫描环境...</div>
+    </div>
+  </div>
+
+  <!-- ③ 扫描结果（已通过 / 未通过 切换展示） -->
+  <div id="state-result" style="display:none">
+
+    <!-- 结果汇总 -->
+    <div class="summary-card" id="result-summary">
+      <div class="summary-icon" id="result-icon">✅</div>
+      <div class="summary-main">
+        <div class="summary-title" id="result-title">
+          扫描已完成
+          <span class="result-badge pass" id="result-badge">
+            <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor"><path d="M10.97 4.97a.235.235 0 00-.02.022L7.477 9.417 5.384 7.323a.75.75 0 00-1.06 1.06L6.97 11.03a.75.75 0 001.079-.02l3.992-4.99a.75.75 0 00-1.071-1.05z"/></svg>
+            已通过
+          </span>
+        </div>
+        <div class="summary-desc" id="result-desc">本次完成 11 项检测，所有检测项均为无风险，报告已通过。</div>
+        <div class="summary-stats">
+          <div class="stat-item"><div class="stat-dot" style="background:var(--success)"></div><span id="stat-pass">11 无风险</span></div>
+          <div class="stat-item"><div class="stat-dot" style="background:var(--info)"></div><span id="stat-low">0 低风险</span></div>
+          <div class="stat-item"><div class="stat-dot" style="background:var(--warning)"></div><span id="stat-med">0 中风险</span></div>
+          <div class="stat-item"><div class="stat-dot" style="background:var(--danger)"></div><span id="stat-high">0 高风险</span></div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;flex-shrink:0">
+        <button class="btn btn-secondary" onclick="resetScan()" style="font-size:12px">重新扫描</button>
+        <button class="btn btn-success" id="publish-btn" onclick="goNext()" style="font-size:12px">
+          ✓ 提交发布
+        </button>
+      </div>
+    </div>
+
+    <!-- 切换：通过 / 未通过 -->
+    <div style="display:flex;gap:8px;margin-bottom:14px">
+      <button class="btn btn-secondary" onclick="showPassResult()" id="btn-pass" style="font-size:12px">✅ 已通过示例</button>
+      <button class="btn btn-secondary" onclick="showFailResult()" id="btn-fail" style="font-size:12px">❌ 未通过示例</button>
+    </div>
+
+    <!-- 检测项分组 -->
+
+    <!-- 组1：代码安全 -->
+    <div class="section">
+      <div class="section-header open" onclick="toggleSection(this)">
+        <span class="section-icon">🔍</span>
+        <span class="section-name">代码安全</span>
+        <div class="section-stats">
+          <span class="risk-count success" id="code-pass">3 无风险</span>
+          <span class="risk-count danger" id="code-high" style="display:none">1 高风险</span>
+        </div>
+        <span class="chevron">›</span>
+      </div>
+      <div class="section-items open" id="items-code">
+
+        <div class="risk-item">
+          <div class="risk-item-header">
+            <span class="risk-label">恶意代码检测</span>
+            <span class="risk-level none" id="malicious-level">✓ 无风险</span>
+          </div>
+          <div class="risk-desc" id="malicious-desc">未检测到恶意代码、后门程序或危险系统调用。</div>
+          <div class="risk-detail" id="malicious-detail" style="display:none"></div>
+        </div>
+
+        <div class="risk-item">
+          <div class="risk-item-header">
+            <span class="risk-label">敏感信息泄露</span>
+            <span class="risk-level none" id="sensitive-level">✓ 无风险</span>
+          </div>
+          <div class="risk-desc" id="sensitive-desc">未发现硬编码 API Key、密码或私钥。</div>
+          <div class="risk-detail" id="sensitive-detail" style="display:none"></div>
+        </div>
+
+        <div class="risk-item">
+          <div class="risk-item-header">
+            <span class="risk-label">命令注入风险</span>
+            <span class="risk-level none" id="injection-level">✓ 无风险</span>
+          </div>
+          <div class="risk-desc" id="injection-desc">Shell 调用参数未发现注入漏洞。</div>
+          <div class="risk-detail" id="injection-detail" style="display:none"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 组2：网络行为 -->
+    <div class="section">
+      <div class="section-header open" onclick="toggleSection(this)">
+        <span class="section-icon">🌐</span>
+        <span class="section-name">网络行为</span>
+        <div class="section-stats">
+          <span class="risk-count success" id="net-pass">3 无风险</span>
+          <span class="risk-count warning" id="net-med" style="display:none">1 中风险</span>
+        </div>
+        <span class="chevron">›</span>
+      </div>
+      <div class="section-items open" id="items-net">
+
+        <div class="risk-item">
+          <div class="risk-item-header">
+            <span class="risk-label">未知外部请求</span>
+            <span class="risk-level none" id="req-level">✓ 无风险</span>
+          </div>
+          <div class="risk-desc" id="req-desc">所有网络请求均指向已知可信域名。</div>
+          <div class="risk-detail" id="req-detail" style="display:none"></div>
+          <div class="risk-suggestion" id="req-suggestion" style="display:none"></div>
+        </div>
+
+        <div class="risk-item">
+          <div class="risk-item-header">
+            <span class="risk-label">数据外传检测</span>
+            <span class="risk-level none" id="data-level">✓ 无风险</span>
+          </div>
+          <div class="risk-desc" id="data-desc">未发现向第三方服务传输用户数据的行为。</div>
+        </div>
+
+        <div class="risk-item">
+          <div class="risk-item-header">
+            <span class="risk-label">DNS 劫持风险</span>
+            <span class="risk-level none" id="dns-level">✓ 无风险</span>
+          </div>
+          <div class="risk-desc" id="dns-desc">未检测到 DNS 解析异常或劫持行为。</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 组3：文件操作 -->
+    <div class="section">
+      <div class="section-header open" onclick="toggleSection(this)">
+        <span class="section-icon">📁</span>
+        <span class="section-name">文件操作</span>
+        <div class="section-stats">
+          <span class="risk-count success" id="file-pass">3 无风险</span>
+        </div>
+        <span class="chevron">›</span>
+      </div>
+      <div class="section-items open" id="items-file">
+        <div class="risk-item">
+          <div class="risk-item-header">
+            <span class="risk-label">越权文件访问</span>
+            <span class="risk-level none">✓ 无风险</span>
+          </div>
+          <div class="risk-desc">文件读写操作未超出授权路径范围。</div>
+        </div>
+        <div class="risk-item">
+          <div class="risk-item-header">
+            <span class="risk-label">系统文件篡改</span>
+            <span class="risk-level none">✓ 无风险</span>
+          </div>
+          <div class="risk-desc">未检测到修改系统文件或配置文件的行为。</div>
+        </div>
+        <div class="risk-item">
+          <div class="risk-item-header">
+            <span class="risk-label">临时文件清理</span>
+            <span class="risk-level none">✓ 无风险</span>
+          </div>
+          <div class="risk-desc">Skill 执行后会正确清理临时文件，无残留。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 组4：合规性 -->
+    <div class="section">
+      <div class="section-header open" onclick="toggleSection(this)">
+        <span class="section-icon">📋</span>
+        <span class="section-name">合规性检查</span>
+        <div class="section-stats">
+          <span class="risk-count success" id="comp-pass">2 无风险</span>
+          <span class="risk-count danger" id="comp-high" style="display:none">1 高风险</span>
+        </div>
+        <span class="chevron">›</span>
+      </div>
+      <div class="section-items open" id="items-comp">
+        <div class="risk-item">
+          <div class="risk-item-header">
+            <span class="risk-label">Skill 文件格式</span>
+            <span class="risk-level none" id="format-level">✓ 无风险</span>
+          </div>
+          <div class="risk-desc" id="format-desc">SKILL.md 格式规范，YAML frontmatter 完整有效。</div>
+          <div class="risk-detail" id="format-detail" style="display:none"></div>
+        </div>
+        <div class="risk-item">
+          <div class="risk-item-header">
+            <span class="risk-label">版权与许可证</span>
+            <span class="risk-level none" id="license-level">✓ 无风险</span>
+          </div>
+          <div class="risk-desc" id="license-desc">依赖库许可证兼容，无商业版权风险。</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end state-result -->
+
+</div><!-- end content -->
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<style>@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}</style>
+
+<script>
+const hints = [
+  '正在初始化扫描环境...',
+  '分析 SKILL.md 文件结构...',
+  '检测恶意代码及后门程序...',
+  '扫描敏感信息泄露风险...',
+  '验证网络请求行为...',
+  '检查文件操作权限...',
+  '进行合规性校验...',
+  '生成安全报告...'
+];
+let scanTimer = null;
+let pct = 0;
+
+function startScan() {
+  document.getElementById('state-empty').style.display = 'none';
+  document.getElementById('state-scanning').style.display = 'block';
+  document.getElementById('state-result').style.display = 'none';
+  pct = 0;
+  const bar = document.getElementById('progress-bar');
+  const pctText = document.getElementById('pct-text');
+  const hintEl = document.getElementById('progress-hint');
+  let step = 0;
+  scanTimer = setInterval(() => {
+    pct += Math.random() * 14 + 4;
+    if (pct >= 100) { pct = 100; clearInterval(scanTimer); setTimeout(showResult, 400); }
+    bar.style.width = pct + '%';
+    pctText.textContent = Math.round(pct) + '%';
+    const hintIdx = Math.min(Math.floor(pct / 14), hints.length - 1);
+    hintEl.textContent = hints[hintIdx];
+    const remain = Math.max(0, Math.round((100 - pct) / 50 * 2));
+    document.getElementById('remain-time').textContent = remain || '< 1';
+  }, 300);
+}
+
+function showResult() {
+  document.getElementById('state-scanning').style.display = 'none';
+  document.getElementById('state-result').style.display = 'block';
+  showPassResult();
+  enableNext();
+  showToast('✅ 扫描完成！所有检测项均已通过');
+}
+
+function enableNext() {
+  const btn = document.getElementById('next-btn');
+  btn.disabled = false;
+  btn.style.opacity = '1';
+  btn.style.cursor = 'pointer';
+}
+
+function showPassResult() {
+  document.getElementById('btn-pass').style.background = 'var(--accent-light)';
+  document.getElementById('btn-pass').style.color = 'var(--accent)';
+  document.getElementById('btn-fail').style.background = '';
+  document.getElementById('btn-fail').style.color = '';
+
+  document.getElementById('result-icon').textContent = '✅';
+  document.getElementById('result-badge').className = 'result-badge pass';
+  document.getElementById('result-badge').innerHTML = '<svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor"><path d="M10.97 4.97a.235.235 0 00-.02.022L7.477 9.417 5.384 7.323a.75.75 0 00-1.06 1.06L6.97 11.03a.75.75 0 001.079-.02l3.992-4.99a.75.75 0 00-1.071-1.05z"/></svg> 已通过';
+  document.getElementById('result-desc').textContent = '本次完成 11 项检测，所有检测项均为无风险，报告已通过。';
+  document.getElementById('stat-pass').textContent = '11 无风险';
+  document.getElementById('stat-low').textContent = '0 低风险';
+  document.getElementById('stat-med').textContent = '0 中风险';
+  document.getElementById('stat-high').textContent = '0 高风险';
+
+  // Reset all to pass
+  setItemPass('malicious','恶意代码检测','未检测到恶意代码、后门程序或危险系统调用。');
+  setItemPass('sensitive','敏感信息泄露','未发现硬编码 API Key、密码或私钥。');
+  setItemPass('injection','命令注入风险','Shell 调用参数未发现注入漏洞。');
+  setItemPass('req','未知外部请求','所有网络请求均指向已知可信域名。');
+  setItemPass('data','数据外传检测','未发现向第三方服务传输用户数据的行为。');
+  setItemPass('dns','DNS 劫持风险','未检测到 DNS 解析异常或劫持行为。');
+  setItemPass('format','Skill 文件格式','SKILL.md 格式规范，YAML frontmatter 完整有效。');
+  setItemPass('license','版权与许可证','依赖库许可证兼容，无商业版权风险。');
+
+  document.getElementById('code-pass').style.display = '';
+  document.getElementById('code-high').style.display = 'none';
+  document.getElementById('net-pass').style.display = '';
+  document.getElementById('net-med').style.display = 'none';
+  document.getElementById('comp-pass').style.display = '';
+  document.getElementById('comp-high').style.display = 'none';
+
+  document.getElementById('publish-btn').style.display = '';
+}
+
+function showFailResult() {
+  document.getElementById('btn-fail').style.background = 'var(--danger-bg)';
+  document.getElementById('btn-fail').style.color = 'var(--danger)';
+  document.getElementById('btn-pass').style.background = '';
+  document.getElementById('btn-pass').style.color = '';
+
+  document.getElementById('result-icon').textContent = '❌';
+  document.getElementById('result-badge').className = 'result-badge fail';
+  document.getElementById('result-badge').innerHTML = '× 未通过';
+  document.getElementById('result-desc').textContent = '本次完成 11 项检测，2 项存在风险，9 项无风险。通过标准：所有检测项为无风险时可通过。请根据下方风险详情修复，编辑后重新提交。';
+  document.getElementById('stat-pass').textContent = '9 无风险';
+  document.getElementById('stat-low').textContent = '0 低风险';
+  document.getElementById('stat-med').textContent = '1 中风险';
+  document.getElementById('stat-high').textContent = '1 高风险';
+
+  // Keep some as pass
+  setItemPass('malicious','恶意代码检测','未检测到恶意代码、后门程序或危险系统调用。');
+  setItemPass('injection','命令注入风险','Shell 调用参数未发现注入漏洞。');
+  setItemPass('data','数据外传检测','未发现向第三方服务传输用户数据的行为。');
+  setItemPass('dns','DNS 劫持风险','未检测到 DNS 解析异常或劫持行为。');
+  setItemPass('license','版权与许可证','依赖库许可证兼容，无商业版权风险。');
+
+  // High risk: sensitive
+  setItemFail('sensitive','敏感信息泄露','high',
+    '在 scripts/main.py 第 12 行检测到疑似硬编码 API Key：`AIRTABLE_API_KEY = "keyXXXXXXXXXX"`，建议改为环境变量引用。',
+    null
+  );
+  // Medium risk: req
+  setItemFail('req','未知外部请求','medium',
+    '检测到向未备案域名 api.airtable.com 发起网络请求，该域名不在白名单内。',
+    '建议在 SKILL.md 中声明外部依赖域名，或替换为内网 API 端点。'
+  );
+  // High risk: format
+  setItemFail('format','Skill 文件格式','high',
+    'SKILL.md 中 name 字段包含大写字母，不符合规范（仅支持小写字母与"-"符号）。',
+    null
+  );
+
+  document.getElementById('code-pass').style.display = 'none';
+  document.getElementById('code-high').style.display = '';
+  document.getElementById('net-pass').style.display = 'none';
+  document.getElementById('net-med').style.display = '';
+  document.getElementById('comp-pass').style.display = 'none';
+  document.getElementById('comp-high').style.display = '';
+
+  document.getElementById('publish-btn').style.display = 'none';
+}
+
+function setItemPass(id, label, desc) {
+  const el = document.getElementById(id + '-level');
+  if (el) { el.className = 'risk-level none'; el.textContent = '✓ 无风险'; }
+  const de = document.getElementById(id + '-desc');
+  if (de) de.textContent = desc;
+  const dt = document.getElementById(id + '-detail');
+  if (dt) { dt.style.display = 'none'; dt.textContent = ''; }
+  const sg = document.getElementById(id + '-suggestion');
+  if (sg) { sg.style.display = 'none'; sg.textContent = ''; }
+}
+
+function setItemFail(id, label, level, detail, suggestion) {
+  const el = document.getElementById(id + '-level');
+  if (!el) return;
+  const map = { high:'❌ 高风险', medium:'⚠️ 中风险', low:'ℹ️ 低风险' };
+  const cls = { high:'high', medium:'medium', low:'low' };
+  el.className = 'risk-level ' + cls[level];
+  el.textContent = map[level];
+  const de = document.getElementById(id + '-desc');
+  if (de) de.textContent = '检测到安全风险，请根据详情修复后重新扫描。';
+  const dt = document.getElementById(id + '-detail');
+  if (dt) { dt.style.display = 'block'; dt.textContent = '🔍 ' + detail; }
+  const sg = document.getElementById(id + '-suggestion');
+  if (sg && suggestion) { sg.style.display = 'block'; sg.textContent = '💡 修复建议：' + suggestion; }
+}
+
+function toggleSection(header) {
+  header.classList.toggle('open');
+  const items = header.nextElementSibling;
+  items.classList.toggle('open');
+}
+
+function resetScan() {
+  clearInterval(scanTimer);
+  document.getElementById('state-empty').style.display = 'block';
+  document.getElementById('state-scanning').style.display = 'none';
+  document.getElementById('state-result').style.display = 'none';
+}
+
+function goNext() {
+  window.location.href = 'square.html';
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// Auto-start scan if arriving from editor
+if (new URLSearchParams(location.search).get('scan') === '1') startScan();
+</script>
+</body>
+</html>

@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skill 广场 — 万擎</title>
+<style>
+:root {
+  --bg-base:#0D1117;--bg-sidebar:#161B22;--bg-panel:#1C2128;--bg-card:#21262D;
+  --bg-hover:#2D333B;--bg-active:#1F3A5F;--bg-input:#22272E;
+  --border:#30363D;--border-light:#3D444D;
+  --text-primary:#E6EDF3;--text-secondary:#8B949E;--text-muted:#6E7681;
+  --accent:#1677FF;--accent-hover:#0958D9;--accent-light:rgba(22,119,255,.15);--accent-border:rgba(22,119,255,.4);
+  --success:#3FB950;--success-bg:rgba(63,185,80,.12);
+  --warning:#D29922;--warning-bg:rgba(210,153,34,.12);
+  --danger:#F85149;--danger-bg:rgba(248,81,73,.12);
+  --purple:#A371F7;--purple-bg:rgba(163,113,247,.12);
+  --radius:6px;--radius-lg:8px;--radius-xl:12px;--radius-2xl:16px;
+  --shadow:0 4px 12px rgba(0,0,0,.4);--shadow-lg:0 8px 24px rgba(0,0,0,.5);
+  --trans:200ms ease;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;font-size:13px;background:var(--bg-base);color:var(--text-primary);line-height:1.5;display:flex;flex-direction:column}
+button{cursor:pointer;font-family:inherit;border:none;outline:none}
+input{font-family:inherit;outline:none;border:none}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-thumb{background:var(--border-light);border-radius:3px}
+
+/* NAV */
+.topnav{height:48px;background:var(--bg-sidebar);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:16px;flex-shrink:0}
+.logo{display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px}
+.logo-icon{width:28px;height:28px;background:linear-gradient(135deg,#1677FF,#722ED1);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;font-weight:800}
+.nav-links{display:flex;gap:4px}
+.nav-link{padding:5px 12px;border-radius:var(--radius);font-size:13px;color:var(--text-secondary);cursor:pointer;transition:all var(--trans);text-decoration:none}
+.nav-link:hover{background:var(--bg-hover);color:var(--text-primary)}
+.nav-link.active{background:var(--bg-active);color:#79C0FF;font-weight:500}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.search-wrap{display:flex;align-items:center;gap:7px;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius);padding:5px 11px;width:220px;transition:border-color var(--trans)}
+.search-wrap:focus-within{border-color:var(--accent)}
+.search-wrap input{background:transparent;color:var(--text-primary);font-size:13px;flex:1}
+.search-wrap input::placeholder{color:var(--text-muted)}
+.btn{display:flex;align-items:center;gap:5px;padding:5px 13px;border-radius:var(--radius);font-size:12px;font-weight:500;transition:all var(--trans)}
+.btn-primary{background:var(--accent);color:white}.btn-primary:hover{background:var(--accent-hover)}
+.btn-secondary{background:var(--bg-hover);color:var(--text-primary);border:1px solid var(--border)}.btn-secondary:hover{background:var(--bg-card)}
+.avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#1677FF,#722ED1);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:white;cursor:pointer}
+
+/* LAYOUT */
+.body-wrap{display:flex;flex:1;overflow:hidden}
+.left-nav{width:200px;background:var(--bg-sidebar);border-right:1px solid var(--border);overflow-y:auto;flex-shrink:0;padding:8px}
+.left-nav-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);padding:8px 8px 4px}
+.left-nav-item{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:var(--radius);color:var(--text-secondary);cursor:pointer;font-size:13px;transition:all var(--trans)}
+.left-nav-item:hover{background:var(--bg-hover);color:var(--text-primary)}
+.left-nav-item.active{background:var(--bg-active);color:#79C0FF;font-weight:500}
+.left-nav-item .cnt{margin-left:auto;font-size:11px;color:var(--text-muted);background:var(--bg-card);padding:1px 6px;border-radius:8px}
+.left-divider{height:1px;background:var(--border);margin:4px 0}
+
+/* MAIN SCROLL */
+.main-scroll{flex:1;overflow-y:auto;display:flex;flex-direction:column}
+
+/* HERO BANNER */
+.hero{background:linear-gradient(135deg,#0D1117 0%,#1a1f35 50%,#0D1117 100%);padding:32px 32px 28px;position:relative;overflow:hidden;flex-shrink:0}
+.hero::before{content:'';position:absolute;top:-40px;right:-40px;width:300px;height:300px;background:radial-gradient(circle,rgba(22,119,255,.15) 0%,transparent 70%);pointer-events:none}
+.hero::after{content:'';position:absolute;bottom:-60px;left:100px;width:200px;height:200px;background:radial-gradient(circle,rgba(114,46,209,.1) 0%,transparent 70%);pointer-events:none}
+.hero-content{position:relative;z-index:1}
+.hero-title{font-size:22px;font-weight:700;margin-bottom:6px}
+.hero-title span{background:linear-gradient(90deg,#1677FF,#722ED1);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{font-size:13px;color:var(--text-secondary);margin-bottom:20px}
+.hero-stats{display:flex;gap:24px}
+.hero-stat{text-align:center}
+.hero-stat-num{font-size:20px;font-weight:700;color:var(--text-primary)}
+.hero-stat-label{font-size:11px;color:var(--text-muted);margin-top:2px}
+
+/* OPS BAR (运营位) */
+.ops-bar{padding:16px 32px 0;flex-shrink:0}
+.ops-bar-title{font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.ops-badges{display:flex;gap:8px;flex-wrap:wrap}
+.ops-badge{display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;transition:all var(--trans);border:1px solid transparent}
+.ops-badge:hover{transform:translateY(-1px);box-shadow:var(--shadow)}
+.ops-badge.blue{background:var(--accent-light);color:#79C0FF;border-color:var(--accent-border)}
+.ops-badge.purple{background:var(--purple-bg);color:var(--purple);border-color:rgba(163,113,247,.3)}
+.ops-badge.green{background:var(--success-bg);color:var(--success);border-color:rgba(63,185,80,.3)}
+.ops-badge.orange{background:var(--warning-bg);color:var(--warning);border-color:rgba(210,153,34,.3)}
+
+/* SECTION */
+.section{padding:20px 32px}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.section-title{font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px}
+.see-all{font-size:12px;color:var(--accent);cursor:pointer;display:flex;align-items:center;gap:3px;transition:opacity var(--trans)}
+.see-all:hover{opacity:.7}
+
+/* FEATURED GRID */
+.featured-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+
+/* SKILL CARD */
+.skill-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-xl);padding:16px;transition:all var(--trans);cursor:pointer;position:relative;overflow:hidden}
+.skill-card:hover{border-color:var(--border-light);transform:translateY(-2px);box-shadow:var(--shadow)}
+.skill-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),#722ED1);opacity:0;transition:opacity var(--trans)}
+.skill-card:hover::before{opacity:1}
+.card-top{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px}
+.card-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.card-meta{flex:1}
+.card-name{font-size:14px;font-weight:600;margin-bottom:2px;display:flex;align-items:center;gap:6px}
+.verified{color:var(--accent);font-size:12px}
+.card-id{font-size:11px;color:var(--text-muted)}
+.card-desc{font-size:12px;color:var(--text-secondary);line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:12px}
+.card-footer{display:flex;align-items:center;gap:6px}
+.tag{display:inline-flex;align-items:center;padding:2px 7px;border-radius:4px;font-size:11px;background:var(--bg-hover);color:var(--text-secondary);border:1px solid var(--border)}
+.card-installs{font-size:11px;color:var(--text-muted);margin-left:auto;display:flex;align-items:center;gap:3px}
+.install-btn{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:var(--radius);font-size:12px;font-weight:500;background:var(--accent);color:white;transition:all var(--trans);border:none;white-space:nowrap}
+.install-btn:hover{background:var(--accent-hover)}
+.install-btn.installed{background:var(--success-bg);color:var(--success);border:1px solid rgba(63,185,80,.3)}
+.install-btn.installing{background:var(--bg-hover);color:var(--text-muted);cursor:default}
+
+/* CARD WIDE (list style) */
+.cards-list{display:flex;flex-direction:column;gap:8px}
+.skill-card-wide{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:12px 16px;display:flex;align-items:center;gap:12px;transition:all var(--trans);cursor:pointer}
+.skill-card-wide:hover{border-color:var(--border-light);background:var(--bg-hover)}
+.wide-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.wide-main{flex:1;min-width:0}
+.wide-name{font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px;margin-bottom:2px}
+.wide-desc{font-size:12px;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wide-tags{display:flex;gap:4px;margin-left:auto;align-items:center;flex-shrink:0}
+
+/* PLATFORM INSTALL */
+.platform-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.platform-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px;text-align:center;transition:all var(--trans);cursor:pointer}
+.platform-card:hover{border-color:var(--border-light);background:var(--bg-hover)}
+.platform-icon{font-size:28px;margin-bottom:6px}
+.platform-name{font-size:13px;font-weight:600;margin-bottom:3px}
+.platform-desc{font-size:11px;color:var(--text-muted)}
+.platform-badge{display:inline-block;margin-top:6px;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:600}
+
+/* INSTALL MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;z-index:500;opacity:0;pointer-events:none;transition:opacity var(--trans)}
+.modal-overlay.show{opacity:1;pointer-events:all}
+.modal{background:var(--bg-panel);border:1px solid var(--border);border-radius:var(--radius-2xl);width:460px;box-shadow:var(--shadow-lg);transform:translateY(14px);transition:transform var(--trans);overflow:hidden}
+.modal-overlay.show .modal{transform:translateY(0)}
+.modal-head{padding:18px 20px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.modal-skill-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px}
+.modal-skill-name{font-size:15px;font-weight:700}
+.modal-skill-id{font-size:11px;color:var(--text-muted)}
+.modal-close{margin-left:auto;background:transparent;color:var(--text-secondary);width:28px;height:28px;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;transition:all var(--trans);font-size:18px}
+.modal-close:hover{background:var(--bg-hover);color:var(--text-primary)}
+.modal-body{padding:18px 20px}
+.install-label{font-size:13px;font-weight:600;margin-bottom:10px;color:var(--text-secondary)}
+.platform-list{display:flex;flex-direction:column;gap:6px}
+.platform-row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);cursor:pointer;transition:all var(--trans)}
+.platform-row:hover{border-color:var(--border-light);background:var(--bg-hover)}
+.platform-row-icon{font-size:20px;width:32px;text-align:center}
+.platform-row-name{font-size:13px;font-weight:500;flex:1}
+.platform-row-badge{font-size:11px;padding:2px 7px;border-radius:4px}
+.badge-supported{background:var(--success-bg);color:var(--success)}
+.badge-soon{background:var(--warning-bg);color:var(--warning)}
+.install-state{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--success);background:var(--success-bg);padding:3px 10px;border-radius:var(--radius)}
+.modal-foot{padding:14px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px}
+
+/* TOAST */
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:9px 18px;font-size:13px;box-shadow:var(--shadow-lg);opacity:0;transition:all .3s;z-index:999;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="topnav">
+  <div class="logo">
+    <div class="logo-icon">S</div>
+    万擎 Skill 广场
+  </div>
+  <div class="nav-links">
+    <a href="index.html" class="nav-link">我的 Skill</a>
+    <span class="nav-link active">Skill 广场</span>
+    <span class="nav-link">审核中心</span>
+  </div>
+  <div class="nav-right">
+    <div class="search-wrap">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor" style="color:var(--text-muted);flex-shrink:0"><path d="M11.742 10.344a6.5 6.5 0 10-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 001.415-1.414l-3.85-3.85a1.007 1.007 0 00-.115-.099zm-5.242 1.656a5.5 5.5 0 110-11 5.5 5.5 0 010 11z"/></svg>
+      <input placeholder="搜索 Skill 名称、能力..." id="main-search" oninput="filterCards()" />
+    </div>
+    <a href="index.html" class="btn btn-secondary" style="font-size:12px">
+      <svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor"><path d="M8 2a.5.5 0 01.5.5v5h5a.5.5 0 010 1h-5v5a.5.5 0 01-1 0v-5h-5a.5.5 0 010-1h5v-5A.5.5 0 018 2z"/></svg>
+      发布 Skill
+    </a>
+    <div class="avatar">卢</div>
+  </div>
+</nav>
+
+<div class="body-wrap">
+
+  <!-- LEFT NAV -->
+  <aside class="left-nav">
+    <div class="left-nav-label">分类</div>
+    <div class="left-nav-item active" onclick="filterCat('all',this)">
+      <span>🌐</span> 全部 <span class="cnt">128</span>
+    </div>
+    <div class="left-nav-item" onclick="filterCat('dev',this)">
+      <span>🔧</span> 开发工具 <span class="cnt">34</span>
+    </div>
+    <div class="left-nav-item" onclick="filterCat('design',this)">
+      <span>🎨</span> 设计辅助 <span class="cnt">21</span>
+    </div>
+    <div class="left-nav-item" onclick="filterCat('data',this)">
+      <span>📊</span> 数据分析 <span class="cnt">18</span>
+    </div>
+    <div class="left-nav-item" onclick="filterCat('ai',this)">
+      <span>🤖</span> AI 增强 <span class="cnt">29</span>
+    </div>
+    <div class="left-nav-item" onclick="filterCat('ops',this)">
+      <span>⚙️</span> 运维自动化 <span class="cnt">12</span>
+    </div>
+    <div class="left-nav-item" onclick="filterCat('write',this)">
+      <span>✍️</span> 内容创作 <span class="cnt">14</span>
+    </div>
+    <div class="left-divider"></div>
+    <div class="left-nav-label">平台兼容</div>
+    <div class="left-nav-item" onclick="filterPlatform('wanqing',this)">
+      <span>🔮</span> 万擎智能体
+    </div>
+    <div class="left-nav-item" onclick="filterPlatform('cf',this)">
+      <span>💻</span> CodeFlicker
+    </div>
+    <div class="left-nav-item" onclick="filterPlatform('klaw',this)">
+      <span>🦅</span> Klaw
+    </div>
+    <div class="left-divider"></div>
+    <div class="left-nav-label">筛选</div>
+    <div class="left-nav-item" onclick="filterSpecial('verified',this)">
+      <span>✅</span> 官方认证
+    </div>
+    <div class="left-nav-item" onclick="filterSpecial('hot',this)">
+      <span>🔥</span> 近期热门
+    </div>
+    <div class="left-nav-item" onclick="filterSpecial('new',this)">
+      <span>✨</span> 最新上线
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main-scroll" id="main-scroll">
+
+    <!-- HERO -->
+    <div class="hero">
+      <div class="hero-content">
+        <div class="hero-title">探索 <span>Skill 广场</span></div>
+        <div class="hero-sub">发现高质量、安全可靠的 Agent Skill，一键安装到你的工作流中</div>
+        <div class="hero-stats">
+          <div class="hero-stat"><div class="hero-stat-num">128</div><div class="hero-stat-label">可用 Skill</div></div>
+          <div class="hero-stat"><div class="hero-stat-num">4.2K</div><div class="hero-stat-label">本月安装</div></div>
+          <div class="hero-stat"><div class="hero-stat-num">37</div><div class="hero-stat-label">官方认证</div></div>
+          <div class="hero-stat"><div class="hero-stat-num">98%</div><div class="hero-stat-label">安全通过率</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 运营位 -->
+    <div class="ops-bar">
+      <div class="ops-bar-title">
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8z"/><path d="M6.271 5.055a.5.5 0 01.52.038l3.5 2.5a.5.5 0 010 .814l-3.5 2.5A.5.5 0 016 10.5v-5a.5.5 0 01.271-.445z"/></svg>
+        运营精选
+      </div>
+      <div class="ops-badges">
+        <div class="ops-badge blue" onclick="setOps(this)">🚀 5月新品上线</div>
+        <div class="ops-badge purple" onclick="setOps(this)">🤖 AI 编程效率包</div>
+        <div class="ops-badge green" onclick="setOps(this)">✅ 安全认证合集</div>
+        <div class="ops-badge orange" onclick="setOps(this)">🔥 本周安装榜</div>
+        <div class="ops-badge blue" onclick="setOps(this)">🎨 设计师工具箱</div>
+      </div>
+    </div>
+
+    <!-- 精选推荐 -->
+    <div class="section" id="section-featured">
+      <div class="section-header">
+        <div class="section-title">🌟 精选推荐</div>
+        <div class="see-all">查看全部 <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M1 8a.5.5 0 01.5-.5h11.793l-3.147-3.146a.5.5 0 01.708-.708l4 4a.5.5 0 010 .708l-4 4a.5.5 0 01-.708-.708L13.293 8.5H1.5A.5.5 0 011 8z"/></svg></div>
+      </div>
+      <div class="featured-grid" id="featured-grid">
+
+        <div class="skill-card" onclick="openInstall('design-demo-engineer','Design Demo 工程师','🎨','linear-gradient(135deg,#D2992222,#D2992244)')">
+          <div class="card-top">
+            <div class="card-icon" style="background:linear-gradient(135deg,#D2992222,#D2992244)">🎨</div>
+            <div class="card-meta">
+              <div class="card-name">Design Demo 工程师 <span class="verified">✓</span></div>
+              <div class="card-id">design-demo-engineer · shifangfang</div>
+            </div>
+          </div>
+          <div class="card-desc">快速生成高保真 HTML 交互原型，支持 B/C 端多种场景，内置 Tweaks 面板实时调参</div>
+          <div class="card-footer">
+            <span class="tag">设计辅助</span>
+            <span class="tag">原型</span>
+            <div class="card-installs"><svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor"><path d="M.5 9.9a.5.5 0 01.5.5v2.5a1 1 0 001 1h12a1 1 0 001-1v-2.5a.5.5 0 011 0v2.5a2 2 0 01-2 2H2a2 2 0 01-2-2v-2.5a.5.5 0 01.5-.5z"/><path d="M7.646 11.854a.5.5 0 00.708 0l3-3a.5.5 0 00-.708-.708L8.5 10.293V1.5a.5.5 0 00-1 0v8.793L5.354 8.146a.5.5 0 10-.708.708l3 3z"/></svg> 1.2K</div>
+            <button class="install-btn" onclick="event.stopPropagation();installSkill(this,'design-demo-engineer')">+ 安装</button>
+          </div>
+        </div>
+
+        <div class="skill-card" onclick="openInstall('prd-to-prompt','PRD 转 Prompt','📄','linear-gradient(135deg,#3FB95022,#3FB95044)')">
+          <div class="card-top">
+            <div class="card-icon" style="background:linear-gradient(135deg,#3FB95022,#3FB95044)">📄</div>
+            <div class="card-meta">
+              <div class="card-name">PRD 转 Prompt <span class="verified">✓</span></div>
+              <div class="card-id">prd-to-prompt · shifangfang</div>
+            </div>
+          </div>
+          <div class="card-desc">将产品需求文档智能拆解为结构化 AI 指令，支持 P0/P1/P2 优先级分层输出</div>
+          <div class="card-footer">
+            <span class="tag">开发工具</span>
+            <span class="tag">AI 增强</span>
+            <div class="card-installs"><svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor"><path d="M.5 9.9a.5.5 0 01.5.5v2.5a1 1 0 001 1h12a1 1 0 001-1v-2.5a.5.5 0 011 0v2.5a2 2 0 01-2 2H2a2 2 0 01-2-2v-2.5a.5.5 0 01.5-.5z"/><path d="M7.646 11.854a.5.5 0 00.708 0l3-3a.5.5 0 00-.708-.708L8.5 10.293V1.5a.5.5 0 00-1 0v8.793L5.354 8.146a.5.5 0 10-.708.708l3 3z"/></svg> 876</div>
+            <button class="install-btn installed" onclick="event.stopPropagation()">✓ 已安装</button>
+          </div>
+        </div>
+
+        <div class="skill-card" onclick="openInstall('requirement-intake','需求拆解助手','📋','linear-gradient(135deg,#1677FF22,#1677FF44)')">
+          <div class="card-top">
+            <div class="card-icon" style="background:linear-gradient(135deg,#1677FF22,#1677FF44)">📋</div>
+            <div class="card-meta">
+              <div class="card-name">需求拆解助手 <span class="verified">✓</span></div>
+              <div class="card-id">requirement-intake · shifangfang</div>
+            </div>
+          </div>
+          <div class="card-desc">动态提问引导补全需求维度，区分 B/C 端场景，生成可直接使用的设计 Prompt</div>
+          <div class="card-footer">
+            <span class="tag">开发工具</span>
+            <span class="tag">需求</span>
+            <div class="card-installs"><svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor"><path d="M.5 9.9a.5.5 0 01.5.5v2.5a1 1 0 001 1h12a1 1 0 001-1v-2.5a.5.5 0 011 0v2.5a2 2 0 01-2 2H2a2 2 0 01-2-2v-2.5a.5.5 0 01.5-.5z"/><path d="M7.646 11.854a.5.5 0 00.708 0l3-3a.5.5 0 00-.708-.708L8.5 10.293V1.5a.5.5 0 00-1 0v8.793L5.354 8.146a.5.5 0 10-.708.708l3 3z"/></svg> 643</div>
+            <button class="install-btn" onclick="event.stopPropagation();installSkill(this,'requirement-intake')">+ 安装</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 热门榜 -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-title">🔥 本周热门</div>
+        <div class="see-all">查看全部 <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M1 8a.5.5 0 01.5-.5h11.793l-3.147-3.146a.5.5 0 01.708-.708l4 4a.5.5 0 010 .708l-4 4a.5.5 0 01-.708-.708L13.293 8.5H1.5A.5.5 0 011 8z"/></svg></div>
+      </div>
+      <div class="cards-list">
+
+        <div class="skill-card-wide" onclick="openInstall('vibe-coding-setup','Vibe 环境搭建','⚡','linear-gradient(135deg,#72217122,#72217144)')">
+          <div style="font-size:13px;font-weight:700;color:var(--text-muted);width:22px;text-align:center">#1</div>
+          <div class="wide-icon" style="background:linear-gradient(135deg,#72217122,#72217144)">⚡</div>
+          <div class="wide-main">
+            <div class="wide-name">Vibe 环境搭建 <span class="verified" style="font-size:11px">✓</span></div>
+            <div class="wide-desc">一键搭建本地开发环境，支持 Node/Python/Go/Java/Rust，自动检测安装依赖</div>
+          </div>
+          <div class="wide-tags">
+            <span class="tag">开发工具</span>
+            <span class="card-installs" style="margin:0 8px"><svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor"><path d="M.5 9.9a.5.5 0 01.5.5v2.5a1 1 0 001 1h12a1 1 0 001-1v-2.5a.5.5 0 011 0v2.5a2 2 0 01-2 2H2a2 2 0 01-2-2v-2.5a.5.5 0 01.5-.5z"/><path d="M7.646 11.854a.5.5 0 00.708 0l3-3a.5.5 0 00-.708-.708L8.5 10.293V1.5a.5.5 0 00-1 0v8.793L5.354 8.146a.5.5 0 10-.708.708l3 3z"/></svg> 2.1K</span>
+            <button class="install-btn" onclick="event.stopPropagation();installSkill(this,'vibe-coding-setup')" style="font-size:11px;padding:4px 10px">+ 安装</button>
+          </div>
+        </div>
+
+        <div class="skill-card-wide">
+          <div style="font-size:13px;font-weight:700;color:var(--text-muted);width:22px;text-align:center">#2</div>
+          <div class="wide-icon" style="background:linear-gradient(135deg,#13C2C222,#13C2C244)">🔍</div>
+          <div class="wide-main">
+            <div class="wide-name">代码审查助手 <span class="verified" style="font-size:11px">✓</span></div>
+            <div class="wide-desc">自动分析代码变更，识别潜在问题，提供改进建议，支持多语言规范检查</div>
+          </div>
+          <div class="wide-tags">
+            <span class="tag">开发工具</span>
+            <span class="card-installs" style="margin:0 8px"><svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor"><path d="M.5 9.9a.5.5 0 01.5.5v2.5a1 1 0 001 1h12a1 1 0 001-1v-2.5a.5.5 0 011 0v2.5a2 2 0 01-2 2H2a2 2 0 01-2-2v-2.5a.5.5 0 01.5-.5z"/><path d="M7.646 11.854a.5.5 0 00.708 0l3-3a.5.5 0 00-.708-.708L8.5 10.293V1.5a.5.5 0 00-1 0v8.793L5.354 8.146a.5.5 0 10-.708.708l3 3z"/></svg> 1.8K</span>
+            <button class="install-btn installed" style="font-size:11px;padding:4px 10px" onclick="event.stopPropagation()">✓ 已安装</button>
+          </div>
+        </div>
+
+        <div class="skill-card-wide">
+          <div style="font-size:13px;font-weight:700;color:var(--text-muted);width:22px;text-align:center">#3</div>
+          <div class="wide-icon" style="background:linear-gradient(135deg,#F8514922,#F8514944)">📊</div>
+          <div class="wide-main">
+            <div class="wide-name">数据可视化生成器</div>
+            <div class="wide-desc">输入数据表格或 CSV，自动推荐图表类型并生成 ECharts 可交互图表代码</div>
+          </div>
+          <div class="wide-tags">
+            <span class="tag">数据分析</span>
+            <span class="card-installs" style="margin:0 8px"><svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor"><path d="M.5 9.9a.5.5 0 01.5.5v2.5a1 1 0 001 1h12a1 1 0 001-1v-2.5a.5.5 0 011 0v2.5a2 2 0 01-2 2H2a2 2 0 01-2-2v-2.5a.5.5 0 01.5-.5z"/><path d="M7.646 11.854a.5.5 0 00.708 0l3-3a.5.5 0 00-.708-.708L8.5 10.293V1.5a.5.5 0 00-1 0v8.793L5.354 8.146a.5.5 0 10-.708.708l3 3z"/></svg> 1.4K</span>
+            <button class="install-btn" style="font-size:11px;padding:4px 10px" onclick="event.stopPropagation();installSkill(this,'data-viz')">+ 安装</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 安装到平台 -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-title">🔌 支持安装平台</div>
+      </div>
+      <div class="platform-grid">
+        <div class="platform-card">
+          <div class="platform-icon">🔮</div>
+          <div class="platform-name">万擎智能体</div>
+          <div class="platform-desc">通过对话直接安装</div>
+          <div class="platform-badge badge-supported">已支持</div>
+        </div>
+        <div class="platform-card">
+          <div class="platform-icon">💻</div>
+          <div class="platform-name">CodeFlicker</div>
+          <div class="platform-desc">通过万擎 CLI 安装</div>
+          <div class="platform-badge badge-supported">已支持</div>
+        </div>
+        <div class="platform-card">
+          <div class="platform-icon">🦅</div>
+          <div class="platform-name">Klaw</div>
+          <div class="platform-desc">通过对话安装支持</div>
+          <div class="platform-badge badge-supported">已支持</div>
+        </div>
+        <div class="platform-card" style="opacity:.6">
+          <div class="platform-icon">🎮</div>
+          <div class="platform-name">Mario</div>
+          <div class="platform-desc">即将支持</div>
+          <div class="platform-badge badge-soon">即将上线</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="height:24px"></div>
+
+  </div><!-- end main-scroll -->
+</div><!-- end body-wrap -->
+
+<!-- INSTALL MODAL -->
+<div class="modal-overlay" id="install-modal">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-skill-icon" id="modal-icon" style="background:var(--bg-card)">🎨</div>
+      <div>
+        <div class="modal-skill-name" id="modal-name">Design Demo 工程师</div>
+        <div class="modal-skill-id" id="modal-id">design-demo-engineer</div>
+      </div>
+      <button class="modal-close" onclick="closeInstall()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="install-label">选择安装平台</div>
+      <div class="platform-list">
+        <div class="platform-row" onclick="doInstall('万擎智能体',this)">
+          <div class="platform-row-icon">🔮</div>
+          <div class="platform-row-name">万擎智能体</div>
+          <span class="platform-row-badge badge-supported">已支持</span>
+        </div>
+        <div class="platform-row" onclick="doInstall('CodeFlicker',this)">
+          <div class="platform-row-icon">💻</div>
+          <div class="platform-row-name">CodeFlicker <span style="font-size:11px;color:var(--text-muted)">（通过万擎 CLI）</span></div>
+          <span class="platform-row-badge badge-supported">已支持</span>
+        </div>
+        <div class="platform-row" onclick="doInstall('Klaw',this)">
+          <div class="platform-row-icon">🦅</div>
+          <div class="platform-row-name">Klaw</div>
+          <span class="platform-row-badge badge-supported">已支持</span>
+        </div>
+        <div class="platform-row" style="opacity:.5;cursor:default">
+          <div class="platform-row-icon">🎮</div>
+          <div class="platform-row-name">Mario</div>
+          <span class="platform-row-badge badge-soon">即将上线</span>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-secondary" onclick="closeInstall()" style="font-size:12px">取消</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let currentSkill = {};
+
+function openInstall(id, name, icon, bg) {
+  currentSkill = {id, name, icon, bg};
+  document.getElementById('modal-name').textContent = name;
+  document.getElementById('modal-id').textContent = id;
+  const mi = document.getElementById('modal-icon');
+  mi.textContent = icon;
+  mi.style.background = bg;
+  document.getElementById('install-modal').classList.add('show');
+}
+function closeInstall() {
+  document.getElementById('install-modal').classList.remove('show');
+}
+document.getElementById('install-modal').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeInstall();
+});
+
+function doInstall(platform, row) {
+  const prev = row.querySelector('.install-state');
+  if (prev) return;
+  row.innerHTML = `<div class="platform-row-icon">${row.querySelector('.platform-row-icon').textContent}</div>
+    <div class="platform-row-name">${row.querySelector('.platform-row-name').textContent}</div>
+    <div class="install-state">
+      <svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor"><path d="M10.97 4.97a.235.235 0 00-.02.022L7.477 9.417 5.384 7.323a.75.75 0 00-1.06 1.06L6.97 11.03a.75.75 0 001.079-.02l3.992-4.99a.75.75 0 00-1.071-1.05z"/></svg>
+      已安装到 ${platform}
+    </div>`;
+  showToast(`✅ ${currentSkill.name} 已安装到 ${platform}`);
+  setTimeout(closeInstall, 1200);
+}
+
+function installSkill(btn, id) {
+  if (btn.classList.contains('installing') || btn.classList.contains('installed')) return;
+  btn.classList.add('installing');
+  btn.textContent = '安装中...';
+  setTimeout(() => {
+    btn.classList.remove('installing');
+    btn.classList.add('installed');
+    btn.textContent = '✓ 已安装';
+    showToast(`✅ ${id} 安装成功`);
+  }, 1200);
+}
+
+function filterCat(cat, el) {
+  document.querySelectorAll('.left-nav-item').forEach(i => i.classList.remove('active'));
+  el.classList.add('active');
+}
+function filterPlatform(p, el) {
+  document.querySelectorAll('.left-nav-item').forEach(i => i.classList.remove('active'));
+  el.classList.add('active');
+  showToast(`已筛选：${el.textContent.trim()} 兼容 Skill`);
+}
+function filterSpecial(type, el) {
+  document.querySelectorAll('.left-nav-item').forEach(i => i.classList.remove('active'));
+  el.classList.add('active');
+}
+function setOps(el) {
+  document.querySelectorAll('.ops-badge').forEach(b => b.style.fontWeight = '');
+  el.style.fontWeight = '700';
+  showToast(`已切换运营位：${el.textContent.trim()}`);
+}
+function filterCards() {
+  const q = document.getElementById('main-search').value.toLowerCase();
+  document.querySelectorAll('.skill-card,.skill-card-wide').forEach(c => {
+    c.style.display = c.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+</script>
+</body>
+</html>
