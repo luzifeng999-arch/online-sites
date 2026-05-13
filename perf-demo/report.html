@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>评测报告 — 阶梯压测（含SLO）</title>
+<style>
+:root{
+  --bg:#0D1117;--bg2:#161B22;--bg3:#1C2128;--bg4:#21262D;
+  --bgH:#2D333B;--border:#30363D;--borderL:#3D444D;
+  --text:#E6EDF3;--text2:#8B949E;--textM:#6E7681;
+  --accent:#1677FF;--accentL:rgba(22,119,255,.15);--accentB:rgba(22,119,255,.3);
+  --success:#3FB950;--successBg:rgba(63,185,80,.08);--successBg2:rgba(63,185,80,.18);--successB:rgba(63,185,80,.3);
+  --warning:#D29922;--warningBg:rgba(210,153,34,.08);--warningBg2:rgba(210,153,34,.2);--warningB:rgba(210,153,34,.3);
+  --danger:#F85149;--dangerBg:rgba(248,81,73,.1);--dangerB:rgba(248,81,73,.3);
+  --r:6px;--rL:8px;--rXL:12px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;font-size:13px;background:var(--bg);color:var(--text);display:flex;flex-direction:column}
+::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-thumb{background:var(--borderL);border-radius:3px}
+button{cursor:pointer;border:none;outline:none;font-family:inherit}
+
+/* HEADER */
+.header{height:48px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;gap:12px;flex-shrink:0}
+.logo{font-weight:700;font-size:15px;display:flex;align-items:center;gap:8px}
+.logo-box{width:24px;height:24px;border-radius:5px;background:linear-gradient(135deg,#1677FF,#722ED1);display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;font-weight:900}
+.breadcrumb{font-size:12px;color:var(--text2);display:flex;align-items:center;gap:5px}
+.sep{color:var(--textM)}
+.header-right{margin-left:auto;display:flex;gap:8px}
+.btn{display:flex;align-items:center;gap:5px;padding:5px 13px;border-radius:var(--r);font-size:12px;font-weight:500;border:none;transition:all .15s;cursor:pointer}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border)}.btn-ghost:hover{background:var(--bgH);color:var(--text)}
+
+/* LAYOUT */
+.main{flex:1;overflow-y:auto;padding:20px 28px}
+
+/* TASK SUMMARY */
+.task-summary{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rXL);padding:16px 20px;margin-bottom:16px;display:flex;align-items:center;gap:20px}
+.ts-item{display:flex;flex-direction:column;gap:2px}
+.ts-label{font-size:11px;color:var(--textM)}
+.ts-value{font-size:13px;font-weight:600}
+.ts-div{width:1px;height:30px;background:var(--border)}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:10px;font-size:11px;font-weight:600}
+.badge-done{background:var(--successBg);color:var(--success);border:1px solid var(--successB)}
+.badge-stopped{background:var(--warningBg);color:var(--warning);border:1px solid var(--warningB)}
+
+/* CONCLUSION CARD */
+.conclusion-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rXL);padding:18px 20px;margin-bottom:16px;display:flex;gap:20px}
+.cc-left{display:flex;gap:16px;align-items:stretch;flex-shrink:0}
+.cc-stat{min-width:120px;padding:14px 18px;border-radius:var(--rL);text-align:center;display:flex;flex-direction:column;justify-content:center;gap:4px}
+.cc-stat.best{background:var(--successBg2);border:1px solid var(--successB)}
+.cc-stat.pivot{background:var(--warningBg2);border:1px solid var(--warningB)}
+.cc-icon{font-size:20px}
+.cc-label{font-size:11px;color:var(--text2);margin-top:2px}
+.cc-value{font-size:22px;font-weight:800}
+.cc-sub{font-size:11px;color:var(--textM)}
+.cc-div{width:1px;background:var(--border);margin:0 4px}
+.cc-right{flex:1;display:flex;flex-direction:column;justify-content:center;gap:8px}
+.cc-title{font-size:13px;font-weight:700;color:var(--text2);margin-bottom:2px}
+.cc-text{font-size:13px;line-height:1.8;color:var(--text)}
+
+/* LEGEND BAR */
+.legend-bar{display:flex;align-items:center;gap:16px;padding:10px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);margin-bottom:10px;font-size:12px}
+.legend-title{color:var(--textM);font-size:11px;font-weight:600;margin-right:4px}
+.legend-item{display:flex;align-items:center;gap:6px}
+.legend-dot-g{width:10px;height:10px;border-radius:2px;background:var(--successBg2);border:1px solid var(--successB)}
+.legend-dot-o{width:10px;height:10px;border-radius:2px;background:var(--warningBg2);border:1px solid var(--warningB)}
+
+/* TABLE AREA */
+.table-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rXL);overflow:hidden;margin-bottom:16px}
+.table-head-bar{padding:13px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.table-title{font-size:14px;font-weight:700;flex:1}
+.mode-toggle{display:flex;gap:4px;padding:3px;background:var(--bg3);border-radius:var(--r);border:1px solid var(--border)}
+.mt-btn{padding:4px 12px;border-radius:4px;font-size:11px;cursor:pointer;color:var(--text2);transition:all .15s;border:none;background:transparent}
+.mt-btn.active{background:var(--bg2);color:var(--text);font-weight:500;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+
+/* MAIN TABLE */
+.table-scroll{overflow-x:auto}
+.perf-table{width:100%;border-collapse:collapse;min-width:700px}
+.perf-table th,.perf-table td{border-bottom:1px solid var(--border);text-align:center;padding:0}
+.perf-table th:first-child,.perf-table td:first-child{text-align:left;position:sticky;left:0;background:var(--bg2);z-index:2;min-width:150px;border-right:1px solid var(--border)}
+
+/* COLUMN HEADERS */
+.col-head{padding:10px 12px;display:flex;flex-direction:column;align-items:center;gap:3px;min-width:110px}
+.col-qps{font-size:14px;font-weight:700}
+.col-unit{font-size:11px;color:var(--textM)}
+.col-badge{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700;white-space:nowrap}
+.cb-best{background:var(--successBg2);color:var(--success);border:1px solid var(--successB)}
+.cb-pivot{background:var(--warningBg2);color:var(--warning);border:1px solid var(--warningB)}
+
+/* ROW STYLES */
+.group-row td{padding:6px 10px 6px 14px;background:var(--bg3);font-size:11px;font-weight:700;color:var(--textM);text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--border)}
+.slo-row td{padding:6px 0;border-bottom:1px solid var(--borderL)}
+.data-row td{padding:9px 12px;border-bottom:1px solid var(--border)}
+.data-row:hover td{background:var(--bgH)}
+.metric-name{padding:9px 10px 9px 14px;font-size:12px;color:var(--text2)}
+.cell-val{font-size:13px;font-weight:500}
+
+/* COLUMN BG */
+.col-best{background:var(--successBg)!important}
+.col-pivot{background:var(--warningBg)!important}
+
+/* TOOLTIP WRAP */
+.tw{position:relative;display:inline-flex;cursor:default}
+.ttip{position:absolute;bottom:calc(100%+7px);left:50%;transform:translateX(-50%);background:var(--bg4);border:1px solid var(--borderL);border-radius:var(--rL);padding:8px 12px;font-size:12px;color:var(--text2);white-space:nowrap;box-shadow:0 4px 14px rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .15s;z-index:50;line-height:1.7}
+.ttip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--borderL)}
+.tw:hover .ttip{opacity:1}
+
+/* CHART */
+.chart-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rXL);padding:18px 20px;margin-bottom:16px}
+.chart-title{font-size:14px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.chart-item{background:var(--bg3);border-radius:var(--rL);padding:14px}
+.chart-sub-title{font-size:12px;font-weight:600;color:var(--text2);margin-bottom:10px}
+
+/* TOAST */
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(14px);background:var(--bg4);border:1px solid var(--border);border-radius:var(--rL);padding:9px 18px;font-size:13px;box-shadow:0 4px 16px rgba(0,0,0,.5);opacity:0;transition:all .25s;z-index:999;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo"><div class="logo-box">M</div>万擎模型评测</div>
+  <div class="breadcrumb">
+    <span>性能评测</span><span class="sep">/</span>
+    <span>阶梯压测-Kwai7B-0513</span><span class="sep">/</span>
+    <span style="color:var(--text);font-weight:500">评测报告</span>
+  </div>
+  <div class="header-right">
+    <button class="btn btn-ghost" onclick="window.location.href='no-slo-report.html'">查看无 SLO 报告示例</button>
+    <button class="btn btn-ghost" onclick="window.location.href='task-create.html'">
+      <svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor"><path d="M8 2a.5.5 0 01.5.5v5h5a.5.5 0 010 1h-5v5a.5.5 0 01-1 0v-5h-5a.5.5 0 010-1h5v-5A.5.5 0 018 2z"/></svg>
+      新建压测
+    </button>
+    <button class="btn btn-ghost" onclick="showToast('📥 报告导出中...')">导出报告</button>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- 任务摘要 -->
+  <div class="task-summary">
+    <div class="ts-item"><div class="ts-label">任务名称</div><div class="ts-value">阶梯压测-Kwai7B-0513</div></div>
+    <div class="ts-div"></div>
+    <div class="ts-item"><div class="ts-label">评测模型</div><div class="ts-value">Kwai-7B-Chat (v2.1)</div></div>
+    <div class="ts-div"></div>
+    <div class="ts-item"><div class="ts-label">发压方式</div><div class="ts-value">阶梯压力（5 阶梯）</div></div>
+    <div class="ts-div"></div>
+    <div class="ts-item"><div class="ts-label">压力范围</div><div class="ts-value">10 ~ 50 QPS</div></div>
+    <div class="ts-div"></div>
+    <div class="ts-item"><div class="ts-label">执行时长</div><div class="ts-value">10 分钟</div></div>
+    <div class="ts-div"></div>
+    <div class="ts-item"><div class="ts-label">完成时间</div><div class="ts-value">2026-05-13 19:28</div></div>
+    <div class="ts-div"></div>
+    <div class="ts-item"><div class="ts-label">状态</div><div class="ts-value"><span class="badge badge-done">✓ 已完成</span></div></div>
+  </div>
+
+  <!-- 结论卡片（有SLO） -->
+  <div class="conclusion-card" id="conclusion-card">
+    <div class="cc-left">
+      <div class="cc-stat best">
+        <div class="cc-icon">🏆</div>
+        <div class="cc-label">SLO 下最优压力值</div>
+        <div class="cc-value" style="color:var(--success)">40 QPS</div>
+        <div class="cc-sub">满足全部 SLO 约束</div>
+      </div>
+      <div class="cc-div"></div>
+      <div class="cc-stat pivot">
+        <div class="cc-icon">⚠️</div>
+        <div class="cc-label">性能拐点</div>
+        <div class="cc-value" style="color:var(--warning)">50 QPS</div>
+        <div class="cc-sub">首次触发 SLO 告警</div>
+      </div>
+    </div>
+    <div class="cc-right">
+      <div class="cc-title">🔍 结论与建议</div>
+      <div class="cc-text">
+        在当前 SLO 约束（P99 TTFT ≤ 500ms 且 P99 TPOT ≤ 50ms 且成功率 ≥ 99%）下，模型最大可承载 <strong style="color:var(--success)">40 QPS</strong>。超过 <strong style="color:var(--warning)">50 QPS</strong> 后 P99 TTFT 超阈值，成功率显著下降，建议生产环境压力控制在 <strong>35~40 QPS</strong>。
+      </div>
+    </div>
+  </div>
+
+  <!-- 图例条 -->
+  <div class="legend-bar">
+    <span class="legend-title">图例：</span>
+    <div class="legend-item"><div class="legend-dot-g"></div><span>🏆 SLO 下最优：满足 SLO 约束下吞吐量最高</span></div>
+    <div class="legend-item"><div class="legend-dot-o"></div><span>⚠️ 拐点：首次触发 SLO 配置的阶梯</span></div>
+  </div>
+
+  <!-- 评测报告表格 -->
+  <div class="table-card">
+    <div class="table-head-bar">
+      <span class="table-title">📊 评测报告 — 阶梯压力模式（5 阶梯）</span>
+      <div class="mode-toggle">
+        <button class="mt-btn active" onclick="setMode('ladder',this)">阶梯压力</button>
+        <button class="mt-btn" onclick="setMode('fixed',this)">固定压力</button>
+      </div>
+    </div>
+    <div class="table-scroll">
+      <table class="perf-table" id="perf-table">
+        <thead id="table-head"></thead>
+        <tbody id="table-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 性能曲线图 -->
+  <div class="chart-card">
+    <div class="chart-title">📈 性能趋势图</div>
+    <div class="chart-grid">
+      <div class="chart-item">
+        <div class="chart-sub-title">P99 TTFT（ms）vs QPS</div>
+        <canvas id="chart-ttft" height="160"></canvas>
+      </div>
+      <div class="chart-item">
+        <div class="chart-sub-title">成功率（%）vs QPS</div>
+        <canvas id="chart-sr" height="160"></canvas>
+      </div>
+      <div class="chart-item">
+        <div class="chart-sub-title">P99 TPOT（ms）vs QPS</div>
+        <canvas id="chart-tpot" height="160"></canvas>
+      </div>
+      <div class="chart-item">
+        <div class="chart-sub-title">吞吐量（TPS）vs QPS</div>
+        <canvas id="chart-tps" height="160"></canvas>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ---- Data ----
+const QPSS = [10, 20, 30, 40, 50];
+const BEST_IDX = 3; // 40 QPS
+const PIVOT_IDX = 4; // 50 QPS
+
+const DATA = {
+  // SLO row: true/false
+  slo: [true, true, true, true, false],
+  groups: [
+    {
+      name: '基础指标',
+      rows: [
+        {name:'总请求数',vals:['1,200','2,400','3,600','4,800','5,203'],unit:''},
+        {name:'成功率',vals:['99.8%','99.7%','99.5%','99.1%','95.2%'],unit:'',sloCheck:[true,true,true,true,false]},
+        {name:'错误率',vals:['0.2%','0.3%','0.5%','0.9%','4.8%'],unit:''},
+      ]
+    },
+    {
+      name: '吞吐指标',
+      rows: [
+        {name:'实际 QPS',vals:['9.98','19.96','29.88','39.72','47.1'],unit:'req/s'},
+        {name:'吞吐量 (TPS)',vals:['318','612','892','1,148','1,054'],unit:'tok/s'},
+      ]
+    },
+    {
+      name: 'TTFT（首 token 延迟）',
+      rows: [
+        {name:'P50 TTFT',vals:['128','182','246','318','512'],unit:'ms'},
+        {name:'P90 TTFT',vals:['198','276','384','468','712'],unit:'ms'},
+        {name:'P99 TTFT',vals:['312','398','436','496','842'],unit:'ms',sloCheck:[true,true,true,true,false]},
+      ]
+    },
+    {
+      name: 'TPOT（逐 token 延迟）',
+      rows: [
+        {name:'P50 TPOT',vals:['18','22','28','34','52'],unit:'ms'},
+        {name:'P90 TPOT',vals:['26','31','38','44','68'],unit:'ms'},
+        {name:'P99 TPOT',vals:['34','40','44','48','86'],unit:'ms',sloCheck:[true,true,true,true,false]},
+      ]
+    },
+    {
+      name: 'E2EL（端到端延迟）',
+      rows: [
+        {name:'P50 E2EL',vals:['1,240','1,680','2,120','2,840','4,420'],unit:'ms'},
+        {name:'P99 E2EL',vals:['2,860','3,580','4,220','5,460','9,840'],unit:'ms'},
+      ]
+    },
+  ]
+};
+
+function renderTable() {
+  const thead = document.getElementById('table-head');
+  const tbody = document.getElementById('table-body');
+
+  // Header row
+  const headCols = QPSS.map((q,i) => {
+    const isBest = i === BEST_IDX;
+    const isPivot = i === PIVOT_IDX;
+    const badgeHtml = isBest
+      ? `<div class="col-badge cb-best">🏆 SLO下最优</div>`
+      : isPivot
+      ? `<div class="col-badge cb-pivot">⚠️ 拐点</div>`
+      : '';
+    const pivotTip = isPivot ? `<div class="ttip">P99 TTFT > 500ms 首次超阈值<br>成功率 < 99% 首次不达标</div>` : '';
+    const bestTip = isBest ? `<div class="ttip">满足SLO约束下吞吐量最高</div>` : '';
+    return `<th class="${isBest?'col-best':''} ${isPivot?'col-pivot':''}">
+      <div class="tw">
+        <div class="col-head">
+          ${badgeHtml}
+          <div class="col-qps">${q}</div>
+          <div class="col-unit">QPS</div>
+        </div>
+        ${bestTip}${pivotTip}
+      </div>
+    </th>`;
+  }).join('');
+  thead.innerHTML = `<tr><th style="position:sticky;left:0;background:var(--bg2);z-index:3;padding:10px 14px;font-size:12px;font-weight:600;color:var(--textM)">指标</th>${headCols}</tr>`;
+
+  // SLO row
+  const sloChecks = QPSS.map((q,i) => {
+    const ok = DATA.slo[i];
+    const cls = i===BEST_IDX ? 'col-best' : i===PIVOT_IDX ? 'col-pivot' : '';
+    return `<td class="${cls}" style="padding:8px 0;text-align:center">
+      <span style="font-size:15px;font-weight:700;color:${ok?'var(--success)':'var(--danger)'}">${ok ? '✓' : '✗'}</span>
+    </td>`;
+  }).join('');
+  let rows = `<tr class="slo-row"><td class="metric-name" style="font-weight:700;color:var(--text)">SLO 达标</td>${sloChecks}</tr>`;
+
+  // Data groups
+  DATA.groups.forEach(g => {
+    const groupCells = `<td colspan="${QPSS.length+1}" style="padding:0"><div></div></td>`;
+    rows += `<tr class="group-row"><td colspan="${QPSS.length+1}" style="padding:7px 10px 7px 14px;background:var(--bg3);font-size:11px;font-weight:700;color:var(--textM);text-transform:uppercase;letter-spacing:.06em">${g.name}</td></tr>`;
+    g.rows.forEach(row => {
+      const cells = QPSS.map((q,i) => {
+        const isBest = i === BEST_IDX;
+        const isPivot = i === PIVOT_IDX;
+        const sc = row.sloCheck;
+        const sloFail = sc && !sc[i];
+        const cls = isBest ? 'col-best' : isPivot ? 'col-pivot' : '';
+        const valColor = sloFail ? 'color:var(--danger);font-weight:700' : '';
+        return `<td class="data-row ${cls}" style="padding:9px 12px;text-align:center;border-bottom:1px solid var(--border)">
+          <span class="cell-val" style="${valColor}">${row.vals[i]}</span>
+          ${row.unit ? `<span style="font-size:10px;color:var(--textM);margin-left:2px">${row.unit}</span>` : ''}
+        </td>`;
+      }).join('');
+      rows += `<tr><td class="metric-name">${row.name}</td>${cells}</tr>`;
+    });
+  });
+
+  tbody.innerHTML = rows;
+}
+
+function setMode(mode, btn) {
+  document.querySelectorAll('.mt-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  if (mode === 'fixed') {
+    showToast('📊 切换为固定压力模式（仅展示 40 QPS 列）');
+  } else {
+    showToast('📊 已切换回阶梯压力模式');
+  }
+}
+
+// ---- Charts ----
+function drawChart(canvasId, labels, datasets, yLabel, sloLine) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const W = canvas.parentElement.clientWidth - 28;
+  const H = 160;
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0,0,W,H);
+  const PAD = {t:10,r:16,b:28,l:44};
+  const cW = W-PAD.l-PAD.r, cH = H-PAD.t-PAD.b;
+
+  const allVals = datasets.flatMap(d=>d.data);
+  const minV = Math.min(...allVals)*0.9, maxV = Math.max(...allVals)*1.1;
+
+  function cx(i) { return PAD.l + (i/(labels.length-1))*cW; }
+  function cy(v) { return PAD.t + (1-(v-minV)/(maxV-minV))*cH; }
+
+  // Grid
+  ctx.strokeStyle='#30363D'; ctx.lineWidth=0.5;
+  for(let r=0;r<=4;r++){
+    const y=PAD.t+r*cH/4;
+    ctx.beginPath();ctx.moveTo(PAD.l,y);ctx.lineTo(W-PAD.r,y);ctx.stroke();
+    const val=(maxV-(r/4)*(maxV-minV));
+    ctx.fillStyle='#6E7681';ctx.font='10px sans-serif';ctx.textAlign='right';
+    ctx.fillText(val>=1000?(val/1000).toFixed(1)+'k':val.toFixed(0),PAD.l-4,y+4);
+  }
+  labels.forEach((l,i)=>{
+    ctx.fillStyle='#6E7681';ctx.font='10px sans-serif';ctx.textAlign='center';
+    ctx.fillText(l,cx(i),H-6);
+  });
+
+  // SLO threshold line
+  if(sloLine!==undefined){
+    const sy = cy(sloLine);
+    if(sy>=PAD.t && sy<=H-PAD.b){
+      ctx.beginPath();ctx.strokeStyle='rgba(248,81,73,.5)';ctx.lineWidth=1;ctx.setLineDash([4,3]);
+      ctx.moveTo(PAD.l,sy);ctx.lineTo(W-PAD.r,sy);ctx.stroke();ctx.setLineDash([]);
+    }
+  }
+
+  // Best/Pivot vertical lines
+  const bestX = cx(BEST_IDX); const pivotX = cx(PIVOT_IDX);
+  ctx.beginPath();ctx.strokeStyle='rgba(63,185,80,.3)';ctx.lineWidth=1;ctx.setLineDash([3,2]);
+  ctx.moveTo(bestX,PAD.t);ctx.lineTo(bestX,H-PAD.b);ctx.stroke();
+  ctx.beginPath();ctx.strokeStyle='rgba(210,153,34,.3)';ctx.lineWidth=1;
+  ctx.moveTo(pivotX,PAD.t);ctx.lineTo(pivotX,H-PAD.b);ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Lines
+  datasets.forEach(d=>{
+    ctx.beginPath();ctx.strokeStyle=d.color;ctx.lineWidth=2;
+    d.data.forEach((v,i)=>{ i===0?ctx.moveTo(cx(i),cy(v)):ctx.lineTo(cx(i),cy(v)); });
+    ctx.stroke();
+    // Dots
+    d.data.forEach((v,i)=>{
+      ctx.beginPath();
+      ctx.fillStyle=i===BEST_IDX?'#3FB950':i===PIVOT_IDX?'#D29922':d.color;
+      ctx.arc(cx(i),cy(v),i===BEST_IDX||i===PIVOT_IDX?5:3,0,Math.PI*2);ctx.fill();
+    });
+  });
+}
+
+function drawAllCharts(){
+  const qLabels = QPSS.map(q=>q+'');
+  drawChart('chart-ttft',qLabels,[{data:[312,398,436,496,842],color:'#58A6FF'}],'ms',500);
+  drawChart('chart-sr',qLabels,[{data:[99.8,99.7,99.5,99.1,95.2],color:'#3FB950'}],'%',99);
+  drawChart('chart-tpot',qLabels,[{data:[34,40,44,48,86],color:'#A371F7'}],'ms',50);
+  drawChart('chart-tps',qLabels,[{data:[318,612,892,1148,1054],color:'#D29922'}],'tok/s');
+}
+
+function showToast(msg) {
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2200);
+}
+
+renderTable();
+window.addEventListener('load',()=>setTimeout(drawAllCharts,80));
+window.addEventListener('resize',drawAllCharts);
+</script>
+</body>
+</html>

@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>新建压测任务 — 万擎模型评测</title>
+<style>
+:root{
+  --bg:#0D1117;--bg2:#161B22;--bg3:#1C2128;--bg4:#21262D;
+  --bgH:#2D333B;--border:#30363D;--borderL:#3D444D;
+  --text:#E6EDF3;--text2:#8B949E;--textM:#6E7681;
+  --accent:#1677FF;--accentH:#0958D9;--accentL:rgba(22,119,255,.15);--accentB:rgba(22,119,255,.3);
+  --success:#3FB950;--successBg:rgba(63,185,80,.1);--successB:rgba(63,185,80,.3);
+  --warning:#D29922;--warningBg:rgba(210,153,34,.12);--warningB:rgba(210,153,34,.3);
+  --danger:#F85149;--dangerBg:rgba(248,81,73,.1);--dangerB:rgba(248,81,73,.3);
+  --r:6px;--rL:8px;--rXL:12px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;font-size:13px;background:var(--bg);color:var(--text);display:flex;flex-direction:column}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:var(--borderL);border-radius:3px}
+button,input,select{font-family:inherit;cursor:pointer}
+input,select{cursor:text}
+
+/* HEADER */
+.header{height:48px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;gap:12px;flex-shrink:0}
+.logo{font-weight:700;font-size:15px;display:flex;align-items:center;gap:8px}
+.logo-box{width:24px;height:24px;border-radius:5px;background:linear-gradient(135deg,#1677FF,#722ED1);display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;font-weight:900}
+.breadcrumb{font-size:12px;color:var(--text2);display:flex;align-items:center;gap:5px}
+.breadcrumb a{color:var(--text2);text-decoration:none}.breadcrumb a:hover{color:var(--accent)}
+.sep{color:var(--textM)}
+.cur{color:var(--text);font-weight:500}
+.header-right{margin-left:auto;display:flex;gap:8px}
+.btn{display:flex;align-items:center;gap:5px;padding:5px 14px;border-radius:var(--r);font-size:12px;font-weight:500;border:none;transition:all .15s;white-space:nowrap;cursor:pointer}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{background:var(--accentH)}
+.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border)}.btn-ghost:hover{background:var(--bgH);color:var(--text)}
+
+/* LAYOUT */
+.layout{flex:1;display:flex;overflow:hidden}
+.steps-nav{width:200px;background:var(--bg2);border-right:1px solid var(--border);padding:16px 12px;flex-shrink:0;overflow-y:auto}
+.steps-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--textM);margin-bottom:14px}
+.step-item{display:flex;align-items:flex-start;gap:9px;padding:7px 0;cursor:pointer;position:relative}
+.step-item:not(:last-child)::after{content:'';position:absolute;left:13px;top:28px;width:1px;height:calc(100% - 10px);background:var(--border)}
+.s-circle{width:26px;height:26px;border-radius:50%;border:2px solid var(--border);background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;transition:all .2s}
+.step-item.done .s-circle{background:var(--successBg);border-color:var(--successB);color:var(--success)}
+.step-item.active .s-circle{background:var(--accent);border-color:var(--accent);color:#fff}
+.step-item.inactive .s-circle{color:var(--textM)}
+.s-text{padding-top:3px}
+.s-name{font-size:12px;font-weight:500;color:var(--text2)}
+.step-item.active .s-name{color:var(--text);font-weight:600}
+.s-desc{font-size:11px;color:var(--textM);margin-top:1px}
+
+/* FORM SCROLL */
+.form-scroll{flex:1;overflow-y:auto;padding:20px 28px}
+
+/* SECTION */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rXL);margin-bottom:14px;overflow:hidden}
+.card-head{padding:13px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:7px}
+.card-icon{font-size:15px}
+.card-title{font-size:14px;font-weight:700;flex:1}
+.card-body{padding:18px}
+
+/* FORM */
+.frow{margin-bottom:16px}.frow:last-child{margin-bottom:0}
+.flabel{font-size:12px;font-weight:600;color:var(--text2);margin-bottom:5px;display:flex;align-items:center;gap:4px}
+.req{color:var(--danger)}
+.fhint{font-size:11px;color:var(--textM);margin-top:4px}
+.ferr{font-size:11px;color:var(--danger);margin-top:4px;display:none}
+.frow.err .ferr{display:block}
+.frow.err .inp{border-color:var(--danger)!important}
+
+.inp{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:7px 10px;color:var(--text);font-size:13px;outline:none;transition:border-color .15s}
+.inp:focus{border-color:var(--accent)}
+.inp::placeholder{color:var(--textM)}
+.inp[type=number]::-webkit-inner-spin-button{opacity:1}
+
+.sel{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:7px 10px;color:var(--text);font-size:13px;outline:none;appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 16 16' fill='%236E7681'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px;transition:border-color .15s}
+.sel:focus{border-color:var(--accent);outline:none}
+select option{background:var(--bg3)}
+
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+
+/* PRESSURE MODE TOGGLE */
+.mode-group{display:flex;gap:8px}
+.mode-card{flex:1;padding:10px 14px;border-radius:var(--r);border:2px solid var(--border);cursor:pointer;transition:all .15s;position:relative}
+.mode-card:hover{border-color:var(--borderL)}
+.mode-card.sel{border-color:var(--accent);background:var(--accentL)}
+.mode-card input[type=radio]{position:absolute;opacity:0;pointer-events:none}
+.mode-name{font-size:13px;font-weight:600;margin-bottom:2px}
+.mode-desc{font-size:11px;color:var(--text2)}
+
+/* LADDER CONFIG */
+.ladder-section{display:none;margin-top:14px}
+.ladder-section.show{display:block}
+.ladder-summary{display:flex;gap:12px;padding:12px 14px;background:var(--bg3);border-radius:var(--rL);margin-bottom:12px;align-items:center}
+.ld-field{display:flex;flex-direction:column;gap:3px}
+.ld-label{font-size:11px;color:var(--textM)}
+.ld-inp{width:100px;background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:5px 9px;color:var(--text);font-size:13px;outline:none;transition:border-color .15s}
+.ld-inp:focus{border-color:var(--accent)}
+.sep-arrow{color:var(--textM);font-size:18px;padding-top:16px}
+
+/* STEPS TABLE */
+.steps-table-wrap{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rL);overflow:hidden}
+.steps-table{width:100%;border-collapse:collapse}
+.steps-table th{padding:9px 12px;font-size:11px;font-weight:600;color:var(--textM);text-align:left;background:var(--bg4);border-bottom:1px solid var(--border)}
+.steps-table td{padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:middle}
+.steps-table tr:last-child td{border-bottom:none}
+.step-num-badge{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;font-size:11px;font-weight:700;background:var(--accentL);color:#79C0FF}
+.step-inp{width:80px;background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:4px 8px;color:var(--text);font-size:12px;text-align:center;outline:none;transition:border-color .15s}
+.step-inp:focus{border-color:var(--accent)}
+.step-inp:disabled{opacity:.4;cursor:not-allowed}
+.updown-btns{display:flex;gap:4px;align-items:center}
+.adj-btn{width:26px;height:26px;border-radius:var(--r);border:1px solid var(--border);background:var(--bg);color:var(--text2);display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;transition:all .15s;position:relative}
+.adj-btn:hover:not(:disabled){background:var(--bgH);color:var(--text)}
+.adj-btn:disabled{opacity:.35;cursor:not-allowed}
+.adj-btn .tip{position:absolute;bottom:calc(100%+6px);left:50%;transform:translateX(-50%);background:var(--bg4);border:1px solid var(--borderL);border-radius:var(--r);padding:7px 10px;font-size:11px;color:var(--text2);white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s;z-index:10;width:260px;text-align:center}
+.adj-btn:hover .tip{opacity:1}
+.add-step-row{padding:10px 12px;border-top:1px solid var(--border);display:flex;align-items:center;gap:8px;cursor:pointer;color:var(--text2);font-size:12px;transition:background .15s}
+.add-step-row:hover{background:var(--bgH);color:var(--accent)}
+.max-steps-tip{font-size:11px;color:var(--textM);padding:10px 12px;border-top:1px solid var(--border);display:none}
+
+/* SLO CONFIG */
+.slo-rows{display:flex;flex-direction:column;gap:8px}
+.slo-row{display:flex;align-items:center;gap:8px}
+.slo-metric{flex:1.5;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:6px 10px;color:var(--text);font-size:12px;outline:none;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 16 16' fill='%236E7681'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;padding-right:24px}
+.slo-metric:focus,.slo-op:focus{outline:none;border-color:var(--accent)}
+.slo-op{flex:0.8;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:6px 8px;color:var(--text);font-size:12px;outline:none;cursor:pointer;appearance:none;text-align:center}
+.slo-val{flex:0.8;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:6px 9px;color:var(--text);font-size:12px;outline:none;transition:border-color .15s}
+.slo-val:focus{border-color:var(--accent)}
+.slo-unit{font-size:11px;color:var(--textM);flex-shrink:0;width:28px}
+.slo-del{background:transparent;border:none;color:var(--textM);cursor:pointer;font-size:16px;padding:2px 4px;border-radius:var(--r);transition:all .15s}
+.slo-del:hover{background:var(--dangerBg);color:var(--danger)}
+.add-slo-btn{display:flex;align-items:center;gap:5px;padding:6px 12px;border-radius:var(--r);font-size:12px;color:var(--accent);background:var(--accentL);border:1px dashed var(--accentB);cursor:pointer;transition:all .15s;width:fit-content;margin-top:6px}
+.add-slo-btn:hover{background:rgba(22,119,255,.22)}
+
+/* INFO BOX */
+.info-box{background:var(--accentL);border:1px solid var(--accentB);border-radius:var(--r);padding:9px 12px;font-size:12px;color:#79C0FF;line-height:1.7;display:flex;gap:7px;margin-bottom:12px}
+.warn-box{background:var(--warningBg);border:1px solid var(--warningB);border-radius:var(--r);padding:9px 12px;font-size:12px;color:var(--warning);line-height:1.7;display:flex;gap:7px}
+
+/* FOOTER */
+.footer{background:var(--bg2);border-top:1px solid var(--border);padding:12px 24px;display:flex;justify-content:flex-end;gap:10px;flex-shrink:0}
+
+/* TOAST */
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(14px);background:var(--bg4);border:1px solid var(--border);border-radius:var(--rL);padding:9px 18px;font-size:13px;box-shadow:0 4px 16px rgba(0,0,0,.5);opacity:0;transition:all .25s;z-index:999;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo"><div class="logo-box">M</div>万擎模型评测</div>
+  <div class="breadcrumb">
+    <a href="#">模型评测</a><span class="sep">/</span>
+    <span class="cur">性能评测</span><span class="sep">/</span>
+    <span class="cur">新建压测任务</span>
+  </div>
+  <div class="header-right">
+    <button class="btn btn-ghost" onclick="window.location.href='report.html'">查看评测报告示例</button>
+    <button class="btn btn-primary" onclick="submitTask()">
+      <svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor"><path d="M8 2a.5.5 0 01.5.5v5h5a.5.5 0 010 1h-5v5a.5.5 0 01-1 0v-5h-5a.5.5 0 010-1h5v-5A.5.5 0 018 2z"/></svg>
+      执行压测
+    </button>
+  </div>
+</div>
+
+<div class="layout">
+  <aside class="steps-nav">
+    <div class="steps-label">创建步骤</div>
+    <div class="step-item done" onclick="scrollTo('sec-basic')"><div class="s-circle">✓</div><div class="s-text"><div class="s-name">基础配置</div><div class="s-desc">模型 & 数据集</div></div></div>
+    <div class="step-item active" onclick="scrollTo('sec-pressure')"><div class="s-circle">2</div><div class="s-text"><div class="s-name">压力配置</div><div class="s-desc">阶梯步骤设置</div></div></div>
+    <div class="step-item inactive" onclick="scrollTo('sec-slo')"><div class="s-circle">3</div><div class="s-text"><div class="s-name">SLO 配置</div><div class="s-desc">达标阈值定义</div></div></div>
+    <div class="step-item inactive" onclick="scrollTo('sec-advanced')"><div class="s-circle">4</div><div class="s-text"><div class="s-name">高级配置</div><div class="s-desc">超时 & 并发</div></div></div>
+  </aside>
+
+  <div class="form-scroll" id="form-scroll">
+
+    <!-- 基础配置 -->
+    <div class="card" id="sec-basic">
+      <div class="card-head"><span class="card-icon">⚙️</span><span class="card-title">基础配置</span></div>
+      <div class="card-body">
+        <div class="row2">
+          <div class="frow">
+            <div class="flabel">任务名称<span class="req">*</span></div>
+            <input class="inp" placeholder="请输入任务名称" value="阶梯压测-Kwai7B-0513">
+          </div>
+          <div class="frow">
+            <div class="flabel">评测模型<span class="req">*</span></div>
+            <select class="sel"><option>Kwai-7B-Chat (v2.1)</option><option>Kwai-13B-Chat</option><option>Kwai-VL-7B</option></select>
+          </div>
+        </div>
+        <div class="row2">
+          <div class="frow">
+            <div class="flabel">评测数据集<span class="req">*</span></div>
+            <select class="sel"><option>通用问答-500条</option><option>代码补全-200条</option><option>中文对话-1000条</option></select>
+          </div>
+          <div class="frow">
+            <div class="flabel">评测时长（分钟）</div>
+            <input class="inp" type="number" value="10" min="1" max="120">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 压力配置 -->
+    <div class="card" id="sec-pressure">
+      <div class="card-head"><span class="card-icon">📈</span><span class="card-title">压力配置</span></div>
+      <div class="card-body">
+        <div class="frow">
+          <div class="flabel">发压方式<span class="req">*</span></div>
+          <div class="mode-group">
+            <label class="mode-card" onclick="selectMode('fixed',this)">
+              <input type="radio" name="mode" value="fixed">
+              <div class="mode-name">固定压力</div>
+              <div class="mode-desc">以固定 QPS/并发数执行全程压测</div>
+            </label>
+            <label class="mode-card sel" onclick="selectMode('ladder',this)">
+              <input type="radio" name="mode" value="ladder" checked>
+              <div class="mode-name">阶梯压力</div>
+              <div class="mode-desc">按初始→峰值逐步递增，探测性能瓶颈</div>
+            </label>
+          </div>
+        </div>
+
+        <!-- 固定压力（隐藏） -->
+        <div id="fixed-section" style="display:none;margin-top:12px">
+          <div class="row2">
+            <div class="frow" style="margin:0">
+              <div class="flabel">发压指标</div>
+              <select class="sel"><option>QPS（每秒请求数）</option><option>并发数</option></select>
+            </div>
+            <div class="frow" style="margin:0">
+              <div class="flabel">压力值</div>
+              <input class="inp" type="number" value="20">
+            </div>
+          </div>
+        </div>
+
+        <!-- 阶梯压力 -->
+        <div class="ladder-section show" id="ladder-section">
+          <div class="info-box">
+            <span>ℹ️</span>
+            <span>阶梯压力最多支持 <strong>5 个阶梯</strong>，系统将根据初始压力和峰值压力自动计算每步增量，支持手动调整（仅可调大）</span>
+          </div>
+          <div class="ladder-summary">
+            <div class="ld-field">
+              <div class="ld-label">发压指标</div>
+              <select style="background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:5px 28px 5px 9px;color:var(--text);font-size:12px;appearance:none;cursor:pointer;outline:none;background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 16 16' fill='%236E7681'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E\");background-repeat:no-repeat;background-position:right 8px center" id="metric-unit" onchange="recalcSteps()">
+                <option value="QPS">QPS（每秒请求）</option>
+                <option value="并发">并发数</option>
+              </select>
+            </div>
+            <div class="ld-field">
+              <div class="ld-label">初始压力</div>
+              <input class="ld-inp" type="number" id="init-pressure" value="10" min="1" oninput="recalcSteps()">
+            </div>
+            <div class="sep-arrow">→</div>
+            <div class="ld-field">
+              <div class="ld-label">峰值压力</div>
+              <input class="ld-inp" type="number" id="peak-pressure" value="50" min="1" oninput="recalcSteps()">
+            </div>
+            <div class="ld-field">
+              <div class="ld-label">每阶梯持续（秒）</div>
+              <input class="ld-inp" type="number" id="step-dur" value="120" min="30">
+            </div>
+          </div>
+
+          <div class="steps-table-wrap">
+            <table class="steps-table">
+              <thead>
+                <tr>
+                  <th>阶梯</th>
+                  <th id="th-pressure">QPS</th>
+                  <th>每步增量</th>
+                  <th>持续时间</th>
+                  <th>调整</th>
+                </tr>
+              </thead>
+              <tbody id="steps-tbody"></tbody>
+            </table>
+            <div class="add-step-row" id="add-step-row" onclick="addStep()">
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M8 2a.5.5 0 01.5.5v5h5a.5.5 0 010 1h-5v5a.5.5 0 01-1 0v-5h-5a.5.5 0 010-1h5v-5A.5.5 0 018 2z"/></svg>
+              添加阶梯（最多 5 个）
+            </div>
+            <div class="max-steps-tip" id="max-tip">✓ 已达到最多 5 个阶梯上限</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLO 配置 -->
+    <div class="card" id="sec-slo">
+      <div class="card-head"><span class="card-icon">🎯</span><span class="card-title">SLO 配置 <span style="font-size:11px;color:var(--textM);font-weight:400">（可选，配置后报告将自动标记最优/拐点）</span></span></div>
+      <div class="card-body">
+        <div class="slo-rows" id="slo-rows"></div>
+        <button class="add-slo-btn" onclick="addSLO()">
+          <svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor"><path d="M8 2a.5.5 0 01.5.5v5h5a.5.5 0 010 1h-5v5a.5.5 0 01-1 0v-5h-5a.5.5 0 010-1h5v-5A.5.5 0 018 2z"/></svg>
+          添加 SLO 条件
+        </button>
+        <div class="fhint" style="margin-top:8px">例：P99 TTFT ≤ 500ms，P99 TPOT ≤ 50ms，成功率 ≥ 99%</div>
+      </div>
+    </div>
+
+    <!-- 高级配置 -->
+    <div class="card" id="sec-advanced">
+      <div class="card-head"><span class="card-icon">🔧</span><span class="card-title">高级配置</span></div>
+      <div class="card-body">
+        <div class="row3">
+          <div class="frow" style="margin:0">
+            <div class="flabel">请求超时（ms）</div>
+            <input class="inp" type="number" value="30000">
+          </div>
+          <div class="frow" style="margin:0">
+            <div class="flabel">最大重试次数</div>
+            <input class="inp" type="number" value="0">
+          </div>
+          <div class="frow" style="margin:0">
+            <div class="flabel">最大 Token 数</div>
+            <input class="inp" type="number" value="512">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="height:20px"></div>
+  </div>
+</div>
+
+<div class="footer">
+  <button class="btn btn-ghost">保存草稿</button>
+  <button class="btn btn-primary" onclick="submitTask()">▶ 执行压测</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ---- steps state ----
+let steps = [];
+const MAX_STEPS = 5;
+
+function recalcSteps() {
+  const init = parseInt(document.getElementById('init-pressure').value) || 10;
+  const peak = parseInt(document.getElementById('peak-pressure').value) || 50;
+  const dur = parseInt(document.getElementById('step-dur').value) || 120;
+  const unit = document.getElementById('metric-unit').value;
+  document.getElementById('th-pressure').textContent = unit;
+
+  if (peak <= init) { steps = [{pressure:init,delta:0,dur}]; renderSteps(unit,dur); return; }
+  const range = peak - init;
+  const count = Math.min(MAX_STEPS, Math.max(2, Math.ceil(range / Math.max(1, Math.round(range / 4)))));
+  const delta = Math.round(range / (count - 1));
+  steps = Array.from({length:count}, (_,i) => ({
+    pressure: i === count-1 ? peak : init + i * delta,
+    delta: i === 0 ? 0 : delta,
+    dur
+  }));
+  renderSteps(unit, dur);
+}
+
+function renderSteps(unit, dur) {
+  unit = unit || document.getElementById('metric-unit').value;
+  dur = dur || parseInt(document.getElementById('step-dur').value) || 120;
+  const tbody = document.getElementById('steps-tbody');
+  tbody.innerHTML = steps.map((s,i) => `
+    <tr>
+      <td><span class="step-num-badge">${i+1}</span></td>
+      <td><span style="font-weight:600">${s.pressure}</span> <span style="font-size:11px;color:var(--textM)">${unit}</span></td>
+      <td>
+        ${i === 0 ? '<span style="color:var(--textM);font-size:11px">—</span>' : `
+        <div class="updown-btns">
+          <button class="adj-btn" onclick="adjustDelta(${i},-1)" ${s.delta<=1?'disabled':''}>
+            <span>−</span>
+            <div class="tip">阶梯压力最多支持5个阶梯，若需调小每步增加数值，可调高初始压力值或调低峰值压力</div>
+          </button>
+          <input class="step-inp" type="number" value="${s.delta}" min="1" onchange="setDelta(${i},this.value)">
+          <button class="adj-btn" onclick="adjustDelta(${i},1)"><span>+</span></button>
+        </div>`}
+      </td>
+      <td style="font-size:12px;color:var(--text2)">${Math.floor(dur/60) > 0 ? Math.floor(dur/60)+'min '+dur%60+'s' : dur+'s'}</td>
+      <td>
+        ${steps.length > 2 && i > 0 ? `<button class="slo-del" onclick="removeStep(${i})" title="删除该阶梯">×</button>` : '<span style="color:var(--textM);font-size:11px">—</span>'}
+      </td>
+    </tr>`).join('');
+
+  const addRow = document.getElementById('add-step-row');
+  const maxTip = document.getElementById('max-tip');
+  if (steps.length >= MAX_STEPS) { addRow.style.display='none'; maxTip.style.display='block'; }
+  else { addRow.style.display=''; maxTip.style.display='none'; }
+}
+
+function adjustDelta(idx, dir) {
+  if (dir < 0 && steps[idx].delta <= 1) return;
+  steps[idx].delta += dir;
+  // recalc following pressures
+  for (let i = idx; i < steps.length; i++) {
+    if (i === 0) continue;
+    steps[i].pressure = steps[i-1].pressure + steps[i].delta;
+  }
+  renderSteps();
+}
+function setDelta(idx, val) {
+  const v = Math.max(1, parseInt(val) || 1);
+  steps[idx].delta = v;
+  for (let i = idx; i < steps.length; i++) {
+    if (i === 0) continue;
+    steps[i].pressure = steps[i-1].pressure + steps[i].delta;
+  }
+  renderSteps();
+}
+function addStep() {
+  if (steps.length >= MAX_STEPS) return;
+  const last = steps[steps.length-1];
+  const delta = steps.length > 1 ? steps[steps.length-1].delta : 10;
+  steps.push({pressure: last.pressure + delta, delta, dur: steps[0].dur});
+  renderSteps();
+}
+function removeStep(i) {
+  steps.splice(i, 1);
+  renderSteps();
+}
+
+// ---- mode toggle ----
+function selectMode(mode, el) {
+  document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+  document.getElementById('fixed-section').style.display = mode==='fixed' ? '' : 'none';
+  document.getElementById('ladder-section').classList.toggle('show', mode==='ladder');
+}
+
+// ---- SLO ----
+const METRICS = ['P50 TTFT','P90 TTFT','P99 TTFT','P50 TPOT','P90 TPOT','P99 TPOT','P50 E2EL','P99 E2EL','成功率','吞吐量 (TPS)'];
+const OPS = ['<=','<','>=','>','='];
+const UNITS = {'P50 TTFT':'ms','P90 TTFT':'ms','P99 TTFT':'ms','P50 TPOT':'ms','P90 TPOT':'ms','P99 TPOT':'ms','P50 E2EL':'ms','P99 E2EL':'ms','成功率':'%','吞吐量 (TPS)':'req/s'};
+let sloList = [{metric:'P99 TTFT',op:'<=',val:'500'},{metric:'P99 TPOT',op:'<=',val:'50'},{metric:'成功率',op:'>=',val:'99'}];
+
+function renderSLO() {
+  const container = document.getElementById('slo-rows');
+  container.innerHTML = sloList.map((s,i) => `
+    <div class="slo-row">
+      <select class="slo-metric" onchange="sloList[${i}].metric=this.value;document.querySelectorAll('.slo-unit')[${i}].textContent=UNITS[this.value]||''">
+        ${METRICS.map(m=>`<option${m===s.metric?' selected':''}>${m}</option>`).join('')}
+      </select>
+      <select class="slo-op" onchange="sloList[${i}].op=this.value">
+        ${OPS.map(o=>`<option${o===s.op?' selected':''}>${o}</option>`).join('')}
+      </select>
+      <input class="slo-val inp" value="${s.val}" oninput="sloList[${i}].val=this.value" style="width:80px">
+      <span class="slo-unit">${UNITS[s.metric]||''}</span>
+      <button class="slo-del" onclick="removeSLO(${i})">×</button>
+    </div>`).join('');
+}
+function addSLO() { sloList.push({metric:'P99 TTFT',op:'<=',val:''}); renderSLO(); }
+function removeSLO(i) { sloList.splice(i,1); renderSLO(); }
+
+function scrollTo(id) { document.getElementById(id)?.scrollIntoView({behavior:'smooth',block:'start'}); }
+
+function submitTask() {
+  showToast('▶ 压测任务已提交，正在执行中...');
+  setTimeout(() => window.location.href='report.html', 1500);
+}
+
+function showToast(msg) {
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+// init
+recalcSteps();
+renderSLO();
+</script>
+</body>
+</html>
