@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>新建精调任务 — 万擎 AI 平台</title>
+<style>
+:root{
+  --bg:#0D1117;--bg2:#161B22;--bg3:#1C2128;--bg4:#21262D;
+  --bgH:#2D333B;--border:#30363D;--borderL:#3D444D;
+  --text:#E6EDF3;--text2:#8B949E;--textM:#6E7681;
+  --accent:#1677FF;--accentH:#0958D9;--accentL:rgba(22,119,255,.15);--accentB:rgba(22,119,255,.35);
+  --success:#3FB950;--successBg:rgba(63,185,80,.1);--successB:rgba(63,185,80,.3);
+  --warning:#D29922;--warningBg:rgba(210,153,34,.1);--warningB:rgba(210,153,34,.3);
+  --danger:#F85149;--dangerBg:rgba(248,81,73,.1);--dangerB:rgba(248,81,73,.3);
+  --purple:#A371F7;--purpleBg:rgba(163,113,247,.12);
+  --r:6px;--rL:8px;--rXL:12px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;font-size:13px;background:var(--bg);color:var(--text);display:flex;flex-direction:column}
+::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-thumb{background:var(--borderL);border-radius:3px}
+button,input,select,textarea{font-family:inherit}
+button{cursor:pointer;border:none;outline:none}
+input,select,textarea{outline:none}
+
+/* HEADER */
+.header{height:48px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;gap:12px;flex-shrink:0}
+.logo{font-weight:700;font-size:15px;display:flex;align-items:center;gap:8px}
+.logo-dot{width:22px;height:22px;border-radius:5px;background:linear-gradient(135deg,#1677FF,#722ED1);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:#fff}
+.breadcrumb{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2)}
+.breadcrumb a{color:var(--text2);text-decoration:none;transition:color .15s}.breadcrumb a:hover{color:var(--accent)}
+.breadcrumb .sep{color:var(--textM)}
+.breadcrumb .cur{color:var(--text);font-weight:500}
+
+/* LAYOUT */
+.layout{flex:1;display:flex;overflow:hidden}
+
+/* STEPS SIDEBAR */
+.steps-nav{width:220px;background:var(--bg2);border-right:1px solid var(--border);padding:20px 16px;flex-shrink:0;overflow-y:auto}
+.steps-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--textM);margin-bottom:16px}
+.step-item{display:flex;align-items:flex-start;gap:10px;padding:8px 0;position:relative;cursor:pointer}
+.step-item:not(:last-child)::after{content:'';position:absolute;left:14px;top:30px;width:1px;height:calc(100% - 14px);background:var(--border)}
+.step-circle{width:28px;height:28px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;transition:all .2s;background:var(--bg)}
+.step-item.done .step-circle{background:var(--successBg);border-color:var(--successB);color:var(--success)}
+.step-item.active .step-circle{background:var(--accent);border-color:var(--accent);color:#fff}
+.step-item.inactive .step-circle{color:var(--textM)}
+.step-text{padding-top:4px}
+.step-name{font-size:13px;font-weight:500;color:var(--text2)}
+.step-item.active .step-name{color:var(--text);font-weight:600}
+.step-desc{font-size:11px;color:var(--textM);margin-top:1px}
+
+/* FORM AREA */
+.form-area{flex:1;overflow-y:auto;padding:24px 32px}
+.section-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rXL);margin-bottom:16px;overflow:hidden}
+.section-head{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;transition:background .15s}
+.section-head:hover{background:var(--bgH)}
+.section-icon{font-size:16px}
+.section-title{font-size:14px;font-weight:700;flex:1}
+.section-chevron{color:var(--textM);font-size:18px;transition:transform .2s}
+.section-card.collapsed .section-chevron{transform:rotate(-90deg)}
+.section-body{padding:20px}
+.section-card.collapsed .section-body{display:none}
+
+/* FORM ITEMS */
+.form-row{margin-bottom:18px}
+.form-row:last-child{margin-bottom:0}
+.form-label{font-size:12px;font-weight:600;color:var(--text2);margin-bottom:6px;display:flex;align-items:center;gap:4px}
+.required{color:var(--danger);margin-left:2px}
+.form-hint{font-size:11px;color:var(--textM);margin-top:4px}
+.form-error{font-size:11px;color:var(--danger);margin-top:4px;display:none}
+.form-row.error .form-error{display:block}
+.form-row.error input,.form-row.error select,.form-row.error textarea{border-color:var(--danger)!important}
+
+.input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:7px 11px;color:var(--text);font-size:13px;transition:border-color .15s}
+.input:focus{border-color:var(--accent)}
+.input::placeholder{color:var(--textM)}
+.input-counter{display:flex;align-items:center;gap:8px}
+.input-counter .input{flex:1}
+.counter{font-size:11px;color:var(--textM);white-space:nowrap}
+textarea.input{resize:vertical;min-height:72px}
+
+.select{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:7px 11px;color:var(--text);font-size:13px;transition:border-color .15s;appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 16 16' fill='%236E7681'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 11px center}
+.select:focus{border-color:var(--accent)}
+select option{background:var(--bg3)}
+
+/* RADIO GROUP */
+.radio-group{display:flex;gap:8px;flex-wrap:wrap}
+.radio-card{padding:9px 14px;border-radius:var(--r);border:2px solid var(--border);cursor:pointer;transition:all .15s;min-width:130px;position:relative}
+.radio-card:hover{border-color:var(--borderL);background:var(--bgH)}
+.radio-card.selected{border-color:var(--accent);background:var(--accentL)}
+.radio-card input[type=radio]{position:absolute;opacity:0;pointer-events:none}
+.radio-title{font-size:13px;font-weight:600;margin-bottom:2px}
+.radio-desc{font-size:11px;color:var(--text2);line-height:1.5}
+.radio-badge{display:inline-block;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:600;margin-bottom:4px}
+.badge-new{background:var(--purpleBg);color:var(--purple)}
+
+/* TOGGLE */
+.toggle-wrap{display:flex;align-items:center;gap:10px}
+.toggle{position:relative;width:36px;height:20px;cursor:pointer}
+.toggle input{opacity:0;width:0;height:0}
+.toggle-slider{position:absolute;inset:0;background:var(--bg3);border:1px solid var(--border);border-radius:10px;transition:all .2s}
+.toggle-slider::before{content:'';position:absolute;width:14px;height:14px;background:var(--textM);border-radius:50%;top:2px;left:2px;transition:all .2s}
+.toggle input:checked + .toggle-slider{background:var(--accent);border-color:var(--accent)}
+.toggle input:checked + .toggle-slider::before{background:#fff;transform:translateX(16px)}
+.toggle-label{font-size:13px;font-weight:500}
+
+/* MODEL SELECTOR */
+.model-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:12px}
+.model-tab{padding:7px 16px;font-size:12px;cursor:pointer;color:var(--text2);border-bottom:2px solid transparent;transition:all .15s;margin-bottom:-1px}
+.model-tab:hover{color:var(--text)}
+.model-tab.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:500}
+.model-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.model-card{padding:10px 12px;border-radius:var(--rL);border:2px solid var(--border);cursor:pointer;transition:all .15s}
+.model-card:hover{border-color:var(--borderL);background:var(--bgH)}
+.model-card.selected{border-color:var(--accent);background:var(--accentL)}
+.model-name{font-size:13px;font-weight:600;margin-bottom:2px}
+.model-meta{font-size:11px;color:var(--textM)}
+
+/* PARAMS TABLE */
+.params-table{width:100%;border-collapse:collapse}
+.params-table th{padding:8px 12px;font-size:11px;font-weight:600;color:var(--textM);text-align:left;background:var(--bg3);border-bottom:1px solid var(--border)}
+.params-table td{padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
+.params-table tr:last-child td{border-bottom:none}
+.param-input{width:80px;background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:4px 8px;color:var(--text);font-size:12px;text-align:right}
+.param-input:focus{border-color:var(--accent);outline:none}
+.param-range{font-size:11px;color:var(--textM)}
+
+/* DATASET MULTI-SELECT */
+.dataset-list{display:flex;flex-direction:column;gap:6px}
+.dataset-item{display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;transition:all .15s}
+.dataset-item:hover{border-color:var(--borderL);background:var(--bgH)}
+.dataset-item.selected{border-color:var(--accent);background:var(--accentL)}
+.dataset-item input[type=checkbox]{width:14px;height:14px;accent-color:var(--accent)}
+.dataset-name{font-size:13px;font-weight:500;flex:1}
+.dataset-meta{font-size:11px;color:var(--textM)}
+
+/* INFO BOX */
+.info-box{background:var(--accentL);border:1px solid var(--accentB);border-radius:var(--r);padding:10px 13px;font-size:12px;color:#79C0FF;line-height:1.7;display:flex;gap:8px}
+.warn-box{background:var(--warningBg);border:1px solid var(--warningB);border-radius:var(--r);padding:10px 13px;font-size:12px;color:var(--warning);line-height:1.7;display:flex;gap:8px}
+
+/* COST PANEL */
+.cost-panel{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rXL);padding:20px;margin-top:16px;position:sticky;bottom:0}
+.cost-title{font-size:13px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:6px}
+.cost-summary{display:flex;gap:20px;margin-bottom:14px;padding:12px 16px;background:var(--bg3);border-radius:var(--rL)}
+.cost-item{flex:1}
+.cost-label{font-size:11px;color:var(--textM);margin-bottom:3px}
+.cost-value{font-size:14px;font-weight:700}
+.cost-sub{font-size:11px;color:var(--textM)}
+.cost-config{display:flex;flex-wrap:wrap;gap:8px}
+.config-chip{display:flex;align-items:center;gap:5px;padding:3px 9px;border-radius:4px;background:var(--bg3);border:1px solid var(--border);font-size:11px}
+.config-key{color:var(--textM)}
+.config-val{color:var(--text);font-weight:500}
+
+/* FOOTER ACTIONS */
+.footer-actions{position:sticky;bottom:0;background:var(--bg2);border-top:1px solid var(--border);padding:12px 24px;display:flex;justify-content:flex-end;gap:10px;flex-shrink:0}
+.btn{display:flex;align-items:center;gap:5px;padding:7px 18px;border-radius:var(--r);font-size:13px;font-weight:500;transition:all .15s}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{background:var(--accentH)}
+.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border)}.btn-ghost:hover{background:var(--bgH);color:var(--text)}
+
+/* TOAST */
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(14px);background:var(--bg4);border:1px solid var(--border);border-radius:var(--rL);padding:9px 18px;font-size:13px;box-shadow:0 4px 16px rgba(0,0,0,.5);opacity:0;transition:all .25s;z-index:999;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* MIXED CORPUS SECTION */
+.mixed-body{display:none}
+.mixed-body.show{display:block}
+.mixed-inputs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+
+/* TAG INPUT */
+.tag-input-wrap{display:flex;flex-wrap:wrap;gap:6px;padding:6px 8px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);min-height:38px;align-items:center;transition:border-color .15s}
+.tag-input-wrap:focus-within{border-color:var(--accent)}
+.tag-chip{display:flex;align-items:center;gap:4px;padding:2px 8px;border-radius:4px;background:var(--accentL);color:#79C0FF;font-size:12px}
+.tag-chip button{background:transparent;color:#79C0FF;font-size:14px;line-height:1;padding:0 2px}
+.tag-input-field{background:transparent;border:none;outline:none;color:var(--text);font-size:13px;font-family:inherit;flex:1;min-width:80px}
+.tag-input-field::placeholder{color:var(--textM)}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="logo"><div class="logo-dot">M</div>万擎 AI 平台</div>
+  <div class="breadcrumb">
+    <a href="list.html">精调任务</a>
+    <span class="sep">/</span>
+    <span class="cur">新建精调任务</span>
+  </div>
+</div>
+
+<div class="layout">
+
+  <!-- STEPS NAV -->
+  <aside class="steps-nav">
+    <div class="steps-title">创建步骤</div>
+
+    <div class="step-item done" data-step="1" onclick="scrollToSection('sec-basic')">
+      <div class="step-circle">✓</div>
+      <div class="step-text"><div class="step-name">基本信息</div><div class="step-desc">任务名称、类型</div></div>
+    </div>
+    <div class="step-item active" data-step="2" onclick="scrollToSection('sec-finetune')">
+      <div class="step-circle">2</div>
+      <div class="step-text"><div class="step-name">精调方式</div><div class="step-desc">CPT / SFT / LoRA</div></div>
+    </div>
+    <div class="step-item inactive" data-step="3" onclick="scrollToSection('sec-train')">
+      <div class="step-circle">3</div>
+      <div class="step-text"><div class="step-name">训练配置</div><div class="step-desc">参数 & 模型</div></div>
+    </div>
+    <div class="step-item inactive" data-step="4" onclick="scrollToSection('sec-data')">
+      <div class="step-circle">4</div>
+      <div class="step-text"><div class="step-name">数据配置</div><div class="step-desc">训练集 & 验证集</div></div>
+    </div>
+    <div class="step-item inactive" data-step="5" onclick="scrollToSection('sec-publish')">
+      <div class="step-circle">5</div>
+      <div class="step-text"><div class="step-name">模型发布</div><div class="step-desc">发布配置</div></div>
+    </div>
+    <div class="step-item inactive" data-step="6" onclick="scrollToSection('sec-cost')">
+      <div class="step-circle">6</div>
+      <div class="step-text"><div class="step-name">费用预估</div><div class="step-desc">Token 用量 & 费用</div></div>
+    </div>
+  </aside>
+
+  <!-- FORM AREA -->
+  <div class="form-area" id="form-area">
+
+    <!-- 1. 基本信息 -->
+    <div class="section-card" id="sec-basic">
+      <div class="section-head" onclick="toggleSection(this)">
+        <span class="section-icon">📋</span>
+        <span class="section-title">基本信息</span>
+        <span class="section-chevron">›</span>
+      </div>
+      <div class="section-body">
+        <div class="form-row" id="row-name">
+          <div class="form-label">任务名称<span class="required">*</span></div>
+          <div class="input-counter">
+            <input class="input" id="task-name" placeholder="请输入任务名称" maxlength="64" oninput="updateCounter(this,'cnt-name');validateName()">
+            <span class="counter"><span id="cnt-name">0</span>/64</span>
+          </div>
+          <div class="form-hint">支持中英文、数字、下划线、中划线，不能以下划线和中划线开头</div>
+          <div class="form-error">任务名称不符合规范，请重新输入</div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-label">任务类型<span class="required">*</span></div>
+          <select class="select" id="task-type" onchange="onTaskTypeChange()">
+            <option value="">请选择任务类型</option>
+            <option value="text">文本生成</option>
+            <option value="image">图像理解</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <div class="form-label">任务描述</div>
+          <div class="input-counter">
+            <textarea class="input" id="task-desc" placeholder="请输入任务描述" maxlength="200" oninput="updateCounter(this,'cnt-desc')" style="min-height:64px"></textarea>
+            <span class="counter" style="align-self:flex-end"><span id="cnt-desc">0</span>/200</span>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-label">标签</div>
+          <div class="tag-input-wrap" id="tag-wrap" onclick="document.getElementById('tag-field').focus()">
+            <input class="tag-input-field" id="tag-field" placeholder="输入后按 Enter 添加标签" onkeydown="addTag(event)">
+          </div>
+          <div class="form-hint">支持添加多个标签，标签项目间隔</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. 精调方式 -->
+    <div class="section-card" id="sec-finetune">
+      <div class="section-head" onclick="toggleSection(this)">
+        <span class="section-icon">⚡</span>
+        <span class="section-title">精调方式</span>
+        <span class="section-chevron">›</span>
+      </div>
+      <div class="section-body">
+        <div class="form-row">
+          <div class="form-label">选择精调方式<span class="required">*</span></div>
+          <div class="radio-group" id="finetune-group">
+            <label class="radio-card selected" onclick="selectFinetune('SFT',this)">
+              <input type="radio" name="finetune" value="SFT" checked>
+              <div class="radio-title">SFT</div>
+              <div class="radio-desc">监督微调，使用标注数据对话式训练</div>
+            </label>
+            <label class="radio-card" id="cpt-card" onclick="selectFinetune('CPT',this)">
+              <input type="radio" name="finetune" value="CPT">
+              <span class="radio-badge badge-new">NEW</span>
+              <div class="radio-title">CPT</div>
+              <div class="radio-desc">Continual Pre-Training，无标注数据无监督继续预训练，强化或新增模型特定能力</div>
+            </label>
+            <label class="radio-card" onclick="selectFinetune('LoRA',this)">
+              <input type="radio" name="finetune" value="LoRA">
+              <span class="radio-badge badge-new">NEW</span>
+              <div class="radio-title">LoRA</div>
+              <div class="radio-desc">低秩自适应，参数高效微调，显存占用更少</div>
+            </label>
+            <label class="radio-card" onclick="selectFinetune('RLHF',this)">
+              <input type="radio" name="finetune" value="RLHF">
+              <div class="radio-title">RLHF</div>
+              <div class="radio-desc">基于人类反馈的强化学习对齐</div>
+            </label>
+          </div>
+          <div class="form-hint" id="finetune-hint" style="margin-top:8px">SFT：使用有标注的问答对数据对模型进行监督式微调</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. 训练配置 -->
+    <div class="section-card" id="sec-train">
+      <div class="section-head" onclick="toggleSection(this)">
+        <span class="section-icon">🔧</span>
+        <span class="section-title">训练配置</span>
+        <span class="section-chevron">›</span>
+      </div>
+      <div class="section-body">
+
+        <div class="form-row">
+          <div class="form-label">训练方法</div>
+          <div style="padding:9px 13px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);font-size:13px;color:var(--text2)">
+            <span id="train-method-label" style="color:var(--text);font-weight:500">全量更新</span>
+            <span id="train-method-hint" style="margin-left:8px;font-size:11px">（CPT 仅支持全量更新）</span>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-label">选择模型<span class="required">*</span></div>
+          <div class="model-tabs">
+            <div class="model-tab active" onclick="switchModelTab('preset',this)">预置模型</div>
+            <div class="model-tab" onclick="switchModelTab('mine',this)">我的模型</div>
+          </div>
+          <div class="model-grid" id="model-grid">
+            <div class="model-card selected" onclick="selectModel(this,'Kwai-7B-Base')">
+              <div class="model-name">Kwai-7B-Base</div>
+              <div class="model-meta">7B · 文本生成 · 基础模型</div>
+            </div>
+            <div class="model-card" onclick="selectModel(this,'Kwai-13B-Base')">
+              <div class="model-name">Kwai-13B-Base</div>
+              <div class="model-meta">13B · 文本生成 · 基础模型</div>
+            </div>
+            <div class="model-card" onclick="selectModel(this,'Kwai-CodeLM-7B')">
+              <div class="model-name">Kwai-CodeLM-7B</div>
+              <div class="model-meta">7B · 代码生成 · 基础模型</div>
+            </div>
+            <div class="model-card" onclick="selectModel(this,'Kwai-MathLM-7B')">
+              <div class="model-name">Kwai-MathLM-7B</div>
+              <div class="model-meta">7B · 数学推理 · 基础模型</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-label">参数配置</div>
+          <table class="params-table">
+            <thead><tr><th>参数</th><th>默认值</th><th>可选范围</th><th>说明</th></tr></thead>
+            <tbody>
+              <tr>
+                <td style="font-weight:500">迭代轮次</td>
+                <td><input class="param-input" type="number" value="1" min="1" max="100" id="param-epoch" oninput="updateCost()"></td>
+                <td><span class="param-range">1 - 100</span></td>
+                <td style="font-size:11px;color:var(--textM)">CPT 建议设置为 1</td>
+              </tr>
+              <tr>
+                <td style="font-weight:500">学习率</td>
+                <td><input class="param-input" type="text" value="2e-5" id="param-lr"></td>
+                <td><span class="param-range">1e-6 - 1e-3</span></td>
+                <td style="font-size:11px;color:var(--textM)">影响训练收敛速度</td>
+              </tr>
+              <tr>
+                <td style="font-weight:500">Batch Size</td>
+                <td><input class="param-input" type="number" value="8" min="1" max="256" id="param-bs"></td>
+                <td><span class="param-range">1 - 256</span></td>
+                <td style="font-size:11px;color:var(--textM)">每步训练的样本数</td>
+              </tr>
+              <tr>
+                <td style="font-weight:500">序列长度</td>
+                <td><input class="param-input" type="number" value="2048" min="512" max="32768" id="param-seq"></td>
+                <td><span class="param-range">512 - 32768</span></td>
+                <td style="font-size:11px;color:var(--textM)">最大输入 Token 数</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 4. 数据配置 -->
+    <div class="section-card" id="sec-data">
+      <div class="section-head" onclick="toggleSection(this)">
+        <span class="section-icon">📊</span>
+        <span class="section-title">数据配置</span>
+        <span class="section-chevron">›</span>
+      </div>
+      <div class="section-body">
+
+        <div class="form-row">
+          <div class="form-label">训练数据集<span class="required">*</span>（支持多选）</div>
+          <div class="info-box" style="margin-bottom:10px">
+            <span>ℹ️</span>
+            <span id="dataset-hint">文本生成 CPT 任务建议数据集 10 亿 tokens 起，可获得较好的效果。</span>
+          </div>
+          <div class="warn-box" style="margin-bottom:10px">
+            <span>💡</span>
+            <span>CPT 数据集清洗后训练效果更好 &nbsp;<a href="#" onclick="showToast('🧹 跳转数据清洗页面')" style="color:var(--warning);text-decoration:underline">去清洗</a></span>
+          </div>
+          <div class="dataset-list">
+            <div class="dataset-item selected" onclick="toggleDataset(this)">
+              <input type="checkbox" checked onclick="event.stopPropagation()">
+              <div>
+                <div class="dataset-name">通用中文语料-v3</div>
+                <div class="dataset-meta">类型：CPT · 820亿 tokens · 项目数据集</div>
+              </div>
+            </div>
+            <div class="dataset-item" onclick="toggleDataset(this)">
+              <input type="checkbox" onclick="event.stopPropagation()">
+              <div>
+                <div class="dataset-name">百科知识预训练集</div>
+                <div class="dataset-meta">类型：CPT · 150亿 tokens · 预置数据集</div>
+              </div>
+            </div>
+            <div class="dataset-item" onclick="toggleDataset(this)">
+              <input type="checkbox" onclick="event.stopPropagation()">
+              <div>
+                <div class="dataset-name">新闻语料-2024</div>
+                <div class="dataset-meta">类型：CPT · 45亿 tokens · 预置数据集</div>
+              </div>
+            </div>
+            <div class="dataset-item" onclick="toggleDataset(this)">
+              <input type="checkbox" onclick="event.stopPropagation()">
+              <div>
+                <div class="dataset-name">技术文档语料集</div>
+                <div class="dataset-meta">类型：CPT · 78亿 tokens · 项目数据集</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 混合语料训练 -->
+        <div class="form-row" style="margin-top:20px">
+          <div class="form-label" style="margin-bottom:10px">混合语料训练</div>
+          <div class="toggle-wrap">
+            <label class="toggle">
+              <input type="checkbox" id="mixed-toggle" onchange="toggleMixed()">
+              <div class="toggle-slider"></div>
+            </label>
+            <span class="toggle-label" id="mixed-label">已关闭</span>
+          </div>
+          <div class="form-hint">使用混合语料训练可有效降低模型幻觉问题，根据混合比例将增加对应 token 数，并增加计费</div>
+
+          <div class="mixed-body" id="mixed-body">
+            <div class="mixed-inputs">
+              <div class="form-row" style="margin-bottom:0">
+                <div class="form-label">语料类型</div>
+                <select class="select" id="corpus-type" onchange="onCorpusTypeChange()">
+                  <option value="general">通用类（默认）</option>
+                  <option value="vertical">垂直领域类</option>
+                </select>
+              </div>
+              <div class="form-row" style="margin-bottom:0" id="domain-row" style="display:none">
+                <div class="form-label">领域类型</div>
+                <select class="select" id="domain-type">
+                  <option value="">请选择领域</option>
+                  <option>科技类</option>
+                  <option>医疗类</option>
+                  <option>教育类</option>
+                  <option>新闻类</option>
+                  <option>社交媒体类</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row" style="margin-top:12px;margin-bottom:0">
+              <div class="form-label">混合比例</div>
+              <div style="display:flex;align-items:center;gap:10px">
+                <input class="input" type="number" id="mix-ratio" style="width:120px" placeholder="如：1.25" min="0.01" max="100" step="0.01" oninput="onMixRatioChange()">
+                <span style="font-size:13px;color:var(--text2)">%</span>
+                <span id="mix-tokens" style="font-size:12px;color:var(--textM)"></span>
+              </div>
+              <div class="form-hint">最大 100%，支持小数点后 2 位</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 验证集 -->
+        <div class="form-row" style="margin-top:20px">
+          <div class="form-label">验证集</div>
+          <select class="select">
+            <option>不使用验证集</option>
+            <option>随机分割（10%）</option>
+            <option>自定义验证集</option>
+          </select>
+          <div class="form-hint">同 SFT，可选是否添加验证集</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 5. 模型发布 -->
+    <div class="section-card" id="sec-publish">
+      <div class="section-head" onclick="toggleSection(this)">
+        <span class="section-icon">🚀</span>
+        <span class="section-title">模型发布</span>
+        <span class="section-chevron">›</span>
+      </div>
+      <div class="section-body">
+        <div class="form-row">
+          <div class="form-label">发布方式</div>
+          <div class="radio-group">
+            <label class="radio-card selected" onclick="selectPublish('auto',this)">
+              <input type="radio" name="publish" value="auto" checked>
+              <div class="radio-title">训练完成后自动发布</div>
+              <div class="radio-desc">训练完成后直接发布模型</div>
+            </label>
+            <label class="radio-card" onclick="selectPublish('manual',this)">
+              <input type="radio" name="publish" value="manual">
+              <div class="radio-title">手动发布</div>
+              <div class="radio-desc">训练完成后手动确认后发布</div>
+            </label>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-label">发布名称</div>
+          <input class="input" placeholder="默认使用任务名称" id="publish-name">
+        </div>
+        <div class="form-row">
+          <div class="form-label">模型描述</div>
+          <textarea class="input" placeholder="可选，填写模型描述" style="min-height:56px"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. 费用预估 -->
+    <div class="section-card" id="sec-cost">
+      <div class="section-head" onclick="toggleSection(this)">
+        <span class="section-icon">💰</span>
+        <span class="section-title">费用预估</span>
+        <span class="section-chevron">›</span>
+      </div>
+      <div class="section-body">
+
+        <div class="info-box" style="margin-bottom:14px">
+          <span>💡</span>
+          <span>以下为预估费用，以实际账单为准 &nbsp;<a href="#" onclick="showToast('📄 跳转计费说明文档')" style="color:#79C0FF;text-decoration:underline">查看计费说明</a></span>
+        </div>
+
+        <div class="cost-summary">
+          <div class="cost-item">
+            <div class="cost-label">预估消耗 Token</div>
+            <div class="cost-value" id="cost-tokens">82B ~ 98B</div>
+            <div class="cost-sub">tokens</div>
+          </div>
+          <div class="cost-item">
+            <div class="cost-label">预估费用</div>
+            <div class="cost-value" style="color:var(--warning)" id="cost-price">¥ 1,230.00 ~ ¥ 1,470.00</div>
+            <div class="cost-sub">以实际账单为准</div>
+          </div>
+        </div>
+
+        <div style="font-size:12px;color:var(--text2);margin-bottom:10px;font-weight:500">费用相关配置概要：</div>
+        <div class="cost-config" id="cost-config">
+          <div class="config-chip"><span class="config-key">精调方式</span><span class="config-val">CPT</span></div>
+          <div class="config-chip"><span class="config-key">模型</span><span class="config-val">Kwai-7B-Base</span></div>
+          <div class="config-chip"><span class="config-key">训练方法</span><span class="config-val">全量更新</span></div>
+          <div class="config-chip"><span class="config-key">迭代轮次</span><span class="config-val" id="chip-epoch">1</span></div>
+          <div class="config-chip"><span class="config-key">数据集</span><span class="config-val">通用中文语料-v3</span></div>
+        </div>
+
+      </div>
+    </div>
+
+    <div style="height:80px"></div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer-actions">
+  <a href="list.html"><button class="btn btn-ghost">取消</button></a>
+  <button class="btn btn-ghost" onclick="saveDraft()">保存草稿</button>
+  <button class="btn btn-primary" onclick="submitForm()">
+    <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M10.97 4.97a.235.235 0 00-.02.022L7.477 9.417 5.384 7.323a.75.75 0 00-1.06 1.06L6.97 11.03a.75.75 0 001.079-.02l3.992-4.99a.75.75 0 00-1.071-1.05z"/></svg>
+    提交任务
+  </button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ---- State ----
+let finetuneType = 'SFT';
+let selectedModel = 'Kwai-7B-Base';
+let tags = [];
+
+// ---- Toggle section ----
+function toggleSection(head) {
+  const card = head.closest('.section-card');
+  card.classList.toggle('collapsed');
+  head.querySelector('.section-chevron').style.transform = card.classList.contains('collapsed') ? 'rotate(-90deg)' : '';
+}
+
+function scrollToSection(id) {
+  document.getElementById(id)?.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+// ---- Task type ----
+function onTaskTypeChange() {
+  const val = document.getElementById('task-type').value;
+  const cptCard = document.getElementById('cpt-card');
+  if (val === 'image') {
+    cptCard.style.opacity = '0.4';
+    cptCard.style.pointerEvents = 'none';
+    if (finetuneType === 'CPT') { selectFinetune('SFT', document.querySelector('.radio-card')); }
+  } else {
+    cptCard.style.opacity = '';
+    cptCard.style.pointerEvents = '';
+  }
+}
+
+// ---- Finetune type ----
+function selectFinetune(type, el) {
+  finetuneType = type;
+  document.querySelectorAll('.radio-group .radio-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  const hints = {
+    SFT:'SFT：使用有标注的问答对数据对模型进行监督式微调',
+    CPT:'CPT（Continual Pre-Training）：通过无标注数据进行无监督继续预训练，强化或新增模型特定能力',
+    LoRA:'LoRA：低秩自适应微调，参数效率更高，显存占用更少',
+    RLHF:'RLHF：基于人类反馈的强化学习，用于对齐模型输出',
+  };
+  document.getElementById('finetune-hint').textContent = hints[type];
+  const methodHint = document.getElementById('train-method-hint');
+  if (type === 'CPT') { methodHint.textContent = '（CPT 仅支持全量更新）'; methodHint.style.display = ''; }
+  else { methodHint.style.display = 'none'; }
+  updateCost();
+}
+
+// ---- Model ----
+function selectModel(el, name) {
+  document.querySelectorAll('.model-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedModel = name;
+  updateCost();
+}
+function switchModelTab(type, el) {
+  document.querySelectorAll('.model-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  const grid = document.getElementById('model-grid');
+  if (type === 'mine') {
+    grid.innerHTML = `<div class="model-card" onclick="selectModel(this,'my-model-v1')"><div class="model-name">我的模型-v1</div><div class="model-meta">7B · 文本生成 · 微调模型</div></div>`;
+  } else {
+    grid.innerHTML = `
+      <div class="model-card selected" onclick="selectModel(this,'Kwai-7B-Base')"><div class="model-name">Kwai-7B-Base</div><div class="model-meta">7B · 文本生成 · 基础模型</div></div>
+      <div class="model-card" onclick="selectModel(this,'Kwai-13B-Base')"><div class="model-name">Kwai-13B-Base</div><div class="model-meta">13B · 文本生成 · 基础模型</div></div>
+      <div class="model-card" onclick="selectModel(this,'Kwai-CodeLM-7B')"><div class="model-name">Kwai-CodeLM-7B</div><div class="model-meta">7B · 代码生成 · 基础模型</div></div>
+      <div class="model-card" onclick="selectModel(this,'Kwai-MathLM-7B')"><div class="model-name">Kwai-MathLM-7B</div><div class="model-meta">7B · 数学推理 · 基础模型</div></div>`;
+  }
+}
+
+// ---- Dataset ----
+function toggleDataset(item) {
+  item.classList.toggle('selected');
+  const cb = item.querySelector('input');
+  cb.checked = item.classList.contains('selected');
+  updateCost();
+}
+
+// ---- Mixed corpus ----
+function toggleMixed() {
+  const on = document.getElementById('mixed-toggle').checked;
+  document.getElementById('mixed-label').textContent = on ? '已开启' : '已关闭';
+  document.getElementById('mixed-body').classList.toggle('show', on);
+  updateCost();
+}
+function onCorpusTypeChange() {
+  const val = document.getElementById('corpus-type').value;
+  document.getElementById('domain-row').style.display = val === 'vertical' ? '' : 'none';
+}
+function onMixRatioChange() {
+  const ratio = parseFloat(document.getElementById('mix-ratio').value) || 0;
+  const base = 820;
+  const tokens = Math.round(base * ratio / 100);
+  document.getElementById('mix-tokens').textContent = tokens > 0 ? `约 ${tokens} 亿 tokens` : '';
+  updateCost();
+}
+
+// ---- Tags ----
+function addTag(e) {
+  if (e.key === 'Enter') {
+    const val = e.target.value.trim();
+    if (val && !tags.includes(val)) {
+      tags.push(val);
+      renderTags();
+    }
+    e.target.value = '';
+  }
+}
+function renderTags() {
+  const wrap = document.getElementById('tag-wrap');
+  const input = document.getElementById('tag-field');
+  wrap.querySelectorAll('.tag-chip').forEach(c => c.remove());
+  tags.forEach((t, i) => {
+    const chip = document.createElement('div');
+    chip.className = 'tag-chip';
+    chip.innerHTML = `${t}<button onclick="removeTag(${i})">×</button>`;
+    wrap.insertBefore(chip, input);
+  });
+}
+function removeTag(i) { tags.splice(i, 1); renderTags(); }
+
+// ---- Counter ----
+function updateCounter(el, id) {
+  document.getElementById(id).textContent = el.value.length;
+}
+
+// ---- Publish radio ----
+function selectPublish(type, el) {
+  document.querySelectorAll('[name=publish]').closest?.('.radio-card');
+  document.querySelectorAll('label.radio-card').forEach(c => {
+    if (c.querySelector('[name=publish]')) c.classList.remove('selected');
+  });
+  el.classList.add('selected');
+}
+
+// ---- Name validation ----
+function validateName() {
+  const val = document.getElementById('task-name').value;
+  const row = document.getElementById('row-name');
+  const ok = /^[a-zA-Z0-9\u4e00-\u9fa5][a-zA-Z0-9\u4e00-\u9fa5_-]*$/.test(val) || val === '';
+  row.classList.toggle('error', !ok && val !== '');
+  return ok;
+}
+
+// ---- Cost update ----
+function updateCost() {
+  const epoch = parseInt(document.getElementById('param-epoch').value) || 1;
+  const mixed = document.getElementById('mixed-toggle').checked;
+  const ratio = mixed ? (parseFloat(document.getElementById('mix-ratio').value) || 0) : 0;
+  const base = finetuneType === 'CPT' ? 82 : finetuneType === 'SFT' ? 45 : 30;
+  const lo = (base * epoch * (1 + ratio / 100)).toFixed(0);
+  const hi = Math.round(lo * 1.2);
+  const pricePerB = 15;
+  const plo = (lo * pricePerB / 10).toFixed(2);
+  const phi = (hi * pricePerB / 10).toFixed(2);
+  document.getElementById('cost-tokens').textContent = `${lo}B ~ ${hi}B`;
+  document.getElementById('cost-price').textContent = `¥ ${parseFloat(plo).toLocaleString('zh',{minimumFractionDigits:2})} ~ ¥ ${parseFloat(phi).toLocaleString('zh',{minimumFractionDigits:2})}`;
+  document.getElementById('chip-epoch').textContent = epoch;
+}
+
+// ---- Submit ----
+function submitForm() {
+  const name = document.getElementById('task-name').value.trim();
+  if (!name) { document.getElementById('row-name').classList.add('error'); showToast('⚠️ 请填写任务名称'); document.getElementById('task-name').focus(); return; }
+  if (!validateName()) { showToast('⚠️ 任务名称格式不正确'); return; }
+  showToast('🎉 任务提交成功！正在跳转...');
+  setTimeout(() => window.location.href = 'list.html', 1500);
+}
+function saveDraft() { showToast('💾 草稿已保存'); }
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+</script>
+</body>
+</html>

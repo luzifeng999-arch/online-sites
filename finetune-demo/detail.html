@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>任务详情 — 万擎 AI 平台</title>
+<style>
+:root{
+  --bg:#0D1117;--bg2:#161B22;--bg3:#1C2128;--bg4:#21262D;
+  --bgH:#2D333B;--border:#30363D;--borderL:#3D444D;
+  --text:#E6EDF3;--text2:#8B949E;--textM:#6E7681;
+  --accent:#1677FF;--accentH:#0958D9;--accentL:rgba(22,119,255,.15);--accentB:rgba(22,119,255,.3);
+  --success:#3FB950;--successBg:rgba(63,185,80,.1);--successB:rgba(63,185,80,.3);
+  --warning:#D29922;--warningBg:rgba(210,153,34,.1);
+  --danger:#F85149;--dangerBg:rgba(248,81,73,.1);--dangerB:rgba(248,81,73,.3);
+  --info:#58A6FF;--infoBg:rgba(88,166,255,.1);
+  --purple:#A371F7;--purpleBg:rgba(163,113,247,.1);
+  --r:6px;--rL:8px;--rXL:12px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;font-size:13px;background:var(--bg);color:var(--text);display:flex;flex-direction:column}
+::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-thumb{background:var(--borderL);border-radius:3px}
+button{cursor:pointer;border:none;outline:none;font-family:inherit}
+
+/* HEADER */
+.header{height:48px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;gap:12px;flex-shrink:0}
+.logo{font-weight:700;font-size:15px;display:flex;align-items:center;gap:8px}
+.logo-dot{width:22px;height:22px;border-radius:5px;background:linear-gradient(135deg,#1677FF,#722ED1);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:#fff}
+.breadcrumb{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2)}
+.breadcrumb a{color:var(--text2);text-decoration:none;transition:color .15s}.breadcrumb a:hover{color:var(--accent)}
+.breadcrumb .sep{color:var(--textM)}.breadcrumb .cur{color:var(--text);font-weight:500}
+.header-right{margin-left:auto;display:flex;gap:8px}
+.btn{display:flex;align-items:center;gap:5px;padding:5px 13px;border-radius:var(--r);font-size:12px;font-weight:500;transition:all .15s}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{background:var(--accentH)}
+.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border)}.btn-ghost:hover{background:var(--bgH);color:var(--text)}
+.btn-danger{background:var(--dangerBg);color:var(--danger);border:1px solid var(--dangerB)}.btn-danger:hover{background:rgba(248,81,73,.2)}
+
+/* LAYOUT */
+.body{flex:1;display:flex;overflow:hidden}
+.left-panel{flex:1;overflow-y:auto;padding:20px 24px;display:flex;flex-direction:column;gap:16px}
+.right-panel{width:320px;background:var(--bg2);border-left:1px solid var(--border);overflow-y:auto;flex-shrink:0;display:flex;flex-direction:column}
+
+/* TASK HEADER CARD */
+.task-header-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rXL);padding:20px 24px}
+.task-title-row{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px}
+.task-icon{width:40px;height:40px;border-radius:10px;background:var(--purpleBg);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.task-name{font-size:16px;font-weight:700;margin-bottom:3px}
+.task-id{font-size:11px;color:var(--textM)}
+.task-status-row{display:flex;gap:10px;align-items:center}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:10px;font-size:11px;font-weight:600}
+.badge.running{background:var(--infoBg);color:var(--info);border:1px solid rgba(88,166,255,.3)}
+.badge.done{background:var(--successBg);color:var(--success);border:1px solid var(--successB)}
+.badge.failed{background:var(--dangerBg);color:var(--danger);border:1px solid var(--dangerB)}
+.badge.queued{background:var(--bgH);color:var(--text2);border:1px solid var(--border)}
+.type-badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:4px;font-size:11px;font-weight:600;background:var(--purpleBg);color:var(--purple)}
+.dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;animation:pulse 1.2s infinite}
+.task-metas{display:flex;flex-wrap:wrap;gap:16px;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
+.meta-item{display:flex;flex-direction:column;gap:2px}
+.meta-label{font-size:11px;color:var(--textM)}
+.meta-value{font-size:13px;font-weight:500}
+
+/* PROGRESS CARD */
+.progress-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rXL);padding:18px 20px}
+.pc-title{font-size:13px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:6px}
+.pc-stats{display:flex;gap:16px;margin-bottom:14px}
+.pc-stat{flex:1;text-align:center;padding:10px;background:var(--bg3);border-radius:var(--rL)}
+.pc-stat-num{font-size:18px;font-weight:700;margin-bottom:2px}
+.pc-stat-label{font-size:11px;color:var(--textM)}
+.progress-bar-bg{height:8px;background:var(--bg3);border-radius:4px;overflow:hidden;margin-bottom:8px}
+.progress-bar{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--accent),#722ED1);transition:width .5s}
+.progress-info{display:flex;justify-content:space-between;font-size:11px;color:var(--textM)}
+
+/* TABS */
+.tabs{display:flex;border-bottom:1px solid var(--border);padding:0 24px;background:var(--bg2);flex-shrink:0}
+.tab{padding:10px 16px;font-size:13px;cursor:pointer;color:var(--text2);border-bottom:2px solid transparent;transition:all .15s;margin-bottom:-1px}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:500}
+
+/* TAB PANELS */
+.tab-panels{flex:1;overflow-y:auto;padding:16px 0}
+.tab-panel{display:none;padding:0 24px}
+.tab-panel.active{display:block}
+
+/* FORM DISPLAY */
+.fd-section{margin-bottom:20px}
+.fd-section-title{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--textM);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.fd-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fd-item{background:var(--bg3);border-radius:var(--r);padding:10px 13px}
+.fd-label{font-size:11px;color:var(--textM);margin-bottom:3px}
+.fd-value{font-size:13px;font-weight:500}
+
+/* METRICS */
+.metrics-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.metric-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rL);padding:14px 16px;text-align:center}
+.metric-num{font-size:22px;font-weight:700;margin-bottom:4px}
+.metric-label{font-size:11px;color:var(--textM)}
+.metric-change{font-size:11px;margin-top:4px}
+.up{color:var(--success)}.down{color:var(--danger)}
+
+/* CHART */
+.chart-wrap{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rL);padding:16px;margin-bottom:12px}
+.chart-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.chart-title{font-size:13px;font-weight:600}
+.chart-legend{display:flex;gap:12px}
+.legend-item{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text2)}
+.legend-dot{width:8px;height:8px;border-radius:50%}
+canvas{width:100%!important}
+
+/* LOG */
+.log-wrap{background:#0d1117;border:1px solid var(--border);border-radius:var(--rL);overflow:hidden}
+.log-toolbar{display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid var(--border);background:var(--bg3)}
+.log-btn{padding:3px 9px;border-radius:var(--r);font-size:11px;background:var(--bg4);color:var(--text2);border:1px solid var(--border);cursor:pointer;transition:all .15s}
+.log-btn:hover{background:var(--bgH);color:var(--text)}
+.log-search{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:3px 9px;color:var(--text);font-size:12px;font-family:inherit}
+.log-search::placeholder{color:var(--textM)}
+.log-search:focus{outline:none;border-color:var(--accent)}
+.log-body{padding:12px;max-height:360px;overflow-y:auto;font-family:'JetBrains Mono','Fira Code','Cascadia Code',monospace;font-size:12px;line-height:1.8}
+.log-line{display:flex;gap:10px}
+.log-time{color:var(--textM);flex-shrink:0;user-select:none}
+.log-level{padding:0 5px;border-radius:3px;font-size:10px;font-weight:700;flex-shrink:0}
+.lv-info{background:var(--infoBg);color:var(--info)}
+.lv-warn{background:var(--warningBg);color:var(--warning)}
+.lv-error{background:var(--dangerBg);color:var(--danger)}
+.lv-debug{background:var(--bgH);color:var(--textM)}
+.log-msg{flex:1}
+
+/* RIGHT PANEL INNER */
+.rp-section{border-bottom:1px solid var(--border);padding:16px}
+.rp-title{font-size:12px;font-weight:600;color:var(--textM);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px}
+.rp-row{display:flex;justify-content:space-between;align-items:flex-start;padding:5px 0;font-size:12px}
+.rp-key{color:var(--text2);flex-shrink:0;max-width:40%}
+.rp-val{color:var(--text);font-weight:500;text-align:right}
+
+/* TOAST */
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(14px);background:var(--bg4);border:1px solid var(--border);border-radius:var(--rL);padding:9px 18px;font-size:13px;box-shadow:0 4px 16px rgba(0,0,0,.5);opacity:0;transition:all .25s;z-index:999;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="logo"><div class="logo-dot">M</div>万擎 AI 平台</div>
+  <div class="breadcrumb">
+    <a href="list.html">精调任务</a>
+    <span class="sep">/</span>
+    <span class="cur">文本生成CPT全参-0512</span>
+  </div>
+  <div class="header-right">
+    <button class="btn btn-ghost" onclick="showToast('📋 配置已复制为新任务')">复制任务</button>
+    <button class="btn btn-danger" onclick="showToast('⏹ 停止指令已发送')">停止任务</button>
+  </div>
+</div>
+
+<div class="body">
+
+  <!-- LEFT -->
+  <div class="left-panel">
+
+    <!-- TASK HEADER -->
+    <div class="task-header-card">
+      <div class="task-title-row">
+        <div class="task-icon">🔮</div>
+        <div style="flex:1">
+          <div class="task-name">文本生成CPT全参-0512</div>
+          <div class="task-id">ID: T001 &nbsp;·&nbsp; 创建者: luzifeng &nbsp;·&nbsp; 2026-05-12 14:32</div>
+        </div>
+      </div>
+      <div class="task-status-row">
+        <div class="badge running"><div class="dot" style="background:var(--info)"></div> 运行中</div>
+        <span class="type-badge">CPT</span>
+        <span style="font-size:12px;color:var(--textM)">文本生成 &nbsp;·&nbsp; Kwai-7B-Base &nbsp;·&nbsp; 全量更新</span>
+      </div>
+      <div class="task-metas">
+        <div class="meta-item"><div class="meta-label">迭代轮次</div><div class="meta-value">1 / 1</div></div>
+        <div class="meta-item"><div class="meta-label">已训练步数</div><div class="meta-value" id="meta-step">12,480</div></div>
+        <div class="meta-item"><div class="meta-label">总步数</div><div class="meta-value">20,000</div></div>
+        <div class="meta-item"><div class="meta-label">学习率</div><div class="meta-value">2e-5</div></div>
+        <div class="meta-item"><div class="meta-label">Batch Size</div><div class="meta-value">8</div></div>
+        <div class="meta-item"><div class="meta-label">预估剩余</div><div class="meta-value" id="meta-remain">3h 21min</div></div>
+        <div class="meta-item"><div class="meta-label">预估费用</div><div class="meta-value" style="color:var(--warning)">¥ 1,230 ~ ¥ 1,470</div></div>
+      </div>
+    </div>
+
+    <!-- PROGRESS -->
+    <div class="progress-card">
+      <div class="pc-title">📈 训练进度</div>
+      <div class="pc-stats">
+        <div class="pc-stat"><div class="pc-stat-num" id="stat-prog" style="color:var(--accent)">62%</div><div class="pc-stat-label">整体进度</div></div>
+        <div class="pc-stat"><div class="pc-stat-num" style="color:var(--success)">1.234</div><div class="pc-stat-label">当前 Loss</div></div>
+        <div class="pc-stat"><div class="pc-stat-num" style="color:var(--purple)">0.92</div><div class="pc-stat-label">Perplexity</div></div>
+        <div class="pc-stat"><div class="pc-stat-num" style="color:var(--warning)">1.87</div><div class="pc-stat-label">Grad Norm</div></div>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar" id="main-progress" style="width:62%"></div>
+      </div>
+      <div class="progress-info">
+        <span id="prog-step">已训练 12,480 / 20,000 步</span>
+        <span id="prog-pct">62%</span>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--rXL);overflow:hidden;flex:1;display:flex;flex-direction:column">
+      <div class="tabs" style="padding:0 20px">
+        <div class="tab active" onclick="switchTab('metrics',this)">效果指标</div>
+        <div class="tab" onclick="switchTab('log',this)">训练日志</div>
+        <div class="tab" onclick="switchTab('config',this)">任务配置</div>
+      </div>
+
+      <!-- 效果指标 -->
+      <div class="tab-panel active" id="panel-metrics">
+        <div style="padding:16px 20px">
+          <div class="metrics-grid">
+            <div class="metric-card"><div class="metric-num" style="color:var(--success)">1.234</div><div class="metric-label">Train Loss</div><div class="metric-change down">▼ 0.12 vs 上一 checkpoint</div></div>
+            <div class="metric-card"><div class="metric-num" style="color:var(--accent)">0.921</div><div class="metric-label">Perplexity</div><div class="metric-change down">▼ 0.04</div></div>
+            <div class="metric-card"><div class="metric-num" style="color:var(--purple)">2.14</div><div class="metric-label">学习率 (×10⁻⁵)</div><div class="metric-change" style="color:var(--textM)">线性衰减中</div></div>
+          </div>
+          <div class="chart-wrap">
+            <div class="chart-header">
+              <div class="chart-title">Loss 曲线</div>
+              <div class="chart-legend">
+                <div class="legend-item"><div class="legend-dot" style="background:var(--accent)"></div>Train Loss</div>
+                <div class="legend-item"><div class="legend-dot" style="background:var(--success)"></div>Smooth Loss</div>
+              </div>
+            </div>
+            <canvas id="loss-chart" height="160"></canvas>
+          </div>
+          <div class="chart-wrap">
+            <div class="chart-header">
+              <div class="chart-title">学习率变化</div>
+            </div>
+            <canvas id="lr-chart" height="100"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- 训练日志 -->
+      <div class="tab-panel" id="panel-log">
+        <div style="padding:12px 20px">
+          <div class="log-wrap">
+            <div class="log-toolbar">
+              <button class="log-btn" onclick="downloadLog()">⬇ 下载日志</button>
+              <button class="log-btn" onclick="clearLog()">🗑 清空</button>
+              <button class="log-btn" id="auto-scroll-btn" onclick="toggleAutoScroll()" style="background:var(--accentL);color:#79C0FF">自动滚动</button>
+              <input class="log-search" placeholder="搜索日志..." oninput="filterLog(this.value)">
+            </div>
+            <div class="log-body" id="log-body"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 任务配置 -->
+      <div class="tab-panel" id="panel-config">
+        <div style="padding:16px 20px">
+          <div class="fd-section">
+            <div class="fd-section-title">基本信息</div>
+            <div class="fd-grid">
+              <div class="fd-item"><div class="fd-label">任务名称</div><div class="fd-value">文本生成CPT全参-0512</div></div>
+              <div class="fd-item"><div class="fd-label">任务类型</div><div class="fd-value">文本生成</div></div>
+              <div class="fd-item"><div class="fd-label">任务描述</div><div class="fd-value" style="color:var(--textM)">（未填写）</div></div>
+              <div class="fd-item"><div class="fd-label">标签</div><div class="fd-value">CPT · 全参</div></div>
+            </div>
+          </div>
+          <div class="fd-section">
+            <div class="fd-section-title">精调配置</div>
+            <div class="fd-grid">
+              <div class="fd-item"><div class="fd-label">精调方式</div><div class="fd-value"><span style="background:var(--purpleBg);color:var(--purple);padding:1px 6px;border-radius:4px;font-size:11px;font-weight:700">CPT</span></div></div>
+              <div class="fd-item"><div class="fd-label">训练方法</div><div class="fd-value">全量更新</div></div>
+              <div class="fd-item"><div class="fd-label">基础模型</div><div class="fd-value">Kwai-7B-Base</div></div>
+              <div class="fd-item"><div class="fd-label">迭代轮次</div><div class="fd-value">1</div></div>
+              <div class="fd-item"><div class="fd-label">学习率</div><div class="fd-value">2e-5</div></div>
+              <div class="fd-item"><div class="fd-label">Batch Size</div><div class="fd-value">8</div></div>
+              <div class="fd-item"><div class="fd-label">序列长度</div><div class="fd-value">2048</div></div>
+            </div>
+          </div>
+          <div class="fd-section">
+            <div class="fd-section-title">数据配置</div>
+            <div class="fd-grid">
+              <div class="fd-item"><div class="fd-label">训练数据集</div><div class="fd-value">通用中文语料-v3</div></div>
+              <div class="fd-item"><div class="fd-label">混合语料</div><div class="fd-value" style="color:var(--textM)">未启用</div></div>
+              <div class="fd-item"><div class="fd-label">验证集</div><div class="fd-value">不使用</div></div>
+              <div class="fd-item"><div class="fd-label">发布方式</div><div class="fd-value">训练完成后自动发布</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end left -->
+
+  <!-- RIGHT PANEL -->
+  <div class="right-panel">
+    <div class="rp-section">
+      <div class="rp-title">运行概览</div>
+      <div class="rp-row"><span class="rp-key">任务状态</span><span class="rp-val"><span class="badge running" style="font-size:10px"><div class="dot" style="background:var(--info)"></div> 运行中</span></span></div>
+      <div class="rp-row"><span class="rp-key">开始时间</span><span class="rp-val">2026-05-12 14:32</span></div>
+      <div class="rp-row"><span class="rp-key">预计完成</span><span class="rp-val">2026-05-12 17:53</span></div>
+      <div class="rp-row"><span class="rp-key">已用时长</span><span class="rp-val" id="rp-elapsed">1h 39min</span></div>
+      <div class="rp-row"><span class="rp-key">GPU 卡数</span><span class="rp-val">8 × A100-80G</span></div>
+      <div class="rp-row"><span class="rp-key">GPU 利用率</span><span class="rp-val" id="rp-gpu" style="color:var(--success)">96%</span></div>
+    </div>
+    <div class="rp-section">
+      <div class="rp-title">资源用量</div>
+      <div class="rp-row"><span class="rp-key">已消耗 Token</span><span class="rp-val">51B</span></div>
+      <div class="rp-row"><span class="rp-key">预计总量</span><span class="rp-val">82B ~ 98B</span></div>
+      <div class="rp-row"><span class="rp-key">当前费用</span><span class="rp-val" style="color:var(--warning)">¥ 765.00</span></div>
+      <div class="rp-row"><span class="rp-key">预估总费用</span><span class="rp-val" style="color:var(--warning)">¥ 1,230 ~ ¥ 1,470</span></div>
+    </div>
+    <div class="rp-section">
+      <div class="rp-title">Checkpoint</div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div style="padding:8px 10px;background:var(--bg3);border-radius:var(--r);font-size:12px">
+          <div style="font-weight:500;margin-bottom:2px">ckpt-step-10000</div>
+          <div style="color:var(--textM)">Loss: 1.456 &nbsp;·&nbsp; 05-12 15:28</div>
+        </div>
+        <div style="padding:8px 10px;background:var(--accentL);border:1px solid var(--accentB);border-radius:var(--r);font-size:12px">
+          <div style="font-weight:500;margin-bottom:2px;color:var(--info)">ckpt-step-12000 <span style="font-size:10px">[最新]</span></div>
+          <div style="color:var(--textM)">Loss: 1.234 &nbsp;·&nbsp; 05-12 16:05</div>
+        </div>
+      </div>
+      <button class="btn btn-ghost" style="width:100%;margin-top:8px;font-size:11px;justify-content:center" onclick="showToast('📥 Checkpoint 下载已开始')">⬇ 下载最新 Checkpoint</button>
+    </div>
+    <div class="rp-section">
+      <div class="rp-title">操作</div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <button class="btn btn-ghost" style="justify-content:center;font-size:12px" onclick="showToast('📋 已复制为新任务')">复制任务配置</button>
+        <button class="btn" style="justify-content:center;font-size:12px;background:var(--dangerBg);color:var(--danger);border:1px solid var(--dangerB)" onclick="showToast('⏹ 停止指令已发送')">停止任务</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ---- Tab switch ----
+function switchTab(id, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('panel-' + id).classList.add('active');
+  if (id === 'log') renderLogs();
+  if (id === 'metrics') drawCharts();
+}
+
+// ---- Loss chart ----
+function drawCharts() {
+  drawLoss();
+  drawLR();
+}
+function drawLoss() {
+  const canvas = document.getElementById('loss-chart');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  canvas.width = canvas.parentElement.clientWidth - 32;
+  canvas.height = 160;
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  const steps = 50;
+  const trainLoss = Array.from({length:steps}, (_,i) => 3.2 * Math.exp(-i * 0.055) + 0.9 + (Math.random()-0.5)*0.08);
+  const smoothLoss = trainLoss.map((v,i,a) => {
+    const s = a.slice(Math.max(0,i-4),i+1);
+    return s.reduce((x,y)=>x+y)/s.length;
+  });
+
+  function drawLine(data, color, lw=1.5) {
+    ctx.beginPath();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = lw;
+    data.forEach((v, i) => {
+      const x = (i / (steps-1)) * (W - 40) + 32;
+      const y = H - 20 - (v - 0.9) / 2.3 * (H - 30);
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    });
+    ctx.stroke();
+  }
+
+  // Grid
+  ctx.strokeStyle = '#30363D';
+  ctx.lineWidth = 0.5;
+  for (let i = 0; i <= 4; i++) {
+    const y = 10 + i * ((H-30)/4);
+    ctx.beginPath(); ctx.moveTo(32,y); ctx.lineTo(W,y); ctx.stroke();
+    ctx.fillStyle = '#6E7681';
+    ctx.font = '10px sans-serif';
+    ctx.fillText((3.2 - i * 0.55).toFixed(1), 2, y+4);
+  }
+
+  drawLine(trainLoss, 'rgba(88,166,255,0.5)', 1);
+  drawLine(smoothLoss, '#3FB950', 2);
+}
+
+function drawLR() {
+  const canvas = document.getElementById('lr-chart');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  canvas.width = canvas.parentElement.clientWidth - 32;
+  canvas.height = 100;
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  const steps = 50;
+  const lrData = Array.from({length:steps}, (_,i) => {
+    const prog = i / (steps - 1);
+    return prog < 0.1 ? prog * 10 : 1 - (prog - 0.1) / 0.9;
+  });
+
+  ctx.strokeStyle = '#30363D';
+  ctx.lineWidth = 0.5;
+  for (let i = 0; i <= 2; i++) {
+    const y = 8 + i * ((H-20)/2);
+    ctx.beginPath(); ctx.moveTo(32,y); ctx.lineTo(W,y); ctx.stroke();
+  }
+
+  ctx.beginPath();
+  ctx.strokeStyle = '#A371F7';
+  ctx.lineWidth = 2;
+  lrData.forEach((v, i) => {
+    const x = (i / (steps-1)) * (W-40) + 32;
+    const y = H - 12 - v * (H - 20);
+    i === 0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+  });
+  ctx.stroke();
+}
+
+// ---- Logs ----
+const logData = [
+  {t:'14:32:01',lv:'INFO',msg:'初始化训练环境...'},
+  {t:'14:32:05',lv:'INFO',msg:'加载模型 Kwai-7B-Base...'},
+  {t:'14:32:48',lv:'INFO',msg:'模型加载完成，参数量：7.24B'},
+  {t:'14:33:02',lv:'INFO',msg:'加载数据集 通用中文语料-v3，共 820B tokens'},
+  {t:'14:33:10',lv:'INFO',msg:'数据 tokenize 完成，shuffle 中...'},
+  {t:'14:35:00',lv:'INFO',msg:'训练开始，step 1/20000'},
+  {t:'14:37:22',lv:'DEBUG',msg:'step=100 loss=3.12 lr=2.00e-5 grad_norm=1.92'},
+  {t:'14:45:11',lv:'DEBUG',msg:'step=500 loss=2.84 lr=2.00e-5 grad_norm=1.78'},
+  {t:'15:00:30',lv:'DEBUG',msg:'step=1000 loss=2.56 lr=1.98e-5 grad_norm=1.65'},
+  {t:'15:28:44',lv:'INFO',msg:'Checkpoint 已保存：ckpt-step-10000，loss=1.456'},
+  {t:'15:28:50',lv:'DEBUG',msg:'step=10000 loss=1.456 lr=1.80e-5 grad_norm=1.87'},
+  {t:'16:05:12',lv:'INFO',msg:'Checkpoint 已保存：ckpt-step-12000，loss=1.234'},
+  {t:'16:11:00',lv:'DEBUG',msg:'step=12480 loss=1.234 lr=1.76e-5 grad_norm=1.87'},
+  {t:'16:11:01',lv:'WARN',msg:'显存占用率达 87%，建议关注'},
+  {t:'16:11:02',lv:'INFO',msg:'训练进行中，预计剩余 3h 21min...'},
+];
+let autoScroll = true;
+let logFilter = '';
+function renderLogs() {
+  const body = document.getElementById('log-body');
+  const filtered = logData.filter(l => !logFilter || l.msg.toLowerCase().includes(logFilter) || l.lv.toLowerCase().includes(logFilter));
+  body.innerHTML = filtered.map(l => `
+    <div class="log-line">
+      <span class="log-time">${l.t}</span>
+      <span class="log-level lv-${l.lv.toLowerCase()}">${l.lv}</span>
+      <span class="log-msg">${l.msg}</span>
+    </div>`).join('');
+  if (autoScroll) body.scrollTop = body.scrollHeight;
+}
+function filterLog(q) { logFilter = q.toLowerCase(); renderLogs(); }
+function toggleAutoScroll() {
+  autoScroll = !autoScroll;
+  const btn = document.getElementById('auto-scroll-btn');
+  btn.style.background = autoScroll ? 'var(--accentL)' : '';
+  btn.style.color = autoScroll ? '#79C0FF' : '';
+  btn.textContent = autoScroll ? '自动滚动' : '停止滚动';
+}
+function downloadLog() { showToast('⬇ 日志下载已开始'); }
+function clearLog() { document.getElementById('log-body').innerHTML = ''; showToast('🗑 日志已清空'); }
+
+// ---- Progress animation ----
+let progress = 62;
+setInterval(() => {
+  if (progress >= 99) return;
+  progress = Math.min(99, progress + 0.2);
+  const pct = Math.round(progress);
+  document.getElementById('main-progress').style.width = pct + '%';
+  document.getElementById('stat-prog').textContent = pct + '%';
+  document.getElementById('prog-pct').textContent = pct + '%';
+  const step = Math.round(pct / 100 * 20000);
+  document.getElementById('prog-step').textContent = `已训练 ${step.toLocaleString()} / 20,000 步`;
+  document.getElementById('meta-step').textContent = step.toLocaleString();
+  const remain = Math.round((99 - pct) / 100 * 300);
+  document.getElementById('meta-remain').textContent = `${Math.floor(remain/60)}h ${remain%60}min`;
+  document.getElementById('rp-gpu').textContent = (94 + Math.random()*4).toFixed(0) + '%';
+}, 800);
+
+// ---- Draw on load ----
+window.addEventListener('load', () => { setTimeout(drawCharts, 100); });
+window.addEventListener('resize', drawCharts);
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+</script>
+</body>
+</html>

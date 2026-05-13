@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>模型精调 — 任务列表</title>
+<style>
+:root{
+  --bg:#0D1117;--bg2:#161B22;--bg3:#1C2128;--bg4:#21262D;
+  --bgH:#2D333B;--border:#30363D;--borderL:#3D444D;
+  --text:#E6EDF3;--text2:#8B949E;--textM:#6E7681;
+  --accent:#1677FF;--accentH:#0958D9;--accentL:rgba(22,119,255,.15);--accentB:rgba(22,119,255,.35);
+  --success:#3FB950;--successBg:rgba(63,185,80,.1);--successB:rgba(63,185,80,.3);
+  --warning:#D29922;--warningBg:rgba(210,153,34,.1);--warningB:rgba(210,153,34,.3);
+  --danger:#F85149;--dangerBg:rgba(248,81,73,.1);--dangerB:rgba(248,81,73,.3);
+  --info:#58A6FF;--infoBg:rgba(88,166,255,.1);
+  --purple:#A371F7;--purpleBg:rgba(163,113,247,.1);
+  --r:6px;--rL:8px;--rXL:12px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;font-size:13px;background:var(--bg);color:var(--text);display:flex;flex-direction:column}
+::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-thumb{background:var(--borderL);border-radius:3px}
+button{font-family:inherit;cursor:pointer;border:none;outline:none}
+
+/* HEADER */
+.header{height:48px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;gap:12px;flex-shrink:0}
+.logo{font-weight:700;font-size:15px;display:flex;align-items:center;gap:8px}
+.logo-dot{width:22px;height:22px;border-radius:5px;background:linear-gradient(135deg,#1677FF,#722ED1);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:#fff}
+.breadcrumb{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2)}
+.breadcrumb .sep{color:var(--textM)}
+.breadcrumb .cur{color:var(--text);font-weight:500}
+.header-right{margin-left:auto;display:flex;gap:8px}
+.btn{display:flex;align-items:center;gap:5px;padding:5px 13px;border-radius:var(--r);font-size:12px;font-weight:500;transition:all .15s;white-space:nowrap}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{background:var(--accentH)}
+.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border)}.btn-ghost:hover{background:var(--bgH);color:var(--text)}
+
+/* LAYOUT */
+.layout{display:flex;flex:1;overflow:hidden}
+.sidebar{width:196px;background:var(--bg2);border-right:1px solid var(--border);padding:8px;flex-shrink:0;overflow-y:auto}
+.sbar-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--textM);padding:8px 8px 4px}
+.sbar-item{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:var(--r);font-size:13px;color:var(--text2);cursor:pointer;transition:all .15s}
+.sbar-item:hover{background:var(--bgH);color:var(--text)}
+.sbar-item.active{background:rgba(22,119,255,.12);color:#79C0FF;font-weight:500}
+.sbar-item .cnt{margin-left:auto;font-size:11px;color:var(--textM)}
+.divider{height:1px;background:var(--border);margin:4px 0}
+
+/* MAIN */
+.main{flex:1;overflow-y:auto;display:flex;flex-direction:column}
+.toolbar{padding:16px 24px 12px;display:flex;align-items:center;gap:10px;flex-shrink:0;border-bottom:1px solid var(--border)}
+.search-wrap{display:flex;align-items:center;gap:7px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:5px 11px;width:240px;transition:border-color .15s}
+.search-wrap:focus-within{border-color:var(--accent)}
+.search-wrap input{background:transparent;color:var(--text);font-size:13px;flex:1;outline:none;border:none;font-family:inherit}
+.search-wrap input::placeholder{color:var(--textM)}
+.filter-group{display:flex;gap:6px}
+.filter-btn{padding:5px 11px;border-radius:var(--r);font-size:12px;background:var(--bg3);color:var(--text2);border:1px solid var(--border);cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:4px}
+.filter-btn:hover,.filter-btn.active{background:var(--accentL);color:#79C0FF;border-color:var(--accentB)}
+.toolbar-right{margin-left:auto;display:flex;gap:8px}
+
+/* TABLE */
+.table-wrap{flex:1;padding:0 24px 24px;overflow-y:auto}
+.table{width:100%;border-collapse:collapse;margin-top:12px}
+.table thead tr{border-bottom:1px solid var(--border)}
+.table th{padding:10px 12px;font-size:12px;font-weight:600;color:var(--text2);text-align:left;white-space:nowrap;background:var(--bg2)}
+.table td{padding:12px;border-bottom:1px solid var(--border);vertical-align:middle}
+.table tr:hover td{background:var(--bgH)}
+.table th:first-child,.table td:first-child{padding-left:0}
+
+/* STATUS BADGE */
+.badge{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:10px;font-size:11px;font-weight:600;white-space:nowrap;cursor:default;position:relative}
+.badge.running{background:var(--accentL);color:var(--info);border:1px solid var(--accentB)}
+.badge.queued{background:var(--bgH);color:var(--text2);border:1px solid var(--border)}
+.badge.done{background:var(--successBg);color:var(--success);border:1px solid var(--successB)}
+.badge.failed{background:var(--dangerBg);color:var(--danger);border:1px solid var(--dangerB)}
+.badge.stopped{background:var(--bgH);color:var(--textM);border:1px solid var(--border)}
+.dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.dot.running{background:var(--info);animation:pulse 1.2s infinite}
+.dot.queued{background:var(--textM)}
+.dot.done{background:var(--success)}
+.dot.failed{background:var(--danger)}
+
+/* TOOLTIP */
+.tooltip-wrap{position:relative;display:inline-flex}
+.tooltip{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--bg3);border:1px solid var(--borderL);border-radius:var(--rL);padding:10px 13px;font-size:12px;color:var(--text);white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .15s;z-index:100;min-width:180px}
+.tooltip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--borderL)}
+.tooltip-wrap:hover .tooltip{opacity:1}
+.tooltip-row{display:flex;align-items:center;gap:6px;line-height:1.8}
+.tooltip-label{color:var(--text2)}
+.tooltip-val{color:var(--text);font-weight:500}
+
+/* TAG */
+.type-tag{display:inline-flex;align-items:center;padding:2px 7px;border-radius:4px;font-size:11px;font-weight:600}
+.tag-cpt{background:var(--purpleBg);color:var(--purple)}
+.tag-sft{background:var(--accentL);color:#79C0FF}
+.tag-lora{background:var(--warningBg);color:var(--warning)}
+.tag-rlhf{background:var(--successBg);color:var(--success)}
+
+.task-name{font-weight:600;font-size:13px;margin-bottom:2px;cursor:pointer;transition:color .15s}
+.task-name:hover{color:var(--accent)}
+.task-sub{font-size:11px;color:var(--textM)}
+
+.action-btns{display:flex;gap:6px;opacity:0;transition:opacity .15s}
+tr:hover .action-btns{opacity:1}
+.action-btn{padding:3px 9px;border-radius:var(--r);font-size:11px;background:var(--bg3);color:var(--text2);border:1px solid var(--border);cursor:pointer;transition:all .15s}
+.action-btn:hover{background:var(--bgH);color:var(--text)}
+.action-btn.danger:hover{background:var(--dangerBg);color:var(--danger);border-color:var(--dangerB)}
+
+.progress-bar-bg{height:4px;background:var(--bg3);border-radius:2px;width:80px;overflow:hidden}
+.progress-bar{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--accent),#722ED1);transition:width .3s}
+
+/* EMPTY */
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:300px;gap:12px;color:var(--text2)}
+.empty-icon{font-size:44px}
+.empty-title{font-size:14px;font-weight:600;color:var(--text)}
+
+/* MODAL */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;z-index:200;opacity:0;pointer-events:none;transition:opacity .15s}
+.overlay.show{opacity:1;pointer-events:all}
+.modal{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rXL);width:420px;box-shadow:0 8px 32px rgba(0,0,0,.5);transform:translateY(12px);transition:transform .15s}
+.overlay.show .modal{transform:translateY(0)}
+.modal-head{padding:16px 20px;border-bottom:1px solid var(--border);font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:space-between}
+.modal-close{background:transparent;color:var(--text2);font-size:18px;padding:2px 6px;border-radius:var(--r)}
+.modal-close:hover{background:var(--bgH);color:var(--text)}
+.modal-body{padding:20px}
+.modal-btns{display:flex;justify-content:flex-end;gap:8px;padding:14px 20px;border-top:1px solid var(--border)}
+
+/* TOAST */
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(14px);background:var(--bg3);border:1px solid var(--border);border-radius:var(--rL);padding:9px 18px;font-size:13px;box-shadow:0 4px 16px rgba(0,0,0,.5);opacity:0;transition:all .25s;z-index:999;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="logo"><div class="logo-dot">M</div>万擎 AI 平台</div>
+  <div class="breadcrumb">
+    <span>模型服务</span><span class="sep">/</span>
+    <span>模型精调</span><span class="sep">/</span>
+    <span class="cur">精调任务</span>
+  </div>
+  <div class="header-right">
+    <button class="btn btn-ghost" onclick="showToast('📖 已跳转计费说明')">计费说明</button>
+    <a href="create.html"><button class="btn btn-primary">
+      <svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor"><path d="M8 2a.5.5 0 01.5.5v5h5a.5.5 0 010 1h-5v5a.5.5 0 01-1 0v-5h-5a.5.5 0 010-1h5v-5A.5.5 0 018 2z"/></svg>
+      新建精调任务
+    </button></a>
+  </div>
+</div>
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sbar-label">精调方式</div>
+    <div class="sbar-item active" onclick="setFilter('all',this)">
+      <span>📋</span> 全部 <span class="cnt" id="cnt-all">6</span>
+    </div>
+    <div class="sbar-item" onclick="setFilter('SFT',this)">
+      <span>⚡</span> SFT <span class="cnt">2</span>
+    </div>
+    <div class="sbar-item" onclick="setFilter('CPT',this)">
+      <span>🔮</span> CPT <span class="cnt">2</span>
+    </div>
+    <div class="sbar-item" onclick="setFilter('LoRA',this)">
+      <span>🌀</span> LoRA <span class="cnt">1</span>
+    </div>
+    <div class="sbar-item" onclick="setFilter('RLHF',this)">
+      <span>🎯</span> RLHF <span class="cnt">1</span>
+    </div>
+    <div class="divider"></div>
+    <div class="sbar-label">状态</div>
+    <div class="sbar-item" onclick="setStatus('running',this)">
+      <span>🔵</span> 运行中 <span class="cnt">1</span>
+    </div>
+    <div class="sbar-item" onclick="setStatus('queued',this)">
+      <span>⏳</span> 排队中 <span class="cnt">2</span>
+    </div>
+    <div class="sbar-item" onclick="setStatus('done',this)">
+      <span>✅</span> 已完成 <span class="cnt">2</span>
+    </div>
+    <div class="sbar-item" onclick="setStatus('failed',this)">
+      <span>❌</span> 已失败 <span class="cnt">1</span>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="toolbar">
+      <div class="search-wrap">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor" style="color:var(--textM);flex-shrink:0"><path d="M11.742 10.344a6.5 6.5 0 10-1.397 1.398l3.85 3.85a1 1 0 001.415-1.414l-3.85-3.85a1.007 1.007 0 00-.115-.099zm-5.242 1.656a5.5 5.5 0 110-11 5.5 5.5 0 010 11z"/></svg>
+        <input placeholder="搜索任务名称..." oninput="searchTable(this.value)">
+      </div>
+      <div class="filter-group">
+        <button class="filter-btn" onclick="toggleFilter(this,'文本生成')">文本生成</button>
+        <button class="filter-btn" onclick="toggleFilter(this,'图像理解')">图像理解</button>
+      </div>
+      <div class="toolbar-right">
+        <button class="btn btn-ghost" style="font-size:11px" onclick="refreshTable()">
+          <svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M8 3a5 5 0 104.546 2.914.5.5 0 00-.908-.417A4 4 0 118 4v1.5l2-2-2-2V3z"/></svg>
+          刷新
+        </button>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table class="table" id="task-table">
+        <thead>
+          <tr>
+            <th>任务名称</th>
+            <th>精调方式</th>
+            <th>任务类型</th>
+            <th>基础模型</th>
+            <th>状态</th>
+            <th>进度</th>
+            <th>创建时间</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody id="task-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- 停止确认弹窗 -->
+<div class="overlay" id="stop-modal">
+  <div class="modal">
+    <div class="modal-head">停止任务 <button class="modal-close" onclick="closeModal('stop-modal')">×</button></div>
+    <div class="modal-body" style="font-size:13px;color:var(--text2);line-height:1.7">
+      确认停止任务 <strong id="stop-name" style="color:var(--text)"></strong>？<br>停止后任务将不可恢复，已训练的步骤数据将保留。
+    </div>
+    <div class="modal-btns">
+      <button class="btn btn-ghost" onclick="closeModal('stop-modal')">取消</button>
+      <button class="btn" style="background:var(--dangerBg);color:var(--danger);border:1px solid var(--dangerB)" onclick="confirmStop()">确认停止</button>
+    </div>
+  </div>
+</div>
+
+<!-- 删除确认弹窗 -->
+<div class="overlay" id="delete-modal">
+  <div class="modal">
+    <div class="modal-head">删除任务 <button class="modal-close" onclick="closeModal('delete-modal')">×</button></div>
+    <div class="modal-body" style="font-size:13px;color:var(--text2);line-height:1.7">
+      确认删除任务 <strong id="del-name" style="color:var(--text)"></strong>？<br>删除后数据不可找回，请谨慎操作。
+    </div>
+    <div class="modal-btns">
+      <button class="btn btn-ghost" onclick="closeModal('delete-modal')">取消</button>
+      <button class="btn" style="background:var(--dangerBg);color:var(--danger);border:1px solid var(--dangerB)" onclick="confirmDelete()">确认删除</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const tasks = [
+  {id:'T001',name:'文本生成CPT全参-0512',type:'CPT',taskType:'文本生成',model:'Kwai-7B-Base',status:'running',progress:62,created:'2026-05-12 14:32',
+   tooltip:{running:'预估剩余时间：3 小时 21 分钟'}},
+  {id:'T002',name:'图像理解SFT任务-0511',type:'SFT',taskType:'图像理解',model:'Kwai-VL-7B',status:'queued',progress:0,created:'2026-05-11 09:15',
+   tooltip:{queued:'前序任务 2 个，预估等待时间：1 小时 40 分钟'}},
+  {id:'T003',name:'医疗CPT-LoRA混合-0510',type:'LoRA',taskType:'文本生成',model:'Kwai-13B-Base',status:'queued',progress:0,created:'2026-05-10 18:05',
+   tooltip:{queued:'前序任务 4 个，预估等待时间：4 小时 12 分钟'}},
+  {id:'T004',name:'代码SFT精调-v2',type:'SFT',taskType:'文本生成',model:'Kwai-CodeLM-7B',status:'done',progress:100,created:'2026-05-09 11:20',tooltip:{}},
+  {id:'T005',name:'科技CPT垂直领域',type:'CPT',taskType:'文本生成',model:'Kwai-7B-Base',status:'done',progress:100,created:'2026-05-08 16:44',tooltip:{}},
+  {id:'T006',name:'RLHF对齐-0507',type:'RLHF',taskType:'文本生成',model:'Kwai-7B-Chat',status:'failed',progress:38,created:'2026-05-07 10:00',
+   tooltip:{failed:'内存 OOM：GPU 显存不足，请减小 batch_size 后重新提交'}},
+];
+
+const statusMap = {
+  running:{label:'运行中',cls:'running'},
+  queued:{label:'排队中',cls:'queued'},
+  done:{label:'已完成',cls:'done'},
+  failed:{label:'已失败',cls:'failed'},
+  stopped:{label:'已停止',cls:'stopped'},
+};
+const typeMap = {CPT:'tag-cpt',SFT:'tag-sft',LoRA:'tag-lora',RLHF:'tag-rlhf'};
+
+let currentFilter = 'all';
+let currentStatus = null;
+let searchQ = '';
+let stopTarget = null;
+let deleteTarget = null;
+
+function renderTable() {
+  const tbody = document.getElementById('task-tbody');
+  let data = tasks.filter(t => {
+    if (currentFilter !== 'all' && t.type !== currentFilter) return false;
+    if (currentStatus && t.status !== currentStatus) return false;
+    if (searchQ && !t.name.toLowerCase().includes(searchQ.toLowerCase())) return false;
+    return true;
+  });
+
+  if (data.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:48px 0"><div class="empty"><div class="empty-icon">📭</div><div class="empty-title">暂无精调任务</div><p style="font-size:12px;color:var(--textM)">点击右上角「新建精调任务」开始</p></div></td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = data.map(t => {
+    const s = statusMap[t.status];
+    const dot = ['running'].includes(t.status) ? `<div class="dot ${t.status}"></div>` : `<div class="dot ${t.status}"></div>`;
+    const tooltip = t.tooltip[t.status] ? `
+      <div class="tooltip">
+        ${t.status === 'queued' ? `<div class="tooltip-row"><span class="tooltip-label">等待信息</span></div><div class="tooltip-row"><span class="tooltip-val">${t.tooltip.queued}</span></div>` : ''}
+        ${t.status === 'running' ? `<div class="tooltip-row"><span class="tooltip-label">⏱ ${t.tooltip.running}</span></div>` : ''}
+        ${t.status === 'failed' ? `<div class="tooltip-row"><span class="tooltip-label">失败原因</span></div><div class="tooltip-row" style="color:var(--danger)">${t.tooltip.failed}</div>` : ''}
+      </div>` : '';
+
+    const progressCell = t.status === 'running' ? `
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="progress-bar-bg"><div class="progress-bar" style="width:${t.progress}%"></div></div>
+        <span style="font-size:11px;color:var(--text2)">${t.progress}%</span>
+      </div>` : t.status === 'failed' ? `<span style="font-size:11px;color:var(--danger)">${t.progress}%</span>` : t.status === 'done' ? `<span style="font-size:11px;color:var(--success)">100%</span>` : `<span style="font-size:11px;color:var(--textM)">—</span>`;
+
+    const actions = [];
+    if (t.status === 'running') actions.push(`<button class="action-btn" onclick="event.stopPropagation();openStop('${t.id}','${t.name}')">停止</button>`);
+    if (t.status === 'failed' || t.status === 'stopped') actions.push(`<button class="action-btn" onclick="event.stopPropagation();showToast('🔄 已重新提交：${t.name}')">重试</button>`);
+    if (t.status === 'done' || t.status === 'failed' || t.status === 'stopped') actions.push(`<button class="action-btn danger" onclick="event.stopPropagation();openDelete('${t.id}','${t.name}')">删除</button>`);
+    actions.push(`<button class="action-btn" onclick="window.location.href='detail.html?id=${t.id}'">详情</button>`);
+
+    return `
+    <tr onclick="window.location.href='detail.html?id=${t.id}'" style="cursor:pointer">
+      <td>
+        <div class="task-name">${t.name}</div>
+        <div class="task-sub">${t.id}</div>
+      </td>
+      <td><span class="type-tag ${typeMap[t.type]}">${t.type}</span></td>
+      <td><span style="font-size:12px;color:var(--text2)">${t.taskType}</span></td>
+      <td><span style="font-size:12px">${t.model}</span></td>
+      <td>
+        <div class="tooltip-wrap">
+          <div class="badge ${s.cls}">${dot}${s.label}</div>
+          ${tooltip}
+        </div>
+      </td>
+      <td>${progressCell}</td>
+      <td style="font-size:12px;color:var(--text2)">${t.created}</td>
+      <td onclick="event.stopPropagation()"><div class="action-btns">${actions.join('')}</div></td>
+    </tr>`;
+  }).join('');
+}
+
+function setFilter(type, el) {
+  document.querySelectorAll('.sbar-item').forEach(i => i.classList.remove('active'));
+  el.classList.add('active');
+  currentFilter = type;
+  currentStatus = null;
+  renderTable();
+}
+function setStatus(status, el) {
+  document.querySelectorAll('.sbar-item').forEach(i => i.classList.remove('active'));
+  el.classList.add('active');
+  currentStatus = status;
+  currentFilter = 'all';
+  renderTable();
+}
+function searchTable(q) { searchQ = q; renderTable(); }
+function toggleFilter(btn, label) { btn.classList.toggle('active'); renderTable(); }
+function refreshTable() { showToast('🔄 已刷新任务列表'); renderTable(); }
+
+function openStop(id, name) { stopTarget = id; document.getElementById('stop-name').textContent = name; document.getElementById('stop-modal').classList.add('show'); }
+function openDelete(id, name) { deleteTarget = id; document.getElementById('del-name').textContent = name; document.getElementById('delete-modal').classList.add('show'); }
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+function confirmStop() {
+  const t = tasks.find(x => x.id === stopTarget);
+  if (t) { t.status = 'stopped'; t.progress = t.progress; }
+  closeModal('stop-modal');
+  showToast('⏹ 任务已停止');
+  renderTable();
+}
+function confirmDelete() {
+  const idx = tasks.findIndex(x => x.id === deleteTarget);
+  if (idx !== -1) tasks.splice(idx, 1);
+  closeModal('delete-modal');
+  showToast('🗑 任务已删除');
+  renderTable();
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+renderTable();
+// auto refresh running task progress
+setInterval(() => {
+  const running = tasks.find(t => t.status === 'running');
+  if (running && running.progress < 99) { running.progress = Math.min(99, running.progress + 1); renderTable(); }
+}, 3000);
+</script>
+</body>
+</html>
