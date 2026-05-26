@@ -1,0 +1,1 @@
+import{m as t}from"./index-RuDrIYn2.js";const e=t(null),a=t(!1),s=t(null);function l(){return!e.value&&!a.value&&(a.value=!0,fetch("/wanqing-snapshot.json").then(n=>{if(!n.ok)throw new Error(`HTTP ${n.status}`);return n.json()}).then(n=>{e.value=n}).catch(n=>{s.value=n.message||String(n)}).finally(()=>{a.value=!1})),{snapshot:e,loading:a,error:s}}export{l as u};

@@ -1,0 +1,6420 @@
+{
+  "scannedAt": "2026-05-25T13:00:43.037Z",
+  "scannedAtCN": "2026/5/25 21:00:43",
+  "repoRoot": "c:\\Users\\admin\\Desktop\\万擎仓库\\ai-infra",
+  "package": {
+    "name": "ai-infra",
+    "version": "1.0.0",
+    "scripts": {
+      "build": "baidi build",
+      "dev": "baidi dev",
+      "format": "prettier --write 'src/**/*.{js,jsx,ts,.tsx,.vue}'",
+      "lint": "eslint src --ext .js,.jsx,.ts,.tsx,.vue",
+      "lint:fix": "eslint src --ext .js,.jsx,.ts,.tsx,.vue --fix",
+      "fix:all": "prettier --write 'src/**/*.{js,jsx,ts,.tsx,.vue}' && eslint src --ext .js,.jsx,.ts,.tsx,.vue --fix",
+      "fix:format": "prettier --write 'src/**/*.{js,jsx,ts,.tsx,.vue}'",
+      "fix:lint": "eslint src --ext .js,.jsx,.ts,.tsx,.vue --fix"
+    },
+    "deps": [
+      {
+        "name": "@codemirror/autocomplete",
+        "version": "^6.20.1"
+      },
+      {
+        "name": "@codemirror/commands",
+        "version": "^6.10.2"
+      },
+      {
+        "name": "@codemirror/lang-markdown",
+        "version": "^6.5.0"
+      },
+      {
+        "name": "@codemirror/language",
+        "version": "^6.12.2"
+      },
+      {
+        "name": "@codemirror/lint",
+        "version": "^6.9.5"
+      },
+      {
+        "name": "@codemirror/search",
+        "version": "^6.6.0"
+      },
+      {
+        "name": "@codemirror/state",
+        "version": "^6.5.4"
+      },
+      {
+        "name": "@codemirror/view",
+        "version": "^6.39.16"
+      },
+      {
+        "name": "@floating-ui/dom",
+        "version": "^1.7.4"
+      },
+      {
+        "name": "@kid/enterprise-icon",
+        "version": "^1.0.858"
+      },
+      {
+        "name": "@ks-infra/element-plus",
+        "version": "^0.4.51"
+      },
+      {
+        "name": "@ks-infra/radar-auto-fmp",
+        "version": "0.2.0-beta.5"
+      },
+      {
+        "name": "@ks-infra/web-components",
+        "version": "1.1.7"
+      },
+      {
+        "name": "@ks-radar/radar",
+        "version": "^1.3.2"
+      },
+      {
+        "name": "@ks-radar/radar-core",
+        "version": "^1.3.2"
+      },
+      {
+        "name": "@ks-radar/radar-run-time-collect",
+        "version": "^1.3.2"
+      },
+      {
+        "name": "@ks-radar/radar-util",
+        "version": "^1.3.2"
+      },
+      {
+        "name": "@ks/ps-sdk",
+        "version": "^0.6.5"
+      },
+      {
+        "name": "@ks/uploader",
+        "version": "^0.5.0"
+      },
+      {
+        "name": "@ks/weblogger",
+        "version": "^3.10.45"
+      },
+      {
+        "name": "@kwai-code/editor",
+        "version": "1.0.0-beta.24"
+      },
+      {
+        "name": "@matechat/core",
+        "version": "^1.5.1"
+      },
+      {
+        "name": "@mdit/plugin-katex",
+        "version": "^0.23.1"
+      },
+      {
+        "name": "@sre-portal/component-service-tree",
+        "version": "2.27.22"
+      },
+      {
+        "name": "@superarale/vue-markdown-renderer",
+        "version": "0.1.5"
+      },
+      {
+        "name": "@superarale/vue-use-request",
+        "version": "^1.4.0"
+      },
+      {
+        "name": "@tiptap/core",
+        "version": "^3.10.1"
+      },
+      {
+        "name": "@tiptap/extension-mention",
+        "version": "^3.11.0"
+      },
+      {
+        "name": "@tiptap/extensions",
+        "version": "^3.11.0"
+      },
+      {
+        "name": "@tiptap/pm",
+        "version": "^3.10.1"
+      },
+      {
+        "name": "@tiptap/starter-kit",
+        "version": "^3.10.1"
+      },
+      {
+        "name": "@tiptap/suggestion",
+        "version": "^3.10.7"
+      },
+      {
+        "name": "@tiptap/vue-3",
+        "version": "^3.10.1"
+      },
+      {
+        "name": "@types/lodash-es",
+        "version": "^4.17.12"
+      },
+      {
+        "name": "@types/qs",
+        "version": "^6.9.18"
+      },
+      {
+        "name": "@vueuse/core",
+        "version": "^13.1.0"
+      },
+      {
+        "name": "@vueuse/router",
+        "version": "^13.3.0"
+      },
+      {
+        "name": "@weblogger/plugin-auto-track",
+        "version": "^1.0.7"
+      },
+      {
+        "name": "ace-builds",
+        "version": "^1.43.0"
+      },
+      {
+        "name": "attr-accept",
+        "version": "^2.2.5"
+      },
+      {
+        "name": "axios",
+        "version": "^1.9.0"
+      },
+      {
+        "name": "codemirror",
+        "version": "^6.0.2"
+      },
+      {
+        "name": "custom-highlight",
+        "version": "^1.0.2"
+      },
+      {
+        "name": "dayjs",
+        "version": "^1.11.13"
+      },
+      {
+        "name": "diff",
+        "version": "^8.0.2"
+      },
+      {
+        "name": "diff2html",
+        "version": "^3.4.51"
+      },
+      {
+        "name": "dompurify",
+        "version": "^3.3.0"
+      },
+      {
+        "name": "echarts",
+        "version": "^5.6.0"
+      },
+      {
+        "name": "github-markdown-css",
+        "version": "^5.8.1"
+      },
+      {
+        "name": "hast-util-sanitize",
+        "version": "^5.0.2"
+      },
+      {
+        "name": "highlight.js",
+        "version": "^11.11.1"
+      },
+      {
+        "name": "js-cookie",
+        "version": "^3.0.5"
+      },
+      {
+        "name": "katex",
+        "version": "^0.16.25"
+      },
+      {
+        "name": "lodash-es",
+        "version": "^4.17.21"
+      },
+      {
+        "name": "markdown-it",
+        "version": "^14.1.0"
+      },
+      {
+        "name": "markdown-to-quill-delta",
+        "version": "^1.0.1"
+      },
+      {
+        "name": "mermaid",
+        "version": "^11.9.0"
+      },
+      {
+        "name": "mime",
+        "version": "^4.0.7"
+      },
+      {
+        "name": "mitt",
+        "version": "^3.0.1"
+      },
+      {
+        "name": "openai",
+        "version": "^4.96.2"
+      },
+      {
+        "name": "pinia",
+        "version": "^3.0.2"
+      },
+      {
+        "name": "placeholder",
+        "version": "link:@tiptap/extensions/placeholder"
+      },
+      {
+        "name": "qs",
+        "version": "^6.14.0"
+      },
+      {
+        "name": "quill",
+        "version": "^2.0.3"
+      },
+      {
+        "name": "quill-delta-to-markdown",
+        "version": "^0.6.0"
+      },
+      {
+        "name": "quilljs-markdown",
+        "version": "^1.2.0"
+      },
+      {
+        "name": "rehype-external-links",
+        "version": "^3.0.0"
+      },
+      {
+        "name": "rehype-katex",
+        "version": "^7.0.1"
+      },
+      {
+        "name": "rehype-raw",
+        "version": "^7.0.0"
+      },
+      {
+        "name": "remark-math",
+        "version": "^6.0.0"
+      },
+      {
+        "name": "shiki",
+        "version": "^4.0.2"
+      },
+      {
+        "name": "showdown",
+        "version": "^2.1.0"
+      },
+      {
+        "name": "sortablejs",
+        "version": "^1.15.6"
+      },
+      {
+        "name": "store2",
+        "version": "^2.14.4"
+      },
+      {
+        "name": "strip-ansi",
+        "version": "^7.1.0"
+      },
+      {
+        "name": "style-mod",
+        "version": "^4.1.3"
+      },
+      {
+        "name": "unified",
+        "version": "^11.0.5"
+      },
+      {
+        "name": "unist-util-visit",
+        "version": "^5.0.0"
+      },
+      {
+        "name": "v-code-diff",
+        "version": "^1.13.1"
+      },
+      {
+        "name": "vue",
+        "version": "^3.5.13"
+      },
+      {
+        "name": "vue-codemirror6",
+        "version": "^1.4.3"
+      },
+      {
+        "name": "vue-echarts",
+        "version": "^7.0.3"
+      },
+      {
+        "name": "vue-router",
+        "version": "^4.5.1"
+      },
+      {
+        "name": "xlsx",
+        "version": "^0.18.5"
+      }
+    ],
+    "devDeps": [
+      {
+        "name": "@ad/blank-screen-detector-webpack",
+        "version": "^0.0.26"
+      },
+      {
+        "name": "@ad/webpack-plugin-rig",
+        "version": "^3.0.8"
+      },
+      {
+        "name": "@hyper/webpack",
+        "version": "^2.1.3"
+      },
+      {
+        "name": "@ks-cdn/cdn-web-protector-webpack",
+        "version": "1.0.68"
+      },
+      {
+        "name": "@ks-infra/baidi-cli",
+        "version": "^0.0.10"
+      },
+      {
+        "name": "@ks-radar/radar-seed",
+        "version": "^1.3.2"
+      },
+      {
+        "name": "@ks-radar/radar-seed-unplugin",
+        "version": "^0.1.5"
+      },
+      {
+        "name": "@rsbuild/plugin-mdx",
+        "version": "^1.0.2"
+      },
+      {
+        "name": "@tailwindcss/postcss",
+        "version": "^4.1.5"
+      },
+      {
+        "name": "@types/js-cookie",
+        "version": "^3.0.6"
+      },
+      {
+        "name": "@types/markdown-it",
+        "version": "^14.1.2"
+      },
+      {
+        "name": "@types/node",
+        "version": "^24.9.2"
+      },
+      {
+        "name": "@vue/eslint-config-typescript",
+        "version": "^14.5.0"
+      },
+      {
+        "name": "eslint",
+        "version": "^9.26.0"
+      },
+      {
+        "name": "eslint-config-prettier",
+        "version": "^10.1.2"
+      },
+      {
+        "name": "eslint-plugin-prettier",
+        "version": "^5.2.6"
+      },
+      {
+        "name": "eslint-plugin-vue",
+        "version": "^10.1.0"
+      },
+      {
+        "name": "globals",
+        "version": "^16.0.0"
+      },
+      {
+        "name": "postcss-scss",
+        "version": "^4.0.9"
+      },
+      {
+        "name": "prettier",
+        "version": "^3.5.3"
+      },
+      {
+        "name": "tailwindcss",
+        "version": "^4.1.5"
+      },
+      {
+        "name": "typescript",
+        "version": "^5.8.3"
+      },
+      {
+        "name": "typescript-eslint",
+        "version": "^8.31.1"
+      },
+      {
+        "name": "unplugin-auto-import",
+        "version": "^20.2.0"
+      }
+    ],
+    "depCount": 84,
+    "devDepCount": 24,
+    "engines": {
+      "node": ">=18.0.0",
+      "pnpm": ">=9.0.0"
+    },
+    "packageManager": "pnpm@9.7.1+sha512.faf344af2d6ca65c4c5c8c2224ea77a81a5e8859cbc4e06b1511ddce2f0151512431dd19e6aff31f2c6a8f5f2aced9bd2273e1fed7dd4de1868984059d2c4247"
+  },
+  "theme": {
+    "rawSize": 8898,
+    "rawLines": 188,
+    "tokens": [
+      {
+        "name": "--el-bg-brand",
+        "value": "#252626"
+      },
+      {
+        "name": "--el-bg-brand-hover",
+        "value": "#575859"
+      },
+      {
+        "name": "--el-bg-brand-active",
+        "value": "#000000"
+      },
+      {
+        "name": "--el-bg-brand-disable",
+        "value": "#afb0b2"
+      },
+      {
+        "name": "--el-text-brand",
+        "value": "#4558ff"
+      },
+      {
+        "name": "--el-text-brand-hover",
+        "value": "#6a79ff"
+      },
+      {
+        "name": "--el-text-brand-active",
+        "value": "#3747d2"
+      },
+      {
+        "name": "--el-text-brand-disable",
+        "value": "#b5bcff"
+      },
+      {
+        "name": "--el-stroke-brand",
+        "value": "#4558ff"
+      },
+      {
+        "name": "--el-stroke-brand-hover",
+        "value": "#6a79ff"
+      },
+      {
+        "name": "--el-stroke-brand-active",
+        "value": "#3747d2"
+      },
+      {
+        "name": "--el-stroke-brand-disable",
+        "value": "#b5bcff"
+      },
+      {
+        "name": "--el-stroke-brand-shadow",
+        "value": "rgba(69, 88, 255, 0.16)"
+      },
+      {
+        "name": "--el-fill-brand",
+        "value": "#4558ff"
+      },
+      {
+        "name": "--el-fill-brand-hover",
+        "value": "#6a79ff"
+      },
+      {
+        "name": "--el-fill-brand-active",
+        "value": "#3747d2"
+      },
+      {
+        "name": "--el-fill-brand-disable",
+        "value": "#b5bcff"
+      },
+      {
+        "name": "--el-radius-base",
+        "value": "8px"
+      },
+      {
+        "name": "--el-dialog-border-radius",
+        "value": "12px"
+      }
+    ],
+    "tokenCount": 19,
+    "sections": [
+      "Primary Button（一级主按钮 is-solid）",
+      "品牌主题色（文字色 / 超链接 / 二级按钮 / 描边等）",
+      "顶部导航（common-framework 框架组件）",
+      "侧边导航（common-framework 框架组件）",
+      "整体框架布局",
+      "表格全局样式",
+      "全产品入口按钮（panel-trigger）",
+      "侧边导航菜单项 hover / 选中态",
+      "父级 submenu 展开/选中时恢复默认灰色（不显示蓝色高亮）"
+    ],
+    "sectionCount": 9,
+    "fileRel": "src/assets/themes/theme-wanqing.css"
+  },
+  "components": [
+    {
+      "type": "vue",
+      "name": "AddJsonTreeDialog.vue",
+      "nameNoExt": "AddJsonTreeDialog",
+      "kind": "file",
+      "sizeKB": 2.99,
+      "lines": 108,
+      "rel": "src/components/AddJsonTreeDialog.vue",
+      "elementUsage": [
+        "el-dialog",
+        "el-input",
+        "el-button"
+      ],
+      "hasScript": true,
+      "hasStyle": true
+    },
+    {
+      "type": "vue",
+      "name": "all-business-line.vue",
+      "nameNoExt": "all-business-line",
+      "kind": "file",
+      "sizeKB": 1.75,
+      "lines": 49,
+      "rel": "src/components/all-business-line.vue",
+      "elementUsage": [
+        "el-button",
+        "el-dialog",
+        "el-table",
+        "el-table-column"
+      ],
+      "hasScript": true,
+      "hasStyle": false
+    },
+    {
+      "type": "vue",
+      "name": "ambiguous-code.vue",
+      "nameNoExt": "ambiguous-code",
+      "kind": "file",
+      "sizeKB": 0.92,
+      "lines": 43,
+      "rel": "src/components/ambiguous-code.vue",
+      "elementUsage": [],
+      "hasScript": true,
+      "hasStyle": true
+    },
+    {
+      "type": "dir",
+      "name": "app-variables-form",
+      "kind": "directory",
+      "files": 6,
+      "rel": "src/components/app-variables-form/",
+      "children": [
+        "const.ts",
+        "file-input.vue",
+        "index.vue",
+        "system-file-input.vue",
+        "types.ts",
+        "utils.ts"
+      ]
+    },
+    {
+      "type": "vue",
+      "name": "AutoEllipsisBreadcrumb.vue",
+      "nameNoExt": "AutoEllipsisBreadcrumb",
+      "kind": "file",
+      "sizeKB": 9.67,
+      "lines": 298,
+      "rel": "src/components/AutoEllipsisBreadcrumb.vue",
+      "elementUsage": [
+        "el-popover",
+        "el-breadcrumb",
+        "el-breadcrumb-item"
+      ],
+      "hasScript": true,
+      "hasStyle": true
+    },
+    {
+      "type": "vue",
+      "name": "AutoWidthSelect.vue",
+      "nameNoExt": "AutoWidthSelect",
+      "kind": "file",
+      "sizeKB": 3.25,
+      "lines": 121,
+      "rel": "src/components/AutoWidthSelect.vue",
+      "elementUsage": [
+        "el-select",
+        "el-option",
+        "el-checkbox"
+      ],
+      "hasScript": true,
+      "hasStyle": true
+    },
+    {
+      "type": "vue",
+      "name": "BaseCard.vue",
+      "nameNoExt": "BaseCard",
+      "kind": "file",
+      "sizeKB": 0.89,
+      "lines": 42,
+      "rel": "src/components/BaseCard.vue",
+      "elementUsage": [],
+      "hasScript": true,
+      "hasStyle": true
+    },
+    {
+      "type": "dir",
+      "name": "chat",
+      "kind": "directory",
+      "files": 7,
+      "rel": "src/components/chat/",
+      "children": [
+        "components",
+        "const.ts",
+        "input",
+        "media-preview.vue",
+        "services",
+        "types.ts",
+        "utils.ts"
+      ]
+    },
+    {
+      "type": "dir",
+      "name": "chat-history",
+      "kind": "directory",
+      "files": 1,
+      "rel": "src/components/chat-history/",
+      "children": [
+        "types.ts"
+      ]
+    },
+    {
+      "type": "vue",
+      "name": "CircleCountdown.vue",
+      "nameNoExt": "CircleCountdown",
+      "kind": "file",
+      "sizeKB": 3.98,
+      "lines": 187,
+      "rel": "src/components/CircleCountdown.vue",
+      "elementUsage": [],
+      "hasScript": true,
+      "hasStyle": true
+    },
+    {
+      "type": "vue",
+      "name": "ClaudeAlert.vue",
+      "nameNoExt": "ClaudeAlert",
+      "kind": "file",
+      "sizeKB": 1.61,
+      "lines": 48,
+      "rel": "src/components/ClaudeAlert.vue",
+      "elementUsage": [
+        "el-alert",
+        "el-popover"
+      ],
+      "hasScript": true,
+      "hasStyle": true
+    },
+    {
+      "type": "vue",
+      "name": "CodeView.vue",
+      "nameNoExt": "CodeView",
+      "kind": "file",
+      "sizeKB": 2.97,
+      "lines": 124,
+      "rel": "src/components/CodeView.vue",
+      "elementUsage": [],
+      "hasScript": true,
+      "hasStyle": true
+    },
+    {
+      "type": "vue",
+      "name": "ColumnsSelect.vue",
+      "nameNoExt": "ColumnsSelect",
+      "kind": "file",
+      "sizeKB": 5.07,
+      "lines": 172,
+      "rel": "src/components/ColumnsSelect.vue",
+      "elementUsage": [
+        "el-select",
+        "el-option",
+        "el-checkbox",
+        "el-empty"
+      ],
+      "hasScript": true,
+      "hasStyle": true
+    },
+    {
+      "type": "vue",
+      "name": "CommonHeader.vue",
+      "nameNoExt": "CommonHeader",
+      "kind": "file",
+      "sizeKB": 1.53,
+      "lines": 62,
+      "rel": "src/components/CommonHeader.vue",
+      "elementUsage": [
+        "el-icon"
+      ],
+      "hasScript": true,
+      "hasStyle": true
+    },
+    {
+      "type": "dir",
+      "name": "CommonSort",
+      "kind": "directory",
+      "files": 2,
+      "rel": "src/components/CommonSort/",
+      "children": [
+        "index.vue",
+        "types.ts"
+      ]
+    },
+    {
+      "type": "vue",
+      "name": "CommonTag.vue",
+      "nameNoExt": "CommonTag",
+      "kind": "file",
+      "sizeKB": 0.8,
+      "lines": 42,
+      "rel": "src/components/CommonTag.vue",
+      "elementUsage": [
+        "el-tag"
+      ],
+      "hasScript": true,
+      "hasStyle": true
+    },
+    {
+      "type": "dir",
+      "name": "config-table",
+      "kind": "directory",
+      "files": 7,
+      "rel": "src/components/config-table/",
+      "children": [
+        "columns-config.vue",
+        "index.vue",
+        "README.md",
+        "table-filter-select.vue",
+        "table-header-filter-back.vue",
+        "table-header-filter.vue",
+        "type.ts"
+      ]
+    },
+    {
+      "type": "dir",
+      "name": "copy-text",
+      "kind": "directory",
+      "files": 1,
+      "rel": "src/components/copy-text/",
+      "children": [
+        "index.vue"
+      ]
+    },
+    {
+      "type": "vue",
+      "name": "CopyButton.vue",
+      "nameNoExt": "CopyButton",
+      "kind": "file",
+      "sizeKB": 1.65,
+      "lines": 72,
+      "rel": "src/components/CopyButton.vue",
+      "elementUsage": [
+        "el-tooltip",
+        "el-button",
+        "el-icon"
+      ],
+      "hasScript": true,
+      "hasStyle": true
+    },
+    {
+      "type": "vue",
+      "name": "curve-tabs.vue",
+      "nameNoExt": "curve-tabs",
+      "kind": "file",
+      "sizeKB": 4.99,
+      "lines": 157,
+      "rel": "src/components/curve-tabs.vue",
+      "elementUsage": [
+        "el-tooltip",
+        "el-tabs",
+        "el-tab-pane"
+      ],
+      "hasScript": true,
+      "hasStyle": true
+    },
+    {
+      "type": "vue",
+      "name": "CustomTab.vue",
+      "nameNoExt": "CustomTab",
+      "kind": "file",
+      "sizeKB": 4.59,
+      "lines": 159,
+      "rel": "src/components/CustomTab.vue",
+      "elementUsage": [
+        "el-tooltip",
+        "el-button",
+        "el-icon"
+      ],
+      "hasScript": true,
+      "hasStyle": true
+    },
+    {
+      "type": "dir",
+      "name": "dataset-select-with-dialog",
+      "kind": "directory",
+      "files": 4,
+      "rel": "src/components/dataset-select-with-dialog/",
+      "children": [
+        "AnalysisStatusTag.vue",
+        "DatasetDialog.vue",
+        "DatasetTable.vue",
+        "index.vue"
+      ]
+    },
+    {
+      "type": "vue",
+      "name": "DateFilterButton.vue",
+      "nameNoExt": "DateFilterButton",
+      "kind": "file",
+      "sizeKB": 5.18,
+      "lines": 168,
+      "rel": "src/components/DateFilterButton.vue",
+      "elementUsage": [
+        "el-date-picker",
+        "el-button"
+      ],
+      "hasScript": true,
+      "hasStyle": true
+    },
+    {
+      "type": "dir",
+      "name": "empty",
+      "kind": "directory",
+      "files": 2,
+      "rel": "src/components/empty/",
+      "children": [
+        "index.vue",
+        "no-permission-empty.vue"
+      ]
+    },
+    {
+      "type": "vue",
+      "name": "FilterSelect.vue",
+      "nameNoExt": "FilterSelect",
+      "kind": "file",
+      "sizeKB": 1.9,
+      "lines": 74,
+      "rel": "src/components/FilterSelect.vue",
+      "elementUsage": [
+        "el-select",
+        "el-option"
+      ],
+      "hasScript": true,
+      "hasStyle": true
+    },
+    {
+      "type": "vue",
+      "name": "FloatingContainer.vue",
+      "nameNoExt": "FloatingContainer",
+      "kind": "file",
+      "sizeKB": 1.86,
+      "lines": 72,
+      "rel": "src/components/FloatingContainer.vue",
+      "elementUsage": [
+        "el-divider"
+      ],
+      "hasScript": true,
+      "hasStyle": true
+    },
+    {
+      "type": "vue",
+      "name": "global-project-select.vue",
+      "nameNoExt": "global-project-select",
+      "kind": "file",
+      "sizeKB": 39.72,
+      "lines": 1041,
+      "rel": "src/components/global-project-select.vue",
+      "elementUsage": [
+        "el-popover",
+        "el-input",
+        "el-tree",
+        "el-icon",
+        "el-link",
+        "el-empty",
+        "el-button",
+        "el-tooltip"
+      ],
+      "hasScript": true,
+      "hasStyle": true
+    },
+    {
+      "type": "vue",
+      "name": "GpuTypeSelect.vue",
+      "nameNoExt": "GpuTypeSelect",
+      "kind": "file",
+      "sizeKB": 4.4,
+      "lines": 146,
+      "rel": "src/components/GpuTypeSelect.vue",
+      "elementUsage": [
+        "el-select",
+        "el-option",
+        "el-tooltip",
+        "el-tag",
+        "el-icon"
+      ],
+      "hasScript": true,
+      "hasStyle": true
+    },
+    {
+      "type": "vue",
+      "name": "HighlightText.vue",
+      "nameNoExt": "HighlightText",
+      "kind": "file",
+      "sizeKB": 1.57,
+      "lines": 69,
+      "rel": "src/components/HighlightText.vue",
+      "elementUsage": [],
+      "hasScript": true,
+      "hasStyle": true
+    },
+    {
+      "type": "vue",
+      "name": "InputNumberWithUnit.vue",
+      "nameNoExt": "InputNumberWithUnit",
+      "kind": "file",
+      "sizeKB": 1.78,
+      "lines": 80,
+      "rel": "src/components/InputNumberWithUnit.vue",
+      "elementUsage": [
+        "el-input-number"
+      ],
+      "hasScript": true,
+      "hasStyle": true
+    },
+    {
+      "type": "vue",
+      "name": "instructions.vue",
+      "nameNoExt": "instructions",
+      "kind": "file",
+      "sizeKB": 0.45,
+      "lines": 17,
+      "rel": "src/components/instructions.vue",
+      "elementUsage": [
+        "el-button"
+      ],
+      "hasScript": true,
+      "hasStyle": false
+    },
+    {
+      "type": "vue",
+      "name": "JsonTree.vue",
+      "nameNoExt": "JsonTree",
+      "kind": "file",
+      "sizeKB": 39.46,
+      "lines": 1009,
+      "rel": "src/components/JsonTree.vue",
+      "elementUsage": [
+        "el-form",
+        "el-table",
+        "el-table-column",
+        "el-form-item",
+        "el-input",
+        "el-select",
+        "el-option",
+        "el-tooltip",
+        "el-checkbox",
+        "el-icon",
+        "el-button"
+      ],
+      "hasScript": true,
+      "hasStyle": true
+    },
+    {
+      "type": "dir",
+      "name": "kim-group",
+      "kind": "directory",
+      "files": 4,
+      "rel": "src/components/kim-group/",
+      "children": [
+        "display.vue",
+        "select.vue",
+        "services",
+        "typs.ts"
+      ]
+    },
+    {
+      "type": "dir",
+      "name": "log",
+      "kind": "directory",
+      "files": 3,
+      "rel": "src/components/log/",
+      "children": [
+        "ace-editor.vue",
+        "ace-editor.vue.md",
+        "index.vue"
+      ]
+    },
+    {
+      "type": "dir",
+      "name": "markdown-card",
+      "kind": "directory",
+      "files": 3,
+      "rel": "src/components/markdown-card/",
+      "children": [
+        "components",
+        "index.vue",
+        "plugins"
+      ]
+    },
+    {
+      "type": "vue",
+      "name": "markdownEditor.vue",
+      "nameNoExt": "markdownEditor",
+      "kind": "file",
+      "sizeKB": 4.77,
+      "lines": 196,
+      "rel": "src/components/markdownEditor.vue",
+      "elementUsage": [],
+      "hasScript": true,
+      "hasStyle": true
+    },
+    {
+      "type": "vue",
+      "name": "MarkdownRenderer.vue",
+      "nameNoExt": "MarkdownRenderer",
+      "kind": "file",
+      "sizeKB": 30.06,
+      "lines": 1361,
+      "rel": "src/components/MarkdownRenderer.vue",
+      "elementUsage": [],
+      "hasScript": true,
+      "hasStyle": true
+    },
+    {
+      "type": "dir",
+      "name": "model-parameters-setting",
+      "kind": "directory",
+      "files": 9,
+      "rel": "src/components/model-parameters-setting/",
+      "children": [
+        "components",
+        "model-preview-setting-form.vue",
+        "model-select-entry.vue",
+        "popover-entry-new.vue",
+        "popover-entry.vue",
+        "setting-draw.vue",
+        "setting-form-readonly.vue",
+        "setting-form.vue",
+        "utils.ts"
+      ]
+    },
+    {
+      "type": "dir",
+      "name": "model-select-with-dialog",
+      "kind": "directory",
+      "files": 13,
+      "rel": "src/components/model-select-with-dialog/",
+      "children": [
+        "index.vue",
+        "ModelConfig.vue",
+        "ModelDialog.vue",
+        "ModelPrice.vue",
+        "ModelPriceDetail.vue",
+        "ModelSelectItem.vue",
+        "OverflowTags.vue",
+        "PersonalQuotaPopover.vue",
+        "PrivateModelSelect.vue",
+        "PublicModelSelect.vue",
+        "services",
+        "types.ts",
+        "utils.ts"
+      ]
+    },
+    {
+      "type": "dir",
+      "name": "model-switch",
+      "kind": "directory",
+      "files": 1,
+      "rel": "src/components/model-switch/",
+      "children": [
+        "index.vue"
+      ]
+    },
+    {
+      "type": "vue",
+      "name": "more-tags.vue",
+      "nameNoExt": "more-tags",
+      "kind": "file",
+      "sizeKB": 5.39,
+      "lines": 195,
+      "rel": "src/components/more-tags.vue",
+      "elementUsage": [
+        "el-tag",
+        "el-tooltip"
+      ],
+      "hasScript": true,
+      "hasStyle": true
+    },
+    {
+      "type": "vue",
+      "name": "new-curve-tabs.vue",
+      "nameNoExt": "new-curve-tabs",
+      "kind": "file",
+      "sizeKB": 8.32,
+      "lines": 277,
+      "rel": "src/components/new-curve-tabs.vue",
+      "elementUsage": [
+        "el-tooltip"
+      ],
+      "hasScript": true,
+      "hasStyle": true
+    },
+    {
+      "type": "dir",
+      "name": "page-title",
+      "kind": "directory",
+      "files": 2,
+      "rel": "src/components/page-title/",
+      "children": [
+        "index.vue",
+        "SubTitle.vue"
+      ]
+    },
+    {
+      "type": "dir",
+      "name": "permission-apply-dialog",
+      "kind": "directory",
+      "files": 5,
+      "rel": "src/components/permission-apply-dialog/",
+      "children": [
+        "BusinessSelect.vue",
+        "index.vue",
+        "ProjectSelect.vue",
+        "util.ts",
+        "VolumeApplyDialog.vue"
+      ]
+    },
+    {
+      "type": "dir",
+      "name": "permission-layout",
+      "kind": "directory",
+      "files": 1,
+      "rel": "src/components/permission-layout/",
+      "children": [
+        "index.vue"
+      ]
+    },
+    {
+      "type": "vue",
+      "name": "PrivateModelLoraSelect.vue",
+      "nameNoExt": "PrivateModelLoraSelect",
+      "kind": "file",
+      "sizeKB": 15.42,
+      "lines": 482,
+      "rel": "src/components/PrivateModelLoraSelect.vue",
+      "elementUsage": [
+        "el-select",
+        "el-input",
+        "el-radio",
+        "el-link",
+        "el-empty"
+      ],
+      "hasScript": true,
+      "hasStyle": true
+    },
+    {
+      "type": "dir",
+      "name": "project-selector",
+      "kind": "directory",
+      "files": 1,
+      "rel": "src/components/project-selector/",
+      "children": [
+        "index.vue"
+      ]
+    },
+    {
+      "type": "dir",
+      "name": "project-space-tree",
+      "kind": "directory",
+      "files": 1,
+      "rel": "src/components/project-space-tree/",
+      "children": [
+        "index.vue"
+      ]
+    },
+    {
+      "type": "vue",
+      "name": "ProjectVisibilitySelect.vue",
+      "nameNoExt": "ProjectVisibilitySelect",
+      "kind": "file",
+      "sizeKB": 9.69,
+      "lines": 317,
+      "rel": "src/components/ProjectVisibilitySelect.vue",
+      "elementUsage": [
+        "el-select",
+        "el-input",
+        "el-tree",
+        "el-icon"
+      ],
+      "hasScript": true,
+      "hasStyle": true
+    },
+    {
+      "type": "dir",
+      "name": "prompt",
+      "kind": "directory",
+      "files": 3,
+      "rel": "src/components/prompt/",
+      "children": [
+        "api.ts",
+        "prompt-model-dialog.vue",
+        "type.ts"
+      ]
+    },
+    {
+      "type": "dir",
+      "name": "promptEditor",
+      "kind": "directory",
+      "files": 8,
+      "rel": "src/components/promptEditor/",
+      "children": [
+        "common",
+        "components",
+        "core",
+        "extension",
+        "hooks",
+        "index.vue",
+        "README.md",
+        "types"
+      ]
+    },
+    {
+      "type": "dir",
+      "name": "quota-pool",
+      "kind": "directory",
+      "files": 3,
+      "rel": "src/components/quota-pool/",
+      "children": [
+        "constants.ts",
+        "env-status.vue",
+        "flow-status.vue"
+      ]
+    },
+    {
+      "type": "vue",
+      "name": "RefreshButton.vue",
+      "nameNoExt": "RefreshButton",
+      "kind": "file",
+      "sizeKB": 0.38,
+      "lines": 18,
+      "rel": "src/components/RefreshButton.vue",
+      "elementUsage": [
+        "el-button",
+        "el-icon"
+      ],
+      "hasScript": true,
+      "hasStyle": false
+    },
+    {
+      "type": "vue",
+      "name": "ResourceDependencyDialog.vue",
+      "nameNoExt": "ResourceDependencyDialog",
+      "kind": "file",
+      "sizeKB": 8.55,
+      "lines": 255,
+      "rel": "src/components/ResourceDependencyDialog.vue",
+      "elementUsage": [
+        "el-dialog",
+        "el-icon",
+        "el-alert",
+        "el-link",
+        "el-button"
+      ],
+      "hasScript": true,
+      "hasStyle": true
+    },
+    {
+      "type": "vue",
+      "name": "SchemaPropertyRow.vue",
+      "nameNoExt": "SchemaPropertyRow",
+      "kind": "file",
+      "sizeKB": 24.67,
+      "lines": 653,
+      "rel": "src/components/SchemaPropertyRow.vue",
+      "elementUsage": [
+        "el-form",
+        "el-form-item",
+        "el-input",
+        "el-select",
+        "el-option",
+        "el-checkbox",
+        "el-button",
+        "el-icon"
+      ],
+      "hasScript": true,
+      "hasStyle": true
+    },
+    {
+      "type": "vue",
+      "name": "SectionTitle.vue",
+      "nameNoExt": "SectionTitle",
+      "kind": "file",
+      "sizeKB": 0.51,
+      "lines": 26,
+      "rel": "src/components/SectionTitle.vue",
+      "elementUsage": [],
+      "hasScript": false,
+      "hasStyle": true
+    },
+    {
+      "type": "vue",
+      "name": "SecurityAlert.vue",
+      "nameNoExt": "SecurityAlert",
+      "kind": "file",
+      "sizeKB": 1.6,
+      "lines": 36,
+      "rel": "src/components/SecurityAlert.vue",
+      "elementUsage": [
+        "el-alert",
+        "el-link"
+      ],
+      "hasScript": true,
+      "hasStyle": true
+    },
+    {
+      "type": "vue",
+      "name": "SelectableCard.vue",
+      "nameNoExt": "SelectableCard",
+      "kind": "file",
+      "sizeKB": 2.08,
+      "lines": 86,
+      "rel": "src/components/SelectableCard.vue",
+      "elementUsage": [
+        "el-tooltip",
+        "el-icon"
+      ],
+      "hasScript": true,
+      "hasStyle": true
+    },
+    {
+      "type": "vue",
+      "name": "shine-text.vue",
+      "nameNoExt": "shine-text",
+      "kind": "file",
+      "sizeKB": 1.52,
+      "lines": 69,
+      "rel": "src/components/shine-text.vue",
+      "elementUsage": [],
+      "hasScript": true,
+      "hasStyle": true
+    },
+    {
+      "type": "dir",
+      "name": "skill",
+      "kind": "directory",
+      "files": 1,
+      "rel": "src/components/skill/",
+      "children": [
+        "SkillMarkdownViewer.vue"
+      ]
+    },
+    {
+      "type": "vue",
+      "name": "table-header-search.vue",
+      "nameNoExt": "table-header-search",
+      "kind": "file",
+      "sizeKB": 6.72,
+      "lines": 202,
+      "rel": "src/components/table-header-search.vue",
+      "elementUsage": [
+        "el-tooltip",
+        "el-icon",
+        "el-popover",
+        "el-input",
+        "el-select",
+        "el-option",
+        "el-link"
+      ],
+      "hasScript": true,
+      "hasStyle": true
+    },
+    {
+      "type": "vue",
+      "name": "tags-single-line.vue",
+      "nameNoExt": "tags-single-line",
+      "kind": "file",
+      "sizeKB": 8.05,
+      "lines": 271,
+      "rel": "src/components/tags-single-line.vue",
+      "elementUsage": [
+        "el-tag",
+        "el-tooltip"
+      ],
+      "hasScript": true,
+      "hasStyle": true
+    },
+    {
+      "type": "vue",
+      "name": "TagSelector.vue",
+      "nameNoExt": "TagSelector",
+      "kind": "file",
+      "sizeKB": 15.53,
+      "lines": 509,
+      "rel": "src/components/TagSelector.vue",
+      "elementUsage": [
+        "el-tag",
+        "el-popover",
+        "el-tooltip",
+        "el-icon",
+        "el-input",
+        "el-checkbox-group",
+        "el-checkbox"
+      ],
+      "hasScript": true,
+      "hasStyle": true
+    },
+    {
+      "type": "vue",
+      "name": "TagSelectorWithId.vue",
+      "nameNoExt": "TagSelectorWithId",
+      "kind": "file",
+      "sizeKB": 16.03,
+      "lines": 512,
+      "rel": "src/components/TagSelectorWithId.vue",
+      "elementUsage": [
+        "el-tag",
+        "el-popover",
+        "el-tooltip",
+        "el-icon",
+        "el-input",
+        "el-checkbox-group",
+        "el-checkbox"
+      ],
+      "hasScript": true,
+      "hasStyle": true
+    },
+    {
+      "type": "vue",
+      "name": "TextOverflowCollapse.vue",
+      "nameNoExt": "TextOverflowCollapse",
+      "kind": "file",
+      "sizeKB": 3.37,
+      "lines": 132,
+      "rel": "src/components/TextOverflowCollapse.vue",
+      "elementUsage": [],
+      "hasScript": true,
+      "hasStyle": true
+    },
+    {
+      "type": "vue",
+      "name": "TextOverflowTooltip.vue",
+      "nameNoExt": "TextOverflowTooltip",
+      "kind": "file",
+      "sizeKB": 3.34,
+      "lines": 144,
+      "rel": "src/components/TextOverflowTooltip.vue",
+      "elementUsage": [
+        "el-tooltip"
+      ],
+      "hasScript": true,
+      "hasStyle": true
+    },
+    {
+      "type": "vue",
+      "name": "TextStartOverflowTooltip.vue",
+      "nameNoExt": "TextStartOverflowTooltip",
+      "kind": "file",
+      "sizeKB": 2.28,
+      "lines": 89,
+      "rel": "src/components/TextStartOverflowTooltip.vue",
+      "elementUsage": [
+        "el-tooltip"
+      ],
+      "hasScript": true,
+      "hasStyle": true
+    },
+    {
+      "type": "dir",
+      "name": "time-picker",
+      "kind": "directory",
+      "files": 4,
+      "rel": "src/components/time-picker/",
+      "children": [
+        "const.ts",
+        "index.vue",
+        "type.ts",
+        "util.ts"
+      ]
+    },
+    {
+      "type": "vue",
+      "name": "TooltipIcon.vue",
+      "nameNoExt": "TooltipIcon",
+      "kind": "file",
+      "sizeKB": 2.01,
+      "lines": 77,
+      "rel": "src/components/TooltipIcon.vue",
+      "elementUsage": [
+        "el-tooltip",
+        "el-icon"
+      ],
+      "hasScript": true,
+      "hasStyle": true
+    },
+    {
+      "type": "vue",
+      "name": "TypeIcon.vue",
+      "nameNoExt": "TypeIcon",
+      "kind": "file",
+      "sizeKB": 5.53,
+      "lines": 194,
+      "rel": "src/components/TypeIcon.vue",
+      "elementUsage": [],
+      "hasScript": true,
+      "hasStyle": true
+    },
+    {
+      "type": "vue",
+      "name": "UploadAvatar.vue",
+      "nameNoExt": "UploadAvatar",
+      "kind": "file",
+      "sizeKB": 10.47,
+      "lines": 388,
+      "rel": "src/components/UploadAvatar.vue",
+      "elementUsage": [
+        "el-dropdown",
+        "el-icon",
+        "el-dropdown-menu"
+      ],
+      "hasScript": true,
+      "hasStyle": true
+    },
+    {
+      "type": "dir",
+      "name": "users",
+      "kind": "directory",
+      "files": 2,
+      "rel": "src/components/users/",
+      "children": [
+        "index.vue",
+        "user.service.ts"
+      ]
+    },
+    {
+      "type": "vue",
+      "name": "VersionPopover.vue",
+      "nameNoExt": "VersionPopover",
+      "kind": "file",
+      "sizeKB": 9.34,
+      "lines": 334,
+      "rel": "src/components/VersionPopover.vue",
+      "elementUsage": [
+        "el-popover",
+        "el-select",
+        "el-option",
+        "el-button",
+        "el-icon"
+      ],
+      "hasScript": true,
+      "hasStyle": true
+    },
+    {
+      "type": "vue",
+      "name": "VersionTypeTag.vue",
+      "nameNoExt": "VersionTypeTag",
+      "kind": "file",
+      "sizeKB": 4.27,
+      "lines": 156,
+      "rel": "src/components/VersionTypeTag.vue",
+      "elementUsage": [
+        "el-tooltip"
+      ],
+      "hasScript": true,
+      "hasStyle": true
+    },
+    {
+      "type": "vue",
+      "name": "wastageInTokens.vue",
+      "nameNoExt": "wastageInTokens",
+      "kind": "file",
+      "sizeKB": 4.23,
+      "lines": 163,
+      "rel": "src/components/wastageInTokens.vue",
+      "elementUsage": [
+        "el-tooltip",
+        "el-icon"
+      ],
+      "hasScript": true,
+      "hasStyle": true
+    }
+  ],
+  "modules": [
+    {
+      "name": "ai-square",
+      "rel": "src/modules/ai-square/",
+      "files": 31,
+      "vueFiles": 20,
+      "tsFiles": 11,
+      "sizeKB": 370.1
+    },
+    {
+      "name": "application",
+      "rel": "src/modules/application/",
+      "files": 109,
+      "vueFiles": 91,
+      "tsFiles": 18,
+      "sizeKB": 1091.4
+    },
+    {
+      "name": "application-square",
+      "rel": "src/modules/application-square/",
+      "files": 14,
+      "vueFiles": 9,
+      "tsFiles": 5,
+      "sizeKB": 80.1
+    },
+    {
+      "name": "data-analysis",
+      "rel": "src/modules/data-analysis/",
+      "files": 27,
+      "vueFiles": 19,
+      "tsFiles": 8,
+      "sizeKB": 286.4
+    },
+    {
+      "name": "data-management",
+      "rel": "src/modules/data-management/",
+      "files": 68,
+      "vueFiles": 57,
+      "tsFiles": 11,
+      "sizeKB": 781.8
+    },
+    {
+      "name": "data-workflow",
+      "rel": "src/modules/data-workflow/",
+      "files": 23,
+      "vueFiles": 18,
+      "tsFiles": 5,
+      "sizeKB": 265.7
+    },
+    {
+      "name": "datasets",
+      "rel": "src/modules/datasets/",
+      "files": 55,
+      "vueFiles": 41,
+      "tsFiles": 14,
+      "sizeKB": 464.7
+    },
+    {
+      "name": "docs",
+      "rel": "src/modules/docs/",
+      "files": 7,
+      "vueFiles": 1,
+      "tsFiles": 3,
+      "sizeKB": 19.6
+    },
+    {
+      "name": "mcp",
+      "rel": "src/modules/mcp/",
+      "files": 35,
+      "vueFiles": 25,
+      "tsFiles": 10,
+      "sizeKB": 311.8
+    },
+    {
+      "name": "mcp-management",
+      "rel": "src/modules/mcp-management/",
+      "files": 46,
+      "vueFiles": 39,
+      "tsFiles": 7,
+      "sizeKB": 517.3
+    },
+    {
+      "name": "memory",
+      "rel": "src/modules/memory/",
+      "files": 12,
+      "vueFiles": 8,
+      "tsFiles": 4,
+      "sizeKB": 122
+    },
+    {
+      "name": "model-deploy",
+      "rel": "src/modules/model-deploy/",
+      "files": 35,
+      "vueFiles": 26,
+      "tsFiles": 9,
+      "sizeKB": 285.2
+    },
+    {
+      "name": "model-evaluating",
+      "rel": "src/modules/model-evaluating/",
+      "files": 33,
+      "vueFiles": 25,
+      "tsFiles": 5,
+      "sizeKB": 323.2
+    },
+    {
+      "name": "model-finetune",
+      "rel": "src/modules/model-finetune/",
+      "files": 38,
+      "vueFiles": 28,
+      "tsFiles": 9,
+      "sizeKB": 266.2
+    },
+    {
+      "name": "model-inference",
+      "rel": "src/modules/model-inference/",
+      "files": 40,
+      "vueFiles": 29,
+      "tsFiles": 11,
+      "sizeKB": 306.5
+    },
+    {
+      "name": "model-store",
+      "rel": "src/modules/model-store/",
+      "files": 16,
+      "vueFiles": 11,
+      "tsFiles": 5,
+      "sizeKB": 93.9
+    },
+    {
+      "name": "model-stress-test",
+      "rel": "src/modules/model-stress-test/",
+      "files": 32,
+      "vueFiles": 24,
+      "tsFiles": 8,
+      "sizeKB": 209
+    },
+    {
+      "name": "project-management",
+      "rel": "src/modules/project-management/",
+      "files": 16,
+      "vueFiles": 12,
+      "tsFiles": 4,
+      "sizeKB": 200.4
+    },
+    {
+      "name": "prompt-management",
+      "rel": "src/modules/prompt-management/",
+      "files": 32,
+      "vueFiles": 26,
+      "tsFiles": 6,
+      "sizeKB": 403.4
+    },
+    {
+      "name": "prompt-test-management",
+      "rel": "src/modules/prompt-test-management/",
+      "files": 34,
+      "vueFiles": 30,
+      "tsFiles": 4,
+      "sizeKB": 303.8
+    },
+    {
+      "name": "quota-management",
+      "rel": "src/modules/quota-management/",
+      "files": 23,
+      "vueFiles": 18,
+      "tsFiles": 5,
+      "sizeKB": 281.4
+    },
+    {
+      "name": "skills",
+      "rel": "src/modules/skills/",
+      "files": 23,
+      "vueFiles": 17,
+      "tsFiles": 6,
+      "sizeKB": 173.5
+    },
+    {
+      "name": "skills-square",
+      "rel": "src/modules/skills-square/",
+      "files": 12,
+      "vueFiles": 7,
+      "tsFiles": 5,
+      "sizeKB": 73.3
+    },
+    {
+      "name": "system-management",
+      "rel": "src/modules/system-management/",
+      "files": 14,
+      "vueFiles": 10,
+      "tsFiles": 4,
+      "sizeKB": 79.3
+    },
+    {
+      "name": "training-pipeline",
+      "rel": "src/modules/training-pipeline/",
+      "files": 56,
+      "vueFiles": 43,
+      "tsFiles": 13,
+      "sizeKB": 433.8
+    }
+  ],
+  "moduleRoutes": [
+    {
+      "module": "ai-square",
+      "path": "/ai-square",
+      "name": "",
+      "title": "模型广场"
+    },
+    {
+      "module": "ai-square",
+      "path": "model-list/",
+      "name": "",
+      "title": "模型广场-万擎"
+    },
+    {
+      "module": "ai-square",
+      "path": "model-detail/:id",
+      "name": "",
+      "title": "模型详情"
+    },
+    {
+      "module": "ai-square",
+      "path": "model-preview/:id",
+      "name": "",
+      "title": "模型预览"
+    },
+    {
+      "module": "ai-square",
+      "path": "/:pid?/ai-square",
+      "name": "",
+      "title": ""
+    },
+    {
+      "module": "ai-square",
+      "path": "/:pid/ai-square/model-list/",
+      "name": "",
+      "title": ""
+    },
+    {
+      "module": "ai-square",
+      "path": "/:pid/ai-square/model-detail/:id",
+      "name": "",
+      "title": ""
+    },
+    {
+      "module": "ai-square",
+      "path": "/:pid/ai-square/model-preview/:id",
+      "name": "",
+      "title": ""
+    },
+    {
+      "module": "application",
+      "path": "/:pid?/application/",
+      "name": "",
+      "title": "应用管理"
+    },
+    {
+      "module": "application",
+      "path": "list",
+      "name": "",
+      "title": "应用列表"
+    },
+    {
+      "module": "application",
+      "path": ":appType/",
+      "name": "",
+      "title": "应用编辑"
+    },
+    {
+      "module": "application",
+      "path": "edit",
+      "name": "",
+      "title": "应用预览"
+    },
+    {
+      "module": "application",
+      "path": "preview",
+      "name": "",
+      "title": "应用详情"
+    },
+    {
+      "module": "application",
+      "path": "detail",
+      "name": "",
+      "title": ""
+    },
+    {
+      "module": "application-square",
+      "path": "/:pid?/application-square/",
+      "name": "",
+      "title": "应用广场"
+    },
+    {
+      "module": "application-square",
+      "path": "list",
+      "name": "",
+      "title": "应用广场列表"
+    },
+    {
+      "module": "application-square",
+      "path": ":appType/",
+      "name": "",
+      "title": "应用广场详情"
+    },
+    {
+      "module": "application-square",
+      "path": "detail",
+      "name": "",
+      "title": "应用广场预览"
+    },
+    {
+      "module": "application-square",
+      "path": "preview",
+      "name": "",
+      "title": ""
+    },
+    {
+      "module": "data-analysis",
+      "path": "/:pid?/data-analysis",
+      "name": "DataAnalysis",
+      "title": "数据分析"
+    },
+    {
+      "module": "data-analysis",
+      "path": "list",
+      "name": "DataAnalysisList",
+      "title": "数据分析列表"
+    },
+    {
+      "module": "data-analysis",
+      "path": "detail/:id",
+      "name": "DataAnalysisList",
+      "title": "数据分析详情"
+    },
+    {
+      "module": "data-analysis",
+      "path": "",
+      "name": "DataAnalysisDetail",
+      "title": ""
+    },
+    {
+      "module": "data-management",
+      "path": "/:pid?/data-management",
+      "name": "",
+      "title": "数据管理"
+    },
+    {
+      "module": "data-management",
+      "path": "knowledge-base",
+      "name": "",
+      "title": "知识库"
+    },
+    {
+      "module": "data-management",
+      "path": "list/",
+      "name": "",
+      "title": ""
+    },
+    {
+      "module": "data-management",
+      "path": "create/",
+      "name": "",
+      "title": ""
+    },
+    {
+      "module": "data-management",
+      "path": "detail/:id",
+      "name": "",
+      "title": ""
+    },
+    {
+      "module": "data-management",
+      "path": "import-documents/:id",
+      "name": "",
+      "title": ""
+    },
+    {
+      "module": "data-management",
+      "path": "edit/:id",
+      "name": "",
+      "title": ""
+    },
+    {
+      "module": "data-workflow",
+      "path": "/:pid?/data-workflow",
+      "name": "DataWorkflow",
+      "title": "数据工作流"
+    },
+    {
+      "module": "data-workflow",
+      "path": "list",
+      "name": "DataWorkflowList",
+      "title": "数据工作流"
+    },
+    {
+      "module": "data-workflow",
+      "path": "detail/:id",
+      "name": "DataWorkflowList",
+      "title": "数据工作流"
+    },
+    {
+      "module": "data-workflow",
+      "path": "history",
+      "name": "DataWorkflowDetail",
+      "title": "执行历史"
+    },
+    {
+      "module": "data-workflow",
+      "path": "",
+      "name": "DataWorkflowExecutionHistory",
+      "title": ""
+    },
+    {
+      "module": "datasets",
+      "path": "/:pid?/datasets",
+      "name": "datasets",
+      "title": "数据集"
+    },
+    {
+      "module": "datasets",
+      "path": "create/",
+      "name": "datasets-create",
+      "title": "数据集创建"
+    },
+    {
+      "module": "datasets",
+      "path": "list/",
+      "name": "datasets-list",
+      "title": "数据集列表"
+    },
+    {
+      "module": "datasets",
+      "path": "detail/:id",
+      "name": "datasets-detail",
+      "title": "数据集详情"
+    },
+    {
+      "module": "datasets",
+      "path": "preset-detail/:id",
+      "name": "preset-datasets-detail",
+      "title": "数据集详情"
+    },
+    {
+      "module": "docs",
+      "path": "/docs",
+      "name": "docs",
+      "title": "文档中心-万擎"
+    },
+    {
+      "module": "mcp",
+      "path": "/mcp",
+      "name": "McpSquare",
+      "title": "MCP广场"
+    },
+    {
+      "module": "mcp",
+      "path": "list/",
+      "name": "McpList",
+      "title": "MCP广场-万擎"
+    },
+    {
+      "module": "mcp",
+      "path": "detail/:id",
+      "name": "McpDetail",
+      "title": ""
+    },
+    {
+      "module": "mcp",
+      "path": "apply/",
+      "name": "McpApplyAPIKey",
+      "title": ""
+    },
+    {
+      "module": "mcp-management",
+      "path": "/mcp-management",
+      "name": "McpManagement",
+      "title": "MCP管理"
+    },
+    {
+      "module": "mcp-management",
+      "path": "list/",
+      "name": "McpManagementList",
+      "title": "MCP管理"
+    },
+    {
+      "module": "mcp-management",
+      "path": "list/:id",
+      "name": "MCPLimitPage",
+      "title": "限流列表"
+    },
+    {
+      "module": "mcp-management",
+      "path": "detail/:id",
+      "name": "McpManagementDetail",
+      "title": ""
+    },
+    {
+      "module": "mcp-management",
+      "path": "create/",
+      "name": "McpManagementCreate",
+      "title": ""
+    },
+    {
+      "module": "mcp-management",
+      "path": "edit/:id",
+      "name": "McpManagementEdit",
+      "title": ""
+    },
+    {
+      "module": "mcp-management",
+      "path": "auth/:id",
+      "name": "McpManagementAuth",
+      "title": ""
+    },
+    {
+      "module": "mcp-management",
+      "path": "monitor/:id",
+      "name": "McpManagementMonitor",
+      "title": ""
+    },
+    {
+      "module": "memory",
+      "path": "/:pid?/memory",
+      "name": "memory",
+      "title": "记忆库"
+    },
+    {
+      "module": "memory",
+      "path": "list/",
+      "name": "MemoryDetail",
+      "title": "记忆库列表"
+    },
+    {
+      "module": "memory",
+      "path": "detail/:id",
+      "name": "",
+      "title": "记忆库详情"
+    },
+    {
+      "module": "model-deploy",
+      "path": "/:pid?/model-deploy",
+      "name": "model-deploy",
+      "title": "模型部署"
+    },
+    {
+      "module": "model-deploy",
+      "path": "create/",
+      "name": "model-deploy-create",
+      "title": "部署模型服务"
+    },
+    {
+      "module": "model-deploy",
+      "path": "list/",
+      "name": "model-deploy-list",
+      "title": "模型部署列表"
+    },
+    {
+      "module": "model-deploy",
+      "path": "detail/:id",
+      "name": "model-deploy-detail",
+      "title": "模型部署详情"
+    },
+    {
+      "module": "model-deploy",
+      "path": "edit/:id",
+      "name": "model-deploy-edit",
+      "title": "模型部署更新"
+    },
+    {
+      "module": "model-evaluating",
+      "path": "/:pid?/model-evaluating",
+      "name": "ModelEvaluating",
+      "title": "模型评测"
+    },
+    {
+      "module": "model-evaluating",
+      "path": "/:pid?/model-evaluating/create",
+      "name": "ModelEvaluatingCreate",
+      "title": "新建评测任务"
+    },
+    {
+      "module": "model-evaluating",
+      "path": "/:pid?/model-evaluating/detail/:id",
+      "name": "ModelEvaluatingDetail",
+      "title": "任务详情"
+    },
+    {
+      "module": "model-finetune",
+      "path": "/:pid?/model-finetune",
+      "name": "ModelFinetune",
+      "title": "模型微调"
+    },
+    {
+      "module": "model-finetune",
+      "path": "list",
+      "name": "ModelFinetuneList",
+      "title": "模型微调"
+    },
+    {
+      "module": "model-finetune",
+      "path": "create",
+      "name": "ModelFinetuneList",
+      "title": ""
+    },
+    {
+      "module": "model-finetune",
+      "path": ":id/detail/:detailTab?",
+      "name": "ModelFinetuneCreate",
+      "title": ""
+    },
+    {
+      "module": "model-finetune",
+      "path": "",
+      "name": "ModelFinetuneDetail",
+      "title": ""
+    },
+    {
+      "module": "model-inference",
+      "path": "/:pid?/inference",
+      "name": "Inference",
+      "title": "在线推理"
+    },
+    {
+      "module": "model-inference",
+      "path": "list",
+      "name": "ModelInferenceList",
+      "title": "模型推理"
+    },
+    {
+      "module": "model-inference",
+      "path": "create",
+      "name": "ModelInferenceList",
+      "title": "批量推理"
+    },
+    {
+      "module": "model-inference",
+      "path": ":eid/detail/:tab?",
+      "name": "ModelInferenceDetail",
+      "title": "批量推理"
+    },
+    {
+      "module": "model-inference",
+      "path": "/:pid?/batch-inference",
+      "name": "BatchInference",
+      "title": "创建批量推理任务"
+    },
+    {
+      "module": "model-inference",
+      "path": "task-list",
+      "name": "",
+      "title": "批量推理任务详情"
+    },
+    {
+      "module": "model-inference",
+      "path": "create-task",
+      "name": "",
+      "title": ""
+    },
+    {
+      "module": "model-inference",
+      "path": ":eid/batch-task-detail/:tab?",
+      "name": "",
+      "title": ""
+    },
+    {
+      "module": "model-store",
+      "path": "/:pid?/model-store",
+      "name": "ModelStore",
+      "title": "模型仓库"
+    },
+    {
+      "module": "model-store",
+      "path": "list",
+      "name": "ModelStoreList",
+      "title": "模型仓库"
+    },
+    {
+      "module": "model-store",
+      "path": ":id/detail/:detailTab?",
+      "name": "ModelStoreDetail",
+      "title": ""
+    },
+    {
+      "module": "model-stress-test",
+      "path": "/:pid?/model-stress-test",
+      "name": "ModelStressTest",
+      "title": "模型压测"
+    },
+    {
+      "module": "model-stress-test",
+      "path": "list",
+      "name": "ModelStressTestList",
+      "title": "模型压测"
+    },
+    {
+      "module": "model-stress-test",
+      "path": "create",
+      "name": "ModelStressTestList",
+      "title": ""
+    },
+    {
+      "module": "model-stress-test",
+      "path": ":id/edit",
+      "name": "ModelStressTestCreate",
+      "title": ""
+    },
+    {
+      "module": "model-stress-test",
+      "path": ":id/detail",
+      "name": "ModelStressTestEdit",
+      "title": ""
+    },
+    {
+      "module": "model-stress-test",
+      "path": "config",
+      "name": "ModelStressTestDetail",
+      "title": ""
+    },
+    {
+      "module": "model-stress-test",
+      "path": "execution",
+      "name": "ModelStressTestDetailConfig",
+      "title": ""
+    },
+    {
+      "module": "model-stress-test",
+      "path": "monitoring",
+      "name": "ModelStressTestDetailConfig",
+      "title": ""
+    },
+    {
+      "module": "model-stress-test",
+      "path": "log",
+      "name": "ModelStressTestDetailExecution",
+      "title": ""
+    },
+    {
+      "module": "model-stress-test",
+      "path": "evaluation",
+      "name": "ModelStressTestDetailExecutionMonitoring",
+      "title": ""
+    },
+    {
+      "module": "model-stress-test",
+      "path": "",
+      "name": "ModelStressTestDetailExecutionMonitoring",
+      "title": ""
+    },
+    {
+      "module": "model-stress-test",
+      "path": "",
+      "name": "ModelStressTestDetailExecutionLog",
+      "title": ""
+    },
+    {
+      "module": "model-stress-test",
+      "path": "",
+      "name": "ModelStressTestDetailEvaluation",
+      "title": ""
+    },
+    {
+      "module": "project-management",
+      "path": "/project-management",
+      "name": "",
+      "title": "项目管理"
+    },
+    {
+      "module": "project-management",
+      "path": "projects",
+      "name": "",
+      "title": "项目管理-万擎"
+    },
+    {
+      "module": "project-management",
+      "path": "projects/:id",
+      "name": "",
+      "title": "项目详情-万擎"
+    },
+    {
+      "module": "project-management",
+      "path": "projects/create",
+      "name": "",
+      "title": "新建项目-万擎"
+    },
+    {
+      "module": "project-management",
+      "path": "projects/edit/:id",
+      "name": "",
+      "title": "编辑项目-万擎"
+    },
+    {
+      "module": "prompt-management",
+      "path": "/:pid?/prompt-management",
+      "name": "",
+      "title": "Prompt"
+    },
+    {
+      "module": "prompt-management",
+      "path": "prompt-base",
+      "name": "",
+      "title": "Prompt列表"
+    },
+    {
+      "module": "prompt-management",
+      "path": "list/",
+      "name": "",
+      "title": ""
+    },
+    {
+      "module": "prompt-management",
+      "path": "generate/:type?",
+      "name": "",
+      "title": ""
+    },
+    {
+      "module": "prompt-management",
+      "path": "detail/",
+      "name": "",
+      "title": ""
+    },
+    {
+      "module": "prompt-management",
+      "path": "optimize/:base_template_id?",
+      "name": "",
+      "title": ""
+    },
+    {
+      "module": "prompt-test-management",
+      "path": "/:pid?/prompt-test-management",
+      "name": "prompt-test-management",
+      "title": "prompt 评测"
+    },
+    {
+      "module": "prompt-test-management",
+      "path": "create",
+      "name": "prompt-test-create",
+      "title": "新建评测任务"
+    },
+    {
+      "module": "prompt-test-management",
+      "path": "list/",
+      "name": "prompt-test-management-list",
+      "title": "prompt 评测"
+    },
+    {
+      "module": "prompt-test-management",
+      "path": "detail/",
+      "name": "prompt-test-management-detail",
+      "title": "prompt 评测详情"
+    },
+    {
+      "module": "prompt-test-management",
+      "path": "create/",
+      "name": "prompt-test-management-list",
+      "title": "prompt 评测"
+    },
+    {
+      "module": "quota-management",
+      "path": "/quota-management",
+      "name": "",
+      "title": "配额管理"
+    },
+    {
+      "module": "quota-management",
+      "path": "list",
+      "name": "",
+      "title": "配额管理-万擎"
+    },
+    {
+      "module": "quota-management",
+      "path": "detail",
+      "name": "",
+      "title": "配额详情"
+    },
+    {
+      "module": "skills",
+      "path": "/:pid?/skill-management/",
+      "name": "",
+      "title": "Skill管理"
+    },
+    {
+      "module": "skills",
+      "path": "list",
+      "name": "",
+      "title": "Skill管理"
+    },
+    {
+      "module": "skills",
+      "path": "detail/:id",
+      "name": "",
+      "title": ""
+    },
+    {
+      "module": "skills",
+      "path": "create",
+      "name": "",
+      "title": ""
+    },
+    {
+      "module": "skills",
+      "path": "edit/:id",
+      "name": "",
+      "title": ""
+    },
+    {
+      "module": "skills-square",
+      "path": "/:pid?/skills-square/",
+      "name": "",
+      "title": "Skill广场"
+    },
+    {
+      "module": "skills-square",
+      "path": "list",
+      "name": "",
+      "title": "Skill广场列表"
+    },
+    {
+      "module": "skills-square",
+      "path": "detail/:id",
+      "name": "",
+      "title": "技能详情"
+    },
+    {
+      "module": "system-management",
+      "path": "/:pid?/system-management",
+      "name": "SystemManagementV1",
+      "title": "系统管理"
+    },
+    {
+      "module": "system-management",
+      "path": "api-key/",
+      "name": "ApiKeyV1",
+      "title": "API Key管理"
+    },
+    {
+      "module": "system-management",
+      "path": "/system-management",
+      "name": "SystemManagement",
+      "title": ""
+    },
+    {
+      "module": "system-management",
+      "path": "api-key/",
+      "name": "ApiKey",
+      "title": ""
+    },
+    {
+      "module": "training-pipeline",
+      "path": "/:pid?/training-pipeline",
+      "name": "TrainingPipeline",
+      "title": "在线训练-训推流水线"
+    },
+    {
+      "module": "training-pipeline",
+      "path": "list",
+      "name": "",
+      "title": "在线训练-训推流水线列表"
+    },
+    {
+      "module": "training-pipeline",
+      "path": "create/:type",
+      "name": "",
+      "title": "在线训练-新建训推流水线"
+    },
+    {
+      "module": "training-pipeline",
+      "path": "edit/:id",
+      "name": "",
+      "title": "在线训练-编辑训推流水线"
+    },
+    {
+      "module": "training-pipeline",
+      "path": "copy/:id",
+      "name": "",
+      "title": "在线训练-复制训推流水线"
+    },
+    {
+      "module": "training-pipeline",
+      "path": "detail/:id",
+      "name": "",
+      "title": "在线训练-训推流水线详情"
+    },
+    {
+      "module": "training-pipeline",
+      "path": "config",
+      "name": "",
+      "title": ""
+    },
+    {
+      "module": "training-pipeline",
+      "path": "history",
+      "name": "",
+      "title": ""
+    },
+    {
+      "module": "training-pipeline",
+      "path": "execute-detail/:taskId",
+      "name": "",
+      "title": ""
+    }
+  ],
+  "modulePages": [
+    {
+      "module": "ai-square",
+      "name": "ModelDetail",
+      "rel": "src/modules/ai-square/pages/ModelDetail.vue",
+      "sizeKB": 36.71,
+      "lines": 1042,
+      "elTags": 9
+    },
+    {
+      "module": "ai-square",
+      "name": "ModelList",
+      "rel": "src/modules/ai-square/pages/ModelList.vue",
+      "sizeKB": 29.99,
+      "lines": 900,
+      "elTags": 8
+    },
+    {
+      "module": "ai-square",
+      "name": "ModelPreview",
+      "rel": "src/modules/ai-square/pages/ModelPreview.vue",
+      "sizeKB": 20.61,
+      "lines": 572,
+      "elTags": 9
+    },
+    {
+      "module": "application",
+      "name": "index",
+      "rel": "src/modules/application/pages/detail/index.vue",
+      "sizeKB": 3.89,
+      "lines": 112,
+      "elTags": 2
+    },
+    {
+      "module": "application",
+      "name": "index",
+      "rel": "src/modules/application/pages/edit/index.vue",
+      "sizeKB": 19.21,
+      "lines": 536,
+      "elTags": 9
+    },
+    {
+      "module": "application",
+      "name": "VersionHistoryDrawer",
+      "rel": "src/modules/application/pages/edit/VersionHistoryDrawer.vue",
+      "sizeKB": 21.8,
+      "lines": 588,
+      "elTags": 11
+    },
+    {
+      "module": "application",
+      "name": "VersionInfoDialog",
+      "rel": "src/modules/application/pages/edit/VersionInfoDialog.vue",
+      "sizeKB": 15.84,
+      "lines": 479,
+      "elTags": 13
+    },
+    {
+      "module": "application",
+      "name": "ApplicationCard",
+      "rel": "src/modules/application/pages/list/ApplicationCard.vue",
+      "sizeKB": 12.75,
+      "lines": 423,
+      "elTags": 13
+    },
+    {
+      "module": "application",
+      "name": "ApplicationTable",
+      "rel": "src/modules/application/pages/list/ApplicationTable.vue",
+      "sizeKB": 24.28,
+      "lines": 666,
+      "elTags": 29
+    },
+    {
+      "module": "application",
+      "name": "MigrateAppDialog",
+      "rel": "src/modules/application/pages/list/components/MigrateAppDialog.vue",
+      "sizeKB": 4.69,
+      "lines": 138,
+      "elTags": 6
+    },
+    {
+      "module": "application",
+      "name": "guide",
+      "rel": "src/modules/application/pages/list/guide.vue",
+      "sizeKB": 2.86,
+      "lines": 109,
+      "elTags": 2
+    },
+    {
+      "module": "application",
+      "name": "index",
+      "rel": "src/modules/application/pages/list/index.vue",
+      "sizeKB": 27.86,
+      "lines": 782,
+      "elTags": 19
+    },
+    {
+      "module": "application",
+      "name": "index",
+      "rel": "src/modules/application/pages/preview/components/async-resume-form/index.vue",
+      "sizeKB": 6.34,
+      "lines": 184,
+      "elTags": 1
+    },
+    {
+      "module": "application",
+      "name": "ChatflowPreview",
+      "rel": "src/modules/application/pages/preview/components/ChatflowPreview.vue",
+      "sizeKB": 18.49,
+      "lines": 500,
+      "elTags": 16
+    },
+    {
+      "module": "application",
+      "name": "Preview",
+      "rel": "src/modules/application/pages/preview/components/Preview.vue",
+      "sizeKB": 1.64,
+      "lines": 54,
+      "elTags": 0
+    },
+    {
+      "module": "application",
+      "name": "SafetyRiskAlert",
+      "rel": "src/modules/application/pages/preview/components/SafetyRiskAlert.vue",
+      "sizeKB": 2.87,
+      "lines": 92,
+      "elTags": 2
+    },
+    {
+      "module": "application",
+      "name": "WorkflowPreview",
+      "rel": "src/modules/application/pages/preview/components/WorkflowPreview.vue",
+      "sizeKB": 17.16,
+      "lines": 490,
+      "elTags": 2
+    },
+    {
+      "module": "application",
+      "name": "ZeroCodePreview",
+      "rel": "src/modules/application/pages/preview/components/ZeroCodePreview.vue",
+      "sizeKB": 16.65,
+      "lines": 479,
+      "elTags": 16
+    },
+    {
+      "module": "application",
+      "name": "index",
+      "rel": "src/modules/application/pages/preview/index.vue",
+      "sizeKB": 5.04,
+      "lines": 145,
+      "elTags": 1
+    },
+    {
+      "module": "application-square",
+      "name": "header",
+      "rel": "src/modules/application-square/pages/detail/components/header.vue",
+      "sizeKB": 7.94,
+      "lines": 251,
+      "elTags": 8
+    },
+    {
+      "module": "application-square",
+      "name": "index",
+      "rel": "src/modules/application-square/pages/detail/index.vue",
+      "sizeKB": 2.24,
+      "lines": 73,
+      "elTags": 0
+    },
+    {
+      "module": "application-square",
+      "name": "card",
+      "rel": "src/modules/application-square/pages/list/components/card.vue",
+      "sizeKB": 8.41,
+      "lines": 292,
+      "elTags": 9
+    },
+    {
+      "module": "application-square",
+      "name": "InfoButton",
+      "rel": "src/modules/application-square/pages/list/components/InfoButton.vue",
+      "sizeKB": 1.99,
+      "lines": 81,
+      "elTags": 2
+    },
+    {
+      "module": "application-square",
+      "name": "index",
+      "rel": "src/modules/application-square/pages/list/index.vue",
+      "sizeKB": 28.41,
+      "lines": 831,
+      "elTags": 13
+    },
+    {
+      "module": "application-square",
+      "name": "ConfigDetail",
+      "rel": "src/modules/application-square/pages/preview/components/ConfigDetail.vue",
+      "sizeKB": 14.12,
+      "lines": 421,
+      "elTags": 11
+    },
+    {
+      "module": "application-square",
+      "name": "header",
+      "rel": "src/modules/application-square/pages/preview/components/header.vue",
+      "sizeKB": 4.76,
+      "lines": 166,
+      "elTags": 11
+    },
+    {
+      "module": "application-square",
+      "name": "index",
+      "rel": "src/modules/application-square/pages/preview/index.vue",
+      "sizeKB": 4.66,
+      "lines": 142,
+      "elTags": 1
+    },
+    {
+      "module": "data-analysis",
+      "name": "CharRangeBarChart",
+      "rel": "src/modules/data-analysis/pages/detail/components/CharRangeBarChart.vue",
+      "sizeKB": 3.86,
+      "lines": 118,
+      "elTags": 0
+    },
+    {
+      "module": "data-analysis",
+      "name": "ColumnsDistribution",
+      "rel": "src/modules/data-analysis/pages/detail/components/ColumnsDistribution.vue",
+      "sizeKB": 10.8,
+      "lines": 305,
+      "elTags": 2
+    },
+    {
+      "module": "data-analysis",
+      "name": "AbnormalDetectionConfig",
+      "rel": "src/modules/data-analysis/pages/detail/components/dataset-result-table/AbnormalDetectionConfig.vue",
+      "sizeKB": 2.52,
+      "lines": 95,
+      "elTags": 4
+    },
+    {
+      "module": "data-analysis",
+      "name": "columns-config",
+      "rel": "src/modules/data-analysis/pages/detail/components/dataset-result-table/dataset-config-table/columns-config.vue",
+      "sizeKB": 10.4,
+      "lines": 329,
+      "elTags": 10
+    },
+    {
+      "module": "data-analysis",
+      "name": "index",
+      "rel": "src/modules/data-analysis/pages/detail/components/dataset-result-table/dataset-config-table/index.vue",
+      "sizeKB": 16.57,
+      "lines": 498,
+      "elTags": 4
+    },
+    {
+      "module": "data-analysis",
+      "name": "index",
+      "rel": "src/modules/data-analysis/pages/detail/components/dataset-result-table/index.vue",
+      "sizeKB": 24.35,
+      "lines": 684,
+      "elTags": 11
+    },
+    {
+      "module": "data-analysis",
+      "name": "column-filter-item",
+      "rel": "src/modules/data-analysis/pages/detail/components/filters/column-filter-item.vue",
+      "sizeKB": 15.6,
+      "lines": 427,
+      "elTags": 18
+    },
+    {
+      "module": "data-analysis",
+      "name": "index",
+      "rel": "src/modules/data-analysis/pages/detail/components/filters/index.vue",
+      "sizeKB": 30.73,
+      "lines": 904,
+      "elTags": 19
+    },
+    {
+      "module": "data-analysis",
+      "name": "repetition-cell-selector",
+      "rel": "src/modules/data-analysis/pages/detail/components/filters/repetition-cell-selector.vue",
+      "sizeKB": 15.61,
+      "lines": 493,
+      "elTags": 16
+    },
+    {
+      "module": "data-analysis",
+      "name": "table-filter-item",
+      "rel": "src/modules/data-analysis/pages/detail/components/filters/table-filter-item.vue",
+      "sizeKB": 9.6,
+      "lines": 282,
+      "elTags": 9
+    },
+    {
+      "module": "data-analysis",
+      "name": "ResultStatistics",
+      "rel": "src/modules/data-analysis/pages/detail/components/ResultStatistics.vue",
+      "sizeKB": 7.99,
+      "lines": 236,
+      "elTags": 2
+    },
+    {
+      "module": "data-analysis",
+      "name": "index",
+      "rel": "src/modules/data-analysis/pages/detail/index.vue",
+      "sizeKB": 19.6,
+      "lines": 543,
+      "elTags": 6
+    },
+    {
+      "module": "data-analysis",
+      "name": "empty",
+      "rel": "src/modules/data-analysis/pages/list/components/empty.vue",
+      "sizeKB": 2.68,
+      "lines": 104,
+      "elTags": 2
+    },
+    {
+      "module": "data-analysis",
+      "name": "index",
+      "rel": "src/modules/data-analysis/pages/list/components/index.vue",
+      "sizeKB": 15.14,
+      "lines": 423,
+      "elTags": 5
+    },
+    {
+      "module": "data-analysis",
+      "name": "operation-buttons",
+      "rel": "src/modules/data-analysis/pages/list/components/operation-buttons.vue",
+      "sizeKB": 4.12,
+      "lines": 143,
+      "elTags": 2
+    },
+    {
+      "module": "data-analysis",
+      "name": "status-comp",
+      "rel": "src/modules/data-analysis/pages/list/components/status-comp.vue",
+      "sizeKB": 3.32,
+      "lines": 117,
+      "elTags": 2
+    },
+    {
+      "module": "data-analysis",
+      "name": "index",
+      "rel": "src/modules/data-analysis/pages/list/index.vue",
+      "sizeKB": 5.46,
+      "lines": 166,
+      "elTags": 0
+    },
+    {
+      "module": "data-management",
+      "name": "index",
+      "rel": "src/modules/data-management/pages/create/index.vue",
+      "sizeKB": 12.77,
+      "lines": 373,
+      "elTags": 6
+    },
+    {
+      "module": "data-management",
+      "name": "AutoUpdateDialog",
+      "rel": "src/modules/data-management/pages/detail/components/AutoUpdateDialog.vue",
+      "sizeKB": 3.34,
+      "lines": 128,
+      "elTags": 9
+    },
+    {
+      "module": "data-management",
+      "name": "BatchUpdateDialog",
+      "rel": "src/modules/data-management/pages/detail/components/BatchUpdateDialog.vue",
+      "sizeKB": 8.46,
+      "lines": 275,
+      "elTags": 13
+    },
+    {
+      "module": "data-management",
+      "name": "ChunkCardView",
+      "rel": "src/modules/data-management/pages/detail/components/ChunkCardView.vue",
+      "sizeKB": 8.44,
+      "lines": 295,
+      "elTags": 10
+    },
+    {
+      "module": "data-management",
+      "name": "ChunkDetails",
+      "rel": "src/modules/data-management/pages/detail/components/ChunkDetails.vue",
+      "sizeKB": 26.3,
+      "lines": 773,
+      "elTags": 14
+    },
+    {
+      "module": "data-management",
+      "name": "ChunkList",
+      "rel": "src/modules/data-management/pages/detail/components/ChunkList.vue",
+      "sizeKB": 7.85,
+      "lines": 230,
+      "elTags": 13
+    },
+    {
+      "module": "data-management",
+      "name": "ChunkContentCard",
+      "rel": "src/modules/data-management/pages/detail/components/components/ChunkContentCard.vue",
+      "sizeKB": 4.27,
+      "lines": 164,
+      "elTags": 1
+    },
+    {
+      "module": "data-management",
+      "name": "BatchUpdateDialog",
+      "rel": "src/modules/data-management/pages/detail/components/components/code/BatchUpdateDialog.vue",
+      "sizeKB": 4,
+      "lines": 136,
+      "elTags": 4
+    },
+    {
+      "module": "data-management",
+      "name": "CodeOriginDocuments",
+      "rel": "src/modules/data-management/pages/detail/components/components/code/CodeOriginDocuments.vue",
+      "sizeKB": 22.68,
+      "lines": 673,
+      "elTags": 28
+    },
+    {
+      "module": "data-management",
+      "name": "CodePreviewDialog",
+      "rel": "src/modules/data-management/pages/detail/components/components/code/CodePreviewDialog.vue",
+      "sizeKB": 3.23,
+      "lines": 115,
+      "elTags": 2
+    },
+    {
+      "module": "data-management",
+      "name": "CodeView",
+      "rel": "src/modules/data-management/pages/detail/components/components/code/CodeView.vue",
+      "sizeKB": 3.48,
+      "lines": 127,
+      "elTags": 0
+    },
+    {
+      "module": "data-management",
+      "name": "ImportRepoAppsDialog",
+      "rel": "src/modules/data-management/pages/detail/components/components/code/ImportRepoAppsDialog.vue",
+      "sizeKB": 6.28,
+      "lines": 211,
+      "elTags": 11
+    },
+    {
+      "module": "data-management",
+      "name": "ImportRepoPage",
+      "rel": "src/modules/data-management/pages/detail/components/components/code/ImportRepoPage.vue",
+      "sizeKB": 15.19,
+      "lines": 416,
+      "elTags": 24
+    },
+    {
+      "module": "data-management",
+      "name": "ConfigPanel",
+      "rel": "src/modules/data-management/pages/detail/components/components/ConfigPanel.vue",
+      "sizeKB": 15.83,
+      "lines": 391,
+      "elTags": 16
+    },
+    {
+      "module": "data-management",
+      "name": "DataStructureStep",
+      "rel": "src/modules/data-management/pages/detail/components/components/DataStructureStep.vue",
+      "sizeKB": 23.58,
+      "lines": 761,
+      "elTags": 5
+    },
+    {
+      "module": "data-management",
+      "name": "FileImportStep",
+      "rel": "src/modules/data-management/pages/detail/components/components/FileImportStep.vue",
+      "sizeKB": 35.47,
+      "lines": 1016,
+      "elTags": 20
+    },
+    {
+      "module": "data-management",
+      "name": "FileTreePanel",
+      "rel": "src/modules/data-management/pages/detail/components/components/FileTreePanel.vue",
+      "sizeKB": 6.09,
+      "lines": 224,
+      "elTags": 2
+    },
+    {
+      "module": "data-management",
+      "name": "ImportTagSelection",
+      "rel": "src/modules/data-management/pages/detail/components/components/ImportTagSelection.vue",
+      "sizeKB": 14.28,
+      "lines": 505,
+      "elTags": 12
+    },
+    {
+      "module": "data-management",
+      "name": "structuredDocuments",
+      "rel": "src/modules/data-management/pages/detail/components/components/structuredDocuments.vue",
+      "sizeKB": 2.81,
+      "lines": 104,
+      "elTags": 0
+    },
+    {
+      "module": "data-management",
+      "name": "DocsTab",
+      "rel": "src/modules/data-management/pages/detail/components/components/tabs/DocsTab.vue",
+      "sizeKB": 9.12,
+      "lines": 267,
+      "elTags": 8
+    },
+    {
+      "module": "data-management",
+      "name": "LocalUploadTab",
+      "rel": "src/modules/data-management/pages/detail/components/components/tabs/LocalUploadTab.vue",
+      "sizeKB": 12.67,
+      "lines": 361,
+      "elTags": 9
+    },
+    {
+      "module": "data-management",
+      "name": "TechLinkTab",
+      "rel": "src/modules/data-management/pages/detail/components/components/tabs/TechLinkTab.vue",
+      "sizeKB": 10.61,
+      "lines": 326,
+      "elTags": 10
+    },
+    {
+      "module": "data-management",
+      "name": "ThirdPartyTab",
+      "rel": "src/modules/data-management/pages/detail/components/components/tabs/ThirdPartyTab.vue",
+      "sizeKB": 7.71,
+      "lines": 239,
+      "elTags": 9
+    },
+    {
+      "module": "data-management",
+      "name": "unstructuredDocuments",
+      "rel": "src/modules/data-management/pages/detail/components/components/unstructuredDocuments.vue",
+      "sizeKB": 6.93,
+      "lines": 201,
+      "elTags": 2
+    },
+    {
+      "module": "data-management",
+      "name": "UpdateStructureDialog",
+      "rel": "src/modules/data-management/pages/detail/components/components/UpdateStructureDialog.vue",
+      "sizeKB": 15.7,
+      "lines": 505,
+      "elTags": 5
+    },
+    {
+      "module": "data-management",
+      "name": "DebugTest",
+      "rel": "src/modules/data-management/pages/detail/components/DebugTest.vue",
+      "sizeKB": 34.55,
+      "lines": 890,
+      "elTags": 18
+    },
+    {
+      "module": "data-management",
+      "name": "DocumentTagPopover",
+      "rel": "src/modules/data-management/pages/detail/components/DocumentTagPopover.vue",
+      "sizeKB": 13.52,
+      "lines": 450,
+      "elTags": 12
+    },
+    {
+      "module": "data-management",
+      "name": "EditChunkDialog",
+      "rel": "src/modules/data-management/pages/detail/components/EditChunkDialog.vue",
+      "sizeKB": 13.62,
+      "lines": 457,
+      "elTags": 10
+    },
+    {
+      "module": "data-management",
+      "name": "FilterScopeDialog",
+      "rel": "src/modules/data-management/pages/detail/components/FilterScopeDialog.vue",
+      "sizeKB": 27.41,
+      "lines": 773,
+      "elTags": 30
+    },
+    {
+      "module": "data-management",
+      "name": "ImportDocuments",
+      "rel": "src/modules/data-management/pages/detail/components/ImportDocuments.vue",
+      "sizeKB": 5.9,
+      "lines": 178,
+      "elTags": 5
+    },
+    {
+      "module": "data-management",
+      "name": "KnowledgeBaseInfo",
+      "rel": "src/modules/data-management/pages/detail/components/KnowledgeBaseInfo.vue",
+      "sizeKB": 11.7,
+      "lines": 285,
+      "elTags": 0
+    },
+    {
+      "module": "data-management",
+      "name": "LazyDocSelect",
+      "rel": "src/modules/data-management/pages/detail/components/LazyDocSelect.vue",
+      "sizeKB": 6.92,
+      "lines": 230,
+      "elTags": 3
+    },
+    {
+      "module": "data-management",
+      "name": "OriginalDocuments",
+      "rel": "src/modules/data-management/pages/detail/components/OriginalDocuments.vue",
+      "sizeKB": 37.28,
+      "lines": 1060,
+      "elTags": 39
+    },
+    {
+      "module": "data-management",
+      "name": "segmentDetails",
+      "rel": "src/modules/data-management/pages/detail/components/segmentDetails.vue",
+      "sizeKB": 31.2,
+      "lines": 814,
+      "elTags": 29
+    },
+    {
+      "module": "data-management",
+      "name": "TagManagementDrawer",
+      "rel": "src/modules/data-management/pages/detail/components/TagManagementDrawer.vue",
+      "sizeKB": 22.64,
+      "lines": 733,
+      "elTags": 30
+    },
+    {
+      "module": "data-management",
+      "name": "index",
+      "rel": "src/modules/data-management/pages/detail/index.vue",
+      "sizeKB": 28.19,
+      "lines": 780,
+      "elTags": 19
+    },
+    {
+      "module": "data-management",
+      "name": "index",
+      "rel": "src/modules/data-management/pages/edit/index.vue",
+      "sizeKB": 10.86,
+      "lines": 333,
+      "elTags": 3
+    },
+    {
+      "module": "data-management",
+      "name": "KnowledgeBaseFilterBar",
+      "rel": "src/modules/data-management/pages/list/components/KnowledgeBaseFilterBar.vue",
+      "sizeKB": 4.92,
+      "lines": 159,
+      "elTags": 10
+    },
+    {
+      "module": "data-management",
+      "name": "defaultPage",
+      "rel": "src/modules/data-management/pages/list/defaultPage.vue",
+      "sizeKB": 6.44,
+      "lines": 214,
+      "elTags": 2
+    },
+    {
+      "module": "data-management",
+      "name": "index",
+      "rel": "src/modules/data-management/pages/list/index.vue",
+      "sizeKB": 23.71,
+      "lines": 697,
+      "elTags": 7
+    },
+    {
+      "module": "data-management",
+      "name": "KnowledgeBaseCards",
+      "rel": "src/modules/data-management/pages/list/KnowledgeBaseCards.vue",
+      "sizeKB": 21.46,
+      "lines": 558,
+      "elTags": 11
+    },
+    {
+      "module": "data-management",
+      "name": "KnowledgeBaseTable",
+      "rel": "src/modules/data-management/pages/list/KnowledgeBaseTable.vue",
+      "sizeKB": 14.56,
+      "lines": 430,
+      "elTags": 7
+    },
+    {
+      "module": "data-workflow",
+      "name": "CleanOperatorDrawer",
+      "rel": "src/modules/data-workflow/pages/detail/components/CleanOperatorDrawer.vue",
+      "sizeKB": 35.63,
+      "lines": 980,
+      "elTags": 13
+    },
+    {
+      "module": "data-workflow",
+      "name": "DataPreviewDialog",
+      "rel": "src/modules/data-workflow/pages/detail/components/DataPreviewDialog.vue",
+      "sizeKB": 14.67,
+      "lines": 452,
+      "elTags": 9
+    },
+    {
+      "module": "data-workflow",
+      "name": "Workflow",
+      "rel": "src/modules/data-workflow/pages/detail/components/Workflow.vue",
+      "sizeKB": 15.68,
+      "lines": 436,
+      "elTags": 0
+    },
+    {
+      "module": "data-workflow",
+      "name": "index",
+      "rel": "src/modules/data-workflow/pages/detail/index.vue",
+      "sizeKB": 19.78,
+      "lines": 531,
+      "elTags": 7
+    },
+    {
+      "module": "data-workflow",
+      "name": "index",
+      "rel": "src/modules/data-workflow/pages/history/index.vue",
+      "sizeKB": 2.39,
+      "lines": 91,
+      "elTags": 2
+    },
+    {
+      "module": "data-workflow",
+      "name": "create-dialog",
+      "rel": "src/modules/data-workflow/pages/list/components/create-dialog.vue",
+      "sizeKB": 14.34,
+      "lines": 389,
+      "elTags": 10
+    },
+    {
+      "module": "data-workflow",
+      "name": "execute-dialog",
+      "rel": "src/modules/data-workflow/pages/list/components/execute-dialog.vue",
+      "sizeKB": 20,
+      "lines": 578,
+      "elTags": 19
+    },
+    {
+      "module": "data-workflow",
+      "name": "guide",
+      "rel": "src/modules/data-workflow/pages/list/components/guide.vue",
+      "sizeKB": 2.52,
+      "lines": 99,
+      "elTags": 2
+    },
+    {
+      "module": "data-workflow",
+      "name": "lasted-task",
+      "rel": "src/modules/data-workflow/pages/list/components/lasted-task.vue",
+      "sizeKB": 2.4,
+      "lines": 80,
+      "elTags": 0
+    },
+    {
+      "module": "data-workflow",
+      "name": "operation-buttons",
+      "rel": "src/modules/data-workflow/pages/list/components/operation-buttons.vue",
+      "sizeKB": 7.88,
+      "lines": 240,
+      "elTags": 7
+    },
+    {
+      "module": "data-workflow",
+      "name": "table",
+      "rel": "src/modules/data-workflow/pages/list/components/table.vue",
+      "sizeKB": 21.89,
+      "lines": 669,
+      "elTags": 6
+    },
+    {
+      "module": "data-workflow",
+      "name": "index",
+      "rel": "src/modules/data-workflow/pages/list/index.vue",
+      "sizeKB": 5.16,
+      "lines": 162,
+      "elTags": 0
+    },
+    {
+      "module": "datasets",
+      "name": "upload-file",
+      "rel": "src/modules/datasets/pages/create/components/upload-file.vue",
+      "sizeKB": 25.5,
+      "lines": 657,
+      "elTags": 13
+    },
+    {
+      "module": "datasets",
+      "name": "user-select",
+      "rel": "src/modules/datasets/pages/create/components/user-select.vue",
+      "sizeKB": 0.74,
+      "lines": 27,
+      "elTags": 0
+    },
+    {
+      "module": "datasets",
+      "name": "index",
+      "rel": "src/modules/datasets/pages/create/index.vue",
+      "sizeKB": 39.02,
+      "lines": 970,
+      "elTags": 30
+    },
+    {
+      "module": "datasets",
+      "name": "base-info",
+      "rel": "src/modules/datasets/pages/detail/base-info.vue",
+      "sizeKB": 7.15,
+      "lines": 181,
+      "elTags": 15
+    },
+    {
+      "module": "datasets",
+      "name": "add-version-dialog",
+      "rel": "src/modules/datasets/pages/detail/components/add-version-dialog.vue",
+      "sizeKB": 5.07,
+      "lines": 149,
+      "elTags": 13
+    },
+    {
+      "module": "datasets",
+      "name": "conversation-enlarge-view",
+      "rel": "src/modules/datasets/pages/detail/components/conversation-enlarge-view.vue",
+      "sizeKB": 8.06,
+      "lines": 253,
+      "elTags": 5
+    },
+    {
+      "module": "datasets",
+      "name": "edit-admin-user",
+      "rel": "src/modules/datasets/pages/detail/components/edit-admin-user.vue",
+      "sizeKB": 2.73,
+      "lines": 100,
+      "elTags": 6
+    },
+    {
+      "module": "datasets",
+      "name": "edit-description",
+      "rel": "src/modules/datasets/pages/detail/components/edit-description.vue",
+      "sizeKB": 3.07,
+      "lines": 103,
+      "elTags": 7
+    },
+    {
+      "module": "datasets",
+      "name": "eltable-conversation-inner",
+      "rel": "src/modules/datasets/pages/detail/components/eltable-conversation-inner.vue",
+      "sizeKB": 16.74,
+      "lines": 401,
+      "elTags": 18
+    },
+    {
+      "module": "datasets",
+      "name": "eltable-conversation",
+      "rel": "src/modules/datasets/pages/detail/components/eltable-conversation.vue",
+      "sizeKB": 3.82,
+      "lines": 152,
+      "elTags": 2
+    },
+    {
+      "module": "datasets",
+      "name": "eltable-custom",
+      "rel": "src/modules/datasets/pages/detail/components/eltable-custom.vue",
+      "sizeKB": 2.61,
+      "lines": 86,
+      "elTags": 4
+    },
+    {
+      "module": "datasets",
+      "name": "eltable-prompt-response-multi-inner",
+      "rel": "src/modules/datasets/pages/detail/components/eltable-prompt-response-multi-inner.vue",
+      "sizeKB": 25.19,
+      "lines": 651,
+      "elTags": 8
+    },
+    {
+      "module": "datasets",
+      "name": "eltable-prompt-response-multi",
+      "rel": "src/modules/datasets/pages/detail/components/eltable-prompt-response-multi.vue",
+      "sizeKB": 2.98,
+      "lines": 113,
+      "elTags": 2
+    },
+    {
+      "module": "datasets",
+      "name": "eltable-prompt-response",
+      "rel": "src/modules/datasets/pages/detail/components/eltable-prompt-response.vue",
+      "sizeKB": 11.13,
+      "lines": 305,
+      "elTags": 10
+    },
+    {
+      "module": "datasets",
+      "name": "eltable-text",
+      "rel": "src/modules/datasets/pages/detail/components/eltable-text.vue",
+      "sizeKB": 3.65,
+      "lines": 103,
+      "elTags": 7
+    },
+    {
+      "module": "datasets",
+      "name": "empty-state",
+      "rel": "src/modules/datasets/pages/detail/components/empty-state.vue",
+      "sizeKB": 2.15,
+      "lines": 67,
+      "elTags": 4
+    },
+    {
+      "module": "datasets",
+      "name": "export-datasets-dialog",
+      "rel": "src/modules/datasets/pages/detail/components/export-datasets-dialog.vue",
+      "sizeKB": 8.21,
+      "lines": 226,
+      "elTags": 14
+    },
+    {
+      "module": "datasets",
+      "name": "import-datasets-dialog",
+      "rel": "src/modules/datasets/pages/detail/components/import-datasets-dialog.vue",
+      "sizeKB": 6.87,
+      "lines": 192,
+      "elTags": 10
+    },
+    {
+      "module": "datasets",
+      "name": "importOrExport-record-dialog",
+      "rel": "src/modules/datasets/pages/detail/components/importOrExport-record-dialog.vue",
+      "sizeKB": 14.35,
+      "lines": 372,
+      "elTags": 27
+    },
+    {
+      "module": "datasets",
+      "name": "MediaContentRenderer",
+      "rel": "src/modules/datasets/pages/detail/components/MediaContentRenderer.vue",
+      "sizeKB": 8.72,
+      "lines": 274,
+      "elTags": 4
+    },
+    {
+      "module": "datasets",
+      "name": "prompt-response-multi-enlarge-view",
+      "rel": "src/modules/datasets/pages/detail/components/prompt-response-multi-enlarge-view.vue",
+      "sizeKB": 5.86,
+      "lines": 195,
+      "elTags": 5
+    },
+    {
+      "module": "datasets",
+      "name": "reference-tasks-dialog",
+      "rel": "src/modules/datasets/pages/detail/components/reference-tasks-dialog.vue",
+      "sizeKB": 8.42,
+      "lines": 245,
+      "elTags": 13
+    },
+    {
+      "module": "datasets",
+      "name": "show-reference-tasks-dialog",
+      "rel": "src/modules/datasets/pages/detail/components/show-reference-tasks-dialog.vue",
+      "sizeKB": 6.7,
+      "lines": 201,
+      "elTags": 5
+    },
+    {
+      "module": "datasets",
+      "name": "to-detail",
+      "rel": "src/modules/datasets/pages/detail/components/to-detail.vue",
+      "sizeKB": 4.78,
+      "lines": 128,
+      "elTags": 8
+    },
+    {
+      "module": "datasets",
+      "name": "version-content",
+      "rel": "src/modules/datasets/pages/detail/components/version-content.vue",
+      "sizeKB": 39.02,
+      "lines": 910,
+      "elTags": 21
+    },
+    {
+      "module": "datasets",
+      "name": "version-menu",
+      "rel": "src/modules/datasets/pages/detail/components/version-menu.vue",
+      "sizeKB": 6.64,
+      "lines": 167,
+      "elTags": 4
+    },
+    {
+      "module": "datasets",
+      "name": "index",
+      "rel": "src/modules/datasets/pages/detail/index.vue",
+      "sizeKB": 7.53,
+      "lines": 238,
+      "elTags": 5
+    },
+    {
+      "module": "datasets",
+      "name": "preset-detail",
+      "rel": "src/modules/datasets/pages/detail/preset-detail.vue",
+      "sizeKB": 16.01,
+      "lines": 450,
+      "elTags": 7
+    },
+    {
+      "module": "datasets",
+      "name": "version",
+      "rel": "src/modules/datasets/pages/detail/version.vue",
+      "sizeKB": 0.71,
+      "lines": 17,
+      "elTags": 0
+    },
+    {
+      "module": "datasets",
+      "name": "empty",
+      "rel": "src/modules/datasets/pages/list/components/empty.vue",
+      "sizeKB": 2.78,
+      "lines": 64,
+      "elTags": 2
+    },
+    {
+      "module": "datasets",
+      "name": "label-description",
+      "rel": "src/modules/datasets/pages/list/components/label-description.vue",
+      "sizeKB": 0.59,
+      "lines": 19,
+      "elTags": 2
+    },
+    {
+      "module": "datasets",
+      "name": "index",
+      "rel": "src/modules/datasets/pages/list/components/preset-datasets/index.vue",
+      "sizeKB": 11.96,
+      "lines": 375,
+      "elTags": 3
+    },
+    {
+      "module": "datasets",
+      "name": "import-status",
+      "rel": "src/modules/datasets/pages/list/components/project-datasets/import-status.vue",
+      "sizeKB": 6.25,
+      "lines": 163,
+      "elTags": 7
+    },
+    {
+      "module": "datasets",
+      "name": "index",
+      "rel": "src/modules/datasets/pages/list/components/project-datasets/index.vue",
+      "sizeKB": 29.09,
+      "lines": 828,
+      "elTags": 5
+    },
+    {
+      "module": "datasets",
+      "name": "operation-buttons",
+      "rel": "src/modules/datasets/pages/list/components/project-datasets/operation-buttons.vue",
+      "sizeKB": 11.82,
+      "lines": 327,
+      "elTags": 7
+    },
+    {
+      "module": "datasets",
+      "name": "publish-status",
+      "rel": "src/modules/datasets/pages/list/components/project-datasets/publish-status.vue",
+      "sizeKB": 2.32,
+      "lines": 89,
+      "elTags": 2
+    },
+    {
+      "module": "datasets",
+      "name": "version-pop",
+      "rel": "src/modules/datasets/pages/list/components/project-datasets/version-pop.vue",
+      "sizeKB": 6.5,
+      "lines": 184,
+      "elTags": 3
+    },
+    {
+      "module": "datasets",
+      "name": "index",
+      "rel": "src/modules/datasets/pages/list/index.vue",
+      "sizeKB": 3.23,
+      "lines": 99,
+      "elTags": 4
+    },
+    {
+      "module": "docs",
+      "name": "index",
+      "rel": "src/modules/docs/pages/index.vue",
+      "sizeKB": 13.59,
+      "lines": 450,
+      "elTags": 1
+    },
+    {
+      "module": "mcp",
+      "name": "index",
+      "rel": "src/modules/mcp/pages/detail/index.vue",
+      "sizeKB": 13.77,
+      "lines": 363,
+      "elTags": 8
+    },
+    {
+      "module": "mcp",
+      "name": "new-index",
+      "rel": "src/modules/mcp/pages/detail/new-index.vue",
+      "sizeKB": 20.05,
+      "lines": 534,
+      "elTags": 10
+    },
+    {
+      "module": "mcp",
+      "name": "mcp-card",
+      "rel": "src/modules/mcp/pages/list/components/mcp-card.vue",
+      "sizeKB": 9.45,
+      "lines": 301,
+      "elTags": 7
+    },
+    {
+      "module": "mcp",
+      "name": "new-mcp-card",
+      "rel": "src/modules/mcp/pages/list/components/new-mcp-card.vue",
+      "sizeKB": 10.46,
+      "lines": 293,
+      "elTags": 12
+    },
+    {
+      "module": "mcp",
+      "name": "tabs",
+      "rel": "src/modules/mcp/pages/list/components/tabs.vue",
+      "sizeKB": 1.53,
+      "lines": 71,
+      "elTags": 1
+    },
+    {
+      "module": "mcp",
+      "name": "index",
+      "rel": "src/modules/mcp/pages/list/index.vue",
+      "sizeKB": 10.02,
+      "lines": 348,
+      "elTags": 3
+    },
+    {
+      "module": "mcp",
+      "name": "new-index",
+      "rel": "src/modules/mcp/pages/list/new-index.vue",
+      "sizeKB": 27.8,
+      "lines": 837,
+      "elTags": 22
+    },
+    {
+      "module": "mcp",
+      "name": "APIKeyBindPage",
+      "rel": "src/modules/mcp/pages/support-out/APIKeyBindPage.vue",
+      "sizeKB": 2.66,
+      "lines": 100,
+      "elTags": 2
+    },
+    {
+      "module": "mcp-management",
+      "name": "index",
+      "rel": "src/modules/mcp-management/pages/auth/index.vue",
+      "sizeKB": 19.36,
+      "lines": 503,
+      "elTags": 35
+    },
+    {
+      "module": "mcp-management",
+      "name": "AddToolDialog",
+      "rel": "src/modules/mcp-management/pages/create/components/AddToolDialog.vue",
+      "sizeKB": 3.21,
+      "lines": 113,
+      "elTags": 7
+    },
+    {
+      "module": "mcp-management",
+      "name": "DeleteToolPopover",
+      "rel": "src/modules/mcp-management/pages/create/components/DeleteToolPopover.vue",
+      "sizeKB": 3.41,
+      "lines": 109,
+      "elTags": 3
+    },
+    {
+      "module": "mcp-management",
+      "name": "CustomCollapse",
+      "rel": "src/modules/mcp-management/pages/create/CustomCollapse.vue",
+      "sizeKB": 2.13,
+      "lines": 83,
+      "elTags": 2
+    },
+    {
+      "module": "mcp-management",
+      "name": "HTTPHeadersPreviewDialog",
+      "rel": "src/modules/mcp-management/pages/create/HTTPHeadersPreviewDialog.vue",
+      "sizeKB": 1.22,
+      "lines": 55,
+      "elTags": 1
+    },
+    {
+      "module": "mcp-management",
+      "name": "HTTPToolsConfigFormItem",
+      "rel": "src/modules/mcp-management/pages/create/HTTPToolsConfigFormItem.vue",
+      "sizeKB": 27.08,
+      "lines": 625,
+      "elTags": 44
+    },
+    {
+      "module": "mcp-management",
+      "name": "index",
+      "rel": "src/modules/mcp-management/pages/create/index.vue",
+      "sizeKB": 64.56,
+      "lines": 1526,
+      "elTags": 62
+    },
+    {
+      "module": "mcp-management",
+      "name": "LocalServiceConfigFormItem",
+      "rel": "src/modules/mcp-management/pages/create/LocalServiceConfigFormItem.vue",
+      "sizeKB": 27.6,
+      "lines": 614,
+      "elTags": 36
+    },
+    {
+      "module": "mcp-management",
+      "name": "LocalServiceToolsConfigFormItem",
+      "rel": "src/modules/mcp-management/pages/create/LocalServiceToolsConfigFormItem.vue",
+      "sizeKB": 12.21,
+      "lines": 308,
+      "elTags": 14
+    },
+    {
+      "module": "mcp-management",
+      "name": "MCPAuthTypeSelect",
+      "rel": "src/modules/mcp-management/pages/create/MCPAuthTypeSelect.vue",
+      "sizeKB": 2.49,
+      "lines": 81,
+      "elTags": 2
+    },
+    {
+      "module": "mcp-management",
+      "name": "MCPKsnSelect",
+      "rel": "src/modules/mcp-management/pages/create/MCPKsnSelect.vue",
+      "sizeKB": 4.74,
+      "lines": 152,
+      "elTags": 0
+    },
+    {
+      "module": "mcp-management",
+      "name": "MCPProjectSelect",
+      "rel": "src/modules/mcp-management/pages/create/MCPProjectSelect.vue",
+      "sizeKB": 3.01,
+      "lines": 106,
+      "elTags": 2
+    },
+    {
+      "module": "mcp-management",
+      "name": "MCPProviderSelect",
+      "rel": "src/modules/mcp-management/pages/create/MCPProviderSelect.vue",
+      "sizeKB": 15.23,
+      "lines": 436,
+      "elTags": 14
+    },
+    {
+      "module": "mcp-management",
+      "name": "MCPServerTypeSelect",
+      "rel": "src/modules/mcp-management/pages/create/MCPServerTypeSelect.vue",
+      "sizeKB": 5.99,
+      "lines": 194,
+      "elTags": 4
+    },
+    {
+      "module": "mcp-management",
+      "name": "MCPTagSelect",
+      "rel": "src/modules/mcp-management/pages/create/MCPTagSelect.vue",
+      "sizeKB": 2.83,
+      "lines": 100,
+      "elTags": 2
+    },
+    {
+      "module": "mcp-management",
+      "name": "MCPToolsDebugger",
+      "rel": "src/modules/mcp-management/pages/create/MCPToolsDebugger.vue",
+      "sizeKB": 13.52,
+      "lines": 412,
+      "elTags": 4
+    },
+    {
+      "module": "mcp-management",
+      "name": "MCPToolsDebuggerSelect",
+      "rel": "src/modules/mcp-management/pages/create/MCPToolsDebuggerSelect.vue",
+      "sizeKB": 12.99,
+      "lines": 384,
+      "elTags": 4
+    },
+    {
+      "module": "mcp-management",
+      "name": "MCPVisibilitySelect",
+      "rel": "src/modules/mcp-management/pages/create/MCPVisibilitySelect.vue",
+      "sizeKB": 6.57,
+      "lines": 193,
+      "elTags": 9
+    },
+    {
+      "module": "mcp-management",
+      "name": "RPCToolsConfigFormItem",
+      "rel": "src/modules/mcp-management/pages/create/RPCToolsConfigFormItem.vue",
+      "sizeKB": 25.37,
+      "lines": 618,
+      "elTags": 24
+    },
+    {
+      "module": "mcp-management",
+      "name": "ServerIntroductionMarkdownDialog",
+      "rel": "src/modules/mcp-management/pages/create/ServerIntroductionMarkdownDialog.vue",
+      "sizeKB": 1.06,
+      "lines": 49,
+      "elTags": 1
+    },
+    {
+      "module": "mcp-management",
+      "name": "index",
+      "rel": "src/modules/mcp-management/pages/detail/index.vue",
+      "sizeKB": 4.7,
+      "lines": 148,
+      "elTags": 8
+    },
+    {
+      "module": "mcp-management",
+      "name": "StepOneFormPreview",
+      "rel": "src/modules/mcp-management/pages/detail/StepOneFormPreview.vue",
+      "sizeKB": 16.9,
+      "lines": 441,
+      "elTags": 20
+    },
+    {
+      "module": "mcp-management",
+      "name": "EmptyGuidePage",
+      "rel": "src/modules/mcp-management/pages/list/EmptyGuidePage.vue",
+      "sizeKB": 2.99,
+      "lines": 116,
+      "elTags": 0
+    },
+    {
+      "module": "mcp-management",
+      "name": "index",
+      "rel": "src/modules/mcp-management/pages/list/index.vue",
+      "sizeKB": 5.56,
+      "lines": 179,
+      "elTags": 5
+    },
+    {
+      "module": "mcp-management",
+      "name": "MCPLimitPage",
+      "rel": "src/modules/mcp-management/pages/list/MCPLimitPage.vue",
+      "sizeKB": 33.29,
+      "lines": 980,
+      "elTags": 25
+    },
+    {
+      "module": "mcp-management",
+      "name": "MyMCP",
+      "rel": "src/modules/mcp-management/pages/list/MyMCP.vue",
+      "sizeKB": 60.5,
+      "lines": 1602,
+      "elTags": 43
+    },
+    {
+      "module": "mcp-management",
+      "name": "MyMCPApply",
+      "rel": "src/modules/mcp-management/pages/list/MyMCPApply.vue",
+      "sizeKB": 14.01,
+      "lines": 397,
+      "elTags": 17
+    },
+    {
+      "module": "mcp-management",
+      "name": "index",
+      "rel": "src/modules/mcp-management/pages/monitor/index.vue",
+      "sizeKB": 4.65,
+      "lines": 175,
+      "elTags": 2
+    },
+    {
+      "module": "memory",
+      "name": "AddMemoryDialog",
+      "rel": "src/modules/memory/pages/detail/components/AddMemoryDialog.vue",
+      "sizeKB": 11.27,
+      "lines": 374,
+      "elTags": 11
+    },
+    {
+      "module": "memory",
+      "name": "MemoryFragmentsTab",
+      "rel": "src/modules/memory/pages/detail/components/MemoryFragmentsTab.vue",
+      "sizeKB": 23.29,
+      "lines": 740,
+      "elTags": 19
+    },
+    {
+      "module": "memory",
+      "name": "MemoryVariablesTab",
+      "rel": "src/modules/memory/pages/detail/components/MemoryVariablesTab.vue",
+      "sizeKB": 18,
+      "lines": 580,
+      "elTags": 21
+    },
+    {
+      "module": "memory",
+      "name": "VariableDialog",
+      "rel": "src/modules/memory/pages/detail/components/VariableDialog.vue",
+      "sizeKB": 11.9,
+      "lines": 382,
+      "elTags": 19
+    },
+    {
+      "module": "memory",
+      "name": "index",
+      "rel": "src/modules/memory/pages/detail/index.vue",
+      "sizeKB": 21.62,
+      "lines": 683,
+      "elTags": 9
+    },
+    {
+      "module": "memory",
+      "name": "MemoryDialog",
+      "rel": "src/modules/memory/pages/list/components/MemoryDialog.vue",
+      "sizeKB": 7.43,
+      "lines": 203,
+      "elTags": 9
+    },
+    {
+      "module": "memory",
+      "name": "MemoryTable",
+      "rel": "src/modules/memory/pages/list/components/MemoryTable.vue",
+      "sizeKB": 11.22,
+      "lines": 369,
+      "elTags": 8
+    },
+    {
+      "module": "memory",
+      "name": "index",
+      "rel": "src/modules/memory/pages/list/index.vue",
+      "sizeKB": 5.87,
+      "lines": 184,
+      "elTags": 0
+    },
+    {
+      "module": "model-deploy",
+      "name": "engine-config",
+      "rel": "src/modules/model-deploy/pages/create/components/engine-config.vue",
+      "sizeKB": 4.3,
+      "lines": 120,
+      "elTags": 14
+    },
+    {
+      "module": "model-deploy",
+      "name": "env-config",
+      "rel": "src/modules/model-deploy/pages/create/components/env-config.vue",
+      "sizeKB": 6.43,
+      "lines": 190,
+      "elTags": 10
+    },
+    {
+      "module": "model-deploy",
+      "name": "lora-model-select",
+      "rel": "src/modules/model-deploy/pages/create/components/lora-model-select.vue",
+      "sizeKB": 15.05,
+      "lines": 458,
+      "elTags": 5
+    },
+    {
+      "module": "model-deploy",
+      "name": "model-select-dialog",
+      "rel": "src/modules/model-deploy/pages/create/components/model-select-dialog.vue",
+      "sizeKB": 23.63,
+      "lines": 740,
+      "elTags": 9
+    },
+    {
+      "module": "model-deploy",
+      "name": "model-select",
+      "rel": "src/modules/model-deploy/pages/create/components/model-select.vue",
+      "sizeKB": 5.54,
+      "lines": 201,
+      "elTags": 3
+    },
+    {
+      "module": "model-deploy",
+      "name": "service-level-config",
+      "rel": "src/modules/model-deploy/pages/create/components/service-level-config.vue",
+      "sizeKB": 3.75,
+      "lines": 117,
+      "elTags": 5
+    },
+    {
+      "module": "model-deploy",
+      "name": "user-select",
+      "rel": "src/modules/model-deploy/pages/create/components/user-select.vue",
+      "sizeKB": 0.74,
+      "lines": 27,
+      "elTags": 0
+    },
+    {
+      "module": "model-deploy",
+      "name": "index",
+      "rel": "src/modules/model-deploy/pages/create/index.vue",
+      "sizeKB": 49.55,
+      "lines": 1293,
+      "elTags": 19
+    },
+    {
+      "module": "model-deploy",
+      "name": "detail-content",
+      "rel": "src/modules/model-deploy/pages/detail/components/detail-content.vue",
+      "sizeKB": 15.18,
+      "lines": 418,
+      "elTags": 7
+    },
+    {
+      "module": "model-deploy",
+      "name": "instance-list",
+      "rel": "src/modules/model-deploy/pages/detail/components/instance-list.vue",
+      "sizeKB": 16.95,
+      "lines": 559,
+      "elTags": 12
+    },
+    {
+      "module": "model-deploy",
+      "name": "log-tab",
+      "rel": "src/modules/model-deploy/pages/detail/components/log-tab.vue",
+      "sizeKB": 1.94,
+      "lines": 78,
+      "elTags": 1
+    },
+    {
+      "module": "model-deploy",
+      "name": "monitoring-tab",
+      "rel": "src/modules/model-deploy/pages/detail/components/monitoring-tab.vue",
+      "sizeKB": 1.61,
+      "lines": 65,
+      "elTags": 0
+    },
+    {
+      "module": "model-deploy",
+      "name": "index",
+      "rel": "src/modules/model-deploy/pages/detail/index.vue",
+      "sizeKB": 15.49,
+      "lines": 452,
+      "elTags": 4
+    },
+    {
+      "module": "model-deploy",
+      "name": "empty",
+      "rel": "src/modules/model-deploy/pages/list/components/empty.vue",
+      "sizeKB": 3.06,
+      "lines": 121,
+      "elTags": 2
+    },
+    {
+      "module": "model-deploy",
+      "name": "index",
+      "rel": "src/modules/model-deploy/pages/list/components/index.vue",
+      "sizeKB": 20.4,
+      "lines": 582,
+      "elTags": 5
+    },
+    {
+      "module": "model-deploy",
+      "name": "operation-buttons",
+      "rel": "src/modules/model-deploy/pages/list/components/operation-buttons.vue",
+      "sizeKB": 8.42,
+      "lines": 229,
+      "elTags": 6
+    },
+    {
+      "module": "model-deploy",
+      "name": "index",
+      "rel": "src/modules/model-deploy/pages/list/index.vue",
+      "sizeKB": 1.2,
+      "lines": 30,
+      "elTags": 0
+    },
+    {
+      "module": "model-evaluating",
+      "name": "index",
+      "rel": "src/modules/model-evaluating/pages/create/index.vue",
+      "sizeKB": 40.56,
+      "lines": 1096,
+      "elTags": 22
+    },
+    {
+      "module": "model-evaluating",
+      "name": "ReviewTab",
+      "rel": "src/modules/model-evaluating/pages/detail/components/ReviewTab.vue",
+      "sizeKB": 1.79,
+      "lines": 83,
+      "elTags": 1
+    },
+    {
+      "module": "model-evaluating",
+      "name": "index",
+      "rel": "src/modules/model-evaluating/pages/detail/index.vue",
+      "sizeKB": 10.83,
+      "lines": 349,
+      "elTags": 3
+    },
+    {
+      "module": "model-evaluating",
+      "name": "guide",
+      "rel": "src/modules/model-evaluating/pages/list/guide.vue",
+      "sizeKB": 2.88,
+      "lines": 109,
+      "elTags": 2
+    },
+    {
+      "module": "model-evaluating",
+      "name": "index",
+      "rel": "src/modules/model-evaluating/pages/list/index.vue",
+      "sizeKB": 4.05,
+      "lines": 124,
+      "elTags": 0
+    },
+    {
+      "module": "model-evaluating",
+      "name": "table",
+      "rel": "src/modules/model-evaluating/pages/list/table.vue",
+      "sizeKB": 31.1,
+      "lines": 888,
+      "elTags": 14
+    },
+    {
+      "module": "model-finetune",
+      "name": "BaseConfigForm",
+      "rel": "src/modules/model-finetune/pages/create/BaseConfigForm.vue",
+      "sizeKB": 17.51,
+      "lines": 565,
+      "elTags": 10
+    },
+    {
+      "module": "model-finetune",
+      "name": "DatasetSelectField",
+      "rel": "src/modules/model-finetune/pages/create/components/DatasetSelectField.vue",
+      "sizeKB": 4.95,
+      "lines": 162,
+      "elTags": 1
+    },
+    {
+      "module": "model-finetune",
+      "name": "DataConfigForm",
+      "rel": "src/modules/model-finetune/pages/create/DataConfigForm.vue",
+      "sizeKB": 10.04,
+      "lines": 278,
+      "elTags": 15
+    },
+    {
+      "module": "model-finetune",
+      "name": "index",
+      "rel": "src/modules/model-finetune/pages/create/index.vue",
+      "sizeKB": 21.57,
+      "lines": 630,
+      "elTags": 3
+    },
+    {
+      "module": "model-finetune",
+      "name": "PublishConfigForm",
+      "rel": "src/modules/model-finetune/pages/create/PublishConfigForm.vue",
+      "sizeKB": 1.67,
+      "lines": 45,
+      "elTags": 2
+    },
+    {
+      "module": "model-finetune",
+      "name": "ResourceConfigForm",
+      "rel": "src/modules/model-finetune/pages/create/ResourceConfigForm.vue",
+      "sizeKB": 4.29,
+      "lines": 126,
+      "elTags": 4
+    },
+    {
+      "module": "model-finetune",
+      "name": "TrainingConfigForm",
+      "rel": "src/modules/model-finetune/pages/create/TrainingConfigForm.vue",
+      "sizeKB": 3.73,
+      "lines": 108,
+      "elTags": 5
+    },
+    {
+      "module": "model-finetune",
+      "name": "index",
+      "rel": "src/modules/model-finetune/pages/detail/analysis/index.vue",
+      "sizeKB": 9.25,
+      "lines": 285,
+      "elTags": 4
+    },
+    {
+      "module": "model-finetune",
+      "name": "dashboard-panel",
+      "rel": "src/modules/model-finetune/pages/detail/components/dashboard-panel.vue",
+      "sizeKB": 15.11,
+      "lines": 391,
+      "elTags": 5
+    },
+    {
+      "module": "model-finetune",
+      "name": "metric-chart",
+      "rel": "src/modules/model-finetune/pages/detail/components/metric-chart.vue",
+      "sizeKB": 7.43,
+      "lines": 255,
+      "elTags": 5
+    },
+    {
+      "module": "model-finetune",
+      "name": "index",
+      "rel": "src/modules/model-finetune/pages/detail/config/index.vue",
+      "sizeKB": 11.57,
+      "lines": 295,
+      "elTags": 8
+    },
+    {
+      "module": "model-finetune",
+      "name": "index",
+      "rel": "src/modules/model-finetune/pages/detail/index.vue",
+      "sizeKB": 18.71,
+      "lines": 489,
+      "elTags": 12
+    },
+    {
+      "module": "model-finetune",
+      "name": "index",
+      "rel": "src/modules/model-finetune/pages/detail/log/index.vue",
+      "sizeKB": 1.87,
+      "lines": 69,
+      "elTags": 3
+    },
+    {
+      "module": "model-finetune",
+      "name": "operation-buttons",
+      "rel": "src/modules/model-finetune/pages/list/components/operation-buttons.vue",
+      "sizeKB": 9.42,
+      "lines": 283,
+      "elTags": 5
+    },
+    {
+      "module": "model-finetune",
+      "name": "guide",
+      "rel": "src/modules/model-finetune/pages/list/guide.vue",
+      "sizeKB": 2.86,
+      "lines": 109,
+      "elTags": 2
+    },
+    {
+      "module": "model-finetune",
+      "name": "index.v3",
+      "rel": "src/modules/model-finetune/pages/list/index.v3.vue",
+      "sizeKB": 9.85,
+      "lines": 266,
+      "elTags": 33
+    },
+    {
+      "module": "model-finetune",
+      "name": "index",
+      "rel": "src/modules/model-finetune/pages/list/index.vue",
+      "sizeKB": 9.48,
+      "lines": 313,
+      "elTags": 0
+    },
+    {
+      "module": "model-finetune",
+      "name": "table",
+      "rel": "src/modules/model-finetune/pages/list/table.vue",
+      "sizeKB": 25.38,
+      "lines": 784,
+      "elTags": 5
+    },
+    {
+      "module": "model-inference",
+      "name": "BaseConfigForm",
+      "rel": "src/modules/model-inference/pages/create/BaseConfigForm.vue",
+      "sizeKB": 10.2,
+      "lines": 358,
+      "elTags": 6
+    },
+    {
+      "module": "model-inference",
+      "name": "InferenceThrottleDialog",
+      "rel": "src/modules/model-inference/pages/create/components/InferenceThrottleDialog.vue",
+      "sizeKB": 11.97,
+      "lines": 354,
+      "elTags": 5
+    },
+    {
+      "module": "model-inference",
+      "name": "PaymentMethod",
+      "rel": "src/modules/model-inference/pages/create/components/PaymentMethod.vue",
+      "sizeKB": 5.5,
+      "lines": 189,
+      "elTags": 5
+    },
+    {
+      "module": "model-inference",
+      "name": "TaskConfig",
+      "rel": "src/modules/model-inference/pages/create/components/TaskConfig.vue",
+      "sizeKB": 3.17,
+      "lines": 117,
+      "elTags": 4
+    },
+    {
+      "module": "model-inference",
+      "name": "UploadFile",
+      "rel": "src/modules/model-inference/pages/create/components/UploadFile.vue",
+      "sizeKB": 10.93,
+      "lines": 333,
+      "elTags": 6
+    },
+    {
+      "module": "model-inference",
+      "name": "ConformDetail",
+      "rel": "src/modules/model-inference/pages/create/ConformDetail.vue",
+      "sizeKB": 2.68,
+      "lines": 98,
+      "elTags": 0
+    },
+    {
+      "module": "model-inference",
+      "name": "EditDialog",
+      "rel": "src/modules/model-inference/pages/create/EditDialog.vue",
+      "sizeKB": 7.31,
+      "lines": 212,
+      "elTags": 4
+    },
+    {
+      "module": "model-inference",
+      "name": "index",
+      "rel": "src/modules/model-inference/pages/create/index.vue",
+      "sizeKB": 23.58,
+      "lines": 663,
+      "elTags": 10
+    },
+    {
+      "module": "model-inference",
+      "name": "OnboardConfigForm",
+      "rel": "src/modules/model-inference/pages/create/OnboardConfigForm.vue",
+      "sizeKB": 11.65,
+      "lines": 300,
+      "elTags": 14
+    },
+    {
+      "module": "model-inference",
+      "name": "index",
+      "rel": "src/modules/model-inference/pages/detail/config/index.vue",
+      "sizeKB": 24.62,
+      "lines": 579,
+      "elTags": 12
+    },
+    {
+      "module": "model-inference",
+      "name": "index",
+      "rel": "src/modules/model-inference/pages/detail/index.vue",
+      "sizeKB": 21.42,
+      "lines": 601,
+      "elTags": 12
+    },
+    {
+      "module": "model-inference",
+      "name": "charts",
+      "rel": "src/modules/model-inference/pages/detail/monitor/charts.vue",
+      "sizeKB": 5.16,
+      "lines": 177,
+      "elTags": 6
+    },
+    {
+      "module": "model-inference",
+      "name": "fail-dialog",
+      "rel": "src/modules/model-inference/pages/detail/monitor/fail-dialog.vue",
+      "sizeKB": 7.16,
+      "lines": 265,
+      "elTags": 2
+    },
+    {
+      "module": "model-inference",
+      "name": "index",
+      "rel": "src/modules/model-inference/pages/detail/monitor/index.vue",
+      "sizeKB": 13.86,
+      "lines": 406,
+      "elTags": 7
+    },
+    {
+      "module": "model-inference",
+      "name": "metric-card",
+      "rel": "src/modules/model-inference/pages/detail/monitor/metric-card.vue",
+      "sizeKB": 2.11,
+      "lines": 86,
+      "elTags": 2
+    },
+    {
+      "module": "model-inference",
+      "name": "metric-chart",
+      "rel": "src/modules/model-inference/pages/detail/monitor/metric-chart.vue",
+      "sizeKB": 9.9,
+      "lines": 287,
+      "elTags": 3
+    },
+    {
+      "module": "model-inference",
+      "name": "select-api-key",
+      "rel": "src/modules/model-inference/pages/detail/monitor/select-api-key.vue",
+      "sizeKB": 4.29,
+      "lines": 157,
+      "elTags": 3
+    },
+    {
+      "module": "model-inference",
+      "name": "batch-index",
+      "rel": "src/modules/model-inference/pages/list/batch-index.vue",
+      "sizeKB": 8.31,
+      "lines": 278,
+      "elTags": 4
+    },
+    {
+      "module": "model-inference",
+      "name": "batch-task-guide",
+      "rel": "src/modules/model-inference/pages/list/batch-task-guide.vue",
+      "sizeKB": 3.76,
+      "lines": 133,
+      "elTags": 2
+    },
+    {
+      "module": "model-inference",
+      "name": "operation-buttons",
+      "rel": "src/modules/model-inference/pages/list/components/operation-buttons.vue",
+      "sizeKB": 4.54,
+      "lines": 148,
+      "elTags": 10
+    },
+    {
+      "module": "model-inference",
+      "name": "guide",
+      "rel": "src/modules/model-inference/pages/list/guide.vue",
+      "sizeKB": 4.92,
+      "lines": 170,
+      "elTags": 4
+    },
+    {
+      "module": "model-inference",
+      "name": "index",
+      "rel": "src/modules/model-inference/pages/list/index.vue",
+      "sizeKB": 6.94,
+      "lines": 231,
+      "elTags": 2
+    },
+    {
+      "module": "model-inference",
+      "name": "table",
+      "rel": "src/modules/model-inference/pages/list/table.vue",
+      "sizeKB": 39.15,
+      "lines": 1100,
+      "elTags": 14
+    },
+    {
+      "module": "model-store",
+      "name": "edit-description",
+      "rel": "src/modules/model-store/pages/detail/components/edit-description.vue",
+      "sizeKB": 3.55,
+      "lines": 117,
+      "elTags": 8
+    },
+    {
+      "module": "model-store",
+      "name": "index",
+      "rel": "src/modules/model-store/pages/detail/deploymentRecord/index.vue",
+      "sizeKB": 4.54,
+      "lines": 157,
+      "elTags": 1
+    },
+    {
+      "module": "model-store",
+      "name": "index",
+      "rel": "src/modules/model-store/pages/detail/index.vue",
+      "sizeKB": 7.05,
+      "lines": 211,
+      "elTags": 8
+    },
+    {
+      "module": "model-store",
+      "name": "index",
+      "rel": "src/modules/model-store/pages/detail/modelDetail/index.vue",
+      "sizeKB": 9.96,
+      "lines": 276,
+      "elTags": 2
+    },
+    {
+      "module": "model-store",
+      "name": "operation-buttons",
+      "rel": "src/modules/model-store/pages/list/components/operation-buttons.vue",
+      "sizeKB": 3.5,
+      "lines": 129,
+      "elTags": 6
+    },
+    {
+      "module": "model-store",
+      "name": "guide",
+      "rel": "src/modules/model-store/pages/list/guide.vue",
+      "sizeKB": 7.6,
+      "lines": 257,
+      "elTags": 2
+    },
+    {
+      "module": "model-store",
+      "name": "index",
+      "rel": "src/modules/model-store/pages/list/index.vue",
+      "sizeKB": 4.85,
+      "lines": 172,
+      "elTags": 0
+    },
+    {
+      "module": "model-store",
+      "name": "table",
+      "rel": "src/modules/model-store/pages/list/table.vue",
+      "sizeKB": 20.92,
+      "lines": 662,
+      "elTags": 5
+    },
+    {
+      "module": "model-stress-test",
+      "name": "AccessConfigForm",
+      "rel": "src/modules/model-stress-test/pages/create/AccessConfigForm.vue",
+      "sizeKB": 22.6,
+      "lines": 588,
+      "elTags": 46
+    },
+    {
+      "module": "model-stress-test",
+      "name": "BaseConfigForm",
+      "rel": "src/modules/model-stress-test/pages/create/BaseConfigForm.vue",
+      "sizeKB": 2.1,
+      "lines": 72,
+      "elTags": 4
+    },
+    {
+      "module": "model-stress-test",
+      "name": "DatasetSelectField",
+      "rel": "src/modules/model-stress-test/pages/create/components/DatasetSelectField.vue",
+      "sizeKB": 2.66,
+      "lines": 97,
+      "elTags": 1
+    },
+    {
+      "module": "model-stress-test",
+      "name": "index",
+      "rel": "src/modules/model-stress-test/pages/create/index.vue",
+      "sizeKB": 20.46,
+      "lines": 680,
+      "elTags": 5
+    },
+    {
+      "module": "model-stress-test",
+      "name": "NotificationConfigForm",
+      "rel": "src/modules/model-stress-test/pages/create/NotificationConfigForm.vue",
+      "sizeKB": 2.82,
+      "lines": 85,
+      "elTags": 2
+    },
+    {
+      "module": "model-stress-test",
+      "name": "SloConfigForm",
+      "rel": "src/modules/model-stress-test/pages/create/SloConfigForm.vue",
+      "sizeKB": 15.83,
+      "lines": 448,
+      "elTags": 23
+    },
+    {
+      "module": "model-stress-test",
+      "name": "index",
+      "rel": "src/modules/model-stress-test/pages/detail/config/index.vue",
+      "sizeKB": 13.44,
+      "lines": 322,
+      "elTags": 5
+    },
+    {
+      "module": "model-stress-test",
+      "name": "index",
+      "rel": "src/modules/model-stress-test/pages/detail/evaluation/index.vue",
+      "sizeKB": 12.84,
+      "lines": 376,
+      "elTags": 9
+    },
+    {
+      "module": "model-stress-test",
+      "name": "index",
+      "rel": "src/modules/model-stress-test/pages/detail/execution/index.vue",
+      "sizeKB": 5.76,
+      "lines": 198,
+      "elTags": 3
+    },
+    {
+      "module": "model-stress-test",
+      "name": "Log",
+      "rel": "src/modules/model-stress-test/pages/detail/execution/Log.vue",
+      "sizeKB": 1.43,
+      "lines": 53,
+      "elTags": 0
+    },
+    {
+      "module": "model-stress-test",
+      "name": "Monitoring",
+      "rel": "src/modules/model-stress-test/pages/detail/execution/Monitoring.vue",
+      "sizeKB": 2.03,
+      "lines": 73,
+      "elTags": 0
+    },
+    {
+      "module": "model-stress-test",
+      "name": "index",
+      "rel": "src/modules/model-stress-test/pages/detail/index.vue",
+      "sizeKB": 9.88,
+      "lines": 292,
+      "elTags": 2
+    },
+    {
+      "module": "model-stress-test",
+      "name": "operation-buttons",
+      "rel": "src/modules/model-stress-test/pages/list/components/operation-buttons.vue",
+      "sizeKB": 0.71,
+      "lines": 29,
+      "elTags": 0
+    },
+    {
+      "module": "model-stress-test",
+      "name": "guide",
+      "rel": "src/modules/model-stress-test/pages/list/guide.vue",
+      "sizeKB": 2.92,
+      "lines": 109,
+      "elTags": 2
+    },
+    {
+      "module": "model-stress-test",
+      "name": "index",
+      "rel": "src/modules/model-stress-test/pages/list/index.vue",
+      "sizeKB": 8.79,
+      "lines": 292,
+      "elTags": 0
+    },
+    {
+      "module": "model-stress-test",
+      "name": "table",
+      "rel": "src/modules/model-stress-test/pages/list/table.vue",
+      "sizeKB": 21.11,
+      "lines": 655,
+      "elTags": 7
+    },
+    {
+      "module": "project-management",
+      "name": "index",
+      "rel": "src/modules/project-management/pages/create/index.vue",
+      "sizeKB": 42.22,
+      "lines": 1076,
+      "elTags": 41
+    },
+    {
+      "module": "project-management",
+      "name": "MigrateProjectDialog",
+      "rel": "src/modules/project-management/pages/detail/components/MigrateProjectDialog.vue",
+      "sizeKB": 9.78,
+      "lines": 274,
+      "elTags": 7
+    },
+    {
+      "module": "project-management",
+      "name": "index",
+      "rel": "src/modules/project-management/pages/detail/index.vue",
+      "sizeKB": 19.19,
+      "lines": 460,
+      "elTags": 23
+    },
+    {
+      "module": "project-management",
+      "name": "businessLine",
+      "rel": "src/modules/project-management/pages/list/businessLine.vue",
+      "sizeKB": 34.57,
+      "lines": 935,
+      "elTags": 34
+    },
+    {
+      "module": "project-management",
+      "name": "create-or-update-sub-space",
+      "rel": "src/modules/project-management/pages/list/components/create-or-update-sub-space.vue",
+      "sizeKB": 16.07,
+      "lines": 443,
+      "elTags": 10
+    },
+    {
+      "module": "project-management",
+      "name": "delete-user",
+      "rel": "src/modules/project-management/pages/list/components/delete-user.vue",
+      "sizeKB": 5.79,
+      "lines": 159,
+      "elTags": 11
+    },
+    {
+      "module": "project-management",
+      "name": "includes-project-drawer",
+      "rel": "src/modules/project-management/pages/list/components/includes-project-drawer.vue",
+      "sizeKB": 8.38,
+      "lines": 230,
+      "elTags": 12
+    },
+    {
+      "module": "project-management",
+      "name": "resource-quantity-drawer",
+      "rel": "src/modules/project-management/pages/list/components/resource-quantity-drawer.vue",
+      "sizeKB": 10.65,
+      "lines": 285,
+      "elTags": 16
+    },
+    {
+      "module": "project-management",
+      "name": "table-header-search",
+      "rel": "src/modules/project-management/pages/list/components/table-header-search.vue",
+      "sizeKB": 1.87,
+      "lines": 65,
+      "elTags": 3
+    },
+    {
+      "module": "project-management",
+      "name": "index",
+      "rel": "src/modules/project-management/pages/list/index.vue",
+      "sizeKB": 4.06,
+      "lines": 113,
+      "elTags": 1
+    },
+    {
+      "module": "project-management",
+      "name": "project",
+      "rel": "src/modules/project-management/pages/list/project.vue",
+      "sizeKB": 35.6,
+      "lines": 900,
+      "elTags": 41
+    },
+    {
+      "module": "prompt-management",
+      "name": "index",
+      "rel": "src/modules/prompt-management/pages/detail/index.vue",
+      "sizeKB": 41.36,
+      "lines": 1237,
+      "elTags": 23
+    },
+    {
+      "module": "prompt-management",
+      "name": "CustomGenerateContent",
+      "rel": "src/modules/prompt-management/pages/generate/components/CustomGenerateContent.vue",
+      "sizeKB": 14.87,
+      "lines": 525,
+      "elTags": 12
+    },
+    {
+      "module": "prompt-management",
+      "name": "ModelGenerateContent",
+      "rel": "src/modules/prompt-management/pages/generate/components/ModelGenerateContent.vue",
+      "sizeKB": 39.99,
+      "lines": 1212,
+      "elTags": 22
+    },
+    {
+      "module": "prompt-management",
+      "name": "index",
+      "rel": "src/modules/prompt-management/pages/generate/index.vue",
+      "sizeKB": 10.15,
+      "lines": 303,
+      "elTags": 4
+    },
+    {
+      "module": "prompt-management",
+      "name": "defaultPage",
+      "rel": "src/modules/prompt-management/pages/list/defaultPage.vue",
+      "sizeKB": 3.52,
+      "lines": 127,
+      "elTags": 4
+    },
+    {
+      "module": "prompt-management",
+      "name": "index",
+      "rel": "src/modules/prompt-management/pages/list/index.vue",
+      "sizeKB": 39.51,
+      "lines": 1038,
+      "elTags": 20
+    },
+    {
+      "module": "prompt-management",
+      "name": "modelSelectLimit",
+      "rel": "src/modules/prompt-management/pages/optimize/components/modelSelectLimit.vue",
+      "sizeKB": 5.23,
+      "lines": 182,
+      "elTags": 1
+    },
+    {
+      "module": "prompt-management",
+      "name": "PromptBaseInfoCard",
+      "rel": "src/modules/prompt-management/pages/optimize/components/PromptBaseInfoCard.vue",
+      "sizeKB": 4.11,
+      "lines": 133,
+      "elTags": 1
+    },
+    {
+      "module": "prompt-management",
+      "name": "PromptContextItem",
+      "rel": "src/modules/prompt-management/pages/optimize/components/PromptContextItem.vue",
+      "sizeKB": 14.02,
+      "lines": 424,
+      "elTags": 11
+    },
+    {
+      "module": "prompt-management",
+      "name": "PromptContextList",
+      "rel": "src/modules/prompt-management/pages/optimize/components/PromptContextList.vue",
+      "sizeKB": 14.67,
+      "lines": 412,
+      "elTags": 3
+    },
+    {
+      "module": "prompt-management",
+      "name": "promptDebugResult",
+      "rel": "src/modules/prompt-management/pages/optimize/components/promptDebugResult.vue",
+      "sizeKB": 4.94,
+      "lines": 162,
+      "elTags": 0
+    },
+    {
+      "module": "prompt-management",
+      "name": "promptModeSwitchPop",
+      "rel": "src/modules/prompt-management/pages/optimize/components/promptModeSwitchPop.vue",
+      "sizeKB": 3.27,
+      "lines": 124,
+      "elTags": 3
+    },
+    {
+      "module": "prompt-management",
+      "name": "promptOptArea",
+      "rel": "src/modules/prompt-management/pages/optimize/components/promptOptArea.vue",
+      "sizeKB": 34.38,
+      "lines": 978,
+      "elTags": 8
+    },
+    {
+      "module": "prompt-management",
+      "name": "PromptOptimizeDialog",
+      "rel": "src/modules/prompt-management/pages/optimize/components/PromptOptimizeDialog.vue",
+      "sizeKB": 9.29,
+      "lines": 298,
+      "elTags": 3
+    },
+    {
+      "module": "prompt-management",
+      "name": "index",
+      "rel": "src/modules/prompt-management/pages/optimize/index.vue",
+      "sizeKB": 24.82,
+      "lines": 671,
+      "elTags": 15
+    },
+    {
+      "module": "prompt-test-management",
+      "name": "PromptHoverPreview",
+      "rel": "src/modules/prompt-test-management/pages/create/components/PromptHoverPreview.vue",
+      "sizeKB": 7.67,
+      "lines": 247,
+      "elTags": 7
+    },
+    {
+      "module": "prompt-test-management",
+      "name": "task-base-form",
+      "rel": "src/modules/prompt-test-management/pages/create/components/task-base-form.vue",
+      "sizeKB": 16.94,
+      "lines": 508,
+      "elTags": 15
+    },
+    {
+      "module": "prompt-test-management",
+      "name": "task-file-upload",
+      "rel": "src/modules/prompt-test-management/pages/create/components/task-file-upload.vue",
+      "sizeKB": 12.3,
+      "lines": 364,
+      "elTags": 16
+    },
+    {
+      "module": "prompt-test-management",
+      "name": "index",
+      "rel": "src/modules/prompt-test-management/pages/create/index.vue",
+      "sizeKB": 9.94,
+      "lines": 303,
+      "elTags": 3
+    },
+    {
+      "module": "prompt-test-management",
+      "name": "answer_annotation",
+      "rel": "src/modules/prompt-test-management/pages/detail/answer_annotation.vue",
+      "sizeKB": 28.39,
+      "lines": 709,
+      "elTags": 28
+    },
+    {
+      "module": "prompt-test-management",
+      "name": "annotation-calibration",
+      "rel": "src/modules/prompt-test-management/pages/detail/components/annotation-calibration.vue",
+      "sizeKB": 9,
+      "lines": 284,
+      "elTags": 14
+    },
+    {
+      "module": "prompt-test-management",
+      "name": "annotation-filter",
+      "rel": "src/modules/prompt-test-management/pages/detail/components/annotation-filter.vue",
+      "sizeKB": 4.32,
+      "lines": 149,
+      "elTags": 11
+    },
+    {
+      "module": "prompt-test-management",
+      "name": "auto-annotation-drawer",
+      "rel": "src/modules/prompt-test-management/pages/detail/components/auto-annotation-drawer.vue",
+      "sizeKB": 20.96,
+      "lines": 613,
+      "elTags": 10
+    },
+    {
+      "module": "prompt-test-management",
+      "name": "bar-chart",
+      "rel": "src/modules/prompt-test-management/pages/detail/components/bar-chart.vue",
+      "sizeKB": 2.11,
+      "lines": 92,
+      "elTags": 0
+    },
+    {
+      "module": "prompt-test-management",
+      "name": "edit-task-dialog",
+      "rel": "src/modules/prompt-test-management/pages/detail/components/edit-task-dialog.vue",
+      "sizeKB": 4.23,
+      "lines": 143,
+      "elTags": 9
+    },
+    {
+      "module": "prompt-test-management",
+      "name": "enlarge-view-dialog",
+      "rel": "src/modules/prompt-test-management/pages/detail/components/enlarge-view-dialog.vue",
+      "sizeKB": 16.02,
+      "lines": 420,
+      "elTags": 20
+    },
+    {
+      "module": "prompt-test-management",
+      "name": "pie-chart",
+      "rel": "src/modules/prompt-test-management/pages/detail/components/pie-chart.vue",
+      "sizeKB": 3.78,
+      "lines": 132,
+      "elTags": 0
+    },
+    {
+      "module": "prompt-test-management",
+      "name": "progress-chart",
+      "rel": "src/modules/prompt-test-management/pages/detail/components/progress-chart.vue",
+      "sizeKB": 4.04,
+      "lines": 154,
+      "elTags": 0
+    },
+    {
+      "module": "prompt-test-management",
+      "name": "prompt-diff",
+      "rel": "src/modules/prompt-test-management/pages/detail/components/prompt-diff.vue",
+      "sizeKB": 3.3,
+      "lines": 102,
+      "elTags": 4
+    },
+    {
+      "module": "prompt-test-management",
+      "name": "promptVersion",
+      "rel": "src/modules/prompt-test-management/pages/detail/components/promptVersion.vue",
+      "sizeKB": 3.05,
+      "lines": 95,
+      "elTags": 5
+    },
+    {
+      "module": "prompt-test-management",
+      "name": "review-tab",
+      "rel": "src/modules/prompt-test-management/pages/detail/components/review-tab.vue",
+      "sizeKB": 1.22,
+      "lines": 39,
+      "elTags": 1
+    },
+    {
+      "module": "prompt-test-management",
+      "name": "task-column-status",
+      "rel": "src/modules/prompt-test-management/pages/detail/components/task-column-status.vue",
+      "sizeKB": 2.4,
+      "lines": 47,
+      "elTags": 3
+    },
+    {
+      "module": "prompt-test-management",
+      "name": "upload-file",
+      "rel": "src/modules/prompt-test-management/pages/detail/components/upload-file.vue",
+      "sizeKB": 15.18,
+      "lines": 401,
+      "elTags": 16
+    },
+    {
+      "module": "prompt-test-management",
+      "name": "evaluation_result",
+      "rel": "src/modules/prompt-test-management/pages/detail/evaluation_result.vue",
+      "sizeKB": 13.77,
+      "lines": 369,
+      "elTags": 6
+    },
+    {
+      "module": "prompt-test-management",
+      "name": "index",
+      "rel": "src/modules/prompt-test-management/pages/detail/index.vue",
+      "sizeKB": 9.12,
+      "lines": 273,
+      "elTags": 1
+    },
+    {
+      "module": "prompt-test-management",
+      "name": "task-content",
+      "rel": "src/modules/prompt-test-management/pages/detail/task-content.vue",
+      "sizeKB": 28.88,
+      "lines": 744,
+      "elTags": 22
+    },
+    {
+      "module": "prompt-test-management",
+      "name": "index",
+      "rel": "src/modules/prompt-test-management/pages/list/components/create-task-dialog/index.vue",
+      "sizeKB": 4.86,
+      "lines": 165,
+      "elTags": 9
+    },
+    {
+      "module": "prompt-test-management",
+      "name": "task-base-form",
+      "rel": "src/modules/prompt-test-management/pages/list/components/create-task-dialog/task-base-form.vue",
+      "sizeKB": 10.77,
+      "lines": 343,
+      "elTags": 15
+    },
+    {
+      "module": "prompt-test-management",
+      "name": "task-file-upload",
+      "rel": "src/modules/prompt-test-management/pages/list/components/create-task-dialog/task-file-upload.vue",
+      "sizeKB": 9.29,
+      "lines": 269,
+      "elTags": 11
+    },
+    {
+      "module": "prompt-test-management",
+      "name": "empty",
+      "rel": "src/modules/prompt-test-management/pages/list/components/empty.vue",
+      "sizeKB": 3.1,
+      "lines": 63,
+      "elTags": 1
+    },
+    {
+      "module": "prompt-test-management",
+      "name": "table-status-header",
+      "rel": "src/modules/prompt-test-management/pages/list/components/table-status-header.vue",
+      "sizeKB": 1.99,
+      "lines": 66,
+      "elTags": 5
+    },
+    {
+      "module": "prompt-test-management",
+      "name": "table-user-header",
+      "rel": "src/modules/prompt-test-management/pages/list/components/table-user-header.vue",
+      "sizeKB": 1.4,
+      "lines": 52,
+      "elTags": 2
+    },
+    {
+      "module": "prompt-test-management",
+      "name": "index",
+      "rel": "src/modules/prompt-test-management/pages/list/index.vue",
+      "sizeKB": 31.08,
+      "lines": 719,
+      "elTags": 26
+    },
+    {
+      "module": "quota-management",
+      "name": "index",
+      "rel": "src/modules/quota-management/pages/detail/index.vue",
+      "sizeKB": 17.1,
+      "lines": 505,
+      "elTags": 10
+    },
+    {
+      "module": "quota-management",
+      "name": "ApplyQuotaDialog",
+      "rel": "src/modules/quota-management/pages/list/components/ApplyQuotaDialog.vue",
+      "sizeKB": 11.65,
+      "lines": 336,
+      "elTags": 14
+    },
+    {
+      "module": "quota-management",
+      "name": "ConvertQuotaDialog",
+      "rel": "src/modules/quota-management/pages/list/components/ConvertQuotaDialog.vue",
+      "sizeKB": 25.6,
+      "lines": 649,
+      "elTags": 36
+    },
+    {
+      "module": "quota-management",
+      "name": "DonutChart",
+      "rel": "src/modules/quota-management/pages/list/components/DonutChart.vue",
+      "sizeKB": 2.58,
+      "lines": 86,
+      "elTags": 0
+    },
+    {
+      "module": "quota-management",
+      "name": "LineChart",
+      "rel": "src/modules/quota-management/pages/list/components/LineChart.vue",
+      "sizeKB": 3.31,
+      "lines": 94,
+      "elTags": 0
+    },
+    {
+      "module": "quota-management",
+      "name": "NodeTreeSelect",
+      "rel": "src/modules/quota-management/pages/list/components/NodeTreeSelect.vue",
+      "sizeKB": 20.06,
+      "lines": 606,
+      "elTags": 11
+    },
+    {
+      "module": "quota-management",
+      "name": "quota-record",
+      "rel": "src/modules/quota-management/pages/list/components/quota-record.vue",
+      "sizeKB": 17.87,
+      "lines": 503,
+      "elTags": 8
+    },
+    {
+      "module": "quota-management",
+      "name": "quota-use",
+      "rel": "src/modules/quota-management/pages/list/components/quota-use.vue",
+      "sizeKB": 64.82,
+      "lines": 1502,
+      "elTags": 62
+    },
+    {
+      "module": "quota-management",
+      "name": "QuotaBlockComponent",
+      "rel": "src/modules/quota-management/pages/list/components/QuotaBlockComponent.vue",
+      "sizeKB": 2.59,
+      "lines": 96,
+      "elTags": 2
+    },
+    {
+      "module": "quota-management",
+      "name": "QuotaModelTable",
+      "rel": "src/modules/quota-management/pages/list/components/QuotaModelTable.vue",
+      "sizeKB": 12.19,
+      "lines": 327,
+      "elTags": 14
+    },
+    {
+      "module": "quota-management",
+      "name": "QuotaModelTableWithDialog",
+      "rel": "src/modules/quota-management/pages/list/components/QuotaModelTableWithDialog.vue",
+      "sizeKB": 11.92,
+      "lines": 343,
+      "elTags": 14
+    },
+    {
+      "module": "quota-management",
+      "name": "QuotaRecordDetailDrawer",
+      "rel": "src/modules/quota-management/pages/list/components/QuotaRecordDetailDrawer.vue",
+      "sizeKB": 12.26,
+      "lines": 339,
+      "elTags": 3
+    },
+    {
+      "module": "quota-management",
+      "name": "ReturnQuotaDialog",
+      "rel": "src/modules/quota-management/pages/list/components/ReturnQuotaDialog.vue",
+      "sizeKB": 8.52,
+      "lines": 259,
+      "elTags": 12
+    },
+    {
+      "module": "quota-management",
+      "name": "ReturnQuotaDialogModelSelect",
+      "rel": "src/modules/quota-management/pages/list/components/ReturnQuotaDialogModelSelect.vue",
+      "sizeKB": 18.46,
+      "lines": 544,
+      "elTags": 4
+    },
+    {
+      "module": "quota-management",
+      "name": "TransferQuotaDialog",
+      "rel": "src/modules/quota-management/pages/list/components/TransferQuotaDialog.vue",
+      "sizeKB": 15.55,
+      "lines": 430,
+      "elTags": 19
+    },
+    {
+      "module": "quota-management",
+      "name": "index",
+      "rel": "src/modules/quota-management/pages/list/index.vue",
+      "sizeKB": 2.12,
+      "lines": 78,
+      "elTags": 4
+    },
+    {
+      "module": "skills",
+      "name": "index",
+      "rel": "src/modules/skills/pages/create/basic-form/index.vue",
+      "sizeKB": 17.5,
+      "lines": 494,
+      "elTags": 17
+    },
+    {
+      "module": "skills",
+      "name": "local-file-upload",
+      "rel": "src/modules/skills/pages/create/basic-form/local-file-upload.vue",
+      "sizeKB": 11.15,
+      "lines": 372,
+      "elTags": 5
+    },
+    {
+      "module": "skills",
+      "name": "skill-env-bar-form-item",
+      "rel": "src/modules/skills/pages/create/basic-form/skill-env-bar-form-item.vue",
+      "sizeKB": 5.23,
+      "lines": 135,
+      "elTags": 20
+    },
+    {
+      "module": "skills",
+      "name": "skill-update-version-confirm-dialog",
+      "rel": "src/modules/skills/pages/create/basic-form/skill-update-version-confirm-dialog.vue",
+      "sizeKB": 3.83,
+      "lines": 121,
+      "elTags": 7
+    },
+    {
+      "module": "skills",
+      "name": "skill-upload-dialog",
+      "rel": "src/modules/skills/pages/create/basic-form/skill-upload-dialog.vue",
+      "sizeKB": 13.31,
+      "lines": 355,
+      "elTags": 20
+    },
+    {
+      "module": "skills",
+      "name": "skill-visibility-select",
+      "rel": "src/modules/skills/pages/create/basic-form/skill-visibility-select.vue",
+      "sizeKB": 1.66,
+      "lines": 45,
+      "elTags": 4
+    },
+    {
+      "module": "skills",
+      "name": "visibility-project-select",
+      "rel": "src/modules/skills/pages/create/basic-form/visibility-project-select.vue",
+      "sizeKB": 19.43,
+      "lines": 592,
+      "elTags": 6
+    },
+    {
+      "module": "skills",
+      "name": "index",
+      "rel": "src/modules/skills/pages/create/index.vue",
+      "sizeKB": 18.94,
+      "lines": 547,
+      "elTags": 8
+    },
+    {
+      "module": "skills",
+      "name": "index",
+      "rel": "src/modules/skills/pages/detail/index.vue",
+      "sizeKB": 22.22,
+      "lines": 600,
+      "elTags": 9
+    },
+    {
+      "module": "skills",
+      "name": "guide",
+      "rel": "src/modules/skills/pages/list/guide.vue",
+      "sizeKB": 2.7,
+      "lines": 109,
+      "elTags": 2
+    },
+    {
+      "module": "skills",
+      "name": "index",
+      "rel": "src/modules/skills/pages/list/index.vue",
+      "sizeKB": 1.51,
+      "lines": 42,
+      "elTags": 0
+    },
+    {
+      "module": "skills",
+      "name": "MySkill",
+      "rel": "src/modules/skills/pages/list/MySkill.vue",
+      "sizeKB": 26.22,
+      "lines": 766,
+      "elTags": 14
+    },
+    {
+      "module": "skills-square",
+      "name": "NpxCommandGuideDialog",
+      "rel": "src/modules/skills-square/pages/detail/components/NpxCommandGuideDialog.vue",
+      "sizeKB": 3.02,
+      "lines": 118,
+      "elTags": 1
+    },
+    {
+      "module": "skills-square",
+      "name": "SkillDetailCard",
+      "rel": "src/modules/skills-square/pages/detail/components/SkillDetailCard.vue",
+      "sizeKB": 5.12,
+      "lines": 167,
+      "elTags": 1
+    },
+    {
+      "module": "skills-square",
+      "name": "index",
+      "rel": "src/modules/skills-square/pages/detail/index.vue",
+      "sizeKB": 16.54,
+      "lines": 427,
+      "elTags": 6
+    },
+    {
+      "module": "skills-square",
+      "name": "card",
+      "rel": "src/modules/skills-square/pages/list/components/card.vue",
+      "sizeKB": 6.62,
+      "lines": 230,
+      "elTags": 2
+    },
+    {
+      "module": "skills-square",
+      "name": "InfoButton",
+      "rel": "src/modules/skills-square/pages/list/components/InfoButton.vue",
+      "sizeKB": 1.97,
+      "lines": 81,
+      "elTags": 2
+    },
+    {
+      "module": "skills-square",
+      "name": "index",
+      "rel": "src/modules/skills-square/pages/list/index.vue",
+      "sizeKB": 30.32,
+      "lines": 883,
+      "elTags": 16
+    },
+    {
+      "module": "system-management",
+      "name": "api-key-table",
+      "rel": "src/modules/system-management/pages/api-key/components/api-key-table.vue",
+      "sizeKB": 9.61,
+      "lines": 251,
+      "elTags": 16
+    },
+    {
+      "module": "system-management",
+      "name": "ApiKeySelect",
+      "rel": "src/modules/system-management/pages/api-key/components/ApiKeySelect.vue",
+      "sizeKB": 5.82,
+      "lines": 212,
+      "elTags": 4
+    },
+    {
+      "module": "system-management",
+      "name": "create-api-key",
+      "rel": "src/modules/system-management/pages/api-key/components/create-api-key.vue",
+      "sizeKB": 19.06,
+      "lines": 477,
+      "elTags": 25
+    },
+    {
+      "module": "system-management",
+      "name": "create-success",
+      "rel": "src/modules/system-management/pages/api-key/components/create-success.vue",
+      "sizeKB": 2.48,
+      "lines": 88,
+      "elTags": 1
+    },
+    {
+      "module": "system-management",
+      "name": "key-copy",
+      "rel": "src/modules/system-management/pages/api-key/components/key-copy.vue",
+      "sizeKB": 1.71,
+      "lines": 56,
+      "elTags": 2
+    },
+    {
+      "module": "system-management",
+      "name": "more-app",
+      "rel": "src/modules/system-management/pages/api-key/components/more-app.vue",
+      "sizeKB": 3.95,
+      "lines": 103,
+      "elTags": 8
+    },
+    {
+      "module": "system-management",
+      "name": "single-project-select",
+      "rel": "src/modules/system-management/pages/api-key/components/single-project-select.vue",
+      "sizeKB": 16.06,
+      "lines": 553,
+      "elTags": 6
+    },
+    {
+      "module": "system-management",
+      "name": "index",
+      "rel": "src/modules/system-management/pages/api-key/index.vue",
+      "sizeKB": 11.46,
+      "lines": 318,
+      "elTags": 17
+    },
+    {
+      "module": "system-management",
+      "name": "index",
+      "rel": "src/modules/system-management/pages/index.vue",
+      "sizeKB": 0.34,
+      "lines": 14,
+      "elTags": 0
+    },
+    {
+      "module": "training-pipeline",
+      "name": "AdvancedConfig",
+      "rel": "src/modules/training-pipeline/pages/create/components/AdvancedConfig.vue",
+      "sizeKB": 4.94,
+      "lines": 129,
+      "elTags": 13
+    },
+    {
+      "module": "training-pipeline",
+      "name": "AlgorithmConfigForm",
+      "rel": "src/modules/training-pipeline/pages/create/components/AlgorithmConfigForm.vue",
+      "sizeKB": 10.25,
+      "lines": 244,
+      "elTags": 17
+    },
+    {
+      "module": "training-pipeline",
+      "name": "BaseConfigForm",
+      "rel": "src/modules/training-pipeline/pages/create/components/BaseConfigForm.vue",
+      "sizeKB": 5.14,
+      "lines": 141,
+      "elTags": 9
+    },
+    {
+      "module": "training-pipeline",
+      "name": "BaseModelSelect",
+      "rel": "src/modules/training-pipeline/pages/create/components/BaseModelSelect.vue",
+      "sizeKB": 10.8,
+      "lines": 380,
+      "elTags": 0
+    },
+    {
+      "module": "training-pipeline",
+      "name": "CommonConfigForm",
+      "rel": "src/modules/training-pipeline/pages/create/components/CommonConfigForm.vue",
+      "sizeKB": 10.71,
+      "lines": 263,
+      "elTags": 18
+    },
+    {
+      "module": "training-pipeline",
+      "name": "DeployForm",
+      "rel": "src/modules/training-pipeline/pages/create/components/DeployForm.vue",
+      "sizeKB": 21.63,
+      "lines": 499,
+      "elTags": 45
+    },
+    {
+      "module": "training-pipeline",
+      "name": "PublishForm",
+      "rel": "src/modules/training-pipeline/pages/create/components/PublishForm.vue",
+      "sizeKB": 5.34,
+      "lines": 150,
+      "elTags": 13
+    },
+    {
+      "module": "training-pipeline",
+      "name": "index",
+      "rel": "src/modules/training-pipeline/pages/create/index.vue",
+      "sizeKB": 34.9,
+      "lines": 855,
+      "elTags": 10
+    },
+    {
+      "module": "training-pipeline",
+      "name": "contain-card",
+      "rel": "src/modules/training-pipeline/pages/detail/components/contain-card.vue",
+      "sizeKB": 0.58,
+      "lines": 27,
+      "elTags": 0
+    },
+    {
+      "module": "training-pipeline",
+      "name": "ParamsConfig",
+      "rel": "src/modules/training-pipeline/pages/detail/components/ParamsConfig.vue",
+      "sizeKB": 3.22,
+      "lines": 96,
+      "elTags": 2
+    },
+    {
+      "module": "training-pipeline",
+      "name": "StageEmpty",
+      "rel": "src/modules/training-pipeline/pages/detail/components/StageEmpty.vue",
+      "sizeKB": 0.36,
+      "lines": 20,
+      "elTags": 1
+    },
+    {
+      "module": "training-pipeline",
+      "name": "TaskExecuteParamsDialog",
+      "rel": "src/modules/training-pipeline/pages/detail/components/TaskExecuteParamsDialog.vue",
+      "sizeKB": 7.53,
+      "lines": 194,
+      "elTags": 4
+    },
+    {
+      "module": "training-pipeline",
+      "name": "TaskFullParameterDialog",
+      "rel": "src/modules/training-pipeline/pages/detail/components/TaskFullParameterDialog.vue",
+      "sizeKB": 17.95,
+      "lines": 444,
+      "elTags": 9
+    },
+    {
+      "module": "training-pipeline",
+      "name": "index",
+      "rel": "src/modules/training-pipeline/pages/detail/config/index.vue",
+      "sizeKB": 32.23,
+      "lines": 742,
+      "elTags": 4
+    },
+    {
+      "module": "training-pipeline",
+      "name": "config-item",
+      "rel": "src/modules/training-pipeline/pages/detail/executeDetail/components/config-item.vue",
+      "sizeKB": 2.21,
+      "lines": 87,
+      "elTags": 0
+    },
+    {
+      "module": "training-pipeline",
+      "name": "ModelUploadButton",
+      "rel": "src/modules/training-pipeline/pages/detail/executeDetail/components/ModelUploadButton.vue",
+      "sizeKB": 1.46,
+      "lines": 47,
+      "elTags": 6
+    },
+    {
+      "module": "training-pipeline",
+      "name": "OperationLogDrawer",
+      "rel": "src/modules/training-pipeline/pages/detail/executeDetail/components/OperationLogDrawer.vue",
+      "sizeKB": 3.31,
+      "lines": 113,
+      "elTags": 1
+    },
+    {
+      "module": "training-pipeline",
+      "name": "stage",
+      "rel": "src/modules/training-pipeline/pages/detail/executeDetail/components/stage.vue",
+      "sizeKB": 4.32,
+      "lines": 148,
+      "elTags": 2
+    },
+    {
+      "module": "training-pipeline",
+      "name": "index",
+      "rel": "src/modules/training-pipeline/pages/detail/executeDetail/EffectValidation/index.vue",
+      "sizeKB": 3.82,
+      "lines": 121,
+      "elTags": 3
+    },
+    {
+      "module": "training-pipeline",
+      "name": "report",
+      "rel": "src/modules/training-pipeline/pages/detail/executeDetail/EffectValidation/report.vue",
+      "sizeKB": 2.77,
+      "lines": 99,
+      "elTags": 2
+    },
+    {
+      "module": "training-pipeline",
+      "name": "index",
+      "rel": "src/modules/training-pipeline/pages/detail/executeDetail/index.vue",
+      "sizeKB": 8.88,
+      "lines": 273,
+      "elTags": 4
+    },
+    {
+      "module": "training-pipeline",
+      "name": "DeployStatus",
+      "rel": "src/modules/training-pipeline/pages/detail/executeDetail/model-deploy/components/DeployStatus.vue",
+      "sizeKB": 2.86,
+      "lines": 117,
+      "elTags": 1
+    },
+    {
+      "module": "training-pipeline",
+      "name": "ExecuteDetail",
+      "rel": "src/modules/training-pipeline/pages/detail/executeDetail/model-deploy/ExecuteDetail.vue",
+      "sizeKB": 14.95,
+      "lines": 422,
+      "elTags": 3
+    },
+    {
+      "module": "training-pipeline",
+      "name": "index",
+      "rel": "src/modules/training-pipeline/pages/detail/executeDetail/model-deploy/index.vue",
+      "sizeKB": 1.2,
+      "lines": 41,
+      "elTags": 3
+    },
+    {
+      "module": "training-pipeline",
+      "name": "index",
+      "rel": "src/modules/training-pipeline/pages/detail/executeDetail/ModelEvaluation/index.vue",
+      "sizeKB": 3.71,
+      "lines": 114,
+      "elTags": 1
+    },
+    {
+      "module": "training-pipeline",
+      "name": "index",
+      "rel": "src/modules/training-pipeline/pages/detail/executeDetail/ReinforcementTraining/index.vue",
+      "sizeKB": 13.23,
+      "lines": 383,
+      "elTags": 13
+    },
+    {
+      "module": "training-pipeline",
+      "name": "LogDetailDrawer",
+      "rel": "src/modules/training-pipeline/pages/detail/executeDetail/ReinforcementTraining/LogDetailDrawer.vue",
+      "sizeKB": 30.27,
+      "lines": 911,
+      "elTags": 17
+    },
+    {
+      "module": "training-pipeline",
+      "name": "LogItem",
+      "rel": "src/modules/training-pipeline/pages/detail/executeDetail/ReinforcementTraining/LogItem.vue",
+      "sizeKB": 6.55,
+      "lines": 241,
+      "elTags": 5
+    },
+    {
+      "module": "training-pipeline",
+      "name": "TaskStageProgress",
+      "rel": "src/modules/training-pipeline/pages/detail/history/components/TaskStageProgress.vue",
+      "sizeKB": 6.84,
+      "lines": 259,
+      "elTags": 1
+    },
+    {
+      "module": "training-pipeline",
+      "name": "index",
+      "rel": "src/modules/training-pipeline/pages/detail/history/index.vue",
+      "sizeKB": 0.72,
+      "lines": 28,
+      "elTags": 0
+    },
+    {
+      "module": "training-pipeline",
+      "name": "Table",
+      "rel": "src/modules/training-pipeline/pages/detail/history/Table.vue",
+      "sizeKB": 18.68,
+      "lines": 548,
+      "elTags": 7
+    },
+    {
+      "module": "training-pipeline",
+      "name": "index",
+      "rel": "src/modules/training-pipeline/pages/detail/index.vue",
+      "sizeKB": 10.38,
+      "lines": 339,
+      "elTags": 5
+    },
+    {
+      "module": "training-pipeline",
+      "name": "LastedTask",
+      "rel": "src/modules/training-pipeline/pages/list/components/LastedTask.vue",
+      "sizeKB": 3.31,
+      "lines": 111,
+      "elTags": 1
+    },
+    {
+      "module": "training-pipeline",
+      "name": "OperationButtons",
+      "rel": "src/modules/training-pipeline/pages/list/components/OperationButtons.vue",
+      "sizeKB": 7.11,
+      "lines": 206,
+      "elTags": 7
+    },
+    {
+      "module": "training-pipeline",
+      "name": "guide",
+      "rel": "src/modules/training-pipeline/pages/list/guide.vue",
+      "sizeKB": 4.14,
+      "lines": 137,
+      "elTags": 3
+    },
+    {
+      "module": "training-pipeline",
+      "name": "index",
+      "rel": "src/modules/training-pipeline/pages/list/index.vue",
+      "sizeKB": 5.64,
+      "lines": 169,
+      "elTags": 4
+    },
+    {
+      "module": "training-pipeline",
+      "name": "table",
+      "rel": "src/modules/training-pipeline/pages/list/table.vue",
+      "sizeKB": 20.41,
+      "lines": 613,
+      "elTags": 6
+    }
+  ],
+  "businessTerms": [
+    {
+      "module": "application",
+      "rel": "src/modules/application/constants.ts",
+      "count": 7,
+      "terms": [
+        "智能体",
+        "任务型工作流",
+        "对话型工作流",
+        "智能体应用",
+        "工作流应用-任务型",
+        "工作流应用-对话型",
+        "默认"
+      ]
+    },
+    {
+      "module": "datasets",
+      "rel": "src/modules/datasets/const.ts",
+      "count": 14,
+      "terms": [
+        "名称",
+        "所属节点",
+        "最新版本",
+        "描述",
+        "导入状态",
+        "发布状态",
+        "数据集类型",
+        "管理员",
+        "更新人",
+        "更新时间",
+        "创建人",
+        "创建时间",
+        "操作",
+        "模型微调"
+      ]
+    },
+    {
+      "module": "mcp",
+      "rel": "src/modules/mcp/const.ts",
+      "count": 16,
+      "terms": [
+        "运行成功",
+        "调试失败",
+        "审批中",
+        "已授权",
+        "已驳回",
+        "未授权",
+        "内存（GB）",
+        "类型",
+        "通用CPU",
+        "环境创建失败",
+        "服务创建中",
+        "服务创建成功",
+        "部署中",
+        "待审核",
+        "部署成功",
+        "部署失败"
+      ]
+    },
+    {
+      "module": "mcp-management",
+      "rel": "src/modules/mcp-management/const.ts",
+      "count": 27,
+      "terms": [
+        "审核中",
+        "审核驳回",
+        "已发布",
+        "已下架",
+        "我提供的",
+        "我管理的",
+        "我的授权",
+        "我申请的",
+        "待我审批",
+        "调试成功",
+        "调试失败",
+        "未调试",
+        "已废弃",
+        "公开",
+        "非公开",
+        "项目可见",
+        "全部主调限流",
+        "指定主调限流",
+        "全部Tools限流",
+        "指定Tools限流",
+        "已驳回",
+        "草稿中",
+        "新注册",
+        "万擎",
+        "国内公网访问",
+        "海外公网访问",
+        "公司内网访问"
+      ]
+    },
+    {
+      "module": "model-deploy",
+      "rel": "src/modules/model-deploy/const.ts",
+      "count": 18,
+      "terms": [
+        "名称",
+        "所属节点",
+        "状态",
+        "基础模型",
+        "描述",
+        "管理员",
+        "创建人",
+        "创建时间",
+        "更新人",
+        "更新时间",
+        "操作",
+        "排队中",
+        "创建中",
+        "运行中",
+        "变更中",
+        "已下线",
+        "部分异常",
+        "异常"
+      ]
+    },
+    {
+      "module": "model-deploy",
+      "rel": "src/modules/model-deploy/constants.ts",
+      "count": 7,
+      "terms": [
+        "调度中",
+        "启动中",
+        "运行中",
+        "终止中",
+        "已终止",
+        "已完成",
+        "异常"
+      ]
+    },
+    {
+      "module": "model-finetune",
+      "rel": "src/modules/model-finetune/constants.ts",
+      "count": 11,
+      "terms": [
+        "文本生成",
+        "图像理解",
+        "视频理解",
+        "音频理解",
+        "初始化",
+        "排队中",
+        "运行中",
+        "已完成",
+        "已终止",
+        "已失败",
+        "全量更新"
+      ]
+    },
+    {
+      "module": "model-inference",
+      "rel": "src/modules/model-inference/constants.ts",
+      "count": 12,
+      "terms": [
+        "批量推理任务",
+        "初始化",
+        "排队中",
+        "运行中",
+        "异常",
+        "已完成",
+        "终止中",
+        "已停止",
+        "已终止",
+        "按 token 后付费",
+        "按资源包付费",
+        "预先购买，优先抵扣"
+      ]
+    },
+    {
+      "module": "model-stress-test",
+      "rel": "src/modules/model-stress-test/constants.ts",
+      "count": 21,
+      "terms": [
+        "在线推理",
+        "离线推理",
+        "待执行",
+        "排队中",
+        "执行中",
+        "已完成",
+        "已终止",
+        "已失败",
+        "分钟",
+        "小时",
+        "区间内",
+        "区间外",
+        "可用性",
+        "平均",
+        "开始",
+        "编辑",
+        "删除",
+        "终止",
+        "结果",
+        "复制",
+        "重新执行"
+      ]
+    },
+    {
+      "module": "project-management",
+      "rel": "src/modules/project-management/const.ts",
+      "count": 3,
+      "terms": [
+        "管理员",
+        "资源管理员",
+        "成员"
+      ]
+    },
+    {
+      "module": "quota-management",
+      "rel": "src/modules/quota-management/const.ts",
+      "count": 3,
+      "terms": [
+        "管理员",
+        "资源管理员",
+        "成员"
+      ]
+    },
+    {
+      "module": "skills",
+      "rel": "src/modules/skills/constants.ts",
+      "count": 14,
+      "terms": [
+        "本地上传",
+        "我提供的",
+        "我管理的",
+        "未发布",
+        "审核中",
+        "已驳回",
+        "已发布",
+        "已下架",
+        "公开",
+        "非公开",
+        "部分可见",
+        "无审核",
+        "审核不通过",
+        "审核通过"
+      ]
+    },
+    {
+      "module": "system-management",
+      "rel": "src/modules/system-management/constants.ts",
+      "count": 2,
+      "terms": [
+        "项目",
+        "个人"
+      ]
+    },
+    {
+      "module": "training-pipeline",
+      "rel": "src/modules/training-pipeline/constants.ts",
+      "count": 16,
+      "terms": [
+        "分类",
+        "嵌入",
+        "打分",
+        "排序",
+        "采纳/不采纳模式",
+        "未执行",
+        "资源准备中",
+        "排队中",
+        "等待执行",
+        "运行中",
+        "成功",
+        "失败",
+        "终止中",
+        "已终止",
+        "手动触发",
+        "自动触发"
+      ]
+    }
+  ],
+  "elementUsage": [
+    {
+      "tag": "el-button",
+      "count": 974
+    },
+    {
+      "tag": "el-icon",
+      "count": 739
+    },
+    {
+      "tag": "el-form-item",
+      "count": 556
+    },
+    {
+      "tag": "el-tooltip",
+      "count": 461
+    },
+    {
+      "tag": "el-table-column",
+      "count": 436
+    },
+    {
+      "tag": "el-input",
+      "count": 286
+    },
+    {
+      "tag": "el-option",
+      "count": 216
+    },
+    {
+      "tag": "el-link",
+      "count": 180
+    },
+    {
+      "tag": "el-tag",
+      "count": 178
+    },
+    {
+      "tag": "el-select",
+      "count": 174
+    },
+    {
+      "tag": "el-empty",
+      "count": 167
+    },
+    {
+      "tag": "el-dialog",
+      "count": 140
+    },
+    {
+      "tag": "el-form",
+      "count": 123
+    },
+    {
+      "tag": "el-dropdown-item",
+      "count": 107
+    },
+    {
+      "tag": "el-radio",
+      "count": 86
+    },
+    {
+      "tag": "el-table",
+      "count": 78
+    },
+    {
+      "tag": "el-col",
+      "count": 63
+    },
+    {
+      "tag": "el-checkbox",
+      "count": 62
+    },
+    {
+      "tag": "el-radio-group",
+      "count": 59
+    },
+    {
+      "tag": "el-input-number",
+      "count": 58
+    },
+    {
+      "tag": "el-dropdown",
+      "count": 56
+    },
+    {
+      "tag": "el-tab-pane",
+      "count": 56
+    },
+    {
+      "tag": "el-alert",
+      "count": 55
+    },
+    {
+      "tag": "el-popover",
+      "count": 52
+    },
+    {
+      "tag": "el-dropdown-menu",
+      "count": 48
+    },
+    {
+      "tag": "el-divider",
+      "count": 42
+    },
+    {
+      "tag": "el-switch",
+      "count": 40
+    },
+    {
+      "tag": "el-group",
+      "count": 34
+    },
+    {
+      "tag": "el-radio-button",
+      "count": 33
+    },
+    {
+      "tag": "el-pagination",
+      "count": 31
+    },
+    {
+      "tag": "el-tabs",
+      "count": 29
+    },
+    {
+      "tag": "el-row",
+      "count": 26
+    },
+    {
+      "tag": "el-image",
+      "count": 23
+    },
+    {
+      "tag": "el-drawer",
+      "count": 19
+    },
+    {
+      "tag": "el-upload",
+      "count": 17
+    },
+    {
+      "tag": "el-slider",
+      "count": 16
+    },
+    {
+      "tag": "el-step",
+      "count": 15
+    },
+    {
+      "tag": "el-tree",
+      "count": 14
+    },
+    {
+      "tag": "el-collapse-item",
+      "count": 14
+    },
+    {
+      "tag": "el-checkbox-group",
+      "count": 13
+    },
+    {
+      "tag": "el-skeleton",
+      "count": 12
+    },
+    {
+      "tag": "el-steps",
+      "count": 9
+    },
+    {
+      "tag": "el-card",
+      "count": 6
+    },
+    {
+      "tag": "el-date-picker",
+      "count": 5
+    },
+    {
+      "tag": "el-result",
+      "count": 5
+    },
+    {
+      "tag": "el-breadcrumb-item",
+      "count": 4
+    },
+    {
+      "tag": "el-avatar",
+      "count": 4
+    },
+    {
+      "tag": "el-collapse",
+      "count": 4
+    },
+    {
+      "tag": "el-breadcrumb",
+      "count": 2
+    },
+    {
+      "tag": "el-popconfirm",
+      "count": 2
+    },
+    {
+      "tag": "el-badge",
+      "count": 2
+    },
+    {
+      "tag": "el-scrollbar",
+      "count": 2
+    },
+    {
+      "tag": "el-option-group",
+      "count": 2
+    },
+    {
+      "tag": "el-progress",
+      "count": 2
+    },
+    {
+      "tag": "el-menu",
+      "count": 1
+    },
+    {
+      "tag": "el-menu-item",
+      "count": 1
+    },
+    {
+      "tag": "el-carousel",
+      "count": 1
+    },
+    {
+      "tag": "el-carousel-item",
+      "count": 1
+    },
+    {
+      "tag": "el-check-tag",
+      "count": 1
+    },
+    {
+      "tag": "el-cascader",
+      "count": 1
+    },
+    {
+      "tag": "el-timeline",
+      "count": 1
+    },
+    {
+      "tag": "el-timeline-item",
+      "count": 1
+    }
+  ],
+  "router": {
+    "rel": "src/router.ts",
+    "lines": 138,
+    "pathCount": 2,
+    "paths": [
+      "/",
+      "/login"
+    ]
+  },
+  "summary": {
+    "totalDeps": 108,
+    "themeTokens": 19,
+    "customComponents": 50,
+    "customComponentDirs": 25,
+    "businessModules": 25,
+    "uniqueElTags": 62,
+    "totalElUsage": 5845,
+    "routePaths": 2,
+    "modulePages": 403,
+    "moduleRoutes": 133,
+    "businessTermGroups": 14,
+    "totalBusinessTerms": 171
+  }
+}
